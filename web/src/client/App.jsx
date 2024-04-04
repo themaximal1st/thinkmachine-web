@@ -7,14 +7,14 @@ import ThinkMachineAPI from "./bridge";
 import { isUUID, saveFile } from "./utils";
 import Animation from "./Animation";
 
-import License from "./components/License";
-import Console from "./components/Console";
-import Filters from "./components/Filters";
+import License from "../../../common/components/License";
+import Console from "../../../common/components/Console";
+import Filters from "../../../common/components/Filters";
 import Typer from "./components/Typer";
 import Settings from "./components/Settings";
-import Interwingle from "./components/Interwingle";
-import Depth from "./components/Depth";
-import Footer from "./components/Footer";
+import Interwingle from "../../../common/components/Interwingle";
+import Depth from "../../../common/components/Depth";
+import Footer from "../../../common/components/Footer";
 import ForceGraph from "./components/ForceGraph";
 import Wormhole from "./components/Wormhole.js";
 

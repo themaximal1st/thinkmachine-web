@@ -3,7 +3,7 @@ import toast, { Toaster } from "react-hot-toast";
 
 import Animation from "./Animation";
 import License from "./components/License";
-import Console from "./components/Console";
+import Console from "../../../../common/components/Console";
 import Filters from "./components/Filters";
 import Splash from "./components/Splash";
 import Typer from "./components/Typer";
