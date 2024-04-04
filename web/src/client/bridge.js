@@ -1,6 +1,5 @@
 import { getCookie } from "@lib/cookies.js";
 import { isUUID } from "@lib/uuid.js";
-import * as services from "@services/index.js";
 
 export default class ThinkMachineAPI {
     BASE_API_URL = "http://localhost:3000/api";
@@ -14,7 +13,10 @@ export default class ThinkMachineAPI {
     }
 
     get isValid() {
-        return services.hypergraph.isValid(this.uuid);
+        if (!this.uuid) return false;
+        if (this.uuid === ThinkMachineAPI.EMPTY_UUID) return false;
+        if (!isUUID(this.uuid)) return false;
+        return true;
     }
 
     async send(path, options = {}) {
@@ -154,7 +156,7 @@ export default class ThinkMachineAPI {
 
 
     setupBridge() {
-        if (window.api) return;
+        if (window.api) { return }
 
         window.api = {
             "uuid": {
@@ -172,10 +174,8 @@ export default class ThinkMachineAPI {
                 export: this.exportHyperedges.bind(this),
                 wormhole: this.generateWormhole.bind(this),
             },
-            forceGraph: {
-                graphData: this.graphData.bind(this),
-            },
             hypergraph: {
+                graphData: this.graphData.bind(this),
                 create: async () => {
                     this.uuid = await this.createHypergraph();
                     return this.uuid;

@@ -4,13 +4,13 @@ const log = debug("thinkmachine:server:bridge");
 
 import Hypergraph from "./models/hypergraph.js"
 import ThinkableType from "@themaximalist/thinkabletype";
-import colors from "./colors.js";
+// import colors from "../common/lib/colors.js";
 import extractor from "./extractor.js";
 import { v4 as uuid } from "uuid";
 import Event from "./models/event.js";
 import { isUUID, isEmptyUUID } from "./utils.js";
 
-export default class Bridge {
+export default class WebBridge {
     constructor(app) {
         this.app = app;
         this.app.use(async (req, res, next) => {
@@ -60,7 +60,7 @@ export default class Bridge {
             }
 
 
-            req.thinkabletype = await Bridge.thinkableTypeForUUID(uuid);
+            req.thinkabletype = await WebBridge.thinkableTypeForUUID(uuid);
             if (!req.thinkabletype) {
                 return res.json({ ok: false, error: "invalid uuid" });
             }
@@ -241,7 +241,7 @@ export default class Bridge {
             return res.json({ ok: false, error: "missing from" });
         }
 
-        const thinkmachine = await Bridge.thinkableTypeForUUID(from);
+        const thinkmachine = await WebBridge.thinkableTypeForUUID(from);
         if (!thinkmachine) {
             return res.json({ ok: false, error: "invalid from" });
         }
@@ -345,7 +345,7 @@ export default class Bridge {
             }
         }
 
-        const thinkabletype = new ThinkableType({ colors });
+        const thinkabletype = new ThinkableType({});
         thinkabletype.parse(hypergraph.data);
 
         thinkabletype.save = async () => {

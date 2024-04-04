@@ -5,7 +5,7 @@ import express from "express";
 import ViteExpress from "vite-express";
 import cookieParser from "cookie-parser";
 
-import Bridge from "./bridge.js";
+import WebBridge from "./WebBridge.js";
 
 import Database from "./database.js"
 import { getAdminDashboardContent } from "./admin.js";
@@ -33,7 +33,7 @@ app.get("/admin", async (req, res) => {
 
 app.use(ViteExpress.static("index"));
 
-const bridge = new Bridge(app);
+const bridge = new WebBridge(app);
 
 await Database.initialize();
 ViteExpress.listen(app, process.env.PORT, () =>

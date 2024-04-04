@@ -59,4 +59,36 @@ export default class Bridge {
         this.thinkabletype.remove(...hyperedge);
     }
 
+    async generateHyperedges(input, options = {}) {
+        this.trackAnalytics("hyperedges.generate");
+
+        if (options.llm) {
+            if (!this.thinkabletype.options.llm) { this.thinkabletype.options.llm = {} }
+            if (options.llm.service) { this.thinkabletype.options.llm.service = options.llm.service }
+            if (options.llm.model) { this.thinkabletype.options.llm.model = options.llm.model }
+            if (options.llm.apikey) { this.thinkabletype.options.llm.apikey = options.llm.apikey }
+        }
+
+        try {
+            console.log("FETCHING", input, options);
+
+            this.send("hyperedges.generate.start");
+            const response = await this.thinkabletype.generate(input, options);
+
+            for await (const hyperedges of response) {
+                this.thinkabletype.addHyperedges(hyperedges);
+                for (const hyperedge of hyperedges) {
+                    console.log("hyperedge", hyperedge);
+                    this.send("hyperedges.generate.result", hyperedge);
+                }
+            }
+        } catch (e) {
+            console.log("ERROR", e);
+            this.send("error", e.message);
+        } finally {
+            this.send("hyperedges.generate.stop");
+        }
+        // TODO: Stop Loading
+    }
+
 }
