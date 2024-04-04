@@ -10,13 +10,13 @@ import Animation from "./Animation";
 import License from "../../../common/components/License";
 import Console from "../../../common/components/Console";
 import Filters from "../../../common/components/Filters";
-import Typer from "./components/Typer";
+import Typer from "../../../common/components/Typer";
 import Settings from "../../../common/components/Settings";
 import Interwingle from "../../../common/components/Interwingle";
 import Depth from "../../../common/components/Depth";
 import Footer from "../../../common/components/Footer";
-import ForceGraph from "./components/ForceGraph";
-import Wormhole from "./components/Wormhole.js";
+import ForceGraph from "../../../common/components/ForceGraph";
+import Wormhole from "../../../common/components/Wormhole.js";
 
 export default class App extends React.Component {
     constructor(props) {
