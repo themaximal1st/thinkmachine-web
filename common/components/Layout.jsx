@@ -6,7 +6,7 @@ const layouts = [
     "breadthfirst",
     "concentric",
     "circle",
-    "fcose"
+    "fcose",
 ];
 
 export default function Layout({ setLayout, setScratchMode }) {
