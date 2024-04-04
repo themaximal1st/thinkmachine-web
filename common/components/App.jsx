@@ -23,7 +23,6 @@ import Wormhole from "@components/Wormhole.js";
 export default class App extends React.Component {
     constructor(props) {
         super(props);
-        this.bridge = null;
         this.inputRef = React.createRef();
         this.consoleRef = React.createRef();
         this.graphRef = React.createRef();
@@ -140,9 +139,7 @@ export default class App extends React.Component {
         document.addEventListener("wheel", this.handleZoom.bind(this));
         window.addEventListener("resize", this.handleResize.bind(this));
 
-        ThinkMachineAPI.load().then(async (bridge) => {
-            this.bridge = bridge;
-
+        ThinkMachineAPI.load().then(async () => {
             this.loadSettings();
 
             await this.reloadData();
@@ -342,17 +339,16 @@ export default class App extends React.Component {
 
     async createNewHypergraph() {
         try {
-            const uuid = await this.bridge.createHypergraph();
-            this.bridge.uuid = uuid;
+            await window.api.hypergraph.create();
 
-            if (this.bridge.isEmpty) {
+            if (window.api.hypergraph.isEmpty()) {
                 throw new Error("Bridge is empty");
             }
 
             window.history.pushState(
-                { urlPath: `/${this.bridge.uuid}` },
+                { urlPath: `/${window.api.uuid.get()}` },
                 document.title,
-                `/${this.bridge.uuid}`
+                `/${window.api.uuid.get()}`
             );
 
             return uuid;
@@ -363,7 +359,7 @@ export default class App extends React.Component {
     }
 
     async handleEmptyHypergraph() {
-        if (this.bridge.isEmpty) {
+        if (window.api.hypergraph.isEmpty()) {
             await this.createNewHypergraph();
         }
     }
@@ -777,7 +773,7 @@ export default class App extends React.Component {
     async generateWormhole(hyperedges) {
         this.startWormhole();
 
-        const from = this.bridge.uuid;
+        const from = window.api.uuid.get();
         await this.createNewHypergraph();
 
         try {

@@ -158,8 +158,19 @@ export default class ThinkMachineAPI {
         if (window.api) return;
 
         window.api = {
+            "uuid": {
+                get: () => this.uuid,
+                set: (uuid) => this.uuid = uuid,
+            },
             forceGraph: {
                 graphData: this.graphData.bind(this),
+            },
+            hypergraph: {
+                create: async () => {
+                    this.uuid = await this.createHypergraph();
+                    return this.uuid;
+                },
+                isEmpty: () => this.isEmpty,
             },
             hyperedges: {
                 all: this.allHyperedges.bind(this),
