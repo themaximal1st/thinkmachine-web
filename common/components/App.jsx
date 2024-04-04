@@ -63,7 +63,7 @@ export default class App extends React.Component {
             reloads: 0,
             interwingle: 3,
             input: "",
-            inputMode: "generate",
+            inputMode: "add",
             hyperedge: [],
             hyperedges: [],
             filters: [],
@@ -341,7 +341,7 @@ export default class App extends React.Component {
         try {
             const uuid = await window.api.hypergraph.create();
 
-            if (await window.api.hypergraph.isValid()) {
+            if (!(await window.api.hypergraph.isValid())) {
                 throw new Error("Hypergraph was not initialized properly");
             }
 
@@ -359,7 +359,7 @@ export default class App extends React.Component {
     }
 
     async handleEmptyHypergraph() {
-        if (await window.api.hypergraph.isValid()) {
+        if (!(await window.api.hypergraph.isValid())) {
             await this.createNewHypergraph();
         }
     }

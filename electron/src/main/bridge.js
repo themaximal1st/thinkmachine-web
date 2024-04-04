@@ -3,7 +3,7 @@ import Analytics from "./Analytics.js";
 import * as settings from "./settings";
 import License from "./License.js";
 
-import { isUUID, isEmptyUUID } from "@lib/uuid.js";
+import * as services from "@services/index.js";
 
 export default class Bridge {
     constructor(thinkabletype, thinkmachine) {
@@ -43,10 +43,7 @@ export default class Bridge {
     }
 
     isValidHypergraph() {
-        if (!this.uuid) return false;
-        if (!isUUID(this.uuid)) return false;
-        if (isEmptyUUID(this.uuid)) return false;
-        return true;
+        return services.hypergraph.isValid(this.uuid);
     }
 
     graphData(_, filter = [], options = {}) {

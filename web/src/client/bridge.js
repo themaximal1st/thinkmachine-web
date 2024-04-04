@@ -1,5 +1,6 @@
 import { getCookie } from "@lib/cookies.js";
-import { isUUID, isEmptyUUID } from "@lib/uuid.js";
+import { isUUID } from "@lib/uuid.js";
+import * as services from "@services/index.js";
 
 export default class ThinkMachineAPI {
     BASE_API_URL = "http://localhost:3000/api";
@@ -13,15 +14,13 @@ export default class ThinkMachineAPI {
     }
 
     get isValid() {
-        if (!this.uuid) return false;
-        if (!isUUID(this.uuid)) return false;
-        if (isEmptyUUID(this.uuid)) return false;
-        return false;
+        return services.hypergraph.isValid(this.uuid);
     }
 
     async send(path, options = {}) {
         const controller = new AbortController()
 
+        console.log("SENDING", this.uuid);
         options.uuid = this.uuid;
 
         let response;
