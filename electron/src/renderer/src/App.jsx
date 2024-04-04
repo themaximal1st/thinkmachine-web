@@ -1,17 +1,18 @@
 import React from "react";
 import toast, { Toaster } from "react-hot-toast";
 
-import Animation from "./Animation";
+import Animation from "@lib/Animation";
+
 import License from "./components/License";
-import Console from "../../../../common/components/Console";
-import Filters from "./components/Filters";
-import Splash from "./components/Splash";
-import Typer from "./components/Typer";
-import Settings from "./components/Settings";
-import Interwingle from "./components/Interwingle";
-import Depth from "./components/Depth";
-import Footer from "./components/Footer";
-import ForceGraph from "./components/ForceGraph";
+
+import Console from "@components/Console";
+import Filters from "@components/Filters";
+import Typer from "@components/Typer";
+import Settings from "@components/Settings";
+import Interwingle from "@components/Interwingle";
+import Depth from "@components/Depth";
+import Footer from "@components/Footer";
+import ForceGraph from "@components/ForceGraph";
 
 export default class App extends React.Component {
     constructor(props) {
@@ -611,15 +612,6 @@ export default class App extends React.Component {
                         }}
                     />
                 </div>
-                <Splash
-                    loaded={this.state.loaded}
-                    hyperedges={this.state.hyperedges}
-                    createTutorial={this.createThinkMachineTutorial.bind(this)}
-                    licenseValid={this.state.licenseValid}
-                    input={this.state.input}
-                    trialRemaining={this.state.trialRemaining}
-                    showLicense={() => this.setState({ showLicense: true })}
-                />
                 <a id="titlebar">Think Machine</a>
                 <License
                     licenseKey={this.state.licenseKey}

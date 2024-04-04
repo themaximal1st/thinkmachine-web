@@ -26,3 +26,7 @@ body {
     -webkit-app-region: drag;
     @apply absolute z-20 top-0 left-0 right-0 h-8 text-white text-center text-xs pt-2;
 }
+
+#wormhole {
+    @apply absolute z-50 inset-0;
+}
