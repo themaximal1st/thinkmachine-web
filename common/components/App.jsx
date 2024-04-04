@@ -4,7 +4,7 @@ import slugify from "slugify";
 import * as THREE from "three";
 
 import ThinkMachineAPI from "@src/bridge";
-import { saveFile } from "@src/lib/files";
+import * as files from "@src/lib/files";
 import { isUUID } from "@lib/uuid";
 
 import Animation from "@lib/Animation";
@@ -805,7 +805,7 @@ export default class App extends React.Component {
             `thinkmachine ${this.state.hyperedges[0].join(" ")} ${Date.now()}`
         );
 
-        await saveFile(data, `${name}.csv`, "text/csv");
+        await files.saveFile(data, `${name}.csv`, "text/csv");
     }
 
     render() {

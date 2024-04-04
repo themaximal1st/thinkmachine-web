@@ -18,6 +18,7 @@ export default defineConfig({
             preserveSymlinks: true,
             alias: {
                 "@renderer": resolve("src/renderer/src"),
+                "@src": resolve("src/renderer/src"),
                 "@common": resolve("src/renderer/src/common"),
                 "@components": resolve("src/renderer/src/common/components"),
                 "@assets": resolve("src/renderer/src/common/assets"),
