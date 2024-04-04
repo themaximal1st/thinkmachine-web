@@ -1,0 +1,11 @@
+.DS_Store
+node_modules
+dist
+out/main
+out/preload
+out/renderer/assets/*
+*.log*
+.embeddings.cache.json
+TODO
+electron-builder.env
+.env
