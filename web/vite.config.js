@@ -7,6 +7,7 @@ export default defineConfig({
   resolve: {
     preserveSymlinks: true,
     alias: {
+      '@src': path.resolve(__dirname, 'src/client'),
       '@common': path.resolve(__dirname, 'src/common'),
       '@components': path.resolve(__dirname, 'src/common/components'),
       '@assets': path.resolve(__dirname, 'src/common/assets'),

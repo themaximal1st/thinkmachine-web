@@ -1,1 +1,1 @@
-../../../common/lib/main.jsx
+import "@lib/main";

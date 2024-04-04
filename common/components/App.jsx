@@ -3,8 +3,9 @@ import toast, { Toaster } from "react-hot-toast";
 import slugify from "slugify";
 import * as THREE from "three";
 
-import ThinkMachineAPI from "./bridge";
-import { isUUID, saveFile } from "./utils";
+import ThinkMachineAPI from "@src/bridge";
+import { saveFile } from "@src/lib/files";
+import { isUUID } from "@lib/uuid";
 
 import Animation from "@lib/Animation";
 

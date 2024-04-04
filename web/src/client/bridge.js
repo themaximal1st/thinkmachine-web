@@ -1,12 +1,14 @@
-let BASE_API_URL = "http://localhost:3000/api";
-import { isUUID, readChunks, getCookie } from "./utils.jsx";
+import { getCookie } from "@lib/cookies.js";
+import { isUUID } from "@lib/uuid.js";
 
 export default class ThinkMachineAPI {
+    BASE_API_URL = "http://localhost:3000/api";
+
     constructor(uuid, options = {}) {
         this.uuid = uuid;
         if (!this.uuid) throw new Error("missing uuid");
 
-        this.base_url = options.base_url || import.meta.env.VITE_API_URL || BASE_API_URL;
+        this.base_url = options.base_url || import.meta.env.VITE_API_URL || ThinkMachineAPI.BASE_API_URL;
         this.timeout = options.timeout || 5000;
     }
 
@@ -133,7 +135,7 @@ export default class ThinkMachineAPI {
     async *generateHyperedges(input, options) {
         if (this.isEmpty) return;
         const response = await this.stream("hyperedges/generate", { input, ...options });
-        for await (const message of readChunks(response.body.getReader())) {
+        for await (const message of ThinkMachineAPI.readChunks(response.body.getReader())) {
             yield message;
         }
     }
@@ -187,6 +189,23 @@ export default class ThinkMachineAPI {
         return api;
     }
 
+    static readChunks(reader) {
+        const decoder = new TextDecoder("utf-8");
+        return {
+            async *[Symbol.asyncIterator]() {
+                let readResult = await reader.read();
+                while (!readResult.done) {
+                    const value = decoder.decode(readResult.value);
+                    const lines = value.trim().split(/\n+/);
+                    for (const line of lines) {
+                        const json = JSON.parse(line.split("data: ")[1]);
+                        yield json;
+                    }
+                    readResult = await reader.read();
+                }
+            },
+        };
+    }
 }
 
 ThinkMachineAPI.EMPTY_UUID = "00000000-0000-0000-0000-000000000000";
