@@ -5,6 +5,7 @@ import * as THREE from "three";
 
 import ThinkMachineAPI from "./bridge";
 import { isUUID, saveFile } from "./utils";
+
 import Animation from "@lib/Animation";
 
 import License from "@components/License";

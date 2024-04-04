@@ -174,7 +174,6 @@ export default class ThinkMachineAPI {
     }
 
     static async load() {
-
         let uuid = ThinkMachineAPI.UUID();
         if (!uuid) {
             console.log("NO UUID");
