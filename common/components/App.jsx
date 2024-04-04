@@ -78,7 +78,7 @@ export default class App extends React.Component {
         return new Promise(async (resolve, reject) => {
             const start = Date.now();
 
-            const data = await window.api.forceGraph.graphData(
+            const data = await window.api.hypergraph.graphData(
                 this.state.filters,
                 {
                     interwingle: this.state.interwingle,

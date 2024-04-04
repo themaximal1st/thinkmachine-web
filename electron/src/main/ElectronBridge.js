@@ -1,11 +1,45 @@
 import { ipcMain } from "electron";
-import Analytics from "./Analytics.js";
+
+import Bridge from "@lib/bridge"
+
+export default class ElectronBridge {
+    constructor(app) {
+        this.bridge = new Bridge();
+        this.app = app;
+    }
+
+    handle(event, handler) {
+        ipcMain.handle(event, (...args) => {
+            args.shift();
+            return handler(...args);
+        });
+    }
+
+    async load() {
+        const mapping = {
+            "hypergraph.isValid": "isValidHypergraph",
+            "hypergraph.graphData": "graphData",
+            "analytics.track": "trackAnalytics",
+            "uuid.get": "getUUID",
+            "uuid.set": "setUUID",
+            "hyperedges.all": "allHyperedges",
+            "hyperedges.add": "addHyperedges",
+            "hyperedges.remove": "removeHyperedges",
+        };
+
+        for (const [event, method] of Object.entries(mapping)) {
+            this.handle(event, this.bridge[method].bind(this.bridge));
+        }
+    }
+}
+
+/*
 import * as settings from "./settings";
 import License from "./License.js";
 
 import * as services from "@services/index.js";
 
-export default class Bridge {
+export default class ElectronBridge {
     constructor(thinkabletype, thinkmachine) {
         this.thinkabletype = thinkabletype;
         this.thinkmachine = thinkmachine;
@@ -15,8 +49,8 @@ export default class Bridge {
         ipcMain.handle("uuid.set", this.setUUID.bind(this));
 
         ipcMain.handle("hypergraph.isValid", this.isValidHypergraph.bind(this));
+
         ipcMain.handle("analytics.track", this.trackAnalytics.bind(this));
-        ipcMain.handle("forceGraph.graphData", this.graphData.bind(this));
         ipcMain.handle("hyperedges.add", this.addHyperedges.bind(this));
         ipcMain.handle("hyperedges.all", this.allHyperedges.bind(this));
         ipcMain.handle("hyperedges.remove", this.removeHyperedges.bind(this));
@@ -30,58 +64,7 @@ export default class Bridge {
         ipcMain.handle("licenses.validate", this.validateLicense.bind(this));
     }
 
-    getUUID() {
-        return this.uuid;
-    }
 
-    setUUID(_, uuid) {
-        this.uuid = uuid;
-    }
-
-    trackAnalytics(_, event) {
-        Analytics.track(event);
-    }
-
-    isValidHypergraph() {
-        return services.hypergraph.isValid(this.uuid);
-    }
-
-    graphData(_, filter = [], options = {}) {
-        if (typeof options.interwingle !== "undefined") {
-            this.thinkabletype.interwingle = options.interwingle;
-        }
-
-        if (typeof options.depth !== "undefined") {
-            this.thinkabletype.depth = options.depth;
-        }
-
-        return this.thinkabletype.graphData(filter);
-    }
-
-    addHyperedges(_, hyperedge, symbol) {
-        let edge = this.thinkabletype.get(...hyperedge);
-        if (edge) {
-            edge.add(symbol);
-        } else {
-            edge = this.thinkabletype.add(...hyperedge, symbol);
-        }
-
-        Analytics.track("hyperedges.add");
-
-        return edge.id;
-    }
-
-    allHyperedges() {
-        const hyperedges = this.thinkabletype.hyperedges.map(
-            (hyperedge) => hyperedge.symbols
-        );
-        return hyperedges;
-    }
-
-    removeHyperedges(_, hyperedge) {
-        Analytics.track("hyperedges.remove");
-        this.thinkabletype.remove(...hyperedge);
-    }
 
     send(message, object = null) {
         this.thinkmachine.browserWindow.webContents.send(
@@ -162,3 +145,5 @@ export default class Bridge {
         return new Bridge(thinkabletype, thinkmachine);
     }
 }
+
+*/

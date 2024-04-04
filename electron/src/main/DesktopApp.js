@@ -4,6 +4,8 @@ import { fileURLToPath } from "url";
 import { app, BrowserWindow, Menu, MenuItem, shell } from "electron";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 
+import ElectronBridge from "./ElectronBridge";
+
 import {
     NewMenuItem,
     LoadMenuItem,
@@ -12,11 +14,11 @@ import {
     SettingsMenuItem,
 } from "./menuitems";
 
-export default class App {
-    constructor(browserWindow, thinkabletype) {
+export default class DesktopApp {
+    constructor(browserWindow) {
         this.app = app;
         this.browserWindow = browserWindow;
-        this.thinkabletype = thinkabletype;
+        this.bridge = null;
     }
 
     async load() {
@@ -35,6 +37,9 @@ export default class App {
         fileMenu.submenu.insert(0, LoadMenuItem(this));
         fileMenu.submenu.insert(0, NewMenuItem(this));
         Menu.setApplicationMenu(menu);
+
+        this.bridge = new ElectronBridge(this);
+        await this.bridge.load();
     }
 
     static titleBarStyle() {
@@ -50,7 +55,7 @@ export default class App {
             width: 900,
             height: 670,
             // frame: false,
-            titleBarStyle: App.titleBarStyle(),
+            titleBarStyle: DesktopApp.titleBarStyle(),
             show: false,
             // autoHideMenuBar: true,
             webPreferences: {
@@ -92,7 +97,7 @@ export default class App {
         return browserWindow;
     }
 
-    static async launch(thinkabletype) {
+    static async launch() {
         await app.whenReady();
 
         electronApp.setAppUserModelId(app.name);
@@ -102,7 +107,7 @@ export default class App {
             optimizer.watchWindowShortcuts(window);
         });
 
-        const browserWindow = App.createWindow();
+        const browserWindow = DesktopApp.createWindow();
 
         // app.on('activate', function () {
         //   if (BrowserWindow.getAllWindows().length === 0) App.createWindow();
@@ -112,8 +117,9 @@ export default class App {
             app.quit();
         });
 
-        const hyperTyper = new App(browserWindow, thinkabletype);
-        await hyperTyper.load();
-        return hyperTyper;
+        const thinkmachine = new DesktopApp(browserWindow);
+        await thinkmachine.load();
+
+        return thinkmachine;
     }
 }

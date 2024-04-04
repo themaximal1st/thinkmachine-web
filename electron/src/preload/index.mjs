@@ -27,6 +27,9 @@ const api = {
         isValid: () => {
             return ipcRenderer.invoke("hypergraph.isValid");
         },
+        graphData: (filter = [], options = null) => {
+            return ipcRenderer.invoke("hypergraph.graphData", filter, options);
+        },
     },
     hyperedges: {
         add: (hyperedge, symbol) => {
@@ -47,11 +50,6 @@ const api = {
         "wormhole": () => {
             return ipcRenderer.invoke("hyperedges.wormhole");
         }
-    },
-    forceGraph: {
-        graphData: (filter = [], options = null) => {
-            return ipcRenderer.invoke("forceGraph.graphData", filter, options);
-        },
     },
     licenses: {
         validate: (license) => {

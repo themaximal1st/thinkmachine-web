@@ -13,7 +13,6 @@ export default defineConfig({
                 "@components": resolve("src/renderer/src/common/components"),
                 "@assets": resolve("src/renderer/src/common/assets"),
                 "@lib": resolve("src/renderer/src/common/lib"),
-                "@services": resolve("src/renderer/src/common/services"),
             }
         },
         plugins: [
@@ -35,7 +34,6 @@ export default defineConfig({
                 "@components": resolve("src/renderer/src/common/components"),
                 "@assets": resolve("src/renderer/src/common/assets"),
                 "@lib": resolve("src/renderer/src/common/lib"),
-                "@services": resolve("src/renderer/src/common/services"),
             }
         },
         plugins: [react()],
