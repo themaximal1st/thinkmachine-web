@@ -1,17 +1,31 @@
 import { contextBridge, ipcRenderer } from "electron";
 
 const api = {
-    settings: {
-        get: (key) => {
-            return ipcRenderer.invoke("settings.get", key);
+    // settings: {
+    //     get: (key) => {
+    //         return ipcRenderer.invoke("settings.get", key);
+    //     },
+    //     set: (key, value) => {
+    //         return ipcRenderer.invoke("settings.set", key, value);
+    //     },
+    // },
+
+    "uuid": {
+        get: () => {
+            return ipcRenderer.invoke("uuid.get");
         },
-        set: (key, value) => {
-            return ipcRenderer.invoke("settings.set", key, value);
-        },
+        set: (uuid) => {
+            return ipcRenderer.invoke("uuid.set", uuid);
+        }
     },
     analytics: {
         track: (event) => {
             return ipcRenderer.invoke("analytics.track", event);
+        },
+    },
+    hypergraph: {
+        isValid: () => {
+            return ipcRenderer.invoke("hypergraph.isValid");
         },
     },
     hyperedges: {
@@ -27,6 +41,12 @@ const api = {
         generate: (input, options = {}) => {
             return ipcRenderer.invoke("hyperedges.generate", input, options);
         },
+        "export": () => {
+            return ipcRenderer.invoke("hyperedges.export",);
+        },
+        "wormhole": () => {
+            return ipcRenderer.invoke("hyperedges.wormhole");
+        }
     },
     forceGraph: {
         graphData: (filter = [], options = null) => {

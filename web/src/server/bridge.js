@@ -225,6 +225,7 @@ export default class Bridge {
         }
     }
 
+    // TODO: migrate to shared service code
     async generateWormhole(req, res) {
         const { hyperedges, llm, from } = req.body;
 

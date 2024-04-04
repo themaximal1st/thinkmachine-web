@@ -3,11 +3,18 @@ import Analytics from "./Analytics.js";
 import * as settings from "./settings";
 import License from "./License.js";
 
+import { isUUID, isEmptyUUID } from "@lib/uuid.js";
+
 export default class Bridge {
     constructor(thinkabletype, thinkmachine) {
         this.thinkabletype = thinkabletype;
         this.thinkmachine = thinkmachine;
+        this.uuid = null;
 
+        ipcMain.handle("uuid.get", this.getUUID.bind(this));
+        ipcMain.handle("uuid.set", this.setUUID.bind(this));
+
+        ipcMain.handle("hypergraph.isValid", this.isValidHypergraph.bind(this));
         ipcMain.handle("analytics.track", this.trackAnalytics.bind(this));
         ipcMain.handle("forceGraph.graphData", this.graphData.bind(this));
         ipcMain.handle("hyperedges.add", this.addHyperedges.bind(this));
@@ -23,8 +30,23 @@ export default class Bridge {
         ipcMain.handle("licenses.validate", this.validateLicense.bind(this));
     }
 
+    getUUID() {
+        return this.uuid;
+    }
+
+    setUUID(_, uuid) {
+        this.uuid = uuid;
+    }
+
     trackAnalytics(_, event) {
         Analytics.track(event);
+    }
+
+    isValidHypergraph() {
+        if (!this.uuid) return false;
+        if (!isUUID(this.uuid)) return false;
+        if (isEmptyUUID(this.uuid)) return false;
+        return true;
     }
 
     graphData(_, filter = [], options = {}) {

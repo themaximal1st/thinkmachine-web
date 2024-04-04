@@ -339,16 +339,16 @@ export default class App extends React.Component {
 
     async createNewHypergraph() {
         try {
-            await window.api.hypergraph.create();
+            const uuid = await window.api.hypergraph.create();
 
-            if (window.api.hypergraph.isEmpty()) {
-                throw new Error("Bridge is empty");
+            if (await window.api.hypergraph.isValid()) {
+                throw new Error("Hypergraph was not initialized properly");
             }
 
             window.history.pushState(
-                { urlPath: `/${window.api.uuid.get()}` },
+                { urlPath: `/${uuid}` },
                 document.title,
-                `/${window.api.uuid.get()}`
+                `/${uuid}`
             );
 
             return uuid;
@@ -359,7 +359,7 @@ export default class App extends React.Component {
     }
 
     async handleEmptyHypergraph() {
-        if (window.api.hypergraph.isEmpty()) {
+        if (await window.api.hypergraph.isValid()) {
             await this.createNewHypergraph();
         }
     }

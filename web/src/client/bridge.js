@@ -1,5 +1,5 @@
 import { getCookie } from "@lib/cookies.js";
-import { isUUID } from "@lib/uuid.js";
+import { isUUID, isEmptyUUID } from "@lib/uuid.js";
 
 export default class ThinkMachineAPI {
     BASE_API_URL = "http://localhost:3000/api";
@@ -12,10 +12,10 @@ export default class ThinkMachineAPI {
         this.timeout = options.timeout || 5000;
     }
 
-    get isEmpty() {
-        if (!this.uuid) return true;
-        if (this.uuid === ThinkMachineAPI.EMPTY_UUID) return true;
-        if (!isUUID(this.uuid)) return true;
+    get isValid() {
+        if (!this.uuid) return false;
+        if (!isUUID(this.uuid)) return false;
+        if (isEmptyUUID(this.uuid)) return false;
         return false;
     }
 
@@ -76,7 +76,7 @@ export default class ThinkMachineAPI {
     }
 
     async graphData(filter = [], options = {}) {
-        if (this.isEmpty) return { nodes: [], links: [] };
+        if (!this.isValid) return { nodes: [], links: [] };
 
         return await this.send("forceGraph/graphData", {
             filter,
@@ -85,7 +85,7 @@ export default class ThinkMachineAPI {
     }
 
     async allHyperedges() {
-        if (this.isEmpty) return [];
+        if (!this.isValid) return [];
         return await this.send("hyperedges/all");
     }
 
@@ -98,12 +98,12 @@ export default class ThinkMachineAPI {
     }
 
     async addHyperedge(hyperedge, symbol) {
-        if (this.isEmpty) return;
+        if (!this.isValid) return;
         return await this.send("hyperedges/add", { hyperedge, symbol });
     }
 
     async removeHyperedge(hyperedge) {
-        if (this.isEmpty) return;
+        if (!this.isValid) return;
         return await this.send("hyperedges/remove", { hyperedge });
     }
 
@@ -125,7 +125,7 @@ export default class ThinkMachineAPI {
     }
 
     async generateWormhole(hyperedges, options) {
-        if (this.isEmpty) return;
+        if (!this.isValid) return;
         const timeout = this.timeout;
         this.timeout = this.timeout * 4;
         await this.send("hyperedges/wormhole", { hyperedges, ...options });
@@ -133,7 +133,7 @@ export default class ThinkMachineAPI {
     }
 
     async *generateHyperedges(input, options) {
-        if (this.isEmpty) return;
+        if (!this.isValid) return;
         const response = await this.stream("hyperedges/generate", { input, ...options });
         for await (const message of ThinkMachineAPI.readChunks(response.body.getReader())) {
             yield message;
@@ -141,7 +141,7 @@ export default class ThinkMachineAPI {
     }
 
     async track(event, properties = {}) {
-        if (this.isEmpty) return;
+        if (!this.isValid) return;
         return await this.send("analytics/track", { event, properties });
     }
 
@@ -159,8 +159,19 @@ export default class ThinkMachineAPI {
 
         window.api = {
             "uuid": {
-                get: () => this.uuid,
-                set: (uuid) => this.uuid = uuid,
+                get: async () => this.uuid,
+                set: async (uuid) => this.uuid = uuid,
+            },
+            analytics: {
+                track: this.track.bind(this),
+            },
+            hyperedges: {
+                add: this.addHyperedge.bind(this),
+                remove: this.removeHyperedge.bind(this),
+                all: this.allHyperedges.bind(this),
+                generate: this.generateHyperedges.bind(this),
+                export: this.exportHyperedges.bind(this),
+                wormhole: this.generateWormhole.bind(this),
             },
             forceGraph: {
                 graphData: this.graphData.bind(this),
@@ -170,18 +181,7 @@ export default class ThinkMachineAPI {
                     this.uuid = await this.createHypergraph();
                     return this.uuid;
                 },
-                isEmpty: () => this.isEmpty,
-            },
-            hyperedges: {
-                all: this.allHyperedges.bind(this),
-                add: this.addHyperedge.bind(this),
-                remove: this.removeHyperedge.bind(this),
-                generate: this.generateHyperedges.bind(this),
-                export: this.exportHyperedges.bind(this),
-                wormhole: this.generateWormhole.bind(this),
-            },
-            analytics: {
-                track: this.track.bind(this),
+                isValid: async () => this.isValid,
             },
         };
     }
