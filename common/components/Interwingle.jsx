@@ -1,7 +1,7 @@
-import Interwingle0 from "../assets/interwingle-0.png";
-import Interwingle1 from "../assets/interwingle-1.png";
-import Interwingle2 from "../assets/interwingle-2.png";
-import Interwingle3 from "../assets/interwingle-3.png";
+import Interwingle0 from "@assets/interwingle-0.png";
+import Interwingle1 from "@assets/interwingle-1.png";
+import Interwingle2 from "@assets/interwingle-2.png";
+import Interwingle3 from "@assets/interwingle-3.png";
 
 export default function Interwingle(params) {
     if (!params.show) return;

@@ -5,8 +5,12 @@ import path from "path";
 // https://vitejs.dev/config/
 export default defineConfig({
   resolve: {
+    preserveSymlinks: true,
     alias: {
-      '@common': path.resolve(__dirname, '../common'),
+      '@common': path.resolve(__dirname, 'src/common'),
+      '@components': path.resolve(__dirname, 'src/common/components'),
+      '@assets': path.resolve(__dirname, 'src/common/assets'),
+      '@lib': path.resolve(__dirname, 'src/common/lib'),
     },
   },
   plugins: [react()],

@@ -1,4 +1,4 @@
-import * as Icons from "../Icons";
+import * as Icons from "@assets/Icons";
 import { useState } from "react";
 
 function ShowLabsWarning(params) {
