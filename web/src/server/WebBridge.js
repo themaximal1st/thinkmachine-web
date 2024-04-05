@@ -9,65 +9,72 @@ export default class WebBridge {
         this.app = app;
     }
 
-    handle(route, handler, options = {}) {
-        if (typeof options.save === "undefined") { options.save = false; }
+    async handle(config = {}) {
+        if (!config.req) { throw new Error("missing req") }
+        if (!config.res) { throw new Error("missing res") }
+        if (!config.event) { throw new Error("missing event") }
+        if (!config.handler) { throw new Error("missing handler") }
+        if (!config.options) { config.options = {} }
+        if (typeof config.options.save === "undefined") { config.options.save = false; }
 
+        const { req, res, event, handler, options } = config;
+
+        if (!req.guid) { return res.json({ ok: false, error: "invalid guid" }); }
+        if (!req.uuid) { return res.json({ ok: false, error: "invalid uuid" }); }
+
+        let data;
+
+        try {
+            if (handler.constructor.name === "AsyncFunction") {
+                data = await handler(req.bridge, req.body, req, res);
+            } else {
+                data = handler(req.bridge, req.body, req, res);
+            }
+        } catch (e) {
+            return res.json({ ok: false, error: e.message });
+        }
+
+        if (options.save) {
+            await this.saveHypergraph(req);
+        }
+
+        await req.event(event, JSON.stringify(req.body));
+
+        return data;
+    }
+
+    post(route, handler, options = {}) {
         this.app.post(route, async (req, res) => {
-            if (!req.guid) { return res.json({ ok: false, error: "invalid guid" }); }
-            if (!req.uuid) { return res.json({ ok: false, error: "invalid uuid" }); }
-
-            let data;
-
-            try {
-                if (handler.constructor.name === "AsyncFunction") {
-                    data = await handler(req.bridge, req.body, req, res);
-                } else {
-                    data = handler(req.bridge, req.body, req, res);
-                }
-            } catch (e) {
-                return res.json({ ok: false, error: e.message });
-            }
-
-            if (options.save) {
-                await this.saveHypergraph(req);
-            }
-
-            await req.event(route, JSON.stringify(req.body));
-
+            const data = await this.handle({
+                req,
+                res,
+                event: route,
+                handler,
+                options
+            });
+            if (data && data.send) { return data }
             return res.json({ ok: true, data });
         });
     }
 
-    handleStream(route, handler) {
+    stream(route, handler, options = {}) {
+        if (typeof options.save === "undefined") { options.save = true; }
 
         this.app.post(route, async (req, res) => {
-            if (!req.guid) { return res.json({ ok: false, error: "invalid guid" }); }
-            if (!req.uuid) { return res.json({ ok: false, error: "invalid uuid" }); }
-
-            res.sendMessage = function (message) {
-                res.write("data: " + JSON.stringify(message) + "\n\n");
-            }
+            res.sendMessage = function (message) { res.write("data: " + JSON.stringify(message) + "\n\n") }
 
             res.setHeader('Content-Type', 'text/html; charset=utf-8');
             res.setHeader('Transfer-Encoding', 'chunked');
             res.setHeader('Cache-Control', 'no-cache');
             res.setHeader('X-Accel-Buffering', 'no');
 
-            let data;
-
-            try {
-                if (handler.constructor.name === "AsyncFunction") {
-                    data = await handler(req.bridge, req.body, req, res);
-                } else {
-                    data = handler(req.bridge, req.body, req, res);
-                }
-            } catch (e) {
-                return res.json({ ok: false, error: e.message });
-            }
-
-            await this.saveHypergraph(req);
-
-            await req.event(route, JSON.stringify(req.body));
+            await this.handle({
+                req,
+                res,
+                event: route,
+                handler,
+                options
+            });
 
             res.end();
         });
@@ -97,36 +104,36 @@ export default class WebBridge {
             return res.json({ ok: true, data: guid });
         });
 
-        this.handle("/api/hypergraph/graphData", (bridge, { filter, options }) => {
+        this.post("/api/hypergraph/graphData", (bridge, { filter, options }) => {
             return bridge.graphData(filter, options);
         });
 
-        this.handle("/api/hypergraph/create", async (_, body, req) => {
+        this.post("/api/hypergraph/create", async (_, body, req) => {
             console.log("CREATING");
             return await this.createHypergraph(req);
         }, { save: true });
 
-        this.handle("/api/hyperedges/all", (bridge) => {
+        this.post("/api/hyperedges/all", (bridge) => {
             return bridge.allHyperedges();
         });
 
-        this.handle("/api/hyperedges/add", (bridge, { hyperedge, symbol }) => {
+        this.post("/api/hyperedges/add", (bridge, { hyperedge, symbol }) => {
             return bridge.addHyperedges(hyperedge, symbol);
         }, { save: true });
 
-        this.handle("/api/hyperedges/remove", (bridge, { hyperedge }) => {
+        this.post("/api/hyperedges/remove", (bridge, { hyperedge }) => {
             return bridge.removeHyperedges(hyperedge);
         }, { save: true });
 
-        this.handle("/api/analytics/track", (bridge, { event }) => {
-            return bridge.trackAnalytics(event);
+        this.post("/api/analytics/track", (_, { event, properties }) => {
+            Analytics.track(event, properties);
         });
 
-        this.handle("/api/hypergraph/export", (bridge) => {
+        this.post("/api/hypergraph/export", (bridge) => {
             return bridge.exportHypergraph();
         });
 
-        this.handleStream("/api/hyperedges/generate", async (bridge, { input, llm }, req, res) => {
+        this.stream("/api/hyperedges/generate", async (bridge, { input, llm }, req, res) => {
             try {
                 res.sendMessage({ event: "success", message: "Generating..." });
 
@@ -155,7 +162,6 @@ export default class WebBridge {
         });
 
 
-        // this.app.post("/api/hyperedges/export", this.exportHyperedges.bind(this));
         // this.app.post("/api/hyperedges/wormhole", this.generateWormhole.bind(this));
         // this.app.post("/api/analytics/track", this.trackAnalytics.bind(this));
     }
@@ -192,11 +198,6 @@ export default class WebBridge {
         this.app = app;
     }
 
-    trackAnalytics(req, res) {
-        // const { event, properties } = req.body;
-        // Analytics.track(event, properties);
-        res.send({ ok: true });
-    }
 
     async addHyperedges(req, res) {
         const { hyperedge, symbol } = req.body;
