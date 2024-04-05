@@ -820,10 +820,10 @@ export default class App extends React.Component {
     }
 
     render() {
-        console.log("RENDER");
+        const isElectron = this.state.loaded ? window.api.isElectron : false;
 
         return (
-            <div>
+            <div className={isElectron ? "electron" : "web"}>
                 <div className="absolute inset-0 z-50 pointer-events-none">
                     <Toaster
                         position="bottom-center"
@@ -836,6 +836,7 @@ export default class App extends React.Component {
                         }}
                     />
                 </div>
+                {isElectron && <a id="titlebar">Think Machine</a>}
                 <License
                     licenseKey={this.state.licenseKey}
                     licenseValid={this.state.licenseValid}
@@ -850,15 +851,15 @@ export default class App extends React.Component {
                     }
                     closeLicense={() => this.setState({ showLicense: false })}
                 />
+                <Filters
+                    filters={this.state.filters}
+                    removeFilter={this.removeFilterSymbol.bind(this)}
+                />
                 <Console
                     consoleRef={this.consoleRef}
                     showConsole={this.state.showConsole}
                     hyperedges={this.state.hyperedges}
                     removeHyperedge={this.removeHyperedge.bind(this)}
-                />
-                <Filters
-                    filters={this.state.filters}
-                    removeFilter={this.removeFilterSymbol.bind(this)}
                 />
                 <Interwingle
                     interwingle={this.state.interwingle}

@@ -53,20 +53,26 @@ export default function Typer(params) {
     }
 
     return (
-        <div className={params.loaded ? "" : "hidden pointer-events-none"}>
-            <div className="flex flex-col text-white mt-3 text-sm gap-2 px-2 w-4/12 absolute z-20 flex-wrap">
+        <div
+            className={params.loaded ? "" : "hidden pointer-events-none"}
+            id="typer"
+        >
+            <div
+                className="flex flex-col text-white mt-1 text-sm gap-1 px-2 w-4/12 absolute z-20 flex-wrap"
+                id="typerInner"
+            >
                 {params.hyperedge.length > 0 && (
                     <div className="uppercase text-sm select-none tracking-widest font-medium text-gray-200">
                         CURRENT
                     </div>
                 )}
-                <div className="flex gap-2">
+                <div className="flex gap-1 flex-wrap">
                     {params.hyperedge.map((symbol, i) => {
                         return (
-                            <div className="flex gap-2 items-center" key={i}>
+                            <div className="flex gap-1 items-center" key={i}>
                                 <a
                                     onClick={(e) => params.removeIndex(i)}
-                                    className="cursor-pointer text-sm opacity-80 hover:opacity-100 transition-all select-none"
+                                    className="cursor-pointer text-sm opacity-80 hover:opacity-100 transition-all select-none py-1"
                                 >
                                     {symbol}
                                 </a>
@@ -80,6 +86,7 @@ export default function Typer(params) {
             </div>
 
             <div
+                id="typerInput"
                 className={`absolute inset-0 mt-2  flex flex-col gap-2 pointer-events-none z-40 items-center transition-all ${
                     params.edited ? "justify-start" : "justify-center"
                 }`}

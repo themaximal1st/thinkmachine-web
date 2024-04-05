@@ -1,6 +1,9 @@
 export default function Filters(params) {
     return (
-        <div className="flex text-white mt-3 text-sm gap-1 px-2 w-4/12 absolute z-20 flex-col right-0 items-end">
+        <div
+            className="flex text-white mt-1 text-sm gap-1 px-2 w-4/12 absolute z-20 flex-col right-0 items-end"
+            id="filters"
+        >
             {params.filters.length > 0 && (
                 <div className="uppercase text-sm select-none tracking-widest font-medium text-gray-200">
                     Filters

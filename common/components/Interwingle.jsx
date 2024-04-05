@@ -15,7 +15,7 @@ export default function Interwingle(params) {
                         params.interwingle == 3 ? "opacity-100" : "opacity-50"
                     } hover:opacity-100 transition-all`}
                 >
-                    <img src={Interwingle3} className="w-7 h-7" />
+                    <img src={Interwingle3} className="w-8 h-8" />
                 </a>
                 <a
                     onClick={(e) => params.toggleInterwingle(2)}
@@ -23,7 +23,7 @@ export default function Interwingle(params) {
                         params.interwingle == 2 ? "opacity-100" : "opacity-50"
                     } hover:opacity-100 transition-all`}
                 >
-                    <img src={Interwingle2} className="w-7 h-7" />
+                    <img src={Interwingle2} className="w-8 h-8" />
                 </a>
                 <a
                     onClick={(e) => params.toggleInterwingle(1)}
@@ -31,7 +31,7 @@ export default function Interwingle(params) {
                         params.interwingle == 1 ? "opacity-100" : "opacity-50"
                     } hover:opacity-100 transition-all`}
                 >
-                    <img src={Interwingle1} className="w-7 h-7" />
+                    <img src={Interwingle1} className="w-8 h-8" />
                 </a>
                 <a
                     onClick={(e) => params.toggleInterwingle(0)}
@@ -39,7 +39,7 @@ export default function Interwingle(params) {
                         params.interwingle == 0 ? "opacity-100" : "opacity-50"
                     } hover:opacity-100 transition-all`}
                 >
-                    <img src={Interwingle0} className="w-7 h-7" />
+                    <img src={Interwingle0} className="w-8 h-8" />
                 </a>
             </div>
         </div>

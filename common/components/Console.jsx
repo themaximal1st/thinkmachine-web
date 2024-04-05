@@ -7,11 +7,12 @@ export default function Console(params) {
         <div
             id="console"
             ref={params.consoleRef}
-            className="bg-white/10 text-white h-full max-h-[300px] w-full absolute z-40 overflow-y-scroll flex flex-col"
+            className="bg-black/80 text-white h-full max-h-[300px] w-full absolute z-30"
         >
-            <div className="overflow-y-scroll h-full w-full mt-8">
+            <div className="overflow-y-scroll h-full w-full">
                 <div className="grow"></div>
                 <div>
+                    <div className="font-medium p-1">Knowledge Graph Data</div>
                     <table className="w-auto">
                         <tbody>
                             {params.hyperedges.map((edge, i) => {

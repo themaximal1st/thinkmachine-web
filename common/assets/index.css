@@ -20,9 +20,29 @@ body {
 
 #titlebar {
     -webkit-app-region: drag;
-    @apply absolute z-20 top-0 left-0 right-0 h-8 text-white text-center text-xs pt-2;
+    @apply absolute z-50 top-0 left-0 right-0 h-8 text-white text-center text-xs pt-2 text-gray-400;
 }
 
 #wormhole {
     @apply absolute z-50 inset-0;
+}
+
+.electron #typer #typerInner {
+    @apply mt-10;
+}
+
+.electron #typer #typerInput {
+    @apply mt-10;
+}
+
+.electron #console {
+    @apply pt-10 z-50;
+}
+
+.electron #filters {
+    @apply mt-10;
+}
+
+.web {
+    @apply bg-blue-500;
 }
