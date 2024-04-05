@@ -64,6 +64,11 @@ export default function Footer(params) {
         }
     }
 
+    let isWeb = false;
+    if (params.loaded) {
+        isWeb = window.api.isWeb;
+    }
+
     return (
         <div>
             <div className="relative pointer-events-none">
@@ -78,20 +83,16 @@ export default function Footer(params) {
                                 {Icons.SettingsIcon}
                             </a>
                         )}
-                        {window.api.isWeb &&
-                            !params.isAnimating &&
-                            params.edited && (
-                                <a
-                                    onClick={(e) =>
-                                        (window.location.href = "/")
-                                    }
-                                    title="New File"
-                                    className="text-white opacity-50 hover:opacity-100 transition-all cursor-pointer mb-1 pointer-events-auto"
-                                >
-                                    {Icons.NewIcon}
-                                </a>
-                            )}
-                        {window.api.isWeb &&
+                        {isWeb && !params.isAnimating && params.edited && (
+                            <a
+                                onClick={(e) => (window.location.href = "/")}
+                                title="New File"
+                                className="text-white opacity-50 hover:opacity-100 transition-all cursor-pointer mb-1 pointer-events-auto"
+                            >
+                                {Icons.NewIcon}
+                            </a>
+                        )}
+                        {isWeb &&
                             !params.isAnimating &&
                             params.loaded &&
                             params.edited &&
@@ -104,7 +105,7 @@ export default function Footer(params) {
                                     {Icons.SaveIcon}
                                 </a>
                             )}
-                        {window.api.isWeb && !params.isAnimating && (
+                        {isWeb && !params.isAnimating && (
                             <a
                                 className="text-sm lg:text- text-white opacity-50 hover:opacity-100 transition-all cursor-pointer mb-1 pointer-events-auto"
                                 href="https://thinkmachine.com/download"

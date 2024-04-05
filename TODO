@@ -1,6 +1,6 @@
+* models shouldn't show model name twice, show a good human friendly description. Groq is fast!
 * rename bridges to be more specific
 * make it work with japanese characters! and try others as well
-* models shouldn't show model name twice, show a good human friendly description. Groq is fast!
 
 * electron: generate
 * electron: wormhole

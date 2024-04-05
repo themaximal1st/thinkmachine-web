@@ -130,6 +130,8 @@ export default class App extends React.Component {
     }
 
     componentDidMount() {
+        console.log("MOUNT");
+
         ForceGraph.load(this.graphRef, this.state.graphType);
 
         document.addEventListener("keydown", this.handleKeyDown.bind(this));
@@ -138,6 +140,9 @@ export default class App extends React.Component {
         document.addEventListener("mouseup", this.handleMouseUp.bind(this));
         document.addEventListener("wheel", this.handleZoom.bind(this));
         window.addEventListener("resize", this.handleResize.bind(this));
+
+        console.log("MOUNTING");
+        console.log("MOUNTING", ThinkMachineAPI);
 
         ThinkMachineAPI.load().then(async () => {
             this.loadSettings();
@@ -258,6 +263,10 @@ export default class App extends React.Component {
 
         if (e.key === "Shift") {
             this.setState({ isShiftDown: true });
+        }
+
+        if (e.key === "Escape" && this.state.showSettings) {
+            this.toggleSettings();
         }
 
         if (e.key === "1" && e.metaKey) {
@@ -534,6 +543,12 @@ export default class App extends React.Component {
         window.location.href = window.location.href;
     }
 
+    toggleSettings() {
+        this.setState({
+            showSettings: !this.state.showSettings,
+        });
+    }
+
     toggleGraphType() {
         window.api.analytics.track("app.toggleGraphType");
         const graphType = this.state.graphType === "2d" ? "3d" : "2d";
@@ -805,6 +820,8 @@ export default class App extends React.Component {
     }
 
     render() {
+        console.log("RENDER");
+
         return (
             <div>
                 <div className="absolute inset-0 z-50 pointer-events-none">
@@ -907,11 +924,7 @@ export default class App extends React.Component {
                     hyperedges={this.state.hyperedges}
                     wormholeMode={this.state.wormholeMode}
                     toggleWormhole={this.toggleWormhole.bind(this)}
-                    toggleSettings={() =>
-                        this.setState({
-                            showSettings: !this.state.showSettings,
-                        })
-                    }
+                    toggleSettings={this.toggleSettings.bind(this)}
                 />
             </div>
         );
