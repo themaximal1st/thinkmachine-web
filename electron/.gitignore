@@ -6,6 +6,5 @@ out/preload
 out/renderer/assets/*
 *.log*
 .embeddings.cache.json
-TODO
 electron-builder.env
 .env

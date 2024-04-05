@@ -67,13 +67,13 @@ export default function Footer(params) {
     return (
         <div>
             <div className="relative pointer-events-none">
-                <div className="absolute text-white bottom-2 left-4 right-4 z-20 flex gap-4 pointer-events-none justify-between items-center">
+                <div className="absolute text-white bottom-2 left-3 right-3 z-20 flex gap-4 pointer-events-none justify-between items-center">
                     <div className="flex gap-4 items-center">
                         {!params.isAnimating && (
                             <a
                                 onClick={(e) => params.toggleSettings()}
                                 title="Settings"
-                                className="text-white opacity-50 hover:opacity-100 transition-all cursor-pointer mb-1 pointer-events-auto"
+                                className="opacity-40 hover:opacity-100 transition-all cursor-pointer pointer-events-auto"
                             >
                                 {Icons.SettingsIcon}
                             </a>
@@ -120,7 +120,7 @@ export default function Footer(params) {
                         <a
                             onClick={() => params.toggleGraphType()}
                             title="Toggle 2D and 3D"
-                            className="opacity-20 hover:opacity-100 transition-all cursor-pointer pointer-events-auto text-lg"
+                            className="opacity-40 hover:opacity-100 transition-all cursor-pointer pointer-events-auto text-lg"
                         >
                             {params.graphType === "2d" ? "3D" : "2D"}
                         </a>
@@ -128,7 +128,7 @@ export default function Footer(params) {
                             <a
                                 onClick={() => params.toggleAnimation()}
                                 title="Toggle Animation"
-                                className="opacity-20 hover:opacity-100 transition-all cursor-pointer pointer-events-auto"
+                                className="opacity-40 hover:opacity-100 transition-all cursor-pointer pointer-events-auto"
                             >
                                 {!params.isAnimating && Icons.PauseIcon}
                                 {params.isAnimating && Icons.RotateIcon}
@@ -138,7 +138,7 @@ export default function Footer(params) {
                             <a
                                 onClick={() => params.toggleCamera()}
                                 title="Toggle Camera Control"
-                                className="opacity-20 hover:opacity-100 transition-all cursor-pointer pointer-events-auto"
+                                className="opacity-40 hover:opacity-100 transition-all cursor-pointer pointer-events-auto"
                             >
                                 {params.controlType === "orbit" &&
                                     Icons.CameraIcon}
@@ -152,7 +152,7 @@ export default function Footer(params) {
                                 title="Wormhole"
                                 className={`hover:opacity-100 transition-all cursor-pointer pointer-events-auto ${
                                     params.wormholeMode === -1
-                                        ? "text-white opacity-20"
+                                        ? "text-white opacity-40"
                                         : "text-orange-400 opacity-80"
                                 }`}
                             >

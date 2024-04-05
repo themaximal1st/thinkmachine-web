@@ -7,15 +7,11 @@ body {
 }
 
 .depth-slider {
-    @apply rotate-[270deg] w-96 absolute appearance-none mr-2 opacity-30 hover:opacity-100 transition-all;
+    @apply rotate-[270deg] bg-gray-800 w-96 absolute appearance-none mr-2 opacity-40 hover:opacity-100 transition-all rounded-full;
 }
 
 .depth-slider:focus {
     @apply appearance-none outline-0;
-}
-
-.depth-slider::-webkit-slider-runnable-track {
-    @apply bg-gray-800;
 }
 
 .depth-slider::-webkit-slider-thumb {

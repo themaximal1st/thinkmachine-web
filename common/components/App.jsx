@@ -4,7 +4,7 @@ import slugify from "slugify";
 import * as THREE from "three";
 
 import ThinkMachineAPI from "@src/bridge";
-import * as files from "@src/lib/files";
+import * as services from "@src/services";
 import { isUUID } from "@lib/uuid";
 
 import Animation from "@lib/Animation";
@@ -353,7 +353,6 @@ export default class App extends React.Component {
 
             return uuid;
         } catch (e) {
-            console.log(e);
             console.log("error creating new hypergraph", e);
             return null;
         }
@@ -745,7 +744,7 @@ export default class App extends React.Component {
             const last = hyperedge.pop();
             await window.api.hyperedges.add(hyperedge, last);
         }
-        this.setState({ interwingle: 3, depth: -1 }, async () => {
+        this.setState({ interwingle: 3, depth: 0 }, async () => {
             await this.reloadData();
         });
     }
@@ -784,7 +783,6 @@ export default class App extends React.Component {
                 from_uuid,
             });
         } catch (e) {
-            console.log(e);
             console.log("ERROR", e);
         } finally {
             await this.reloadData();
@@ -803,7 +801,7 @@ export default class App extends React.Component {
             `thinkmachine ${this.state.hyperedges[0].join(" ")} ${Date.now()}`
         );
 
-        await files.saveFile(data, `${name}.csv`, "text/csv");
+        await services.saveFile(data, `${name}.csv`, "text/csv");
     }
 
     render() {

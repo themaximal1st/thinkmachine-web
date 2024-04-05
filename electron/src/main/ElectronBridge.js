@@ -8,6 +8,11 @@ export default class ElectronBridge {
         this.app = app;
     }
 
+    get thinkabletype() {
+        if (!this.bridge) return null;
+        return this.bridge.thinkabletype;
+    }
+
     handle(event, handler) {
         ipcMain.handle(event, (...args) => {
             args.shift();

@@ -6,10 +6,7 @@ export async function newFile(App) {
     Analytics.track("file.new");
     if (!(await promptBeforeErase(App))) return;
 
-    // TODO: lol fix this
-    // TODO: then fix generate / wormhole / scraping
-    // TODO: how to use proxy api key for desktop?
-    App.bridge.bridge.thinkabletype.reset();
+    App.thinkabletype.reset();
     App.browserWindow.reload();
 }
 
@@ -24,7 +21,7 @@ export async function openFile(App) {
         filters: [
             {
                 name: "thinkabletype",
-                extensions: ["hypertype"],
+                extensions: ["thinkabletype", "csv", "txt"],
             },
             { name: "csv", extensions: ["csv"] },
             { name: "text", extensions: ["txt"] },
@@ -42,7 +39,7 @@ export async function openFile(App) {
     if (!filePath) return;
 
     const contents = fs.readFileSync(filePath, "utf-8");
-    App.bridge.thinkabletype.parse(contents);
+    App.thinkabletype.parse(contents);
     App.browserWindow.reload();
 }
 
@@ -59,20 +56,14 @@ export function saveFile(App) {
 
     const filepath = dialog.showSaveDialogSync(App.browserWindow, options);
 
-    const data = App.bridge.bridge.thinkabletype.export();
+    const data = App.thinkabletype.export();
     fs.writeFileSync(filepath, data);
 
     shell.showItemInFolder(filepath);
 }
 
 async function promptBeforeErase(App) {
-    console.log("APP", App);
-    console.log("APP.BRIDGE", App.bridge);
-    console.log("APP.BRIDGE", App.bridge.bridge);
-    console.log("APP.BRIDGE.THINKABLETYPE", App.bridge.bridge.thinkabletype);
-    console.log("APP.BRIDGE.THINKABLETYPE.HYPEREDGES", App.bridge.bridge.thinkabletype.hyperedges);
-
-    if (App.bridge.bridge.thinkabletype.hyperedges.length === 0) return true;
+    if (App.thinkabletype.hyperedges.length === 0) return true;
 
     const { response } = await dialog.showMessageBox(App.browserWindow, {
         type: "question",

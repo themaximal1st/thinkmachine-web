@@ -1,8 +1,8 @@
 import { join } from "path";
 import { fileURLToPath } from "url";
 
-import { app, BrowserWindow, Menu, MenuItem, shell } from "electron";
-import { electronApp, optimizer, is } from "@electron-toolkit/utils";
+import { app as electronApp, BrowserWindow, Menu, MenuItem, shell } from "electron";
+import { electronApp as electronAppTools, optimizer, is } from "@electron-toolkit/utils";
 
 import ElectronBridge from "./ElectronBridge";
 
@@ -16,20 +16,25 @@ import {
 
 export default class DesktopApp {
     constructor(browserWindow) {
-        this.app = app;
+        this.electronApp = electronApp;
         this.browserWindow = browserWindow;
         this.bridge = null;
     }
 
+    get thinkabletype() {
+        if (!this.bridge) return null;
+        return this.bridge.thinkabletype;
+    }
+
     async load() {
+        this.bridge = new ElectronBridge(this);
+        await this.bridge.load();
+
         const menu = Menu.getApplicationMenu();
         if (!menu) return;
 
         let fileMenu = menu.items.find((m) => m.label === "File");
         if (!fileMenu) return;
-
-        this.bridge = new ElectronBridge(this);
-        await this.bridge.load();
 
         fileMenu.submenu.insert(0, new MenuItem({ type: "separator" }));
         fileMenu.submenu.insert(0, LicenseMenuItem(this));
@@ -98,12 +103,11 @@ export default class DesktopApp {
     }
 
     static async launch() {
-        await app.whenReady();
+        await electronApp.whenReady();
 
-        electronApp.setAppUserModelId(app.name);
+        electronAppTools.setAppUserModelId(electronApp.name);
 
-        // Default open or close DevTools by F12 in development and ignore CommandOrControl + R in production.
-        app.on("browser-window-created", (_, window) => {
+        electronApp.on("browser-window-created", (_, window) => {
             optimizer.watchWindowShortcuts(window);
         });
 
@@ -113,8 +117,8 @@ export default class DesktopApp {
         //   if (BrowserWindow.getAllWindows().length === 0) App.createWindow();
         // })
 
-        app.on("window-all-closed", () => {
-            app.quit();
+        electronApp.on("window-all-closed", () => {
+            electronApp.quit();
         });
 
         const thinkmachine = new DesktopApp(browserWindow);
