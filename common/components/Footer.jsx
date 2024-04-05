@@ -78,7 +78,7 @@ export default function Footer(params) {
                             <a
                                 onClick={(e) => params.toggleSettings()}
                                 title="Settings"
-                                className="opacity-40 hover:opacity-100 transition-all cursor-pointer pointer-events-auto"
+                                className="select-none opacity-40 hover:opacity-100 transition-all cursor-pointer pointer-events-auto"
                             >
                                 {Icons.SettingsIcon}
                             </a>
@@ -87,7 +87,7 @@ export default function Footer(params) {
                             <a
                                 onClick={(e) => (window.location.href = "/")}
                                 title="New File"
-                                className="text-white opacity-50 hover:opacity-100 transition-all cursor-pointer mb-1 pointer-events-auto"
+                                className="select-none text-white opacity-50 hover:opacity-100 transition-all cursor-pointer mb-1 pointer-events-auto"
                             >
                                 {Icons.NewIcon}
                             </a>
@@ -100,7 +100,7 @@ export default function Footer(params) {
                                 <a
                                     onClick={(e) => params.handleDownload()}
                                     title="Save File"
-                                    className="text-white opacity-50 hover:opacity-100 transition-all cursor-pointer mb-1 pointer-events-auto"
+                                    className="select-none text-white opacity-50 hover:opacity-100 transition-all cursor-pointer mb-1 pointer-events-auto"
                                 >
                                     {Icons.SaveIcon}
                                 </a>
@@ -111,7 +111,7 @@ export default function Footer(params) {
                                 href="https://thinkmachine.com/download"
                             >
                                 Download{" "}
-                                <span className="hidden lg:inline">
+                                <span className="select-none hidden lg:inline">
                                     Think Machine
                                 </span>
                             </a>
@@ -121,7 +121,7 @@ export default function Footer(params) {
                         <a
                             onClick={() => params.toggleGraphType()}
                             title="Toggle 2D and 3D"
-                            className="opacity-40 hover:opacity-100 transition-all cursor-pointer pointer-events-auto text-lg"
+                            className="select-none opacity-40 hover:opacity-100 transition-all cursor-pointer pointer-events-auto text-lg"
                         >
                             {params.graphType === "2d" ? "3D" : "2D"}
                         </a>
@@ -129,7 +129,7 @@ export default function Footer(params) {
                             <a
                                 onClick={() => params.toggleAnimation()}
                                 title="Toggle Animation"
-                                className="opacity-40 hover:opacity-100 transition-all cursor-pointer pointer-events-auto"
+                                className="select-none opacity-40 hover:opacity-100 transition-all cursor-pointer pointer-events-auto"
                             >
                                 {!params.isAnimating && Icons.PauseIcon}
                                 {params.isAnimating && Icons.RotateIcon}
@@ -139,7 +139,7 @@ export default function Footer(params) {
                             <a
                                 onClick={() => params.toggleCamera()}
                                 title="Toggle Camera Control"
-                                className="opacity-40 hover:opacity-100 transition-all cursor-pointer pointer-events-auto"
+                                className="select-none opacity-40 hover:opacity-100 transition-all cursor-pointer pointer-events-auto"
                             >
                                 {params.controlType === "orbit" &&
                                     Icons.CameraIcon}
@@ -151,7 +151,7 @@ export default function Footer(params) {
                             <a
                                 onClick={() => handleToggleWormhole()}
                                 title="Wormhole"
-                                className={`hover:opacity-100 transition-all cursor-pointer pointer-events-auto ${
+                                className={`select-none hover:opacity-100 transition-all cursor-pointer pointer-events-auto ${
                                     params.wormholeMode === -1
                                         ? "text-white opacity-40"
                                         : "text-orange-400 opacity-80"

@@ -11,7 +11,7 @@ export default function Interwingle(params) {
             <div className="flex flex-col gap-8 w-full justify-center items-center py-4 opacity-50 hover:opacity-70 transition-all pointer-events-auto">
                 <a
                     onClick={(e) => params.toggleInterwingle(3)}
-                    className={`cursor-pointer ${
+                    className={`select-none cursor-pointer ${
                         params.interwingle == 3 ? "opacity-100" : "opacity-50"
                     } hover:opacity-100 transition-all`}
                 >
@@ -19,7 +19,7 @@ export default function Interwingle(params) {
                 </a>
                 <a
                     onClick={(e) => params.toggleInterwingle(2)}
-                    className={`cursor-pointer ${
+                    className={`select-none cursor-pointer ${
                         params.interwingle == 2 ? "opacity-100" : "opacity-50"
                     } hover:opacity-100 transition-all`}
                 >
@@ -27,7 +27,7 @@ export default function Interwingle(params) {
                 </a>
                 <a
                     onClick={(e) => params.toggleInterwingle(1)}
-                    className={`cursor-pointer ${
+                    className={`select-none cursor-pointer ${
                         params.interwingle == 1 ? "opacity-100" : "opacity-50"
                     } hover:opacity-100 transition-all`}
                 >
@@ -35,7 +35,7 @@ export default function Interwingle(params) {
                 </a>
                 <a
                     onClick={(e) => params.toggleInterwingle(0)}
-                    className={`cursor-pointer ${
+                    className={`select-none cursor-pointer ${
                         params.interwingle == 0 ? "opacity-100" : "opacity-50"
                     } hover:opacity-100 transition-all`}
                 >

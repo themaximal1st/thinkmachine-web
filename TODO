@@ -1,10 +1,10 @@
-* make it work with japanese characters! and try others as well
-
 * electron filter/hyperedge spacing is all messed up
 * electron: generate
 * electron: wormhole
 * electron: scraping -> proxy api key?
 * console needs work
+- Add different graph layouts
+ - Need a View button popup in bottom right corner to control all the views?
 
 * Add tooltips to icons/buttons
 * add cac.app feedback widget
@@ -91,7 +91,6 @@
 - Google Extension...right-click any word and get a knowledge graph?
 - VR/AR would be super dope
 - collaboration, make actions async 
-- Add different graph layouts
 - let users change colors
 - Visually connect two links
 - Label a hyperedge

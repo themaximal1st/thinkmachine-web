@@ -54,22 +54,29 @@ export default function Typer(params) {
 
     return (
         <div className={params.loaded ? "" : "hidden pointer-events-none"}>
-            <div
-                className={`flex text-white mt-4 text-sm gap-2 px-2 w-6/12 absolute z-20`}
-            >
-                {params.hyperedge.map((symbol, i) => {
-                    return (
-                        <div className="flex gap-2 items-center" key={i}>
-                            <a
-                                onClick={(e) => params.removeIndex(i)}
-                                className="cursor-pointer text-sm opacity-80 hover:opacity-100 transition-all"
-                            >
-                                {symbol}
-                            </a>
-                            <span className="opacity-80">→</span>
-                        </div>
-                    );
-                })}
+            <div className="flex flex-col text-white mt-3 text-sm gap-2 px-2 w-4/12 absolute z-20 flex-wrap">
+                {params.hyperedge.length > 0 && (
+                    <div className="uppercase text-sm select-none tracking-widest font-medium text-gray-200">
+                        CURRENT
+                    </div>
+                )}
+                <div className="flex gap-2">
+                    {params.hyperedge.map((symbol, i) => {
+                        return (
+                            <div className="flex gap-2 items-center" key={i}>
+                                <a
+                                    onClick={(e) => params.removeIndex(i)}
+                                    className="cursor-pointer text-sm opacity-80 hover:opacity-100 transition-all select-none"
+                                >
+                                    {symbol}
+                                </a>
+                                <span className="opacity-80 select-none">
+                                    →
+                                </span>
+                            </div>
+                        );
+                    })}
+                </div>
             </div>
 
             <div
