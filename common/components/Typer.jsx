@@ -5,6 +5,8 @@ import React, { useState } from "react";
 import { useCombobox } from "downshift";
 import cx from "classnames";
 
+import Logo from "../assets/logo.png";
+
 export default function Typer(params) {
     if (!params.show) return;
 
@@ -78,7 +80,7 @@ export default function Typer(params) {
                 {params.edited === false && (
                     <a href="https://thinkmachine.com">
                         <img
-                            src="/logo.png"
+                            src={Logo}
                             className="max-w-lg w-full mb-4 pointer-events-auto px-8"
                             title="Think Machine — Multidimensional Mind Mapper"
                         />

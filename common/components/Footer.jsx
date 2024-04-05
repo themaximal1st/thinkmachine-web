@@ -78,16 +78,21 @@ export default function Footer(params) {
                                 {Icons.SettingsIcon}
                             </a>
                         )}
-                        {!params.isAnimating && params.edited && (
-                            <a
-                                onClick={(e) => (window.location.href = "/")}
-                                title="New File"
-                                className="text-white opacity-50 hover:opacity-100 transition-all cursor-pointer mb-1 pointer-events-auto"
-                            >
-                                {Icons.NewIcon}
-                            </a>
-                        )}
-                        {!params.isAnimating &&
+                        {window.api.isWeb &&
+                            !params.isAnimating &&
+                            params.edited && (
+                                <a
+                                    onClick={(e) =>
+                                        (window.location.href = "/")
+                                    }
+                                    title="New File"
+                                    className="text-white opacity-50 hover:opacity-100 transition-all cursor-pointer mb-1 pointer-events-auto"
+                                >
+                                    {Icons.NewIcon}
+                                </a>
+                            )}
+                        {window.api.isWeb &&
+                            !params.isAnimating &&
                             params.loaded &&
                             params.edited &&
                             params.hyperedges.length > 0 && (
@@ -99,7 +104,7 @@ export default function Footer(params) {
                                     {Icons.SaveIcon}
                                 </a>
                             )}
-                        {!params.isAnimating && (
+                        {window.api.isWeb && !params.isAnimating && (
                             <a
                                 className="text-sm lg:text- text-white opacity-50 hover:opacity-100 transition-all cursor-pointer mb-1 pointer-events-auto"
                                 href="https://thinkmachine.com/download"
@@ -145,7 +150,7 @@ export default function Footer(params) {
                             <a
                                 onClick={() => handleToggleWormhole()}
                                 title="Wormhole"
-                                className={`hover:opacity-100 transition-all cursor-pointer pointer-events-auto w-7 h-7 ${
+                                className={`hover:opacity-100 transition-all cursor-pointer pointer-events-auto ${
                                     params.wormholeMode === -1
                                         ? "text-white opacity-20"
                                         : "text-orange-400 opacity-80"

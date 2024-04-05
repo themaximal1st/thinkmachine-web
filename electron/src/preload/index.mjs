@@ -10,6 +10,9 @@ const api = {
     //     },
     // },
 
+    "edition": "electron",
+    "isWeb": false,
+    "isElectron": true,
     "uuid": {
         get: () => {
             return ipcRenderer.invoke("uuid.get");

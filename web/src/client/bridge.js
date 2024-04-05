@@ -158,6 +158,9 @@ export default class ThinkMachineAPI {
         if (window.api) { return }
 
         window.api = {
+            "edition": "web",
+            isWeb: true,
+            isElectron: false,
             "uuid": {
                 get: async () => this.uuid,
                 set: async (uuid) => this.uuid = uuid,

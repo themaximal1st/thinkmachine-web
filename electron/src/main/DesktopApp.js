@@ -28,6 +28,9 @@ export default class DesktopApp {
         let fileMenu = menu.items.find((m) => m.label === "File");
         if (!fileMenu) return;
 
+        this.bridge = new ElectronBridge(this);
+        await this.bridge.load();
+
         fileMenu.submenu.insert(0, new MenuItem({ type: "separator" }));
         fileMenu.submenu.insert(0, LicenseMenuItem(this));
         fileMenu.submenu.insert(0, new MenuItem({ type: "separator" }));
@@ -37,9 +40,6 @@ export default class DesktopApp {
         fileMenu.submenu.insert(0, LoadMenuItem(this));
         fileMenu.submenu.insert(0, NewMenuItem(this));
         Menu.setApplicationMenu(menu);
-
-        this.bridge = new ElectronBridge(this);
-        await this.bridge.load();
     }
 
     static titleBarStyle() {
