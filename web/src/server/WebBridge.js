@@ -8,7 +8,7 @@ export default class WebBridge {
         this.app = app;
     }
 
-    handle(route, handler) {
+    handle(route, handler, save = false) {
         this.app.post(route, async (req, res) => {
             if (!req.guid) { return res.json({ ok: false, error: "invalid guid" }); }
             if (!req.uuid) { return res.json({ ok: false, error: "invalid uuid" }); }
@@ -19,6 +19,10 @@ export default class WebBridge {
                 data = await handler(req.bridge, req.body, req, res);
             } else {
                 data = handler(req.bridge, req.body, req, res);
+            }
+
+            if (save) {
+                await this.saveHypergraph(req);
             }
 
             await req.event(route, JSON.stringify(req.body));
@@ -56,7 +60,7 @@ export default class WebBridge {
 
         this.handle("/api/hypergraph/create", async (_, body, req) => {
             return await this.createHypergraph(req);
-        });
+        }, true);
 
         this.handle("/api/hyperedges/all", (bridge) => {
             return bridge.allHyperedges();
@@ -64,11 +68,11 @@ export default class WebBridge {
 
         this.handle("/api/hyperedges/add", (bridge, { hyperedge, symbol }) => {
             return bridge.addHyperedges(hyperedge, symbol);
-        });
+        }, true);
 
         this.handle("/api/hyperedges/remove", (bridge, { hyperedge }) => {
             return bridge.removeHyperedges(hyperedge);
-        });
+        }, true);
 
         this.handle("/api/analytics/track", (bridge, { event }) => {
             return bridge.trackAnalytics(event);
@@ -79,6 +83,12 @@ export default class WebBridge {
         req.uuid = uuid();
         await Hypergraph.create({ id: req.uuid, guid: req.guid });
         return req.uuid;
+    }
+
+    async saveHypergraph(req) {
+        const hypergraph = await Hypergraph.findByPk(req.uuid);
+        hypergraph.data = req.thinkabletype.export();
+        await hypergraph.save();
     }
 
     static async initialize(app) {
