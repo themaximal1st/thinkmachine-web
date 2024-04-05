@@ -22,7 +22,6 @@ export default class ThinkMachineAPI {
     async send(path, options = {}) {
         const controller = new AbortController()
 
-        console.log("SENDING", this.uuid);
         options.uuid = this.uuid;
 
         let response;

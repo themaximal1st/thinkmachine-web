@@ -3,6 +3,7 @@ import { v4 as uuid } from "uuid";
 import * as middleware from "./middleware.js"
 import Hypergraph from "./models/hypergraph.js";
 import HypergraphManager from "./managers/hypergraph.js";
+// import Analytics from "./analytics.js";
 
 export default class WebBridge {
     constructor(app) {
@@ -19,16 +20,27 @@ export default class WebBridge {
 
         const { req, res, event, handler, options } = config;
 
-        if (!req.guid) { return res.json({ ok: false, error: "invalid guid" }); }
         if (!req.uuid) { return res.json({ ok: false, error: "invalid uuid" }); }
+        if (!req.guid) {
+            if (!req.path.startsWith("/api/user/create")) {
+                return res.json({ ok: false, error: "invalid guid" });
+            }
+        }
 
         let data;
 
+        const opts = {
+            req,
+            res,
+            body: req.body,
+            bridge: req.bridge,
+        };
+
         try {
             if (handler.constructor.name === "AsyncFunction") {
-                data = await handler(req.bridge, req.body, req, res);
+                data = await handler(opts);
             } else {
-                data = handler(req.bridge, req.body, req, res);
+                data = handler(opts);
             }
         } catch (e) {
             return res.json({ ok: false, error: e.message });
@@ -86,7 +98,7 @@ export default class WebBridge {
         this.app.use(middleware.thinkmachine);
         this.app.use(middleware.bridge);
 
-        this.app.post("/api/user/create", async (req, res) => {
+        this.post("/api/user/create", async ({ req, res }) => {
             let guid = req.signedCookies.guid;
             if (!guid) {
                 guid = uuid();
@@ -101,39 +113,41 @@ export default class WebBridge {
                 await req.event("user.create");
             }
 
-            return res.json({ ok: true, data: guid });
+            return guid;
         });
 
-        this.post("/api/hypergraph/graphData", (bridge, { filter, options }) => {
-            return bridge.graphData(filter, options);
+        this.post("/api/hypergraph/graphData", ({ bridge, body }) => {
+            return bridge.graphData(body.filter, body.options);
         });
 
-        this.post("/api/hypergraph/create", async (_, body, req) => {
-            console.log("CREATING");
+        this.post("/api/hypergraph/create", async ({ req }) => {
             return await this.createHypergraph(req);
         }, { save: true });
 
-        this.post("/api/hyperedges/all", (bridge) => {
+        this.post("/api/hyperedges/all", ({ bridge }) => {
             return bridge.allHyperedges();
         });
 
-        this.post("/api/hyperedges/add", (bridge, { hyperedge, symbol }) => {
-            return bridge.addHyperedges(hyperedge, symbol);
+        this.post("/api/hyperedges/add", ({ bridge, body }) => {
+            return bridge.addHyperedges(body.hyperedge, body.symbol);
         }, { save: true });
 
-        this.post("/api/hyperedges/remove", (bridge, { hyperedge }) => {
-            return bridge.removeHyperedges(hyperedge);
+        this.post("/api/hyperedges/remove", ({ bridge, body }) => {
+            return bridge.removeHyperedges(body.hyperedge);
         }, { save: true });
 
-        this.post("/api/analytics/track", (_, { event, properties }) => {
-            Analytics.track(event, properties);
+        this.post("/api/analytics/track", ({ body }) => {
+            // Analytics.track(body.event, body.properties);
         });
 
-        this.post("/api/hypergraph/export", (bridge) => {
+        this.post("/api/hypergraph/export", ({ bridge }) => {
             return bridge.exportHypergraph();
         });
 
-        this.stream("/api/hyperedges/generate", async (bridge, { input, llm }, req, res) => {
+        this.stream("/api/hyperedges/generate", async ({ bridge, body, req, res }) => {
+
+            const { input, llm } = body;
+
             try {
                 res.sendMessage({ event: "success", message: "Generating..." });
 
