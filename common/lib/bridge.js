@@ -1,7 +1,7 @@
 import ThinkableType from "@themaximalist/thinkabletype";
-import colors from "./colors";
-import { isUUID, isEmptyUUID } from "./uuid";
-import Analytics from "./Analytics.js";
+import colors from "./colors.js";
+import { isUUID, isEmptyUUID } from "./uuid.js";
+// import Analytics from "./Analytics.js";
 
 
 export default class Bridge {

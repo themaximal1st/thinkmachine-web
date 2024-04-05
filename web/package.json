@@ -2,7 +2,7 @@
     "name": "thinkmachine-web",
     "version": "0.0.1",
     "scripts": {
-        "dev": "nodemon src/server/server.js --preserve-symlinks -w src/server",
+        "dev": "nodemon --preserve-symlinks src/server/server.js -w src/server",
         "start": "NODE_ENV=production node --preserve-symlinks src/server/server.js",
         "build": "vite build"
     },
