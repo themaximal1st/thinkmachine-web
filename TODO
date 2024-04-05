@@ -1,10 +1,10 @@
-* models shouldn't show model name twice, show a good human friendly description. Groq is fast!
-* rename bridges to be more specific
 * make it work with japanese characters! and try others as well
 
+* electron filter/hyperedge spacing is all messed up
 * electron: generate
 * electron: wormhole
 * electron: scraping -> proxy api key?
+* console needs work
 
 * Add tooltips to icons/buttons
 * add cac.app feedback widget

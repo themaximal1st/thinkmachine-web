@@ -3,7 +3,7 @@ import toast, { Toaster } from "react-hot-toast";
 import slugify from "slugify";
 import * as THREE from "three";
 
-import ThinkMachineAPI from "@src/bridge";
+import ThinkMachineAPI from "@src/api";
 import * as services from "@src/services";
 import { isUUID } from "@lib/uuid";
 
