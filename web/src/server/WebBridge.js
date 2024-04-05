@@ -3,7 +3,7 @@ import { v4 as uuid } from "uuid";
 import * as middleware from "./middleware.js"
 import Hypergraph from "./models/hypergraph.js";
 import HypergraphManager from "./managers/hypergraph.js";
-import { isUUID } from "./utils.js";
+import { isUUID } from "../common/lib/uuid.js";
 // import Analytics from "./analytics.js";
 
 export default class WebBridge {

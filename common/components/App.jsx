@@ -398,7 +398,6 @@ export default class App extends React.Component {
         );
 
         for await (const message of response) {
-            console.log("MESSAGE", message);
             switch (message.event) {
                 case "hyperedges.generate.result":
                     this.maybeReloadData();
