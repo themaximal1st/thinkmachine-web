@@ -11,15 +11,10 @@ export default class WebBridge {
 
     handle(route, handler, options = {}) {
         if (typeof options.save === "undefined") { options.save = false; }
-        if (typeof options.respond === "undefined") { options.respond = true; }
 
         this.app.post(route, async (req, res) => {
             if (!req.guid) { return res.json({ ok: false, error: "invalid guid" }); }
             if (!req.uuid) { return res.json({ ok: false, error: "invalid uuid" }); }
-
-            res.sendMessage = function (message) {
-                res.write("data: " + JSON.stringify(message) + "\n\n");
-            }
 
             let data;
 
@@ -39,11 +34,42 @@ export default class WebBridge {
 
             await req.event(route, JSON.stringify(req.body));
 
-            console.log("OPTIONS", options);
+            return res.json({ ok: true, data });
+        });
+    }
 
-            if (options.respond) {
-                return res.json({ ok: true, data });
+    handleStream(route, handler) {
+
+        this.app.post(route, async (req, res) => {
+            if (!req.guid) { return res.json({ ok: false, error: "invalid guid" }); }
+            if (!req.uuid) { return res.json({ ok: false, error: "invalid uuid" }); }
+
+            res.sendMessage = function (message) {
+                res.write("data: " + JSON.stringify(message) + "\n\n");
             }
+
+            res.setHeader('Content-Type', 'text/html; charset=utf-8');
+            res.setHeader('Transfer-Encoding', 'chunked');
+            res.setHeader('Cache-Control', 'no-cache');
+            res.setHeader('X-Accel-Buffering', 'no');
+
+            let data;
+
+            try {
+                if (handler.constructor.name === "AsyncFunction") {
+                    data = await handler(req.bridge, req.body, req, res);
+                } else {
+                    data = handler(req.bridge, req.body, req, res);
+                }
+            } catch (e) {
+                return res.json({ ok: false, error: e.message });
+            }
+
+            await this.saveHypergraph(req);
+
+            await req.event(route, JSON.stringify(req.body));
+
+            res.end();
         });
     }
 
@@ -97,17 +123,14 @@ export default class WebBridge {
         });
 
         // TODO: make this handleStream?
-        this.handle("/api/hyperedges/generate", async (bridge, { input, llm }, req, res) => {
-            res.setHeader('Content-Type', 'text/html; charset=utf-8');
-            res.setHeader('Transfer-Encoding', 'chunked');
-            res.setHeader('Cache-Control', 'no-cache');
-            res.setHeader('X-Accel-Buffering', 'no');
-
+        this.handleStream("/api/hyperedges/generate", async (bridge, { input, llm }, req, res) => {
             try {
                 res.sendMessage({ event: "success", message: "Generating..." });
 
-                const response = await bridge.generateHyperedges(input, llm);
                 res.sendMessage({ event: "hyperedges.generate.start" });
+
+                const response = await bridge.generateHyperedges(input, llm);
+
                 for await (const hyperedges of response) {
                     req.thinkabletype.addHyperedges(hyperedges);
                     await this.saveHypergraph(req);
@@ -126,10 +149,9 @@ export default class WebBridge {
                 res.sendMessage({ event: "hyperedges.generate.stop" });
                 res.end();
             }
-        }, { save: true, respond: false });
+        });
 
 
-        // this.app.post("/api/hyperedges/generate", this.generateHyperedges.bind(this));
         // this.app.post("/api/hyperedges/export", this.exportHyperedges.bind(this));
         // this.app.post("/api/hyperedges/wormhole", this.generateWormhole.bind(this));
         // this.app.post("/api/analytics/track", this.trackAnalytics.bind(this));
