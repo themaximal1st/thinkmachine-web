@@ -122,7 +122,10 @@ export default class WebBridge {
             return bridge.trackAnalytics(event);
         });
 
-        // TODO: make this handleStream?
+        this.handle("/api/hypergraph/export", (bridge) => {
+            return bridge.exportHypergraph();
+        });
+
         this.handleStream("/api/hyperedges/generate", async (bridge, { input, llm }, req, res) => {
             try {
                 res.sendMessage({ event: "success", message: "Generating..." });
@@ -356,14 +359,6 @@ export default class WebBridge {
 
 
     async exportHyperedges(req, res) {
-        const data = req.thinkabletype.export();
-
-        await req.sendEvent("hyperedges.export");
-
-        return res.json({
-            ok: true,
-            data,
-        });
     }
 
 

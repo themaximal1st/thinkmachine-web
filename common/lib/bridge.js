@@ -34,6 +34,10 @@ export default class Bridge {
         this.uuid = uuid
     }
 
+    exportHypergraph() {
+        return this.thinkabletype.export();
+    }
+
     isValidHypergraph(uuid) {
         if (!uuid) return false;
         if (!isUUID(uuid)) return false;

@@ -797,7 +797,7 @@ export default class App extends React.Component {
     }
 
     async handleDownload() {
-        const data = await window.api.hyperedges.export();
+        const data = await window.api.hypergraph.export();
 
         const name = slugify(
             `thinkmachine ${this.state.hyperedges[0].join(" ")} ${Date.now()}`

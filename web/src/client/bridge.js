@@ -108,8 +108,8 @@ export default class ThinkMachineAPI {
         return await this.send("hyperedges/remove", { hyperedge });
     }
 
-    async exportHyperedges() {
-        return await this.send("hyperedges/export");
+    async exportHypergraph() {
+        return await this.send("hypergraph/export");
     }
 
     async getUser() {
@@ -171,11 +171,11 @@ export default class ThinkMachineAPI {
                 remove: this.removeHyperedge.bind(this),
                 all: this.allHyperedges.bind(this),
                 generate: this.generateHyperedges.bind(this),
-                export: this.exportHyperedges.bind(this),
                 wormhole: this.generateWormhole.bind(this),
             },
             hypergraph: {
                 graphData: this.graphData.bind(this),
+                export: this.exportHypergraph.bind(this),
                 create: async () => {
                     this.uuid = await this.createHypergraph();
                     return this.uuid;
