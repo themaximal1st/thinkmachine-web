@@ -6,8 +6,6 @@ import HypergraphManager from "./managers/hypergraph.js";
 import { isUUID } from "./utils.js";
 // import Analytics from "./analytics.js";
 
-// TODO: URL Scraping
-
 export default class WebBridge {
     constructor(app) {
         this.app = app;
@@ -65,31 +63,19 @@ export default class WebBridge {
         });
 
         this.stream("/api/hyperedges/generate", async ({ bridge, body, req, res }) => {
-            const { input, llm } = body;
+            let { input, llm } = body;
 
             try {
-                res.sendMessage({ event: "success", message: "Generating..." });
-
-                res.sendMessage({ event: "hyperedges.generate.start" });
-
-                const response = await bridge.generateHyperedges(input, llm);
-
-                for await (const hyperedges of response) {
-                    req.thinkabletype.addHyperedges(hyperedges);
-                    await this.saveHypergraph(req);
-
-                    for (const hyperedge of hyperedges) {
-                        res.sendMessage({ event: "hyperedges.generate.result", hyperedge });
-                    }
-                }
-
-                if (req.thinkabletype.hyperedges.length > 0) {
-                    res.sendMessage({ event: "success", message: "Generated knowledge graph" });
-                }
+                await bridge.generateHyperedges({
+                    input,
+                    options: { llm },
+                    send: res.send.bind(res),
+                    save: () => this.saveHypergraph(req),
+                });
             } catch (e) {
-                res.sendMessage({ event: "error", message: "Error while generating" });
+                res.send({ event: "error", message: "Error while generating" });
             } finally {
-                res.sendMessage({ event: "hyperedges.generate.stop" });
+                res.send({ event: "hyperedges.generate.stop" });
                 res.end();
             }
         });
@@ -206,7 +192,7 @@ export default class WebBridge {
         if (typeof options.save === "undefined") { options.save = true; }
 
         this.app.post(route, async (req, res) => {
-            res.sendMessage = function (message) { res.write("data: " + JSON.stringify(message) + "\n\n") }
+            res.send = function (message) { res.write("data: " + JSON.stringify(message) + "\n\n") }
 
             res.setHeader('Content-Type', 'text/html; charset=utf-8');
             res.setHeader('Transfer-Encoding', 'chunked');
@@ -218,7 +204,7 @@ export default class WebBridge {
                 await this.handle({ req, res, event, handler, options });
             } catch (e) {
                 console.error(e);
-                res.sendMessage({ event: "error", message: e.message });
+                res.send({ event: "error", message: e.message });
             } finally {
                 res.end();
             }

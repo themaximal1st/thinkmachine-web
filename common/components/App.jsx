@@ -405,6 +405,7 @@ export default class App extends React.Component {
                     break;
                 case "hyperedges.generate.start":
                     this.setState({ isGenerating: true, edited: true });
+                    toast.success("Generating...");
                     break;
                 case "hyperedges.generate.stop":
                     this.setState({ isGenerating: false });

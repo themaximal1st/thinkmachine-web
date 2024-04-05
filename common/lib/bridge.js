@@ -2,6 +2,7 @@ import ThinkableType from "@themaximalist/thinkabletype";
 import colors from "./colors.js";
 import { isUUID, isEmptyUUID } from "./uuid.js";
 // import Analytics from "./Analytics.js";
+import extractor from "./extractor.js";
 
 
 export default class Bridge {
@@ -63,8 +64,24 @@ export default class Bridge {
         this.thinkabletype.remove(...hyperedge);
     }
 
-    async *generateHyperedges(input, options = {}) {
+    async generateHyperedges({ input, options, send, save }) {
         this.trackAnalytics("hyperedges.generate");
+
+        if (input.startsWith("http://") || input.startsWith("https://")) {
+            send({ event: "success", message: "Scraping URL..." });
+            try {
+                console.log("INPUT", input);
+                const data = await extractor(input);
+                send({ event: "success", message: "Scraped URL!" });
+                input = data;
+            } catch (e) {
+                console.log("ERROR", e);
+                send({ event: "error", message: "Couldn't scrape URL" });
+                throw e;
+            }
+        }
+
+        send({ event: "hyperedges.generate.start" });
 
         if (options.llm) {
             if (!this.thinkabletype.options.llm) { this.thinkabletype.options.llm = {} }
@@ -73,11 +90,23 @@ export default class Bridge {
             if (options.llm.apikey) { this.thinkabletype.options.llm.apikey = options.llm.apikey }
         }
 
+        console.log("GENERATING");
         const response = await this.thinkabletype.generate(input, options);
 
+        console.log("RESPONSE", response);
+        let generated = false;
         for await (const hyperedges of response) {
+            generated = true;
             this.thinkabletype.addHyperedges(hyperedges);
-            yield hyperedges;
+            for (const hyperedge of hyperedges) {
+                send({ event: "hyperedges.generate.result", hyperedge });
+            }
+
+            save();
+        }
+
+        if (generated) {
+            send({ event: "success", message: "Generated knowledge graph" });
         }
     }
 

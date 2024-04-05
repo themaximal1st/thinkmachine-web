@@ -1,3 +1,6 @@
+import dotenv from "dotenv-extended" // why does this need to be included here instead of in the server.js file?
+dotenv.load();
+
 import fetch from "node-fetch";
 import { JSDOM } from "jsdom";
 import { Readability } from "@mozilla/readability";
