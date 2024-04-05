@@ -81,8 +81,8 @@ export default class Bridge {
         }
     }
 
-    async _generateHyperedges(input, options = {}) {
-        this.trackAnalytics("hyperedges.generate");
+    async *generateWormhole(input, options = {}) {
+        this.trackAnalytics("hyperedges.wormhole");
 
         if (options.llm) {
             if (!this.thinkabletype.options.llm) { this.thinkabletype.options.llm = {} }
@@ -91,26 +91,12 @@ export default class Bridge {
             if (options.llm.apikey) { this.thinkabletype.options.llm.apikey = options.llm.apikey }
         }
 
-        try {
-            console.log("FETCHING", input, options);
+        const response = await this.thinkabletype.generate(input, options);
 
-            this.send("hyperedges.generate.start");
-            const response = await this.thinkabletype.generate(input, options);
-
-            for await (const hyperedges of response) {
-                this.thinkabletype.addHyperedges(hyperedges);
-                for (const hyperedge of hyperedges) {
-                    console.log("hyperedge", hyperedge);
-                    this.send("hyperedges.generate.result", hyperedge);
-                }
-            }
-        } catch (e) {
-            console.log("ERROR", e);
-            this.send("error", e.message);
-        } finally {
-            this.send("hyperedges.generate.stop");
+        for await (const hyperedges of response) {
+            this.thinkabletype.addHyperedges(hyperedges);
+            yield hyperedges;
         }
-        // TODO: Stop Loading
     }
 
 }

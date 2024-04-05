@@ -775,13 +775,13 @@ export default class App extends React.Component {
     async generateWormhole(hyperedges) {
         this.startWormhole();
 
-        const from = window.api.uuid.get();
+        const from_uuid = await window.api.uuid.get();
         await this.createNewHypergraph();
 
         try {
             await window.api.hyperedges.wormhole(hyperedges, {
                 llm: this.state.llm,
-                from,
+                from_uuid,
             });
         } catch (e) {
             console.log(e);
