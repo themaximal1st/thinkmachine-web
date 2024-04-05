@@ -2,31 +2,48 @@ import { v4 as uuid } from "uuid";
 
 import * as middleware from "./middleware.js"
 import Hypergraph from "./models/hypergraph.js";
+import HypergraphManager from "./managers/hypergraph.js";
 
 export default class WebBridge {
     constructor(app) {
         this.app = app;
     }
 
-    handle(route, handler, save = false) {
+    handle(route, handler, options = {}) {
+        if (typeof options.save === "undefined") { options.save = false; }
+        if (typeof options.respond === "undefined") { options.respond = true; }
+
         this.app.post(route, async (req, res) => {
             if (!req.guid) { return res.json({ ok: false, error: "invalid guid" }); }
             if (!req.uuid) { return res.json({ ok: false, error: "invalid uuid" }); }
 
-            let data;
-
-            if (handler.constructor.name === "AsyncFunction") {
-                data = await handler(req.bridge, req.body, req, res);
-            } else {
-                data = handler(req.bridge, req.body, req, res);
+            res.sendMessage = function (message) {
+                res.write("data: " + JSON.stringify(message) + "\n\n");
             }
 
-            if (save) {
+            let data;
+
+            try {
+                if (handler.constructor.name === "AsyncFunction") {
+                    data = await handler(req.bridge, req.body, req, res);
+                } else {
+                    data = handler(req.bridge, req.body, req, res);
+                }
+            } catch (e) {
+                return res.json({ ok: false, error: e.message });
+            }
+
+            if (options.save) {
                 await this.saveHypergraph(req);
             }
 
             await req.event(route, JSON.stringify(req.body));
-            return res.json({ ok: true, data });
+
+            console.log("OPTIONS", options);
+
+            if (options.respond) {
+                return res.json({ ok: true, data });
+            }
         });
     }
 
@@ -59,8 +76,9 @@ export default class WebBridge {
         });
 
         this.handle("/api/hypergraph/create", async (_, body, req) => {
+            console.log("CREATING");
             return await this.createHypergraph(req);
-        }, true);
+        }, { save: true });
 
         this.handle("/api/hyperedges/all", (bridge) => {
             return bridge.allHyperedges();
@@ -68,20 +86,59 @@ export default class WebBridge {
 
         this.handle("/api/hyperedges/add", (bridge, { hyperedge, symbol }) => {
             return bridge.addHyperedges(hyperedge, symbol);
-        }, true);
+        }, { save: true });
 
         this.handle("/api/hyperedges/remove", (bridge, { hyperedge }) => {
             return bridge.removeHyperedges(hyperedge);
-        }, true);
+        }, { save: true });
 
         this.handle("/api/analytics/track", (bridge, { event }) => {
             return bridge.trackAnalytics(event);
         });
+
+        // TODO: make this handleStream?
+        this.handle("/api/hyperedges/generate", async (bridge, { input, llm }, req, res) => {
+            res.setHeader('Content-Type', 'text/html; charset=utf-8');
+            res.setHeader('Transfer-Encoding', 'chunked');
+            res.setHeader('Cache-Control', 'no-cache');
+            res.setHeader('X-Accel-Buffering', 'no');
+
+            try {
+                res.sendMessage({ event: "success", message: "Generating..." });
+
+                const response = await bridge.generateHyperedges(input, llm);
+                res.sendMessage({ event: "hyperedges.generate.start" });
+                for await (const hyperedges of response) {
+                    req.thinkabletype.addHyperedges(hyperedges);
+                    await this.saveHypergraph(req);
+
+                    for (const hyperedge of hyperedges) {
+                        res.sendMessage({ event: "hyperedges.generate.result", hyperedge });
+                    }
+                }
+
+                if (req.thinkabletype.hyperedges.length > 0) {
+                    res.sendMessage({ event: "success", message: "Generated knowledge graph" });
+                }
+            } catch (e) {
+                res.sendMessage({ event: "error", message: "Error while generating" });
+            } finally {
+                res.sendMessage({ event: "hyperedges.generate.stop" });
+                res.end();
+            }
+        }, { save: true, respond: false });
+
+
+        // this.app.post("/api/hyperedges/generate", this.generateHyperedges.bind(this));
+        // this.app.post("/api/hyperedges/export", this.exportHyperedges.bind(this));
+        // this.app.post("/api/hyperedges/wormhole", this.generateWormhole.bind(this));
+        // this.app.post("/api/analytics/track", this.trackAnalytics.bind(this));
     }
 
     async createHypergraph(req) {
         req.uuid = uuid();
         await Hypergraph.create({ id: req.uuid, guid: req.guid });
+        req.thinkabletype = await HypergraphManager.thinkableTypeForUUID(req.uuid);
         return req.uuid;
     }
 
@@ -100,10 +157,7 @@ export default class WebBridge {
 
 /*
 // import Analytics from "./analytics.js"
-import debug from "debug";
-const log = debug("thinkmachine:server:bridge");
 
-// import colors from "../common/lib/colors.js";
 import extractor from "./extractor.js";
 import Event from "./models/event.js";
 import { isUUID, isEmptyUUID } from "./utils.js";
@@ -111,14 +165,6 @@ import { isUUID, isEmptyUUID } from "./utils.js";
 export default class WebBridge {
     constructor(app) {
         this.app = app;
-        this.app.post("/api/hypergraph/create", this.createHypergraph.bind(this));
-        this.app.post("/api/forceGraph/graphData", this.graphData.bind(this));
-        this.app.post("/api/hyperedges/add", this.addHyperedges.bind(this));
-        this.app.post("/api/hyperedges/remove", this.removeHyperedges.bind(this));
-        this.app.post("/api/hyperedges/generate", this.generateHyperedges.bind(this));
-        this.app.post("/api/hyperedges/export", this.exportHyperedges.bind(this));
-        this.app.post("/api/hyperedges/wormhole", this.generateWormhole.bind(this));
-        this.app.post("/api/analytics/track", this.trackAnalytics.bind(this));
     }
 
     trackAnalytics(req, res) {

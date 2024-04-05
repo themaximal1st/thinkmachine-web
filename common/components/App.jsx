@@ -63,7 +63,7 @@ export default class App extends React.Component {
             reloads: 0,
             interwingle: 3,
             input: "",
-            inputMode: "add",
+            inputMode: "generate",
             hyperedge: [],
             hyperedges: [],
             filters: [],
@@ -353,6 +353,7 @@ export default class App extends React.Component {
 
             return uuid;
         } catch (e) {
+            console.log(e);
             console.log("error creating new hypergraph", e);
             return null;
         }
@@ -397,6 +398,7 @@ export default class App extends React.Component {
         );
 
         for await (const message of response) {
+            console.log("MESSAGE", message);
             switch (message.event) {
                 case "hyperedges.generate.result":
                     this.maybeReloadData();
