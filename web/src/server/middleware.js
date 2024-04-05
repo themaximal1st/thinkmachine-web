@@ -60,8 +60,13 @@ export async function bridge(req, res, next) {
     if (!req.path.startsWith("/api")) return next();
     if (!req.thinkabletype) return next();
     if (!req.guid) return next();
+    // if (!req.uuid) return next();
 
-    req.bridge = new Bridge(req.thinkabletype, req.guid);
+    const thinkabletype = req.thinkabletype;
+    const guid = req.guid;
+    const uuid = req.uuid;
+
+    req.bridge = new Bridge(thinkabletype, guid, uuid);
 
     next();
 }

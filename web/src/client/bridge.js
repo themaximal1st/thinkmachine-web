@@ -9,7 +9,7 @@ export default class ThinkMachineAPI {
         if (!this.uuid) throw new Error("missing uuid");
 
         this.base_url = options.base_url || import.meta.env.VITE_API_URL || ThinkMachineAPI.BASE_API_URL;
-        this.timeout = options.timeout || 5000;
+        this.timeout = options.timeout || 10000;
     }
 
     get isValid() {

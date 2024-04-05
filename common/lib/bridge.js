@@ -4,11 +4,13 @@ import { isUUID, isEmptyUUID } from "./uuid.js";
 // import Analytics from "./Analytics.js";
 import extractor from "./extractor.js";
 
-
 export default class Bridge {
-    constructor(thinkabletype = null) {
+    constructor(thinkabletype = null, guid = null, uuid = null) {
         this.thinkabletype = thinkabletype || new ThinkableType({ colors });
-        this.uuid = null;
+        this.guid = guid;
+        this.uuid = uuid;
+        this.send = function () { throw new Error("send not implemented") }
+        this.save = function () { throw new Error("save not implemented") }
     }
 
     graphData(filter = [], options = {}) {
@@ -64,24 +66,22 @@ export default class Bridge {
         this.thinkabletype.remove(...hyperedge);
     }
 
-    async generateHyperedges({ input, options, send, save }) {
+    async generateHyperedges(input, options) {
         this.trackAnalytics("hyperedges.generate");
 
         if (input.startsWith("http://") || input.startsWith("https://")) {
-            send({ event: "success", message: "Scraping URL..." });
+            this.send({ event: "success", message: "Scraping URL..." });
             try {
-                console.log("INPUT", input);
                 const data = await extractor(input);
-                send({ event: "success", message: "Scraped URL!" });
+                this.send({ event: "success", message: "Scraped URL!" });
                 input = data;
             } catch (e) {
-                console.log("ERROR", e);
-                send({ event: "error", message: "Couldn't scrape URL" });
+                this.send({ event: "error", message: "Couldn't scrape URL" });
                 throw e;
             }
         }
 
-        send({ event: "hyperedges.generate.start" });
+        this.send({ event: "hyperedges.generate.start" });
 
         if (options.llm) {
             if (!this.thinkabletype.options.llm) { this.thinkabletype.options.llm = {} }
@@ -90,24 +90,24 @@ export default class Bridge {
             if (options.llm.apikey) { this.thinkabletype.options.llm.apikey = options.llm.apikey }
         }
 
-        console.log("GENERATING");
         const response = await this.thinkabletype.generate(input, options);
 
-        console.log("RESPONSE", response);
         let generated = false;
         for await (const hyperedges of response) {
             generated = true;
             this.thinkabletype.addHyperedges(hyperedges);
             for (const hyperedge of hyperedges) {
-                send({ event: "hyperedges.generate.result", hyperedge });
+                this.send({ event: "hyperedges.generate.result", hyperedge });
             }
 
-            save();
+            this.save();
         }
 
         if (generated) {
-            send({ event: "success", message: "Generated knowledge graph" });
+            this.send({ event: "success", message: "Generated knowledge graph" });
         }
+
+        this.send({ event: "hyperedges.generate.stop" });
     }
 
     async *generateWormhole(input, options = {}) {

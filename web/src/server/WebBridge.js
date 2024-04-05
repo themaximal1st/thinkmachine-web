@@ -62,33 +62,22 @@ export default class WebBridge {
             return bridge.exportHypergraph();
         });
 
-        this.stream("/api/hyperedges/generate", async ({ bridge, body, req, res }) => {
+        this.stream("/api/hyperedges/generate", async ({ bridge, body, res }) => {
             let { input, llm } = body;
-
-            try {
-                await bridge.generateHyperedges({
-                    input,
-                    options: { llm },
-                    send: res.send.bind(res),
-                    save: () => this.saveHypergraph(req),
-                });
-            } catch (e) {
-                res.send({ event: "error", message: "Error while generating" });
-            } finally {
-                res.send({ event: "hyperedges.generate.stop" });
-                res.end();
-            }
+            return await bridge.generateHyperedges(input, { llm });
         });
 
         this.post("/api/hyperedges/wormhole", async ({ bridge, body, req, res }) => {
             const { hyperedges, from_uuid, llm } = body;
 
-            const input = await this.hyperedgesToSymbols(hyperedges, from_uuid);
-            if (!input || input.length === 0) {
+            const symbols = await this.hyperedgesToSymbols(hyperedges, from_uuid);
+            if (!symbols || symbols.length === 0) {
                 return res.json({ ok: false, error: "missing input" });
             }
 
-            const response = await bridge.generateWormhole(input.join("\n"), { llm });
+            const input = symbols.join("\n");
+
+            const response = await bridge.generateWormhole(input, { llm });
             for await (const hyperedges of response) {
                 req.thinkabletype.addHyperedges(hyperedges);
                 await this.saveHypergraph(req);
@@ -146,15 +135,15 @@ export default class WebBridge {
             }
         }
 
+        const { bridge, body } = req;
+
+        if (bridge && options.save) {
+            bridge.save = () => { this.saveHypergraph(req) };
+        }
+
+        const opts = { req, res, bridge, body };
+
         let data;
-
-        const opts = {
-            req,
-            res,
-            body: req.body,
-            bridge: req.bridge,
-        };
-
         try {
             if (handler.constructor.name === "AsyncFunction") {
                 data = await handler(opts);
@@ -192,19 +181,19 @@ export default class WebBridge {
         if (typeof options.save === "undefined") { options.save = true; }
 
         this.app.post(route, async (req, res) => {
-            res.send = function (message) { res.write("data: " + JSON.stringify(message) + "\n\n") }
-
             res.setHeader('Content-Type', 'text/html; charset=utf-8');
             res.setHeader('Transfer-Encoding', 'chunked');
             res.setHeader('Cache-Control', 'no-cache');
             res.setHeader('X-Accel-Buffering', 'no');
 
+            const bridge = req.bridge;
+            bridge.send = (message) => { res.write("data: " + JSON.stringify(message) + "\n\n") }
+
             try {
                 const event = route;
                 await this.handle({ req, res, event, handler, options });
             } catch (e) {
-                console.error(e);
-                res.send({ event: "error", message: e.message });
+                bridge.send({ event: "error", message: e.message });
             } finally {
                 res.end();
             }
