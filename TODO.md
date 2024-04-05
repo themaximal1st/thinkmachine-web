@@ -1,22 +1,27 @@
-**Common**
-
 * rename bridges to be more specific
 * make it work with japanese characters! and try others as well
+* models shouldn't show model name twice, show a good human friendly description. Groq is fast!
+
+* electron: generate
+* electron: wormhole
+* electron: scraping -> proxy api key?
+
+* Add tooltips to icons/buttons
+* add cac.app feedback widget
+
+**Common**
+
 * Shared README
 * Can we create a package.json in common and not have it mess up?
   * If so, create shared scripts, npm run desktop, npm run web
 * click should depend on what mode you are in. add, generate or search
 * Amplitude Analytics
 * remember inputMode choice, default to it (unless Search)
-* models shouldn't show model name twice, show a good human friendly description. Groq is fast!
 
 
 
 **Electron**
 
-* generate
-* wormhole
-* scraping -> proxy api key?
 * license
 * Update README
 
@@ -69,8 +74,6 @@
 * Improve Onboarding
   * Onboarding video linked
 * Simplify chrome UX...lots of buttons/icons and not clear what they do
-* Add tooltips to icons/buttons
-* add cac.app feedback widget
 * easy to to render an image from CSV...people just want to do cool visualization pictures
 
 * QUESTION: should adding data should really add a filter..otherwise you can't see what you just added
