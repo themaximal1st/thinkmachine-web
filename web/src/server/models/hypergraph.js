@@ -31,4 +31,3 @@ Hypergraph.init({
 }, {
     sequelize,
 });
-

@@ -79,9 +79,9 @@ export default class ThinkMachineAPI {
     async graphData(filter = [], options = {}) {
         if (!this.isValid) return { nodes: [], links: [] };
 
-        return await this.send("forceGraph/graphData", {
+        return await this.send("hypergraph/graphData", {
             filter,
-            ...options
+            options
         });
     }
 

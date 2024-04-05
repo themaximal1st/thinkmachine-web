@@ -33,7 +33,7 @@ app.get("/admin", async (req, res) => {
 
 app.use(ViteExpress.static("index"));
 
-const bridge = new WebBridge(app);
+await WebBridge.initialize(app);
 
 await Database.initialize();
 ViteExpress.listen(app, process.env.PORT, () =>

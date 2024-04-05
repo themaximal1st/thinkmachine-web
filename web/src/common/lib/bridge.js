@@ -1,13 +1,13 @@
-import ThinkableType from "@themaximalist/thinkabletype";
-import colors from "./colors";
-import { isUUID, isEmptyUUID } from "./uuid";
-import Analytics from "./Analytics.js";
+// import ThinkableType from "@themaximalist/thinkabletype";
+// import colors from "./colors";
+// import { isUUID, isEmptyUUID } from "./uuid";
+// import Analytics from "./Analytics.js";
 
 
 export default class Bridge {
-    constructor(thinkabletype = null) {
+    constructor(thinkabletype = null, uuid = null) {
         this.thinkabletype = thinkabletype || new ThinkableType({ colors });
-        this.uuid = null;
+        this.uuid = uuid;
     }
 
     graphData(filter = [], options = {}) {

@@ -1,82 +1,113 @@
+import { v4 as uuid } from "uuid";
+
+import * as middleware from "./middleware.js"
+import Hypergraph from "./models/hypergraph.js";
+
+export default class WebBridge {
+    constructor(app) {
+        this.app = app;
+    }
+
+    handle(route, handler) {
+        this.app.post(route, async (req, res) => {
+            if (!req.guid) { return res.json({ ok: false, error: "invalid guid" }); }
+            if (!req.uuid) { return res.json({ ok: false, error: "invalid uuid" }); }
+
+            let data;
+
+            if (handler.constructor.name === "AsyncFunction") {
+                data = await handler(req.bridge, req.body, req, res);
+            } else {
+                data = handler(req.bridge, req.body, req, res);
+            }
+
+            await req.event(route, JSON.stringify(req.body));
+            return res.json({ ok: true, data });
+        });
+    }
+
+    async load() {
+        this.app.use(middleware.user);
+        this.app.use(middleware.event);
+        this.app.use(middleware.thinkmachine);
+        this.app.use(middleware.bridge);
+
+        this.app.post("/api/user/create", async (req, res) => {
+            let guid = req.signedCookies.guid;
+            if (!guid) {
+                guid = uuid();
+
+                req.guid = guid;
+
+                res.cookie("guid", guid, {
+                    signed: true,
+                    expires: new Date(Date.now() + 900000),
+                });
+
+                await req.event("user.create");
+            }
+
+            return res.json({ ok: true, data: guid });
+        });
+
+        this.handle("/api/hypergraph/graphData", (bridge, { filter, options }) => {
+            return bridge.graphData(filter, options);
+        });
+
+        this.handle("/api/hypergraph/create", async (_, body, req) => {
+            return await this.createHypergraph(req);
+        });
+
+        this.handle("/api/hyperedges/all", (bridge) => {
+            return bridge.allHyperedges();
+        });
+
+        this.handle("/api/hyperedges/add", (bridge, { hyperedge, symbol }) => {
+            return bridge.addHyperedges(hyperedge, symbol);
+        });
+
+        this.handle("/api/hyperedges/remove", (bridge, { hyperedge }) => {
+            return bridge.removeHyperedges(hyperedge);
+        });
+
+        this.handle("/api/analytics/track", (bridge, { event }) => {
+            return bridge.trackAnalytics(event);
+        });
+    }
+
+    async createHypergraph(req) {
+        req.uuid = uuid();
+        await Hypergraph.create({ id: req.uuid, guid: req.guid });
+        return req.uuid;
+    }
+
+    static async initialize(app) {
+        const bridge = new WebBridge(app);
+        await bridge.load();
+        return bridge;
+    }
+}
+
+/*
 // import Analytics from "./analytics.js"
 import debug from "debug";
 const log = debug("thinkmachine:server:bridge");
 
-import Hypergraph from "./models/hypergraph.js"
-import ThinkableType from "@themaximalist/thinkabletype";
 // import colors from "../common/lib/colors.js";
 import extractor from "./extractor.js";
-import { v4 as uuid } from "uuid";
 import Event from "./models/event.js";
 import { isUUID, isEmptyUUID } from "./utils.js";
 
 export default class WebBridge {
     constructor(app) {
         this.app = app;
-        this.app.use(async (req, res, next) => {
-            if (!req.path.startsWith("/api")) return next();
-
-            let uuid;
-            if (req.method === "GET") {
-                uuid = req.query.uuid;
-            } else if (req.method === "POST") {
-                uuid = req.body.uuid;
-            }
-
-            req.uuid = uuid;
-            req.guid = req.signedCookies.guid;
-            req.ip_address = req.headers["x-forwarded-for"] || req.connection.remoteAddress;
-
-            req.sendEvent = async (action, data = "") => {
-                if (!req.guid) throw new Error("missing guid");
-                if (isEmptyUUID(req.guid)) throw new Error("missing uuid")
-                if (!req.ip_address) throw new Error("missing ip_address");
-
-                await Event.create({
-                    action,
-                    uuid: req.uuid,
-                    guid: req.guid,
-                    ip: req.ip_address,
-                    data,
-                });
-            };
-
-            console.log(`[${req.ip_address}] ${req.method} ${req.path} ${req.guid} ${req.uuid ? req.uuid : ""}`);
-
-            if (!req.guid) {
-                if (req.path === "/api/user/create") {
-                    return next();
-                }
-
-                return res.json({ ok: false, error: "invalid guid" });
-            }
-
-            if (!uuid || !isUUID(uuid) || isEmptyUUID(uuid)) {
-                if (req.path === "/api/hypergraph/create") {
-                    return next();
-                }
-
-                return res.json({ ok: false, error: "invalid uuid" });
-            }
-
-
-            req.thinkabletype = await WebBridge.thinkableTypeForUUID(uuid);
-            if (!req.thinkabletype) {
-                return res.json({ ok: false, error: "invalid uuid" });
-            }
-
-            next();
-        });
-
         this.app.post("/api/hypergraph/create", this.createHypergraph.bind(this));
         this.app.post("/api/forceGraph/graphData", this.graphData.bind(this));
-        this.app.post("/api/hyperedges/all", this.allHyperedges.bind(this));
         this.app.post("/api/hyperedges/add", this.addHyperedges.bind(this));
         this.app.post("/api/hyperedges/remove", this.removeHyperedges.bind(this));
         this.app.post("/api/hyperedges/generate", this.generateHyperedges.bind(this));
         this.app.post("/api/hyperedges/export", this.exportHyperedges.bind(this));
         this.app.post("/api/hyperedges/wormhole", this.generateWormhole.bind(this));
-        this.app.post("/api/user/create", this.createUser.bind(this));
         this.app.post("/api/analytics/track", this.trackAnalytics.bind(this));
     }
 
@@ -84,42 +115,6 @@ export default class WebBridge {
         // const { event, properties } = req.body;
         // Analytics.track(event, properties);
         res.send({ ok: true });
-    }
-
-    async graphData(req, res) {
-        let { interwingle, depth, filter } = req.body;
-
-        if (typeof interwingle !== "undefined") {
-            req.thinkabletype.interwingle = interwingle;
-        }
-
-        if (typeof depth !== "undefined") {
-            req.thinkabletype.depth = depth;
-        }
-
-        if (!filter || !Array.isArray(filter)) {
-            filter = [];
-        }
-
-        const data = req.thinkabletype.graphData(filter);
-
-        await req.sendEvent("forceGraph.graphData", JSON.stringify({ interwingle, depth, filter }));
-
-        return res.json({
-            ok: true,
-            data,
-        });
-    }
-
-    async allHyperedges(req, res) {
-        const data = req.thinkabletype.hyperedges.map((hyperedge) => hyperedge.symbols);
-
-        await req.sendEvent("hyperedges.all");
-
-        return res.json({
-            ok: true,
-            data,
-        });
     }
 
     async addHyperedges(req, res) {
@@ -293,43 +288,6 @@ export default class WebBridge {
         });
     }
 
-    async createUser(req, res) {
-
-        let guid = req.signedCookies.guid;
-        if (!guid) {
-            guid = uuid();
-
-            req.guid = guid;
-
-            res.cookie("guid", guid, {
-                signed: true,
-                expires: new Date(Date.now() + 900000),
-            });
-
-            await req.sendEvent("user.create");
-        }
-
-        return res.json({
-            ok: true,
-            data: guid,
-        });
-    }
-
-    async createHypergraph(req, res) {
-        req.uuid = uuid();
-
-        await Hypergraph.create({
-            id: req.uuid,
-            guid: req.guid,
-        });
-
-        await req.sendEvent("hypergraph.create");
-
-        return res.json({
-            ok: true,
-            data: req.uuid,
-        });
-    }
 
     static async thinkableTypeForUUID(uuid) {
         let hypergraph = await Hypergraph.findByPk(uuid);
@@ -358,3 +316,4 @@ export default class WebBridge {
     }
 
 }
+*/
