@@ -72,7 +72,7 @@ export default class App extends React.Component {
             maxDepth: 0,
             data: { nodes: [], links: [] },
             lastReloadedDate: new Date(),
-            cooldownTicks: 10000,
+            cooldownTicks: 5000,
         };
     }
 
@@ -977,6 +977,7 @@ export default class App extends React.Component {
                 <Footer
                     isAnimating={this.state.isAnimating}
                     controlType={this.state.controlType}
+                    graphRef={this.graphRef}
                     graphType={this.state.graphType}
                     toggleCamera={this.toggleCamera.bind(this)}
                     toggleAnimation={this.toggleAnimation.bind(this)}
@@ -990,6 +991,10 @@ export default class App extends React.Component {
                     toggleSettings={this.toggleSettings.bind(this)}
                     toggleShowLayout={this.toggleShowLayout.bind(this)}
                     showLayout={this.state.showLayout}
+                    cooldownTicks={this.state.cooldownTicks}
+                    setCooldownTicks={(cooldownTicks) => {
+                        this.setState({ cooldownTicks });
+                    }}
                 />
             </div>
         );

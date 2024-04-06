@@ -1,6 +1,9 @@
 - Add different graph layouts (force layouts, look at d3)
  - Need a View button popup in bottom right corner to control all the views?
 
+- layout settings
+ - zoom
+
 - on add
   - increase bloom effect temporarily
   - show particle effect when a node is added, helps see it in a large graph

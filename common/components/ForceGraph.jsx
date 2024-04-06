@@ -56,20 +56,20 @@ export default function ForceGraph(params) {
 }
 
 ForceGraph.load = function (graphRef, graphType) {
-    graphRef.current.d3Force("link").distance((link) => {
-        return 40;
-    });
-
-    graphRef.current.d3Force("charge").strength((link) => {
-        return -30;
-    });
-
-    graphRef.current.d3Force("charge").distanceMax(100);
-    graphRef.current.d3Force("charge").distanceMin(10);
-
-    graphRef.current.d3Force("center").strength(1);
-
     if (graphType === "3d") {
+        graphRef.current.d3Force("link").distance((link) => {
+            return 40;
+        });
+
+        graphRef.current.d3Force("charge").strength((link) => {
+            return -30;
+        });
+
+        graphRef.current.d3Force("charge").distanceMax(100);
+        graphRef.current.d3Force("charge").distanceMin(10);
+
+        graphRef.current.d3Force("center").strength(1);
+
         const bloomPass = new UnrealBloomPass();
         bloomPass.strength = 0.5;
         bloomPass.radius = 1;
