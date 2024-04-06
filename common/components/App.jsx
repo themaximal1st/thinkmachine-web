@@ -37,6 +37,7 @@ export default class App extends React.Component {
             showConsole: false,
             showLicense: false,
             showSettings: false,
+            showLayout: true,
 
             licenseKey: "",
             licenseValid: undefined,
@@ -63,31 +64,37 @@ export default class App extends React.Component {
             reloads: 0,
             interwingle: 3,
             input: "",
-            inputMode: "generate",
+            inputMode: "add",
             hyperedge: [],
             hyperedges: [],
             filters: [],
-            depth: 0,
+            depth: Infinity,
             maxDepth: 0,
             data: { nodes: [], links: [] },
             lastReloadedDate: new Date(),
+            cooldownTicks: 10000,
         };
     }
 
-    restoreNodePositions(oldData, newData) {
-        const positions = new Map();
+    updateNodePositions(oldData, newData) {
+        const oldNodes = new Map();
         for (const node of oldData.nodes) {
             if (node.x && node.y && node.z) {
-                positions.set(node.id, { x: node.x, y: node.y, z: node.z });
+                oldNodes.set(node.id, node);
             }
         }
 
         for (const node of newData.nodes) {
-            if (positions.has(node.id)) {
-                const position = positions.get(node.id);
-                node.x = position.x;
-                node.y = position.y;
-                node.z = position.z;
+            if (oldNodes.has(node.id)) {
+                const oldNode = oldNodes.get(node.id);
+
+                node.x = oldNode.x;
+                node.y = oldNode.y;
+                node.z = oldNode.z;
+
+                node.vx = oldNode.vx;
+                node.vy = oldNode.vy;
+                node.vz = oldNode.vz;
             }
         }
 
@@ -106,21 +113,12 @@ export default class App extends React.Component {
                 }
             );
 
-            let force = false;
-            if (this.state.reloads > 10 && this.state.reloads % 10 === 0) {
-                force = true;
-            }
+            const data = this.updateNodePositions(this.state.data, newData);
 
-            let data;
-            if (force) {
-                data = newData;
-            } else {
-                data = this.restoreNodePositions(this.state.data, newData);
-            }
-
-            let depth = this.state.depth;
+            let depth = data.depth;
             const maxDepth = data.maxDepth || 0;
             if (depth > maxDepth) depth = maxDepth;
+            if (depth === maxDepth) depth = Infinity;
 
             const hyperedges = await window.api.hyperedges.all();
 
@@ -159,9 +157,17 @@ export default class App extends React.Component {
                         } else if (numSymbols < 3) {
                             padding = 100;
                         } else if (numSymbols < 10) {
-                            padding = 100;
+                            padding = 125;
+                        } else if (numSymbols < 20) {
+                            padding = 0;
+                        } else if (numSymbols < 50) {
+                            padding = 25;
+                        } else if (numSymbols < 100) {
+                            padding = -500;
+                        } else if (numSymbols < 200) {
+                            padding = -500;
                         } else {
-                            padding = -400;
+                            padding = -550;
                         }
 
                         this.graphRef.current.zoomToFit(200, padding);
@@ -175,8 +181,6 @@ export default class App extends React.Component {
     }
 
     componentDidMount() {
-        console.log("MOUNT");
-
         ForceGraph.load(this.graphRef, this.state.graphType);
 
         document.addEventListener("keydown", this.handleKeyDown.bind(this));
@@ -185,9 +189,6 @@ export default class App extends React.Component {
         document.addEventListener("mouseup", this.handleMouseUp.bind(this));
         document.addEventListener("wheel", this.handleZoom.bind(this));
         window.addEventListener("resize", this.handleResize.bind(this));
-
-        console.log("MOUNTING");
-        console.log("MOUNTING", ThinkMachineAPI);
 
         ThinkMachineAPI.load().then(async () => {
             this.loadSettings();
@@ -487,10 +488,15 @@ export default class App extends React.Component {
         await this.handleEmptyHypergraph();
 
         if (this.state.input.trim().length === 0) {
-            this.setState({
-                input: "",
-                hyperedge: [],
-            });
+            this.setState(
+                {
+                    input: "",
+                    hyperedge: [],
+                },
+                async () => {
+                    await this.reloadData();
+                }
+            );
             return;
         }
         await window.api.hyperedges.add(this.state.hyperedge, this.state.input);
@@ -804,7 +810,7 @@ export default class App extends React.Component {
             const last = hyperedge.pop();
             await window.api.hyperedges.add(hyperedge, last);
         }
-        this.setState({ interwingle: 3, depth: 0 }, async () => {
+        this.setState({ interwingle: 3, depth: Infinity }, async () => {
             await this.reloadData();
         });
     }
@@ -852,6 +858,15 @@ export default class App extends React.Component {
 
     handleTick() {
         this.checkForCollisions();
+    }
+
+    handleEngineStop() {
+        console.log("ENGINE ENDED");
+    }
+
+    toggleShowLayout() {
+        console.log("layout");
+        this.setState({ showLayout: !this.state.showLayout });
     }
 
     async handleDownload() {
@@ -943,6 +958,7 @@ export default class App extends React.Component {
                     graphType={this.state.graphType}
                     graphRef={this.graphRef}
                     onTick={this.handleTick.bind(this)}
+                    onEngineStop={this.handleEngineStop.bind(this)}
                     data={this.state.data}
                     width={this.state.width}
                     height={this.state.height}
@@ -950,6 +966,7 @@ export default class App extends React.Component {
                     hideLabels={this.state.hideLabels}
                     onNodeClick={this.handleClickNode.bind(this)}
                     showLabels={!this.state.hideLabels}
+                    cooldownTicks={this.state.cooldownTicks}
                 />
                 <Settings
                     showSettings={this.state.showSettings}
@@ -971,6 +988,8 @@ export default class App extends React.Component {
                     wormholeMode={this.state.wormholeMode}
                     toggleWormhole={this.toggleWormhole.bind(this)}
                     toggleSettings={this.toggleSettings.bind(this)}
+                    toggleShowLayout={this.toggleShowLayout.bind(this)}
+                    showLayout={this.state.showLayout}
                 />
             </div>
         );

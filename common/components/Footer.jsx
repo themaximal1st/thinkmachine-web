@@ -119,6 +119,13 @@ export default function Footer(params) {
                     </div>
                     <div className="flex gap-4 items-center">
                         <a
+                            onClick={params.toggleShowLayout}
+                            title="Layout"
+                            className="select-none opacity-40 hover:opacity-100 transition-all cursor-pointer pointer-events-auto text-lg"
+                        >
+                            Layout
+                        </a>
+                        <a
                             onClick={() => params.toggleGraphType()}
                             title="Toggle 2D and 3D"
                             className="select-none opacity-40 hover:opacity-100 transition-all cursor-pointer pointer-events-auto text-lg"
@@ -168,6 +175,14 @@ export default function Footer(params) {
                     onClose={() => setShowLabsWarning(false)}
                     onStart={(e) => params.toggleWormhole()}
                 />
+            )}
+            {params.showLayout && (
+                <div className="absolute top-0 right-0 bottom-0 w-3/12 bg-gray-1000 z-40 p-4">
+                    <label className="text-gray-300 flex flex-col gap-1">
+                        <div>BOOMO</div>
+                        <input type="range" min="0" max="100" />
+                    </label>
+                </div>
             )}
         </div>
     );

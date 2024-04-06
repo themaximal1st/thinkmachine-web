@@ -1,11 +1,9 @@
 export default function Depth(params) {
-    console.log(params);
-
     if (!params.show) return;
     if (params.maxDepth <= 0) return;
 
     return (
-        <div className="absolute top-0 right-0 bottom-0 z-20 flex justify-center items-center w-12 h-full text-white">
+        <div className="absolute top-0 right-0 bottom-0 z-10 flex justify-center items-center w-12 h-full text-white">
             <input
                 type="range"
                 ref={params.depthRef}

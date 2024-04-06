@@ -1,5 +1,12 @@
-- Add different graph layouts
+- Add different graph layouts (force layouts, look at d3)
  - Need a View button popup in bottom right corner to control all the views?
+
+- on add
+  - increase bloom effect temporarily
+  - show particle effect when a node is added, helps see it in a large graph
+- keep camera position when zooming if possible
+
+- Click and drag node, should it set its position?
 
 * electron: generate
 * electron: wormhole
@@ -141,3 +148,4 @@
   - iOS App
   - Obsidian Plugin
 
+- image mode, dream machine — where nodes turn into images

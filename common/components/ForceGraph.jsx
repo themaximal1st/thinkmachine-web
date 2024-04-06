@@ -5,8 +5,11 @@ import ForceGraph2D from "react-force-graph-2d";
 import SpriteText from "three-spritetext";
 import * as Three from "three";
 
+import { useState } from "react";
+
 export default function ForceGraph(params) {
     const Graph = params.graphType === "3d" ? ForceGraph3D : ForceGraph2D;
+
     return (
         <Graph
             nodeLabel={(node) => ""}
@@ -37,7 +40,8 @@ export default function ForceGraph(params) {
                 return nodePointerAreaPaint(node, color, ctx);
             }}
             onEngineTick={params.onTick}
-            cooldownTicks={100}
+            onEngineStop={params.onEngineStop}
+            cooldownTicks={params.cooldownTicks}
             linkDirectionalArrowLength={(link) => {
                 if (params.graphType === "3d") {
                     return 3;
@@ -53,8 +57,17 @@ export default function ForceGraph(params) {
 
 ForceGraph.load = function (graphRef, graphType) {
     graphRef.current.d3Force("link").distance((link) => {
-        return link.length || 50;
+        return 40;
     });
+
+    graphRef.current.d3Force("charge").strength((link) => {
+        return -30;
+    });
+
+    graphRef.current.d3Force("charge").distanceMax(100);
+    graphRef.current.d3Force("charge").distanceMin(10);
+
+    graphRef.current.d3Force("center").strength(1);
 
     if (graphType === "3d") {
         const bloomPass = new UnrealBloomPass();
