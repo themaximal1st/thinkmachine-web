@@ -74,17 +74,49 @@ export default class App extends React.Component {
         };
     }
 
+    restoreNodePositions(oldData, newData) {
+        const positions = new Map();
+        for (const node of oldData.nodes) {
+            if (node.x && node.y && node.z) {
+                positions.set(node.id, { x: node.x, y: node.y, z: node.z });
+            }
+        }
+
+        for (const node of newData.nodes) {
+            if (positions.has(node.id)) {
+                const position = positions.get(node.id);
+                node.x = position.x;
+                node.y = position.y;
+                node.z = position.z;
+            }
+        }
+
+        return newData;
+    }
+
     reloadData(controlType = null, zoom = true) {
         return new Promise(async (resolve, reject) => {
             const start = Date.now();
 
-            const data = await window.api.hypergraph.graphData(
+            const newData = await window.api.hypergraph.graphData(
                 this.state.filters,
                 {
                     interwingle: this.state.interwingle,
                     depth: this.state.depth,
                 }
             );
+
+            let force = false;
+            if (this.state.reloads > 10 && this.state.reloads % 10 === 0) {
+                force = true;
+            }
+
+            let data;
+            if (force) {
+                data = newData;
+            } else {
+                data = this.restoreNodePositions(this.state.data, newData);
+            }
 
             let depth = this.state.depth;
             const maxDepth = data.maxDepth || 0;
@@ -119,7 +151,20 @@ export default class App extends React.Component {
             this.setState(state, async () => {
                 if (zoom) {
                     setTimeout(() => {
-                        this.graphRef.current.zoomToFit(300, 100);
+                        let numSymbols = this.uniqueSymbols.length;
+
+                        let padding = 0;
+                        if (numSymbols === 1) {
+                            padding = 300;
+                        } else if (numSymbols < 3) {
+                            padding = 100;
+                        } else if (numSymbols < 10) {
+                            padding = 100;
+                        } else {
+                            padding = -400;
+                        }
+
+                        this.graphRef.current.zoomToFit(200, padding);
                         resolve();
                     }, 250);
                 } else {
