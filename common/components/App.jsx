@@ -783,7 +783,7 @@ export default class App extends React.Component {
         });
     }
 
-    // Function to check for collisions
+    // Function to check for collisions between the camera and nodes when wormhole is enabled
     checkForCollisions() {
         if (this.state.wormholeMode === -1) return;
         if (this.state.wormholeMode === 2) return; // generating wormhole already
@@ -805,8 +805,11 @@ export default class App extends React.Component {
         }
     }
 
+    // generate a new wormholoe. create a new hypergraph, and generate a wormhole from the collided hyperedges of the old graph
     async generateWormhole(hyperedges) {
         this.startWormhole();
+
+        window.api.analytics.track("app.generateWormhole");
 
         const from_uuid = await window.api.uuid.get();
         await this.createNewHypergraph();
@@ -829,11 +832,10 @@ export default class App extends React.Component {
     }
 
     handleEngineStop() {
-        console.log("ENGINE ENDED");
+        console.log("ENGINE STOPPED");
     }
 
     toggleShowLayout() {
-        console.log("layout");
         this.setState({ showLayout: !this.state.showLayout });
     }
 
