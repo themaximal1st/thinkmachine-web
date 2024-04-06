@@ -6,6 +6,7 @@ import * as THREE from "three";
 import ThinkMachineAPI from "@src/api";
 import * as services from "@src/services";
 import { isUUID } from "@lib/uuid";
+import * as GraphUtils from "@lib/GraphUtils";
 
 import Animation from "@lib/Animation";
 
@@ -76,31 +77,6 @@ export default class App extends React.Component {
         };
     }
 
-    updateNodePositions(oldData, newData) {
-        const oldNodes = new Map();
-        for (const node of oldData.nodes) {
-            if (node.x && node.y && node.z) {
-                oldNodes.set(node.id, node);
-            }
-        }
-
-        for (const node of newData.nodes) {
-            if (oldNodes.has(node.id)) {
-                const oldNode = oldNodes.get(node.id);
-
-                node.x = oldNode.x;
-                node.y = oldNode.y;
-                node.z = oldNode.z;
-
-                node.vx = oldNode.vx;
-                node.vy = oldNode.vy;
-                node.vz = oldNode.vz;
-            }
-        }
-
-        return newData;
-    }
-
     reloadData(controlType = null, zoom = true) {
         return new Promise(async (resolve, reject) => {
             const start = Date.now();
@@ -114,7 +90,10 @@ export default class App extends React.Component {
                 }
             );
 
-            const data = this.updateNodePositions(this.state.data, newData);
+            const data = GraphUtils.restoreNodePositions(
+                this.state.data,
+                newData
+            );
 
             let depth = data.depth;
             const maxDepth = data.maxDepth || 0;
@@ -148,46 +127,13 @@ export default class App extends React.Component {
             console.log(`reloaded data in ${elapsed}ms`);
 
             this.setState(state, async () => {
-                const oldLinks = new Map();
-                for (const link of oldData.links) {
-                    oldLinks.set(link.id, link);
-                }
-
-                for (const link of data.links) {
-                    if (!oldLinks.has(link.id)) {
-                        this.graphRef.current.emitParticle(link);
-                    }
-                }
+                await GraphUtils.emitParticlesOnChanges(this, oldData);
 
                 if (zoom) {
-                    setTimeout(() => {
-                        let numSymbols = this.uniqueSymbols.length;
-
-                        let padding = 0;
-                        if (numSymbols === 1) {
-                            padding = 300;
-                        } else if (numSymbols < 3) {
-                            padding = 100;
-                        } else if (numSymbols < 10) {
-                            padding = 125;
-                        } else if (numSymbols < 20) {
-                            padding = 0;
-                        } else if (numSymbols < 50) {
-                            padding = 25;
-                        } else if (numSymbols < 100) {
-                            padding = -500;
-                        } else if (numSymbols < 200) {
-                            padding = -500;
-                        } else {
-                            padding = -550;
-                        }
-
-                        this.graphRef.current.zoomToFit(200, padding);
-                        resolve();
-                    }, 250);
-                } else {
-                    resolve();
+                    await GraphUtils.zoom(this);
                 }
+
+                resolve();
             });
         });
     }
