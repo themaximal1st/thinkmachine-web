@@ -130,6 +130,7 @@ export default function Footer(params) {
             {params.showLayout && (
                 <LayoutSettings
                     graphRef={params.graphRef}
+                    toggleShowLayout={params.toggleShowLayout}
                     cooldownTicks={params.cooldownTicks}
                     setCooldownTicks={params.setCooldownTicks}
                 />

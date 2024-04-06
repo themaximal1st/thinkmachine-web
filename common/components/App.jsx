@@ -37,7 +37,7 @@ export default class App extends React.Component {
             showConsole: false,
             showLicense: false,
             showSettings: false,
-            showLayout: true,
+            showLayout: false,
 
             licenseKey: "",
             licenseValid: undefined,

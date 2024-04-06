@@ -136,6 +136,15 @@ export default function LayoutSettings(params) {
                     onChange={(e) => handleCooldownTicks(e)}
                 />
             </label>
+            <div className="grow"></div>
+            <div>
+                <button
+                    onClick={() => params.toggleShowLayout()}
+                    className="bg-gray-800 hover:bg-gray-700 text-gray-300 px-4 py-2 rounded-md"
+                >
+                    Close
+                </button>
+            </div>
         </div>
     );
 }

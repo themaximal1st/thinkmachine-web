@@ -73,6 +73,7 @@
 
 **Website**
 
+ - Add Testimonials
  - Landing Page
    - Should app.thinkmachine.com become thinkmachine.com? and just move the marketing site to /about? /desktop
    - have a bunch of examples on home page, let people click and see what's interesting..maybe don't make the default generate?
@@ -86,6 +87,8 @@
 **Near-future**
 
 * console needs work
+ * should be able to edit it
+ * should be able to load context up from an existing item (continue it)
  * delete an individual data item
  * add a data item
  * edit
