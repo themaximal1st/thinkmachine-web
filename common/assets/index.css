@@ -42,7 +42,3 @@ body {
 .electron #filters {
     @apply mt-10;
 }
-
-.web {
-    @apply bg-blue-500;
-}

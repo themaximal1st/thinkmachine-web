@@ -27,16 +27,17 @@ export default function ForceGraph(params) {
                 }
                 return nodeCanvasObject(node, ctx, globalScale);
             }}
-            nodePointerAreaPaint={(node, color, ctx) => {
-                return nodePointerAreaPaint(node, color, ctx);
-            }}
-            onEngineTick={params.onTick}
             nodeThreeObject={(node) => {
                 if (params.hideLabels) {
                     return null;
                 }
                 return nodeThreeObject(node);
             }}
+            nodePointerAreaPaint={(node, color, ctx) => {
+                return nodePointerAreaPaint(node, color, ctx);
+            }}
+            onEngineTick={params.onTick}
+            cooldownTicks={100}
             linkDirectionalArrowLength={(link) => {
                 if (params.graphType === "3d") {
                     return 3;

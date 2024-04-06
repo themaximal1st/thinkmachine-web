@@ -1,13 +1,21 @@
-* electron filter/hyperedge spacing is all messed up
-* electron: generate
-* electron: wormhole
-* electron: scraping -> proxy api key?
-* console needs work
 - Add different graph layouts
  - Need a View button popup in bottom right corner to control all the views?
 
+* electron: generate
+* electron: wormhole
+* electron: scraping -> proxy api key?
+* electron: does FoceGraph toggling work? 2d? 3d?
+
+
 * Add tooltips to icons/buttons
 * add cac.app feedback widget
+
+---
+
+* Add githook to check versions are the same?
+
+
+---
 
 **Common**
 
@@ -67,6 +75,12 @@
 
 **Near-future**
 
+* console needs work
+ * delete an individual data item
+ * add a data item
+ * edit
+ * should be really simple. textarea with csv?
+
 * URL scraping should be very accurate. we don't want to generate too much, just take from what's there. needs new prompt
   * PDFs extraction -> scraping web
 * obsidian / json canvas
@@ -79,6 +93,9 @@
 * QUESTION: should adding data should really add a filter..otherwise you can't see what you just added
 * ask before quitting if unsaved changes
 
+* Click to focus, should be able to navigate through hypergraph like this with keyboard or mouse
+ * perfect place to display more information and context about what you're reading
+* Emit link particles to see how things flow through the graph
 
 
 **Future**
@@ -103,6 +120,10 @@
 
 
 **Super Future**
+
+- Easy way to print out mind maps
+ - Export to high-res
+ - Connect with website to print them
 
 
 - what would HTML -> Think Machine look like? browsing the web with think machine? 2-way links like ted nelson intended?
