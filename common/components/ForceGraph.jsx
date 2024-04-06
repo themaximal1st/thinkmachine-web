@@ -50,7 +50,12 @@ export default function ForceGraph(params) {
                 return 1;
             }}
             linkDirectionalArrowRelPos={1}
+            linkCurvature={0.05}
+            linkCurveRotation={0.5}
             linkWidth={2}
+            linkDirectionalParticleColor={(link) => link.color || "#ffffff"}
+            linkDirectionalParticleWidth={2}
+            linkDirectionalParticleSpeed={0.025}
         />
     );
 }
@@ -62,7 +67,7 @@ ForceGraph.load = function (graphRef, graphType) {
         });
 
         graphRef.current.d3Force("charge").strength((link) => {
-            return -30;
+            return -100;
         });
 
         graphRef.current.d3Force("charge").distanceMax(100);
@@ -71,7 +76,7 @@ ForceGraph.load = function (graphRef, graphType) {
         graphRef.current.d3Force("center").strength(1);
 
         const bloomPass = new UnrealBloomPass();
-        bloomPass.strength = 0.5;
+        bloomPass.strength = 1.25;
         bloomPass.radius = 1;
         bloomPass.threshold = 0;
         graphRef.current.postProcessingComposer().addPass(bloomPass);

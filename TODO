@@ -104,6 +104,8 @@
 * easy to to render an image from CSV...people just want to do cool visualization pictures
 
 * QUESTION: should adding data should really add a filter..otherwise you can't see what you just added
+  * perhaps we just zoom the camera to make sure we can see that position?
+
 * ask before quitting if unsaved changes
 
 * Click to focus, should be able to navigate through hypergraph like this with keyboard or mouse
@@ -136,6 +138,14 @@
 
 
 **Super Future**
+
+- Layout
+ - Could give more specific control over sublayout
+   - Bridge nodes
+   - Confluence nodes
+   - PageRank
+   - Similar Embeddings
+   - more controls to manipulate
 
 - Easy way to print out mind maps
  - Export to high-res

@@ -105,6 +105,7 @@ export default class App extends React.Component {
         return new Promise(async (resolve, reject) => {
             const start = Date.now();
 
+            const oldData = this.state.data;
             const newData = await window.api.hypergraph.graphData(
                 this.state.filters,
                 {
@@ -147,6 +148,17 @@ export default class App extends React.Component {
             console.log(`reloaded data in ${elapsed}ms`);
 
             this.setState(state, async () => {
+                const oldLinks = new Map();
+                for (const link of oldData.links) {
+                    oldLinks.set(link.id, link);
+                }
+
+                for (const link of data.links) {
+                    if (!oldLinks.has(link.id)) {
+                        this.graphRef.current.emitParticle(link);
+                    }
+                }
+
                 if (zoom) {
                     setTimeout(() => {
                         let numSymbols = this.uniqueSymbols.length;
@@ -335,13 +347,21 @@ export default class App extends React.Component {
             this.zoom(50);
         } else if (e.key === "ArrowLeft") {
             if (this.state.graphType === "3d") {
-                this.rotate(-1);
+                if (e.shiftKey) {
+                    this.rotate(-10);
+                } else {
+                    this.rotate(-1);
+                }
             } else {
                 this.panX(-1);
             }
         } else if (e.key === "ArrowRight") {
             if (this.state.graphType === "3d") {
-                this.rotate(1);
+                if (e.shiftKey) {
+                    this.rotate(10);
+                } else {
+                    this.rotate(1);
+                }
             } else {
                 this.panX(1);
             }
@@ -501,11 +521,13 @@ export default class App extends React.Component {
         }
         await window.api.hyperedges.add(this.state.hyperedge, this.state.input);
 
+        const hyperedge = [...this.state.hyperedge, this.state.input];
+
         this.setState(
             {
                 input: "",
                 edited: true,
-                hyperedge: [...this.state.hyperedge, this.state.input],
+                hyperedge,
             },
             async () => {
                 await this.reloadData();
