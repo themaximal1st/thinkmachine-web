@@ -1,7 +1,6 @@
 import { bouncy } from "ldrs";
 bouncy.register();
 
-import { Tooltip } from "react-tooltip";
 import React, { useState } from "react";
 import { useCombobox } from "downshift";
 import cx from "classnames";
@@ -60,22 +59,9 @@ export default function Typer(params) {
                 className="flex flex-col text-white mt-1 text-sm gap-1 px-2 w-4/12 absolute z-20 flex-wrap"
                 id="typerInner"
             >
-                <Tooltip
-                    id="current-tooltip"
-                    style={{
-                        opacity: 1,
-                        "z-index": 100,
-                        backgroundColor: "#1A1A1A", // gray-1000
-                        color: "#f5f6f6", // gray-50
-                    }}
-                />
                 {params.hyperedge.length > 0 && (
                     <div>
-                        <div
-                            data-tooltip-id="current-tooltip"
-                            data-tooltip-content="Current context for adding information"
-                            className="uppercase text-sm select-none tracking-widest font-medium text-gray-200 inline-block"
-                        >
+                        <div className="uppercase text-sm select-none tracking-widest font-medium text-gray-200 inline-block">
                             CURRENT
                         </div>
                     </div>
@@ -114,20 +100,8 @@ export default function Typer(params) {
                     </a>
                 )}
 
-                <Tooltip
-                    id="typer-tooltip"
-                    place="top"
-                    style={{
-                        backgroundColor: "#1A1A1A", // gray-1000
-                        color: "#f5f6f6", // gray-50
-                    }}
-                />
-
                 <div className="flex text-white gap-2">
                     <a
-                        data-tooltip-id="typer-tooltip"
-                        data-tooltip-content="Add new information to knowledge graph"
-                        data-tooltip-place="left"
                         className={`select-none text-sm pointer-events-auto flex items-center gap-[6px] py-1 px-2 rounded-lg hover:cursor-pointer transition-all ${
                             params.inputMode === "add"
                                 ? "bg-gray-800/80 opacity-100"
@@ -140,9 +114,6 @@ export default function Typer(params) {
                     </a>
 
                     <a
-                        data-tooltip-id="typer-tooltip"
-                        data-tooltip-place="left"
-                        data-tooltip-content={`Generate new information with ${params.llm.name}`}
                         className={`select-none text-sm pointer-events-auto flex items-center gap-[6px] py-1 px-2 rounded-lg hover:cursor-pointer transition-all ${
                             params.inputMode === "generate"
                                 ? "bg-gray-800/80 opacity-100"
@@ -155,9 +126,6 @@ export default function Typer(params) {
                     </a>
 
                     <a
-                        data-tooltip-id="typer-tooltip"
-                        data-tooltip-place="right"
-                        data-tooltip-content="Search existing knowledge graph"
                         className={`select-none text-sm pointer-events-auto flex items-center gap-[6px] py-1 px-2 rounded-lg hover:cursor-pointer transition-all ${
                             params.inputMode === "search"
                                 ? "bg-gray-800/80 opacity-100"
@@ -171,6 +139,17 @@ export default function Typer(params) {
                     >
                         {Icons.SearchIcon(4)}
                         Search
+                    </a>
+                    <a
+                        className={`select-none text-sm pointer-events-auto flex items-center gap-[6px] py-1 px-2 rounded-lg hover:cursor-pointer transition-all opacity-60 hover:opacity-80 ${
+                            !params.edited && "hidden"
+                        }`}
+                        onClick={() => {
+                            params.toggleChatWindow();
+                        }}
+                    >
+                        {Icons.ChatIcon(4)}
+                        Chat
                     </a>
                 </div>
 
