@@ -136,7 +136,7 @@ export default class App extends React.Component {
         ThinkMachineAPI.load().then(async () => {
             this.loadSettings();
 
-            await this.reloadData();
+            await this.reloadData(null, true);
 
             window.api.analytics.track("app.load");
 
@@ -161,7 +161,7 @@ export default class App extends React.Component {
     // RELOAD
     //
 
-    reloadData(controlType = null, zoom = true) {
+    reloadData(controlType = null, zoom = false) {
         return new Promise(async (resolve, reject) => {
             const start = Date.now();
 
@@ -211,10 +211,14 @@ export default class App extends React.Component {
             console.log(`reloaded data in ${elapsed}ms`);
 
             this.setState(state, async () => {
-                await GraphUtils.emitParticlesOnChanges(this, oldData);
+                GraphUtils.emitParticlesOnLinkChanges(this, oldData);
+
+                if (this.state.hyperedges.length === 1) {
+                    zoom = true;
+                }
 
                 if (zoom) {
-                    await GraphUtils.zoom(this);
+                    await GraphUtils.zoom(this, oldData);
                 }
 
                 resolve();
@@ -478,7 +482,7 @@ export default class App extends React.Component {
             await window.api.hyperedges.add(hyperedge, last);
         }
         this.setState({ interwingle: 3, depth: Infinity }, async () => {
-            await this.reloadData();
+            await this.reloadData(null, true);
         });
     }
 
@@ -521,7 +525,7 @@ export default class App extends React.Component {
         } catch (e) {
             console.log("ERROR", e);
         } finally {
-            await this.reloadData();
+            await this.reloadData(null, true);
             this.stopWormhole();
         }
     }
