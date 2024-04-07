@@ -1,8 +1,8 @@
-* when you're adding new information in a large graph, it resets the camera view. try to maintain it
-
-* changelog / in repo and on website
-
 * remember inputMode choice, default to it (unless Search)
+* when you're adding new information in a large graph, it resets the camera view. try to maintain it
+* Shift + Tab toggle interwingle backwards
+* changelog / in repo and on website
+* deploy web version
 
 * electron: generate
 * electron: wormhole
@@ -16,12 +16,8 @@
 * Shared README
 * Can we create a package.json in common and not have it mess up?
   * If so, create shared scripts, npm run desktop, npm run web
-
 * Depth is still messed up. If you go down depth, it loses maxDepth
-
 * add cac.app feedback widget
-
-* Shift + Tab toggle interwingle backwards
 
 
 ---
@@ -32,12 +28,10 @@
 * Amplitude Analytics
 
 
-
 **Electron**
 
 * license
 * Update README
-
 
 
 **Web Version**
@@ -52,7 +46,6 @@
   - private knowledge graphs
 * different keyboard shortucts, should desktop change too?
 * Update README
-
 
 
 **Deploy**
