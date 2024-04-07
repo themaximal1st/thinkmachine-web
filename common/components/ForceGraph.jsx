@@ -63,7 +63,7 @@ export default function ForceGraph(params) {
 ForceGraph.load = function (graphRef, graphType) {
     if (graphType === "3d") {
         graphRef.current.d3Force("link").distance((link) => {
-            return 40;
+            return link.length || 40;
         });
 
         graphRef.current.d3Force("charge").strength((link) => {
