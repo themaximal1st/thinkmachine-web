@@ -63,6 +63,8 @@ export default function Typer(params) {
                 <Tooltip
                     id="current-tooltip"
                     style={{
+                        opacity: 1,
+                        "z-index": 100,
                         backgroundColor: "#1A1A1A", // gray-1000
                         color: "#f5f6f6", // gray-50
                     }}
@@ -125,6 +127,7 @@ export default function Typer(params) {
                     <a
                         data-tooltip-id="typer-tooltip"
                         data-tooltip-content="Add new information to knowledge graph"
+                        data-tooltip-place="left"
                         className={`select-none text-sm pointer-events-auto flex items-center gap-[6px] py-1 px-2 rounded-lg hover:cursor-pointer transition-all ${
                             params.inputMode === "add"
                                 ? "bg-gray-800/80 opacity-100"
@@ -149,6 +152,7 @@ export default function Typer(params) {
 
                     <a
                         data-tooltip-id="typer-tooltip"
+                        data-tooltip-place="left"
                         data-tooltip-content={`Generate new information with ${params.llm.name}`}
                         className={`select-none text-sm pointer-events-auto flex items-center gap-[6px] py-1 px-2 rounded-lg hover:cursor-pointer transition-all ${
                             params.inputMode === "generate"
@@ -157,12 +161,13 @@ export default function Typer(params) {
                         }`}
                         onClick={() => params.setInputMode("generate")}
                     >
-                        {Icons.GenerateIcon}
+                        {Icons.GenerateIcon(4)}
                         Generate
                     </a>
 
                     <a
                         data-tooltip-id="typer-tooltip"
+                        data-tooltip-place="right"
                         data-tooltip-content="Search existing knowledge graph"
                         className={`select-none text-sm pointer-events-auto flex items-center gap-[6px] py-1 px-2 rounded-lg hover:cursor-pointer transition-all ${
                             params.inputMode === "search"

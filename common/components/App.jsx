@@ -21,6 +21,8 @@ import ForceGraph from "@components/ForceGraph";
 import Typer from "@components/Typer";
 import Wormhole from "@components/Wormhole.js";
 
+// TODO: Refactor all toggle/set functions to use same toggle pattern with optional value
+
 export default class App extends React.Component {
     constructor(props) {
         super(props);

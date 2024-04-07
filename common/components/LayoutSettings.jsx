@@ -59,7 +59,10 @@ export default function LayoutSettings(params) {
     }
 
     return (
-        <div className="absolute top-0 right-0 bottom-0 w-3/12 bg-gray-1000 z-40 p-6 text-gray-300 flex flex-col gap-4">
+        <div
+            className="absolute top-0 right-0 bottom-0 w-3/12 bg-gray-1000/60 z-40 p-6 text-gray-300 flex flex-col gap-4"
+            id="layout-settings"
+        >
             <div className="uppercase text-sm select-none tracking-widest font-medium text-gray-200">
                 Layout Settings
             </div>
