@@ -99,6 +99,10 @@ body {
     @apply accent-gray-400;
 }
 
+.react-draggable {
+    @apply pointer-events-auto;
+}
+
 @keyframes itemPopUp {
     from {
         opacity: 0;

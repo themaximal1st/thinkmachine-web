@@ -20,11 +20,13 @@ import Footer from "@components/Footer";
 import ForceGraph from "@components/ForceGraph";
 import Typer from "@components/Typer";
 import Wormhole from "@components/Wormhole.js";
+import ChatWindow from "@components/ChatWindow.jsx";
 
 export default class App extends React.Component {
     constructor(props) {
         super(props);
         this.inputRef = React.createRef();
+        this.chatInputRef = React.createRef();
         this.consoleRef = React.createRef();
         this.graphRef = React.createRef();
         this.depthRef = React.createRef();
@@ -41,13 +43,14 @@ export default class App extends React.Component {
             showLLMSettings: false,
             showLayout: false,
             showLabsWarning: false,
+            showChat: true,
 
             licenseKey: "",
             licenseValid: undefined,
             trialExpired: false,
             llm: {
-                service: "openai",
-                model: "gpt-4-turbo-preview",
+                service: "anthropic",
+                model: "claude-3-opus-20240229",
             },
             width: window.innerWidth,
             height: window.innerHeight,
@@ -76,6 +79,12 @@ export default class App extends React.Component {
             data: { nodes: [], links: [] },
             lastReloadedDate: new Date(),
             cooldownTicks: 5000,
+            chatWindow: {
+                x: window.innerWidth - 400 - 10,
+                y: (window.innerHeight - 400) / 2,
+                width: 400,
+                height: 300,
+            },
         };
     }
 
@@ -106,6 +115,10 @@ export default class App extends React.Component {
 
     get isFocusingInput() {
         return document.activeElement == this.inputRef.current;
+    }
+
+    get isFocusingChatInput() {
+        return document.activeElement == this.chatInputRef.current;
     }
 
     get uniqueSymbols() {
@@ -242,6 +255,15 @@ export default class App extends React.Component {
         window.api.analytics.track("app.toggleInputMode");
         window.localStorage.setItem("inputMode", inputMode);
         this.setState({ inputMode });
+    }
+
+    updateChatWindow(newChatWindow = {}) {
+        const chatWindow = Object.assign(
+            {},
+            this.state.chatWindow,
+            newChatWindow
+        );
+        this.setState({ chatWindow });
     }
 
     async loadSettings() {
@@ -824,7 +846,11 @@ export default class App extends React.Component {
             // this.toggleDepth(this.state.depth + 1);
         } else if (e.key === "Backspace") {
             if (this.state.input === "") {
-                this.setState({ hyperedge: this.state.hyperedge.slice(0, -1) });
+                if (this.isFocusingInput) {
+                    this.setState({
+                        hyperedge: this.state.hyperedge.slice(0, -1),
+                    });
+                }
             } else {
                 this.inputReference.focus();
             }
@@ -837,7 +863,7 @@ export default class App extends React.Component {
         ) {
             return;
         } else {
-            if (e.key !== "Shift") {
+            if (e.key !== "Shift" && !this.isFocusingChatInput) {
                 this.inputReference.focus();
             }
         }
@@ -1068,6 +1094,12 @@ export default class App extends React.Component {
                     showLLMSettings={this.state.showLLMSettings}
                     toggleLLMSettings={this.toggleLLMSettings.bind(this)}
                 />
+                <ChatWindow
+                    chatWindow={this.state.chatWindow}
+                    chatInputRef={this.chatInputRef}
+                    updateChatWindow={this.updateChatWindow.bind(this)}
+                />
+
                 <Footer
                     loaded={this.state.loaded}
                     edited={this.state.edited}

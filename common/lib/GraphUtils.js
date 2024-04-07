@@ -88,7 +88,6 @@ export async function zoom(app, oldData = null) {
             app.graphRef.current.zoomToFit(timing, padding, (node) => {
                 if (nodes.length === 0) return true;
                 if (nodeIndex.has(node.id)) {
-                    console.log("Zooming to node", node.name);
                     return true;
                 }
                 return false;
