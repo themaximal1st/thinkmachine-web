@@ -21,8 +21,6 @@ import ForceGraph from "@components/ForceGraph";
 import Typer from "@components/Typer";
 import Wormhole from "@components/Wormhole.js";
 
-// TODO: Refactor all toggle/set functions to use same toggle pattern with optional value
-
 export default class App extends React.Component {
     constructor(props) {
         super(props);
@@ -513,11 +511,6 @@ export default class App extends React.Component {
     // TOGGLE
     //
 
-    // showConsole: false,
-    // showLicense: false,
-    // showSettingsMenu: false,
-    // showLLMSettings: false,
-
     toggleShowLabsWarning(val) {
         const showLabsWarning =
             val === undefined ? !this.state.showLabsWarning : val;
@@ -529,10 +522,15 @@ export default class App extends React.Component {
         this.setState({ showLayout });
     }
 
-    toggleSettingsMenu() {
+    toggleSettingsMenu(val) {
         const showSettingsMenu =
             val === undefined ? !this.state.showSettingsMenu : val;
         this.setState({ showSettingsMenu });
+    }
+
+    toggleConsole(val) {
+        const showConsole = val === undefined ? !this.state.showConsole : val;
+        this.setState({ showConsole });
     }
 
     toggleCamera() {
@@ -743,10 +741,10 @@ export default class App extends React.Component {
                 this.toggleSettingsMenu();
             }
             if (this.state.showConsole) {
-                this.setState({ showConsole: false });
+                this.toggleConsole();
             }
             if (this.state.showLabsWarning) {
-                this.toggleShowLabsWarning(false);
+                this.toggleShowLabsWarning();
             }
             if (this.state.showLayout) {
                 this.toggleShowLayout();
@@ -1032,36 +1030,34 @@ export default class App extends React.Component {
                     cooldownTicks={this.state.cooldownTicks}
                 />
                 <LLMSettings
-                    showLLMSettings={this.state.showLLMSettings}
-                    updateLLM={this.updateLLM.bind(this)}
                     llm={this.state.llm}
-                    closeLLMSettings={() =>
-                        this.setState({ showLLMSettings: false })
-                    }
+                    updateLLM={this.updateLLM.bind(this)}
+                    showLLMSettings={this.state.showLLMSettings}
+                    toggleLLMSettings={this.toggleLLMSettings.bind(this)}
                 />
                 <Footer
+                    loaded={this.state.loaded}
+                    edited={this.state.edited}
                     isAnimating={this.state.isAnimating}
                     controlType={this.state.controlType}
                     graphRef={this.graphRef}
                     graphType={this.state.graphType}
+                    hyperedges={this.state.hyperedges}
                     toggleCamera={this.toggleCamera.bind(this)}
                     toggleAnimation={this.toggleAnimation.bind(this)}
                     toggleGraphType={this.toggleGraphType.bind(this)}
-                    loaded={this.state.loaded}
-                    edited={this.state.edited}
-                    handleDownload={this.handleDownload.bind(this)}
-                    hyperedges={this.state.hyperedges}
-                    wormholeMode={this.state.wormholeMode}
                     toggleWormhole={this.toggleWormhole.bind(this)}
                     toggleLLMSettings={this.toggleLLMSettings.bind(this)}
-                    showSettingsMenu={this.state.showSettingsMenu}
                     toggleSettingsMenu={this.toggleSettingsMenu.bind(this)}
-                    showLayout={this.state.showLayout}
                     toggleShowLayout={this.toggleShowLayout.bind(this)}
-                    showLabsWarning={this.state.showLabsWarning}
                     toggleShowLabsWarning={this.toggleShowLabsWarning.bind(
                         this
                     )}
+                    handleDownload={this.handleDownload.bind(this)}
+                    wormholeMode={this.state.wormholeMode}
+                    showSettingsMenu={this.state.showSettingsMenu}
+                    showLayout={this.state.showLayout}
+                    showLabsWarning={this.state.showLabsWarning}
                     cooldownTicks={this.state.cooldownTicks}
                     setCooldownTicks={(cooldownTicks) => {
                         this.setState({ cooldownTicks });

@@ -58,7 +58,7 @@ export default function Settings(params) {
         if (!e.target.id) return;
         if (e.target.id !== "settings-modal") return;
         e.stopPropagation();
-        params.closeLLMSettings();
+        params.toggleLLMSettings(false);
     }
 
     return (
@@ -70,7 +70,7 @@ export default function Settings(params) {
             <div className="relative w-full max-w-lg mx-auto">
                 <a
                     className="cursor-pointer absolute -top-4 -right-4 font-bold opacity-50 hover:opacity-100 transition-all"
-                    onClick={params.closeLLMSettings}
+                    onClick={() => params.toggleLLMSettings(false)}
                 >
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
