@@ -66,6 +66,7 @@ export default class App extends React.Component {
             isAnimating: false,
             isShiftDown: false,
             isGenerating: false,
+            isChatting: false,
 
             reloads: 0,
             interwingle: 3,
@@ -79,6 +80,7 @@ export default class App extends React.Component {
             data: { nodes: [], links: [] },
             lastReloadedDate: new Date(),
             cooldownTicks: 5000,
+            chatMessages: [],
             chatWindow: {
                 x: window.innerWidth - 400 - 10,
                 y: (window.innerHeight - 400) / 2,
@@ -113,8 +115,12 @@ export default class App extends React.Component {
         return reference;
     }
 
+    get isFocusingTextInput() {
+        return this.isFocusingInput || this.isFocusingChatInput;
+    }
+
     get isFocusingInput() {
-        return document.activeElement == this.inputRef.current;
+        return document.activeElement == this.inputReference;
     }
 
     get isFocusingChatInput() {
@@ -264,6 +270,14 @@ export default class App extends React.Component {
             newChatWindow
         );
         this.setState({ chatWindow });
+    }
+
+    async asyncSetState(state = {}) {
+        return new Promise((resolve, reject) => {
+            this.setState(state, () => {
+                resolve();
+            });
+        });
     }
 
     async loadSettings() {
@@ -697,6 +711,50 @@ export default class App extends React.Component {
         console.log("ENGINE STOPPED");
     }
 
+    async handleChatMessage(e) {
+        e.preventDefault();
+        if (this.state.isChatting) return;
+
+        const chatMessages = [...this.state.chatMessages];
+        chatMessages.push({
+            content: this.chatInputRef.current.value,
+            role: "user",
+            timestamp: Date.now(),
+        });
+
+        const assistant = {
+            content: "",
+            model: this.state.llm.name,
+            role: "assistant",
+            timestamp: Date.now() + 1,
+        };
+
+        await this.asyncSetState({ chatMessages, isChatting: true });
+        this.chatInputRef.current.value = "";
+        const oldChatMessages = [...chatMessages];
+        chatMessages.push(assistant);
+        await this.asyncSetState({ chatMessages });
+
+        try {
+            const response = await window.api.chat(oldChatMessages, {
+                llm: this.state.llm,
+            });
+
+            for await (const data of response) {
+                assistant.content += data.data;
+                console.log("Assistant", assistant);
+                await this.asyncSetState({ chatMessages });
+            }
+        } catch (e) {
+            console.log("ERROR DURING CHAT", e);
+            throw e;
+        } finally {
+            await this.asyncSetState({ isChatting: false });
+        }
+
+        // TODO: Check message history
+    }
+
     async handleDownload() {
         const data = await window.api.hypergraph.export();
 
@@ -812,13 +870,13 @@ export default class App extends React.Component {
             this.toggleInterwingle();
         } else if (e.key === "`") {
             this.setState({ showConsole: !this.state.showConsole });
-        } else if (e.key === "-" && !this.isFocusingInput) {
+        } else if (e.key === "-" && !this.isFocusingTextInput) {
             this.zoom(5);
-        } else if (e.key === "=" && !this.isFocusingInput) {
+        } else if (e.key === "=" && !this.isFocusingTextInput) {
             this.zoom(-5);
-        } else if (e.key === "+" && !this.isFocusingInput) {
+        } else if (e.key === "+" && !this.isFocusingTextInput) {
             this.zoom(-50);
-        } else if (e.key === "_" && !this.isFocusingInput) {
+        } else if (e.key === "_" && !this.isFocusingTextInput) {
             this.zoom(50);
         } else if (e.key === "ArrowLeft") {
             if (this.state.graphType === "3d") {
@@ -858,7 +916,9 @@ export default class App extends React.Component {
                     });
                 }
             } else {
-                this.inputReference.focus();
+                if (!this.isFocusingChatInput) {
+                    this.inputReference.focus();
+                }
             }
         } else if (this.state.controlType === "fly") {
             return;
@@ -870,6 +930,7 @@ export default class App extends React.Component {
             return;
         } else {
             if (e.key !== "Shift" && !this.isFocusingChatInput) {
+                console.log("IS FOCUSING CHAT", this.isFocusingChatInput);
                 this.inputReference.focus();
             }
         }
@@ -1103,6 +1164,8 @@ export default class App extends React.Component {
                 />
                 <ChatWindow
                     chatWindow={this.state.chatWindow}
+                    chatMessages={this.state.chatMessages}
+                    handleChatMessage={this.handleChatMessage.bind(this)}
                     chatInputRef={this.chatInputRef}
                     showChat={this.state.showChat}
                     toggleChatWindow={this.toggleChatWindow.bind(this)}

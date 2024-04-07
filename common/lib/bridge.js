@@ -1,4 +1,6 @@
+import LLM from "@themaximalist/llm.js"
 import ThinkableType from "@themaximalist/thinkabletype";
+
 import colors from "./colors.js";
 import { isUUID, isEmptyUUID } from "./uuid.js";
 // import Analytics from "./Analytics.js";
@@ -126,6 +128,41 @@ export default class Bridge {
             this.thinkabletype.addHyperedges(hyperedges);
             yield hyperedges;
         }
+    }
+
+    async chat(msgs, opts = {}) {
+
+        const options = { stream: true };
+        if (opts.llm) {
+            if (opts.llm.service) { options.service = opts.llm.service }
+            if (opts.llm.model) { options.model = opts.llm.model }
+        }
+
+        const messages = msgs.map((msg) => {
+            return { role: msg.role, content: msg.content }
+        });
+
+        try {
+            const response = await LLM(messages, options);
+            console.log(response);
+            for await (const data of response) {
+                console.log(data);
+                this.send({ event: "chat.message", data });
+            }
+        } catch (e) {
+            console.log("ERRR");
+            console.error(e);
+            throw e;
+        }
+
+
+
+        /*
+        for await (const data of response) {
+            console.log(data);
+            yield data;
+        }
+        */
     }
 
 }

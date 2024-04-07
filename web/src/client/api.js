@@ -140,6 +140,16 @@ export default class ThinkMachineAPI {
         }
     }
 
+    async *chat(messages, options) {
+        if (!this.isValid) return;
+        console.log("CHATTING");
+        const response = await this.stream("chat", { messages, ...options });
+        console.log("CHAT", response);
+        for await (const message of ThinkMachineAPI.readChunks(response.body.getReader())) {
+            yield message;
+        }
+    }
+
     async track(event, properties = {}) {
         if (!this.isValid) return;
         return await this.send("analytics/track", { event, properties });
@@ -161,6 +171,7 @@ export default class ThinkMachineAPI {
             "edition": "web",
             isWeb: true,
             isElectron: false,
+            chat: this.chat.bind(this),
             "uuid": {
                 get: async () => this.uuid,
                 set: async (uuid) => this.uuid = uuid,

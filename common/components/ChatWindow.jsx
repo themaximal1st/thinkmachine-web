@@ -1,41 +1,15 @@
+import { bouncy } from "ldrs";
+bouncy.register();
+
 import { Rnd } from "react-rnd";
 import * as Icons from "@assets/Icons.jsx";
 
 export default function ChatWindow(params) {
     if (!params.showChat) return;
 
-    const messages = [
-        {
-            role: "assistant",
-            model: "Claude 3 Opus",
-            text: "Welcome to Think Machine chat. Enter your message and your chatbot will respond using the knowledge in your graph.",
-        },
-        { role: "user", text: "Hello, please give me a summary of my data" },
-        {
-            role: "assistant",
-            model: "Claude 3 Opus",
-            text: "Welcome to Think Machine chat. Enter your message and your chatbot will respond using the knowledge in your graph.",
-        },
-        { role: "user", text: "Hello, please give me a summary of my data" },
-        {
-            role: "assistant",
-            model: "Claude 3 Opus",
-            text: "Welcome to Think Machine chat. Enter your message and your chatbot will respond using the knowledge in your graph.",
-        },
-        { role: "user", text: "Hello, please give me a summary of my data" },
-        {
-            role: "assistant",
-            model: "Claude 3 Opus",
-            text: "Welcome to Think Machine chat. Enter your message and your chatbot will respond using the knowledge in your graph.",
-        },
-        { role: "user", text: "Hello, please give me a summary of my data" },
-        {
-            role: "assistant",
-            model: "Claude 3 Opus",
-            text: "Welcome to Think Machine chat. Enter your message and your chatbot will respond using the knowledge in your graph.",
-        },
-        { role: "user", text: "Hello, please give me a summary of my data" },
-    ];
+    const sortedMessages = params.chatMessages.sort((a, b) => {
+        return b.timestamp - a.timestamp;
+    });
 
     return (
         <div className="absolute inset-0 z-40 pointer-events-none overflow-hidden">
@@ -44,13 +18,14 @@ export default function ChatWindow(params) {
                     width: params.chatWindow.width,
                     height: params.chatWindow.height,
                 }}
+                minWidth="300"
+                minHeight="200"
                 cancel=".nodrag"
                 position={{ x: params.chatWindow.x, y: params.chatWindow.y }}
                 onDragStop={(e, d) => {
                     params.updateChatWindow({ x: d.x, y: d.y });
                 }}
                 onResizeStop={(e, direction, ref, delta, position) => {
-                    console.log("ON RESIZE");
                     params.updateChatWindow({
                         width: ref.style.width,
                         height: ref.style.height,
@@ -61,7 +36,8 @@ export default function ChatWindow(params) {
                 <div className="bg-gray-1000/70 h-full w-full overflow-hidden rounded-lg text-gray-50">
                     <div className="flex flex-col justify-between h-full">
                         <div className="p-2 bg-gray-1000 flex justify-between items-center">
-                            <div className="uppercase text-sm select-none tracking-widest font-medium text-gray-200">
+                            <div className="uppercase text-sm select-none tracking-widest font-medium text-gray-200 flex gap-2 items-center">
+                                {Icons.ChatIcon(4)}
                                 CHAT
                             </div>
                             <a
@@ -74,7 +50,17 @@ export default function ChatWindow(params) {
                             </a>
                         </div>
                         <div className="grow nodrag cursor-auto flex flex-col-reverse gap-8 p-2 overflow-y-scroll">
-                            {messages.reverse().map((message, i) => {
+                            {sortedMessages.length === 0 && (
+                                <div className="flex flex-col gap-4">
+                                    <div>Welcome to Think Machine Chat.</div>
+                                    <div>
+                                        Ask questions about your knowledge
+                                        graph, and Think Machine will use the
+                                        current view to answer them.
+                                    </div>
+                                </div>
+                            )}
+                            {sortedMessages.map((message, i) => {
                                 return (
                                     <div key={`message-${i}`}>
                                         <div className="flex items-center gap-1">
@@ -87,13 +73,29 @@ export default function ChatWindow(params) {
                                                 </div>
                                             )}
                                         </div>
-                                        <div>{message.text}</div>
+                                        <div>
+                                            {i === 0 &&
+                                                message.content.length ===
+                                                    0 && (
+                                                    <div className="text-white">
+                                                        <l-bouncy
+                                                            size="15"
+                                                            speed="1.75"
+                                                            color="white"
+                                                        ></l-bouncy>
+                                                    </div>
+                                                )}
+                                            {message.content}
+                                        </div>
                                     </div>
                                 );
                             })}
                         </div>
                         <div>
-                            <div className="flex items-center relative mt-2">
+                            <form
+                                onSubmit={params.handleChatMessage}
+                                className="flex items-center relative mt-2"
+                            >
                                 <input
                                     ref={params.chatInputRef}
                                     placeholder="Type your message here..."
@@ -104,7 +106,7 @@ export default function ChatWindow(params) {
                                     value="→"
                                     className="absolute text-white right-4 hover:cursor-pointer"
                                 />
-                            </div>
+                            </form>
                         </div>
                     </div>
                 </div>
