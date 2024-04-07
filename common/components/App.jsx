@@ -556,6 +556,12 @@ export default class App extends React.Component {
     // TOGGLE
     //
 
+    toggleChatWindow(val) {
+        const showChat = val === undefined ? !this.state.showChat : val;
+        console.log("SHOW CHAT", showChat);
+        this.setState({ showChat });
+    }
+
     toggleShowLabsWarning(val) {
         const showLabsWarning =
             val === undefined ? !this.state.showLabsWarning : val;
@@ -1059,6 +1065,7 @@ export default class App extends React.Component {
                     setInputMode={this.updateInputMode.bind(this)}
                     isGenerating={this.state.isGenerating}
                     loaded={this.state.loaded}
+                    toggleChatWindow={this.toggleChatWindow.bind(this)}
                     handleCreateTutorial={this.createThinkMachineTutorial.bind(
                         this
                     )}
@@ -1097,6 +1104,8 @@ export default class App extends React.Component {
                 <ChatWindow
                     chatWindow={this.state.chatWindow}
                     chatInputRef={this.chatInputRef}
+                    showChat={this.state.showChat}
+                    toggleChatWindow={this.toggleChatWindow.bind(this)}
                     updateChatWindow={this.updateChatWindow.bind(this)}
                 />
 

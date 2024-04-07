@@ -65,14 +65,18 @@ export default function Footer(params) {
                                     </a>
 
                                     <a
-                                        onClick={params.toggleLLMSettings}
+                                        onClick={() =>
+                                            params.toggleLLMSettings()
+                                        }
                                         className="menu-item"
                                     >
                                         <div>{Icons.GenerateIcon(6)}</div>
                                         AI Settings
                                     </a>
                                     <a
-                                        onClick={params.toggleShowLayout}
+                                        onClick={() =>
+                                            params.toggleShowLayout()
+                                        }
                                         className="menu-item"
                                     >
                                         <div>{Icons.LayoutIcon}</div>
@@ -89,7 +93,7 @@ export default function Footer(params) {
                             )}
                             {!params.isAnimating && (
                                 <a
-                                    onClick={params.toggleSettingsMenu}
+                                    onClick={() => params.toggleSettingsMenu()}
                                     title="Settings"
                                     id="settings-icon"
                                     className="select-none opacity-40 hover:opacity-100 transition-all cursor-pointer pointer-events-auto"
@@ -206,7 +210,7 @@ export default function Footer(params) {
             {params.showLayout && (
                 <LayoutSettings
                     graphRef={params.graphRef}
-                    toggleShowLayout={params.toggleShowLayout}
+                    toggleShowLayout={() => params.toggleShowLayout()}
                     cooldownTicks={params.cooldownTicks}
                     setCooldownTicks={params.setCooldownTicks}
                 />

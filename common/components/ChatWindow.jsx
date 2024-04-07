@@ -1,6 +1,9 @@
 import { Rnd } from "react-rnd";
+import * as Icons from "@assets/Icons.jsx";
 
 export default function ChatWindow(params) {
+    if (!params.showChat) return;
+
     const messages = [
         {
             role: "assistant",
@@ -57,10 +60,18 @@ export default function ChatWindow(params) {
             >
                 <div className="bg-gray-1000/70 h-full w-full overflow-hidden rounded-lg text-gray-50">
                     <div className="flex flex-col justify-between h-full">
-                        <div className="p-2 bg-gray-1000">
+                        <div className="p-2 bg-gray-1000 flex justify-between items-center">
                             <div className="uppercase text-sm select-none tracking-widest font-medium text-gray-200">
                                 CHAT
                             </div>
+                            <a
+                                onClick={() => {
+                                    params.toggleChatWindow(false);
+                                }}
+                                className="nodrag hover:cursor-pointer"
+                            >
+                                {Icons.CloseIcon(4)}
+                            </a>
                         </div>
                         <div className="grow nodrag cursor-auto flex flex-col-reverse gap-8 p-2 overflow-y-scroll">
                             {messages.reverse().map((message, i) => {

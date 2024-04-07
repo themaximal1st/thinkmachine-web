@@ -1,3 +1,5 @@
+import * as Icons from "@assets/Icons.jsx";
+
 export default function Settings(params) {
     if (!params.showLLMSettings) return;
 
@@ -72,20 +74,7 @@ export default function Settings(params) {
                     className="cursor-pointer absolute -top-4 -right-4 font-bold opacity-50 hover:opacity-100 transition-all"
                     onClick={() => params.toggleLLMSettings(false)}
                 >
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth="1.5"
-                        stroke="currentColor"
-                        className="w-6 h-6"
-                    >
-                        <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M6 18 18 6M6 6l12 12"
-                        />
-                    </svg>
+                    {Icons.CloseIcon(6)}
                 </a>
                 <div className="relative w-full max-w-lg mx-auto flex flex-col gap-4">
                     <div>
