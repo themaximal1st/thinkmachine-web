@@ -28,7 +28,7 @@ export default class WebBridge {
             if (!guid) {
                 guid = uuid();
                 req.guid = guid;
-                res.cookie("guid", guid, { signed: true, expires: new Date(Date.now() + 900000) });
+                res.cookie("guid", guid, { signed: true, expires: new Date(Date.now() + 31536000000) });
             }
 
             return guid;

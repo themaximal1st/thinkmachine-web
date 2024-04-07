@@ -1,3 +1,5 @@
+* changelog / in repo and on website
+
 * remember inputMode choice, default to it (unless Search)
 * click should depend on what mode you are in. add, generate or search
 
@@ -130,6 +132,8 @@
 
 - Layout
  - Could give more specific control over sublayout
+   - Line wide
+   - Arrow sizes
    - Bridge nodes
    - Confluence nodes
    - PageRank

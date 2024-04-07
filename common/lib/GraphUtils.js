@@ -59,3 +59,13 @@ export async function emitParticlesOnChanges(app, oldData) {
     }
 
 }
+
+// we have this on thinkabletype, but a quick local version is fine
+export function containsHyperedge(app, hyperedge) {
+    const e1 = hyperedge.join(" ");
+    for (const edge of app.state.hyperedges) {
+        const e2 = edge.join(" ");
+        if (e1 === e2) return true;
+    }
+    return false;
+}
