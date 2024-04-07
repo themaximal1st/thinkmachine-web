@@ -5,11 +5,9 @@ import LayoutSettings from "./LayoutSettings";
 import LabsWarning from "./LabsWarning";
 
 export default function Footer(params) {
-    const [showLabsWarning, setShowLabsWarning] = useState(false);
-
     function handleToggleWormhole() {
         if (params.wormholeMode === -1) {
-            setShowLabsWarning(true);
+            params.toggleLabsWarning(true);
         } else {
             params.toggleWormhole();
         }
@@ -37,6 +35,13 @@ export default function Footer(params) {
                                     >
                                         <div>{Icons.GenerateIcon}</div>
                                         AI Settings
+                                    </a>
+                                    <a
+                                        onClick={handleToggleWormhole}
+                                        className="menu-item"
+                                    >
+                                        <div>{Icons.LabIcon}</div>
+                                        Labs
                                     </a>
                                     {params.edited && (
                                         <a
@@ -136,25 +141,27 @@ export default function Footer(params) {
                                     Icons.MouseIcon}
                             </a>
                         )}
-                        {params.graphType === "3d" && params.edited && (
-                            <a
-                                onClick={() => handleToggleWormhole()}
-                                title="Wormhole"
-                                className={`select-none hover:opacity-100 transition-all cursor-pointer pointer-events-auto ${
-                                    params.wormholeMode === -1
-                                        ? "text-white opacity-40"
-                                        : "text-orange-400 opacity-80"
-                                }`}
-                            >
-                                {Icons.LabIcon}
-                            </a>
-                        )}
+                        {params.graphType === "3d" &&
+                            params.edited &&
+                            params.wormholeMode > -1 && (
+                                <a
+                                    onClick={() => handleToggleWormhole()}
+                                    title="Wormhole"
+                                    className={`select-none hover:opacity-100 transition-all cursor-pointer pointer-events-auto ${
+                                        params.wormholeMode === -1
+                                            ? "text-white opacity-40"
+                                            : "text-orange-400 opacity-80"
+                                    }`}
+                                >
+                                    {Icons.LabIcon}
+                                </a>
+                            )}
                     </div>
                 </div>
             </div>
-            {showLabsWarning && (
+            {params.showLabsWarning && (
                 <LabsWarning
-                    onClose={() => setShowLabsWarning(false)}
+                    onClose={() => params.toggleLabsWarning(false)}
                     onStart={(e) => params.toggleWormhole()}
                 />
             )}

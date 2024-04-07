@@ -1,9 +1,20 @@
 import * as Icons from "@assets/Icons";
 
 export default function LabsWarning(params) {
+    function handleCloseModal(e) {
+        if (e && e.target && e.target.closest("#labs-modal")) {
+            e.preventDefault();
+        } else {
+            params.onClose();
+        }
+    }
+
     return (
-        <div className="bg-black/60 text-white absolute z-50 inset-0 flex flex-col gap-4 justify-center items-center">
-            <div className="relative w-full max-w-lg mx-auto">
+        <div
+            className="bg-black/60 text-white absolute z-50 inset-0 flex flex-col gap-4 justify-center items-center"
+            onClick={handleCloseModal}
+        >
+            <div className="relative w-full max-w-lg mx-auto" id="labs-modal">
                 <a
                     className="cursor-pointer absolute -top-4 -right-4 font-bold opacity-50 hover:opacity-100 transition-all"
                     onClick={params.onClose}

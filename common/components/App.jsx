@@ -40,6 +40,7 @@ export default class App extends React.Component {
             showSettingsMenu: false,
             showLLMSettings: false,
             showLayout: false,
+            showLabsWarning: false,
 
             licenseKey: "",
             licenseValid: undefined,
@@ -293,12 +294,22 @@ export default class App extends React.Component {
             this.setState({ isShiftDown: true });
         }
 
-        if (e.key === "Escape" && this.state.showLLMSettings) {
-            this.toggleLLMSettings();
-        }
-
-        if (e.key === "Escape" && this.state.showSettingsMenu) {
-            this.toggleSettingsMenu();
+        if (e.key === "Escape") {
+            if (this.state.showLLMSettings) {
+                this.toggleLLMSettings();
+            }
+            if (this.state.showSettingsMenu) {
+                this.toggleSettingsMenu();
+            }
+            if (this.state.showConsole) {
+                this.setState({ showConsole: false });
+            }
+            if (this.state.showLabsWarning) {
+                this.toggleLabsWarning(false);
+            }
+            if (this.state.showLayout) {
+                this.toggleShowLayout();
+            }
         }
 
         if (e.key === "1" && e.metaKey) {
@@ -654,15 +665,18 @@ export default class App extends React.Component {
         window.api.analytics.track("app.toggleWormhole");
 
         let wormholeMode;
+        let controlType = "fly";
+
         if (this.state.wormholeMode > -1) {
             wormholeMode = -1;
+            controlType = "orbit";
         } else {
             wormholeMode = 0;
         }
 
-        this.setState({ wormholeMode, controlType: "fly" });
+        this.setState({ wormholeMode, controlType });
         window.localStorage.setItem("wormholeMode", wormholeMode);
-        window.localStorage.setItem("controlType", "fly");
+        window.localStorage.setItem("controlType", controlType);
 
         // reload page, unfortunately 3D Force Graph doesn't allow dynamic control type changes
         window.location.href = window.location.href;
@@ -871,6 +885,12 @@ export default class App extends React.Component {
         this.setState({ showSettingsMenu: !this.state.showSettingsMenu });
     }
 
+    toggleLabsWarning(val) {
+        const showLabsWarning =
+            typeof val === "undefined" ? !this.state.showLabsWarning : val;
+        this.setState({ showLabsWarning });
+    }
+
     closeSettingsMenu() {
         this.setState({ showSettingsMenu: false });
     }
@@ -1005,6 +1025,8 @@ export default class App extends React.Component {
                     toggleSettingsMenu={this.toggleSettingsMenu.bind(this)}
                     closeSettingsMenu={this.closeSettingsMenu.bind(this)}
                     toggleShowLayout={this.toggleShowLayout.bind(this)}
+                    showLabsWarning={this.state.showLabsWarning}
+                    toggleLabsWarning={this.toggleLabsWarning.bind(this)}
                     showLayout={this.state.showLayout}
                     cooldownTicks={this.state.cooldownTicks}
                     setCooldownTicks={(cooldownTicks) => {
