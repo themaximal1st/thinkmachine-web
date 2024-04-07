@@ -81,6 +81,75 @@ export default class App extends React.Component {
         };
     }
 
+    //
+    // GET
+    //
+
+    get inputReference() {
+        if (!this.inputRef) return {};
+        if (!this.inputRef.current) return {};
+        if (!this.inputRef.current.firstChild) return {}; // so hacky...but we grab the parent because downshift takes over reference
+        const reference = this.inputRef.current.firstChild;
+        return reference;
+    }
+
+    get isFocusingInput() {
+        return document.activeElement == this.inputRef.current;
+    }
+
+    get uniqueSymbols() {
+        const symbols = new Set();
+        for (const hyperedge of this.state.hyperedges) {
+            for (const symbol of hyperedge) {
+                symbols.add(symbol);
+            }
+        }
+
+        return Array.from(symbols);
+    }
+
+    //
+    // MOUNT / UNMOUNT
+    //
+
+    componentDidMount() {
+        ForceGraph.load(this.graphRef, this.state.graphType);
+
+        document.addEventListener("keydown", this.handleKeyDown.bind(this));
+        document.addEventListener("keyup", this.handleKeyUp.bind(this));
+        document.addEventListener("mousedown", this.handleMouseDown.bind(this));
+        document.addEventListener("mouseup", this.handleMouseUp.bind(this));
+        document.addEventListener("wheel", this.handleZoom.bind(this));
+        window.addEventListener("resize", this.handleResize.bind(this));
+
+        ThinkMachineAPI.load().then(async () => {
+            this.loadSettings();
+
+            await this.reloadData();
+
+            window.api.analytics.track("app.load");
+
+            await this.handleAutoSearch();
+        });
+    }
+
+    componentWillUnmount() {
+        this.animation.stop();
+        document.removeEventListener("keydown", this.handleKeyDown.bind(this));
+        document.removeEventListener("keyup", this.handleKeyUp.bind(this));
+        document.removeEventListener(
+            "mousedown",
+            this.handleMouseDown.bind(this)
+        );
+        document.removeEventListener("mouseup", this.handleMouseUp.bind(this));
+        document.removeEventListener("wheel", this.handleZoom.bind(this));
+        window.removeEventListener("resize", this.handleResize.bind(this));
+    }
+
+    //
+    // RELOAD
+    //
+
     reloadData(controlType = null, zoom = true) {
         return new Promise(async (resolve, reject) => {
             const start = Date.now();
@@ -142,39 +211,17 @@ export default class App extends React.Component {
         });
     }
 
-    componentDidMount() {
-        ForceGraph.load(this.graphRef, this.state.graphType);
-
-        document.addEventListener("keydown", this.handleKeyDown.bind(this));
-        document.addEventListener("keyup", this.handleKeyUp.bind(this));
-        document.addEventListener("mousedown", this.handleMouseDown.bind(this));
-        document.addEventListener("mouseup", this.handleMouseUp.bind(this));
-        document.addEventListener("wheel", this.handleZoom.bind(this));
-        window.addEventListener("resize", this.handleResize.bind(this));
-
-        ThinkMachineAPI.load().then(async () => {
-            this.loadSettings();
-
-            await this.reloadData();
-
-            window.api.analytics.track("app.load");
-
-            await this.handleAutoSearch();
-        });
+    maybeReloadData(duration = 1000) {
+        const now = new Date();
+        const elapsed = now - this.state.lastReloadedDate;
+        if (elapsed > duration) {
+            this.reloadData();
+        }
     }
 
-    componentWillUnmount() {
-        this.animation.stop();
-        document.removeEventListener("keydown", this.handleKeyDown.bind(this));
-        document.removeEventListener("keyup", this.handleKeyUp.bind(this));
-        document.removeEventListener(
-            "mousedown",
-            this.handleMouseDown.bind(this)
-        );
-        document.removeEventListener("mouseup", this.handleMouseUp.bind(this));
-        document.removeEventListener("wheel", this.handleZoom.bind(this));
-        window.removeEventListener("resize", this.handleResize.bind(this));
-    }
+    //
+    // ACTIONS
+    //
 
     async loadSettings() {
         try {
@@ -188,215 +235,12 @@ export default class App extends React.Component {
         }
     }
 
-    async handleAutoSearch() {
-        if (!this.state.loaded) return;
-        if (this.state.hyperedges.length > 0) return;
-        if (this.state.input.length > 0) return;
-        if (this.state.edited) return;
-        if (this.state.inputMode !== "generate") return;
-
-        const prompt = decodeURIComponent(
-            window.location.pathname.substring(1)
-        );
-
-        if (!prompt) return;
-        if (prompt.trim().length === 0) return;
-        if (isUUID(prompt)) return;
-
-        console.log("AUTO SEARCH", prompt);
-
-        this.setState({ input: prompt }, async () => {
-            this.handleGenerateInput();
-            window.history.replaceState(
-                {},
-                document.title,
-                window.location.pathname
-            );
-        });
-    }
-
     async fetchLicenseInfo() {
         // return;
         // const license = await window.api.licenses.info();
         // this.setState(license, async () => {
         //     await this.validateAccess();
         // });
-    }
-
-    maybeReloadData(duration = 1000) {
-        const now = new Date();
-        const elapsed = now - this.state.lastReloadedDate;
-        if (elapsed > duration) {
-            this.reloadData();
-        }
-    }
-
-    get isFocusingInput() {
-        return document.activeElement == this.inputRef.current;
-    }
-
-    get uniqueSymbols() {
-        const symbols = new Set();
-        for (const hyperedge of this.state.hyperedges) {
-            for (const symbol of hyperedge) {
-                symbols.add(symbol);
-            }
-        }
-
-        return Array.from(symbols);
-    }
-
-    handleResize() {
-        this.setState({
-            width: window.innerWidth,
-            height: window.innerHeight,
-        });
-    }
-
-    handleZoom() {
-        this.animation.pause();
-        this.animation.resume();
-    }
-
-    handleMouseDown(e) {
-        this.animation.interact();
-        this.handleCloseSettingsMenu(e);
-    }
-
-    handleCloseSettingsMenu(e) {
-        if (this.state.showSettingsMenu) {
-            const target = e.target;
-            if (target) {
-                const parent = target.parentElement;
-                if (parent) {
-                    if (
-                        parent.id === "settings-menu" ||
-                        parent.id === "settings-icon" ||
-                        parent.parentElement.id === "settings-icon"
-                    ) {
-                        e.preventDefault();
-                        return;
-                    }
-                }
-            }
-
-            console.log("CLOSE CLOSE CLOSE");
-            this.setState({ showSettingsMenu: false });
-        }
-    }
-
-    handleMouseUp(e) {
-        this.animation.stopInteracting();
-    }
-
-    handleKeyDown(e) {
-        this.animation.interact();
-
-        if (e.key === "Shift") {
-            this.setState({ isShiftDown: true });
-        }
-
-        if (e.key === "Escape") {
-            if (this.state.showLLMSettings) {
-                this.toggleLLMSettings();
-            }
-            if (this.state.showSettingsMenu) {
-                this.toggleSettingsMenu();
-            }
-            if (this.state.showConsole) {
-                this.setState({ showConsole: false });
-            }
-            if (this.state.showLabsWarning) {
-                this.toggleLabsWarning(false);
-            }
-            if (this.state.showLayout) {
-                this.toggleShowLayout();
-            }
-        }
-
-        if (e.key === "1" && e.metaKey) {
-            this.setState({ inputMode: "add" });
-        } else if (e.key === "2" && e.metaKey) {
-            this.setState({ inputMode: "generate" });
-        } else if (e.key === "3" && e.metaKey) {
-            this.setState({ inputMode: "search" });
-        } else if (e.key === "Tab") {
-            this.toggleInterwingle();
-        } else if (e.key === "`") {
-            this.setState({ showConsole: !this.state.showConsole });
-        } else if (e.key === "-" && !this.isFocusingInput) {
-            this.zoom(5);
-        } else if (e.key === "=" && !this.isFocusingInput) {
-            this.zoom(-5);
-        } else if (e.key === "+" && !this.isFocusingInput) {
-            this.zoom(-50);
-        } else if (e.key === "_" && !this.isFocusingInput) {
-            this.zoom(50);
-        } else if (e.key === "ArrowLeft") {
-            if (this.state.graphType === "3d") {
-                if (e.shiftKey) {
-                    this.rotate(-10);
-                } else {
-                    this.rotate(-1);
-                }
-            } else {
-                this.panX(-1);
-            }
-        } else if (e.key === "ArrowRight") {
-            if (this.state.graphType === "3d") {
-                if (e.shiftKey) {
-                    this.rotate(10);
-                } else {
-                    this.rotate(1);
-                }
-            } else {
-                this.panX(1);
-            }
-        } else if (e.key === "ArrowDown") {
-            if (this.state.graphType === "2d") {
-                this.panY(1);
-            }
-            // this.toggleDepth(this.state.depth - 1);
-        } else if (e.key === "ArrowUp") {
-            if (this.state.graphType === "2d") {
-                this.panY(-1);
-            }
-            // this.toggleDepth(this.state.depth + 1);
-        } else if (e.key === "Backspace") {
-            if (this.state.input === "") {
-                this.setState({ hyperedge: this.state.hyperedge.slice(0, -1) });
-            } else {
-                this.inputReference.focus();
-            }
-        } else if (this.state.controlType === "fly") {
-            return;
-        } else if (
-            (this.state.trialExpired && !this.state.licenseValid) ||
-            this.state.showLicense ||
-            this.state.showLLMSettings
-        ) {
-            return;
-        } else {
-            if (e.key !== "Shift") {
-                this.inputReference.focus();
-            }
-        }
-    }
-
-    get inputReference() {
-        if (!this.inputRef) return {};
-        if (!this.inputRef.current) return {};
-        if (!this.inputRef.current.firstChild) return {}; // so hacky...but we grab the parent because downshift takes over reference
-        const reference = this.inputRef.current.firstChild;
-        return reference;
-    }
-
-    handleKeyUp(e) {
-        this.animation.stopInteracting();
-
-        if (e.key === "Shift") {
-            this.setState({ isShiftDown: false });
-        }
     }
 
     async createNewHypergraph() {
@@ -418,113 +262,6 @@ export default class App extends React.Component {
             console.log("error creating new hypergraph", e);
             return null;
         }
-    }
-
-    async handleEmptyHypergraph() {
-        if (!(await window.api.hypergraph.isValid())) {
-            await this.createNewHypergraph();
-        }
-    }
-
-    async handleInput(e) {
-        e.preventDefault();
-
-        if (this.state.inputMode === "add") {
-            await this.handleAddInput(e);
-        } else if (this.state.inputMode === "generate") {
-            if (this.state.input.trim().length === 0) {
-                toast.error("Please enter a phrase");
-                return;
-            }
-
-            await this.handleGenerateInput(e);
-        } else if (this.state.inputMode === "search") {
-            if (this.state.input.trim().length === 0) {
-                toast.error("Please enter a search term");
-                return;
-            }
-
-            await this.handleSearchInput(e);
-        }
-    }
-
-    async handleGenerateInput(e) {
-        await this.handleEmptyHypergraph();
-
-        const llm = this.state.llm;
-        const options = { llm };
-        const response = await window.api.hyperedges.generate(
-            this.state.input,
-            options
-        );
-
-        for await (const message of response) {
-            switch (message.event) {
-                case "hyperedges.generate.result":
-                    this.maybeReloadData();
-                    break;
-                case "hyperedges.generate.start":
-                    this.setState({ isGenerating: true, edited: true });
-                    toast.success("Generating...");
-                    break;
-                case "hyperedges.generate.stop":
-                    this.setState({ isGenerating: false });
-                    this.reloadData();
-                    break;
-                case "success":
-                    toast.success(
-                        message.message || "Successfully generated results"
-                    );
-                    break;
-                case "error":
-                    toast.error(message.message || "Error generating results");
-                    break;
-                default:
-                    console.log("UNKNOWN MESSAGE", message);
-                    break;
-            }
-        }
-    }
-
-    async handleSearchInput(e) {
-        await this.handleEmptyHypergraph();
-        this.searchText(this.state.input, this.state.isShiftDown);
-    }
-
-    async handleAddInput(e) {
-        await this.handleEmptyHypergraph();
-
-        if (this.state.input.trim().length === 0) {
-            this.setState(
-                {
-                    input: "",
-                    hyperedge: [],
-                },
-                async () => {
-                    await this.reloadData();
-                }
-            );
-            return;
-        }
-        await window.api.hyperedges.add(this.state.hyperedge, this.state.input);
-
-        const hyperedge = [...this.state.hyperedge, this.state.input];
-
-        this.setState(
-            {
-                input: "",
-                edited: true,
-                hyperedge,
-            },
-            async () => {
-                await this.reloadData();
-            }
-        );
-    }
-
-    handleClickNode(node, e) {
-        window.api.analytics.track("app.clickNode");
-        this.searchText(node.name, e.shiftKey);
     }
 
     searchText(text, append = false) {
@@ -583,105 +320,6 @@ export default class App extends React.Component {
         if (this.state.isShiftDown) amount *= 10;
         const position = this.graphRef.current.centerAt();
         this.graphRef.current.centerAt(undefined, position.y + amount, 100);
-    }
-
-    toggleLabels() {
-        window.api.analytics.track("app.toggleLabels");
-        this.setState({ hideLabels: !this.state.hideLabels }, () => {
-            this.graphRef.current.refresh();
-        });
-    }
-
-    toggleCamera() {
-        window.api.analytics.track("app.toggleCamera");
-        const controlType =
-            this.state.controlType === "orbit" ? "fly" : "orbit";
-
-        window.localStorage.setItem("controlType", controlType);
-
-        // reload page, unfortunately 3D Force Graph doesn't allow dynamic control type changes
-        window.location.href = window.location.href;
-    }
-
-    toggleLLMSettings() {
-        this.setState({
-            showLLMSettings: !this.state.showLLMSettings,
-        });
-    }
-
-    toggleGraphType() {
-        window.api.analytics.track("app.toggleGraphType");
-        const graphType = this.state.graphType === "2d" ? "3d" : "2d";
-
-        window.localStorage.setItem("graphType", graphType);
-        window.location.href = window.location.href;
-    }
-
-    toggleAnimation() {
-        window.api.analytics.track("app.toggleAnimation");
-        if (this.state.isAnimating) {
-            this.animation.stop();
-        } else {
-            this.animation.start();
-        }
-
-        this.setState({ isAnimating: !this.state.isAnimating });
-    }
-
-    toggleInterwingle(interwingle) {
-        window.api.analytics.track("app.toggleInterwingle");
-        if (typeof interwingle === "undefined") {
-            interwingle = this.state.interwingle;
-            interwingle++;
-        }
-
-        if (interwingle > 3) interwingle = 0;
-
-        this.setState({ interwingle }, () => {
-            this.reloadData();
-        });
-    }
-
-    toggleDepth(depth) {
-        window.api.analytics.track("app.toggleDepth");
-        if (typeof depth === "undefined") {
-            depth = this.state.depth;
-            depth++;
-        }
-
-        if (depth > this.state.maxDepth) depth = this.state.maxDepth;
-        if (depth < 0) depth = 0;
-
-        this.setState({ depth }, () => {
-            setTimeout(() => {
-                if (this.depthRef.current) {
-                    this.depthRef.current.blur();
-                }
-            }, 50);
-
-            this.reloadData();
-        });
-    }
-
-    toggleWormhole() {
-        window.api.analytics.track("app.toggleWormhole");
-
-        let wormholeMode;
-        let controlType = "fly";
-
-        if (this.state.wormholeMode > -1) {
-            wormholeMode = -1;
-            controlType = "orbit";
-        } else {
-            wormholeMode = 0;
-        }
-
-        this.setState({ wormholeMode, controlType });
-        window.localStorage.setItem("wormholeMode", wormholeMode);
-        window.localStorage.setItem("controlType", controlType);
-
-        // reload page, unfortunately 3D Force Graph doesn't allow dynamic control type changes
-        window.location.href = window.location.href;
     }
 
     startWormhole() {
@@ -871,30 +509,143 @@ export default class App extends React.Component {
         }
     }
 
+    //
+    // TOGGLE
+    //
+
+    // showConsole: false,
+    // showLicense: false,
+    // showSettingsMenu: false,
+    // showLLMSettings: false,
+
+    toggleShowLabsWarning(val) {
+        const showLabsWarning =
+            val === undefined ? !this.state.showLabsWarning : val;
+        this.setState({ showLabsWarning });
+    }
+
+    toggleShowLayout(val) {
+        const showLayout = val === undefined ? !this.state.showLayout : val;
+        this.setState({ showLayout });
+    }
+
+    toggleSettingsMenu() {
+        const showSettingsMenu =
+            val === undefined ? !this.state.showSettingsMenu : val;
+        this.setState({ showSettingsMenu });
+    }
+
+    toggleCamera() {
+        window.api.analytics.track("app.toggleCamera");
+        const controlType =
+            this.state.controlType === "orbit" ? "fly" : "orbit";
+
+        window.localStorage.setItem("controlType", controlType);
+
+        window.location.href = window.location.href;
+    }
+
+    toggleLLMSettings(val) {
+        const showLLMSettings =
+            val === undefined ? !this.state.showLLMSettings : val;
+        this.setState({ showLLMSettings });
+    }
+
+    toggleGraphType() {
+        window.api.analytics.track("app.toggleGraphType");
+        const graphType = this.state.graphType === "2d" ? "3d" : "2d";
+
+        window.localStorage.setItem("graphType", graphType);
+        window.location.href = window.location.href;
+    }
+
+    toggleLabels(val) {
+        const hideLabels = val === undefined ? !this.state.hideLabels : val;
+        window.api.analytics.track("app.toggleLabels");
+        this.setState({ hideLabels }, () => {
+            this.graphRef.current.refresh();
+        });
+    }
+
+    toggleAnimation(val) {
+        const isAnimating = val === undefined ? !this.state.isAnimating : val;
+
+        window.api.analytics.track("app.toggleAnimation");
+        if (isAnimating) {
+            this.animation.start();
+        } else {
+            this.animation.stop();
+        }
+
+        this.setState({ isAnimating });
+    }
+
+    toggleInterwingle(interwingle) {
+        window.api.analytics.track("app.toggleInterwingle");
+        if (typeof interwingle === "undefined") {
+            interwingle = this.state.interwingle;
+            interwingle++;
+        }
+
+        if (interwingle > 3) interwingle = 0;
+
+        this.setState({ interwingle }, () => {
+            this.reloadData();
+        });
+    }
+
+    toggleDepth(depth) {
+        window.api.analytics.track("app.toggleDepth");
+        if (typeof depth === "undefined") {
+            depth = this.state.depth;
+            depth++;
+        }
+
+        if (depth > this.state.maxDepth) depth = this.state.maxDepth;
+        if (depth < 0) depth = 0;
+
+        this.setState({ depth }, () => {
+            setTimeout(() => {
+                if (this.depthRef.current) {
+                    this.depthRef.current.blur();
+                }
+            }, 50);
+
+            this.reloadData();
+        });
+    }
+
+    toggleWormhole() {
+        window.api.analytics.track("app.toggleWormhole");
+
+        let wormholeMode;
+        let controlType = "fly";
+
+        if (this.state.wormholeMode > -1) {
+            wormholeMode = -1;
+            controlType = "orbit";
+        } else {
+            wormholeMode = 0;
+        }
+
+        this.setState({ wormholeMode, controlType });
+        window.localStorage.setItem("wormholeMode", wormholeMode);
+        window.localStorage.setItem("controlType", controlType);
+
+        // reload page, unfortunately 3D Force Graph doesn't allow dynamic control type changes
+        window.location.href = window.location.href;
+    }
+
+    //
+    // HANDLE
+    //
+
     handleTick() {
         this.checkForCollisions();
     }
 
     handleEngineStop() {
         console.log("ENGINE STOPPED");
-    }
-
-    toggleShowLayout() {
-        this.setState({ showLayout: !this.state.showLayout });
-    }
-
-    toggleSettingsMenu() {
-        this.setState({ showSettingsMenu: !this.state.showSettingsMenu });
-    }
-
-    toggleLabsWarning(val) {
-        const showLabsWarning =
-            typeof val === "undefined" ? !this.state.showLabsWarning : val;
-        this.setState({ showLabsWarning });
-    }
-
-    closeSettingsMenu() {
-        this.setState({ showSettingsMenu: false });
     }
 
     async handleDownload() {
@@ -906,6 +657,289 @@ export default class App extends React.Component {
 
         await services.saveFile(data, `${name}.csv`, "text/csv");
     }
+
+    async handleAutoSearch() {
+        if (!this.state.loaded) return;
+        if (this.state.hyperedges.length > 0) return;
+        if (this.state.input.length > 0) return;
+        if (this.state.edited) return;
+        if (this.state.inputMode !== "generate") return;
+
+        const prompt = decodeURIComponent(
+            window.location.pathname.substring(1)
+        );
+
+        if (!prompt) return;
+        if (prompt.trim().length === 0) return;
+        if (isUUID(prompt)) return;
+
+        console.log("AUTO SEARCH", prompt);
+
+        this.setState({ input: prompt }, async () => {
+            this.handleGenerateInput();
+            window.history.replaceState(
+                {},
+                document.title,
+                window.location.pathname
+            );
+        });
+    }
+
+    handleResize() {
+        this.setState({
+            width: window.innerWidth,
+            height: window.innerHeight,
+        });
+    }
+
+    handleZoom() {
+        this.animation.pause();
+        this.animation.resume();
+    }
+
+    handleMouseDown(e) {
+        this.animation.interact();
+        this.handleCloseSettingsMenu(e);
+    }
+
+    handleCloseSettingsMenu(e) {
+        if (this.state.showSettingsMenu) {
+            const target = e.target;
+            if (target) {
+                const parent = target.parentElement;
+                if (parent) {
+                    if (
+                        parent.id === "settings-menu" ||
+                        parent.id === "settings-icon" ||
+                        parent.parentElement.id === "settings-icon"
+                    ) {
+                        e.preventDefault();
+                        return;
+                    }
+                }
+            }
+
+            console.log("CLOSE CLOSE CLOSE");
+            this.setState({ showSettingsMenu: false });
+        }
+    }
+
+    handleMouseUp(e) {
+        this.animation.stopInteracting();
+    }
+
+    handleKeyDown(e) {
+        this.animation.interact();
+
+        if (e.key === "Shift") {
+            this.setState({ isShiftDown: true });
+        }
+
+        if (e.key === "Escape") {
+            if (this.state.showLLMSettings) {
+                this.toggleLLMSettings();
+            }
+            if (this.state.showSettingsMenu) {
+                this.toggleSettingsMenu();
+            }
+            if (this.state.showConsole) {
+                this.setState({ showConsole: false });
+            }
+            if (this.state.showLabsWarning) {
+                this.toggleShowLabsWarning(false);
+            }
+            if (this.state.showLayout) {
+                this.toggleShowLayout();
+            }
+        }
+
+        if (e.key === "1" && e.metaKey) {
+            this.setState({ inputMode: "add" });
+        } else if (e.key === "2" && e.metaKey) {
+            this.setState({ inputMode: "generate" });
+        } else if (e.key === "3" && e.metaKey) {
+            this.setState({ inputMode: "search" });
+        } else if (e.key === "Tab") {
+            this.toggleInterwingle();
+        } else if (e.key === "`") {
+            this.setState({ showConsole: !this.state.showConsole });
+        } else if (e.key === "-" && !this.isFocusingInput) {
+            this.zoom(5);
+        } else if (e.key === "=" && !this.isFocusingInput) {
+            this.zoom(-5);
+        } else if (e.key === "+" && !this.isFocusingInput) {
+            this.zoom(-50);
+        } else if (e.key === "_" && !this.isFocusingInput) {
+            this.zoom(50);
+        } else if (e.key === "ArrowLeft") {
+            if (this.state.graphType === "3d") {
+                if (e.shiftKey) {
+                    this.rotate(-10);
+                } else {
+                    this.rotate(-1);
+                }
+            } else {
+                this.panX(-1);
+            }
+        } else if (e.key === "ArrowRight") {
+            if (this.state.graphType === "3d") {
+                if (e.shiftKey) {
+                    this.rotate(10);
+                } else {
+                    this.rotate(1);
+                }
+            } else {
+                this.panX(1);
+            }
+        } else if (e.key === "ArrowDown") {
+            if (this.state.graphType === "2d") {
+                this.panY(1);
+            }
+            // this.toggleDepth(this.state.depth - 1);
+        } else if (e.key === "ArrowUp") {
+            if (this.state.graphType === "2d") {
+                this.panY(-1);
+            }
+            // this.toggleDepth(this.state.depth + 1);
+        } else if (e.key === "Backspace") {
+            if (this.state.input === "") {
+                this.setState({ hyperedge: this.state.hyperedge.slice(0, -1) });
+            } else {
+                this.inputReference.focus();
+            }
+        } else if (this.state.controlType === "fly") {
+            return;
+        } else if (
+            (this.state.trialExpired && !this.state.licenseValid) ||
+            this.state.showLicense ||
+            this.state.showLLMSettings
+        ) {
+            return;
+        } else {
+            if (e.key !== "Shift") {
+                this.inputReference.focus();
+            }
+        }
+    }
+
+    handleKeyUp(e) {
+        this.animation.stopInteracting();
+
+        if (e.key === "Shift") {
+            this.setState({ isShiftDown: false });
+        }
+    }
+
+    async handleEmptyHypergraph() {
+        if (!(await window.api.hypergraph.isValid())) {
+            await this.createNewHypergraph();
+        }
+    }
+
+    async handleInput(e) {
+        e.preventDefault();
+
+        if (this.state.inputMode === "add") {
+            await this.handleAddInput(e);
+        } else if (this.state.inputMode === "generate") {
+            if (this.state.input.trim().length === 0) {
+                toast.error("Please enter a phrase");
+                return;
+            }
+
+            await this.handleGenerateInput(e);
+        } else if (this.state.inputMode === "search") {
+            if (this.state.input.trim().length === 0) {
+                toast.error("Please enter a search term");
+                return;
+            }
+
+            await this.handleSearchInput(e);
+        }
+    }
+
+    async handleGenerateInput(e) {
+        await this.handleEmptyHypergraph();
+
+        const llm = this.state.llm;
+        const options = { llm };
+        const response = await window.api.hyperedges.generate(
+            this.state.input,
+            options
+        );
+
+        for await (const message of response) {
+            switch (message.event) {
+                case "hyperedges.generate.result":
+                    this.maybeReloadData();
+                    break;
+                case "hyperedges.generate.start":
+                    this.setState({ isGenerating: true, edited: true });
+                    toast.success("Generating...");
+                    break;
+                case "hyperedges.generate.stop":
+                    this.setState({ isGenerating: false });
+                    this.reloadData();
+                    break;
+                case "success":
+                    toast.success(
+                        message.message || "Successfully generated results"
+                    );
+                    break;
+                case "error":
+                    toast.error(message.message || "Error generating results");
+                    break;
+                default:
+                    console.log("UNKNOWN MESSAGE", message);
+                    break;
+            }
+        }
+    }
+
+    async handleSearchInput(e) {
+        await this.handleEmptyHypergraph();
+        this.searchText(this.state.input, this.state.isShiftDown);
+    }
+
+    async handleAddInput(e) {
+        await this.handleEmptyHypergraph();
+
+        if (this.state.input.trim().length === 0) {
+            this.setState(
+                {
+                    input: "",
+                    hyperedge: [],
+                },
+                async () => {
+                    await this.reloadData();
+                }
+            );
+            return;
+        }
+        await window.api.hyperedges.add(this.state.hyperedge, this.state.input);
+
+        const hyperedge = [...this.state.hyperedge, this.state.input];
+
+        this.setState(
+            {
+                input: "",
+                edited: true,
+                hyperedge,
+            },
+            async () => {
+                await this.reloadData();
+            }
+        );
+    }
+
+    handleClickNode(node, e) {
+        window.api.analytics.track("app.clickNode");
+        this.searchText(node.name, e.shiftKey);
+    }
+
+    //
+    // RENDER
+    //
 
     render() {
         const isElectron = this.state.loaded ? window.api.isElectron : false;
@@ -1021,15 +1055,13 @@ export default class App extends React.Component {
                     toggleWormhole={this.toggleWormhole.bind(this)}
                     toggleLLMSettings={this.toggleLLMSettings.bind(this)}
                     showSettingsMenu={this.state.showSettingsMenu}
-                    setShowSettingsMenu={() =>
-                        this.setState({ showSettingsMenu: true })
-                    }
                     toggleSettingsMenu={this.toggleSettingsMenu.bind(this)}
-                    closeSettingsMenu={this.closeSettingsMenu.bind(this)}
+                    showLayout={this.state.showLayout}
                     toggleShowLayout={this.toggleShowLayout.bind(this)}
                     showLabsWarning={this.state.showLabsWarning}
-                    toggleLabsWarning={this.toggleLabsWarning.bind(this)}
-                    showLayout={this.state.showLayout}
+                    toggleShowLabsWarning={this.toggleShowLabsWarning.bind(
+                        this
+                    )}
                     cooldownTicks={this.state.cooldownTicks}
                     setCooldownTicks={(cooldownTicks) => {
                         this.setState({ cooldownTicks });

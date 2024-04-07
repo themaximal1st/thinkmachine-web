@@ -7,7 +7,7 @@ import LabsWarning from "./LabsWarning";
 export default function Footer(params) {
     function handleToggleWormhole() {
         if (params.wormholeMode === -1) {
-            params.toggleLabsWarning(true);
+            params.toggleShowLabsWarning(true);
         } else {
             params.toggleWormhole();
         }
@@ -90,7 +90,6 @@ export default function Footer(params) {
                             {!params.isAnimating && (
                                 <a
                                     onClick={params.toggleSettingsMenu}
-                                    // onMouseEnter={params.setShowSettingsMenu}
                                     title="Settings"
                                     id="settings-icon"
                                     className="select-none opacity-40 hover:opacity-100 transition-all cursor-pointer pointer-events-auto"
@@ -200,7 +199,7 @@ export default function Footer(params) {
             />
             {params.showLabsWarning && (
                 <LabsWarning
-                    onClose={() => params.toggleLabsWarning(false)}
+                    onClose={() => params.toggleShowLabsWarning(false)}
                     onStart={(e) => params.toggleWormhole()}
                 />
             )}
