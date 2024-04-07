@@ -42,3 +42,66 @@ body {
 .electron #filters {
     @apply mt-10;
 }
+
+.fan-left a:nth-child(1) {
+    @apply ml-[1.618px];
+}
+
+.fan-left a:nth-child(2) {
+    @apply ml-[16.18px];
+}
+
+.fan-left a:nth-child(3) {
+    @apply ml-[32.36px];
+}
+
+.fan-left a:nth-child(4) {
+    @apply ml-[48.54px];
+}
+
+.fan-left a:nth-child(5) {
+    @apply ml-[64.72px];
+}
+
+.fan-left a:nth-child(6) {
+    @apply ml-[80.9px];
+}
+
+.fan-left .menu-item {
+    @apply pointer-events-auto bg-gray-1000/50 hover:bg-gray-1000 transition-all p-4 opacity-0 inline-flex items-center gap-2 hover:cursor-pointer flex-none self-start rounded-lg;
+}
+
+.fan-left .menu-item:nth-child(1) {
+    animation: itemPopUp 0.05s ease-out 0.05s forwards;
+}
+
+.fan-left .menu-item:nth-child(2) {
+    animation: itemPopUp 0.09s ease-out 0.09s forwards;
+}
+
+.fan-left .menu-item:nth-child(3) {
+    animation: itemPopUp 0.13s ease-out 0.13s forwards;
+}
+
+.fan-left .menu-item:nth-child(4) {
+    animation: itemPopUp 0.17s ease-out 0.17s forwards;
+}
+
+.fan-left .menu-item:nth-child(5) {
+    animation: itemPopUp 0.21s ease-out 0.21s forwards;
+}
+
+.fan-left .menu-item:nth-child(6) {
+    animation: itemPopUp 0.6s ease-out 0.6s forwards;
+}
+
+@keyframes itemPopUp {
+    from {
+        opacity: 0;
+        /* transform: translateY(20px); */
+    }
+    to {
+        opacity: 1;
+        /* transform: translateY(0); */
+    }
+}

@@ -1,11 +1,24 @@
+import { Tooltip } from "react-tooltip";
+
 export default function Filters(params) {
     return (
         <div
             className="flex text-white mt-1 text-sm gap-1 px-2 w-4/12 absolute z-20 flex-col right-0 items-end"
             id="filters"
         >
+            <Tooltip
+                id="filter-tooltip"
+                style={{
+                    backgroundColor: "#1A1A1A", // gray-1000
+                    color: "#f5f6f6", // gray-50
+                }}
+            />
             {params.filters.length > 0 && (
-                <div className="uppercase text-sm select-none tracking-widest font-medium text-gray-200">
+                <div
+                    data-tooltip-id="filter-tooltip"
+                    data-tooltip-content="Filter graph by symbol or connection"
+                    className="uppercase text-sm select-none tracking-widest font-medium text-gray-200"
+                >
                     Filters
                 </div>
             )}

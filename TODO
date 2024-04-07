@@ -7,6 +7,7 @@
 * electron: wormhole
 * electron: scraping -> proxy api key?
 * electron: does FoceGraph toggling work? 2d? 3d?
+* electron: license
 
 * Add githook to check versions are the same?
 
@@ -16,6 +17,8 @@
   * If so, create shared scripts, npm run desktop, npm run web
 * click should depend on what mode you are in. add, generate or search
 * remember inputMode choice, default to it (unless Search)
+
+* Depth is still messed up. If you go down depth, it loses maxDepth
 
 ---
 

@@ -1,11 +1,13 @@
 import { bouncy } from "ldrs";
 bouncy.register();
 
+import { Tooltip } from "react-tooltip";
 import React, { useState } from "react";
 import { useCombobox } from "downshift";
 import cx from "classnames";
 
-import Logo from "../assets/logo.png";
+import * as Icons from "@assets/Icons";
+import Logo from "@assets/logo.png";
 
 export default function Typer(params) {
     if (!params.show) return;
@@ -53,17 +55,27 @@ export default function Typer(params) {
     }
 
     return (
-        <div
-            className={params.loaded ? "" : "hidden pointer-events-none"}
-            id="typer"
-        >
+        <div>
             <div
                 className="flex flex-col text-white mt-1 text-sm gap-1 px-2 w-4/12 absolute z-20 flex-wrap"
                 id="typerInner"
             >
+                <Tooltip
+                    id="current-tooltip"
+                    style={{
+                        backgroundColor: "#1A1A1A", // gray-1000
+                        color: "#f5f6f6", // gray-50
+                    }}
+                />
                 {params.hyperedge.length > 0 && (
-                    <div className="uppercase text-sm select-none tracking-widest font-medium text-gray-200">
-                        CURRENT
+                    <div>
+                        <div
+                            data-tooltip-id="current-tooltip"
+                            data-tooltip-content="Current context for adding information"
+                            className="uppercase text-sm select-none tracking-widest font-medium text-gray-200 inline-block"
+                        >
+                            CURRENT
+                        </div>
                     </div>
                 )}
                 <div className="flex gap-1 flex-wrap">
@@ -84,7 +96,6 @@ export default function Typer(params) {
                     })}
                 </div>
             </div>
-
             <div
                 id="typerInput"
                 className={`absolute inset-0 mt-2  flex flex-col gap-2 pointer-events-none z-40 items-center transition-all ${
@@ -100,8 +111,20 @@ export default function Typer(params) {
                         />
                     </a>
                 )}
+
+                <Tooltip
+                    id="typer-tooltip"
+                    place="top"
+                    style={{
+                        backgroundColor: "#1A1A1A", // gray-1000
+                        color: "#f5f6f6", // gray-50
+                    }}
+                />
+
                 <div className="flex text-white gap-2">
                     <a
+                        data-tooltip-id="typer-tooltip"
+                        data-tooltip-content="Add new information to knowledge graph"
                         className={`select-none text-sm pointer-events-auto flex items-center gap-[6px] py-1 px-2 rounded-lg hover:cursor-pointer transition-all ${
                             params.inputMode === "add"
                                 ? "bg-gray-800/80 opacity-100"
@@ -125,6 +148,8 @@ export default function Typer(params) {
                     </a>
 
                     <a
+                        data-tooltip-id="typer-tooltip"
+                        data-tooltip-content={`Generate new information with ${params.llm.name}`}
                         className={`select-none text-sm pointer-events-auto flex items-center gap-[6px] py-1 px-2 rounded-lg hover:cursor-pointer transition-all ${
                             params.inputMode === "generate"
                                 ? "bg-gray-800/80 opacity-100"
@@ -132,22 +157,13 @@ export default function Typer(params) {
                         }`}
                         onClick={() => params.setInputMode("generate")}
                     >
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 16 16"
-                            fill="currentColor"
-                            className="w-4 h-4"
-                        >
-                            <path
-                                fillRule="evenodd"
-                                d="M5 4a.75.75 0 0 1 .738.616l.252 1.388A1.25 1.25 0 0 0 6.996 7.01l1.388.252a.75.75 0 0 1 0 1.476l-1.388.252A1.25 1.25 0 0 0 5.99 9.996l-.252 1.388a.75.75 0 0 1-1.476 0L4.01 9.996A1.25 1.25 0 0 0 3.004 8.99l-1.388-.252a.75.75 0 0 1 0-1.476l1.388-.252A1.25 1.25 0 0 0 4.01 6.004l.252-1.388A.75.75 0 0 1 5 4ZM12 1a.75.75 0 0 1 .721.544l.195.682c.118.415.443.74.858.858l.682.195a.75.75 0 0 1 0 1.442l-.682.195a1.25 1.25 0 0 0-.858.858l-.195.682a.75.75 0 0 1-1.442 0l-.195-.682a1.25 1.25 0 0 0-.858-.858l-.682-.195a.75.75 0 0 1 0-1.442l.682-.195a1.25 1.25 0 0 0 .858-.858l.195-.682A.75.75 0 0 1 12 1ZM10 11a.75.75 0 0 1 .728.568.968.968 0 0 0 .704.704.75.75 0 0 1 0 1.456.968.968 0 0 0-.704.704.75.75 0 0 1-1.456 0 .968.968 0 0 0-.704-.704.75.75 0 0 1 0-1.456.968.968 0 0 0 .704-.704A.75.75 0 0 1 10 11Z"
-                                clipRule="evenodd"
-                            />
-                        </svg>
+                        {Icons.GenerateIcon}
                         Generate
                     </a>
 
                     <a
+                        data-tooltip-id="typer-tooltip"
+                        data-tooltip-content="Search existing knowledge graph"
                         className={`select-none text-sm pointer-events-auto flex items-center gap-[6px] py-1 px-2 rounded-lg hover:cursor-pointer transition-all ${
                             params.inputMode === "search"
                                 ? "bg-gray-800/80 opacity-100"

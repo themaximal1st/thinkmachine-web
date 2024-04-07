@@ -13,7 +13,7 @@ import Animation from "@lib/Animation";
 import License from "@components/License";
 import Console from "@components/Console";
 import Filters from "@components/Filters";
-import Settings from "@components/Settings";
+import LLMSettings from "@components/LLMSettings";
 import Interwingle from "@components/Interwingle";
 import Depth from "@components/Depth";
 import Footer from "@components/Footer";
@@ -37,7 +37,8 @@ export default class App extends React.Component {
 
             showConsole: false,
             showLicense: false,
-            showSettings: false,
+            showSettingsMenu: false,
+            showLLMSettings: false,
             showLayout: false,
 
             licenseKey: "",
@@ -256,6 +257,29 @@ export default class App extends React.Component {
 
     handleMouseDown(e) {
         this.animation.interact();
+        this.handleCloseSettingsMenu(e);
+    }
+
+    handleCloseSettingsMenu(e) {
+        if (this.state.showSettingsMenu) {
+            const target = e.target;
+            if (target) {
+                const parent = target.parentElement;
+                if (parent) {
+                    if (
+                        parent.id === "settings-menu" ||
+                        parent.id === "settings-icon" ||
+                        parent.parentElement.id === "settings-icon"
+                    ) {
+                        e.preventDefault();
+                        return;
+                    }
+                }
+            }
+
+            console.log("CLOSE CLOSE CLOSE");
+            this.setState({ showSettingsMenu: false });
+        }
     }
 
     handleMouseUp(e) {
@@ -269,8 +293,12 @@ export default class App extends React.Component {
             this.setState({ isShiftDown: true });
         }
 
-        if (e.key === "Escape" && this.state.showSettings) {
-            this.toggleSettings();
+        if (e.key === "Escape" && this.state.showLLMSettings) {
+            this.toggleLLMSettings();
+        }
+
+        if (e.key === "Escape" && this.state.showSettingsMenu) {
+            this.toggleSettingsMenu();
         }
 
         if (e.key === "1" && e.metaKey) {
@@ -332,7 +360,7 @@ export default class App extends React.Component {
         } else if (
             (this.state.trialExpired && !this.state.licenseValid) ||
             this.state.showLicense ||
-            this.state.showSettings
+            this.state.showLLMSettings
         ) {
             return;
         } else {
@@ -562,9 +590,9 @@ export default class App extends React.Component {
         window.location.href = window.location.href;
     }
 
-    toggleSettings() {
+    toggleLLMSettings() {
         this.setState({
-            showSettings: !this.state.showSettings,
+            showLLMSettings: !this.state.showLLMSettings,
         });
     }
 
@@ -839,6 +867,14 @@ export default class App extends React.Component {
         this.setState({ showLayout: !this.state.showLayout });
     }
 
+    toggleSettingsMenu() {
+        this.setState({ showSettingsMenu: !this.state.showSettingsMenu });
+    }
+
+    closeSettingsMenu() {
+        this.setState({ showSettingsMenu: false });
+    }
+
     async handleDownload() {
         const data = await window.api.hypergraph.export();
 
@@ -922,6 +958,7 @@ export default class App extends React.Component {
                     }}
                     hyperedge={this.state.hyperedge}
                     show={!this.state.showConsole && !this.state.isAnimating}
+                    llm={this.state.llm}
                     edited={this.state.edited}
                 />
                 <ForceGraph
@@ -938,11 +975,13 @@ export default class App extends React.Component {
                     showLabels={!this.state.hideLabels}
                     cooldownTicks={this.state.cooldownTicks}
                 />
-                <Settings
-                    showSettings={this.state.showSettings}
+                <LLMSettings
+                    showLLMSettings={this.state.showLLMSettings}
                     updateLLM={this.updateLLM.bind(this)}
                     llm={this.state.llm}
-                    closeSettings={() => this.setState({ showSettings: false })}
+                    closeLLMSettings={() =>
+                        this.setState({ showLLMSettings: false })
+                    }
                 />
                 <Footer
                     isAnimating={this.state.isAnimating}
@@ -958,7 +997,13 @@ export default class App extends React.Component {
                     hyperedges={this.state.hyperedges}
                     wormholeMode={this.state.wormholeMode}
                     toggleWormhole={this.toggleWormhole.bind(this)}
-                    toggleSettings={this.toggleSettings.bind(this)}
+                    toggleLLMSettings={this.toggleLLMSettings.bind(this)}
+                    showSettingsMenu={this.state.showSettingsMenu}
+                    setShowSettingsMenu={() =>
+                        this.setState({ showSettingsMenu: true })
+                    }
+                    toggleSettingsMenu={this.toggleSettingsMenu.bind(this)}
+                    closeSettingsMenu={this.closeSettingsMenu.bind(this)}
                     toggleShowLayout={this.toggleShowLayout.bind(this)}
                     showLayout={this.state.showLayout}
                     cooldownTicks={this.state.cooldownTicks}

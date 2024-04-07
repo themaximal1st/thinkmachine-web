@@ -25,37 +25,68 @@ export default function Footer(params) {
             <div className="relative pointer-events-none">
                 <div className="absolute text-white bottom-2 left-3 right-3 z-20 flex gap-4 pointer-events-none justify-between items-center">
                     <div className="flex gap-4 items-center">
-                        {!params.isAnimating && (
-                            <a
-                                onClick={(e) => params.toggleSettings()}
-                                title="Settings"
-                                className="select-none opacity-40 hover:opacity-100 transition-all cursor-pointer pointer-events-auto"
-                            >
-                                {Icons.SettingsIcon}
-                            </a>
-                        )}
-                        {isWeb && !params.isAnimating && params.edited && (
-                            <a
-                                onClick={(e) => (window.location.href = "/")}
-                                title="New File"
-                                className="select-none text-white opacity-50 hover:opacity-100 transition-all cursor-pointer mb-1 pointer-events-auto"
-                            >
-                                {Icons.NewIcon}
-                            </a>
-                        )}
-                        {isWeb &&
-                            !params.isAnimating &&
-                            params.loaded &&
-                            params.edited &&
-                            params.hyperedges.length > 0 && (
-                                <a
-                                    onClick={(e) => params.handleDownload()}
-                                    title="Save File"
-                                    className="select-none text-white opacity-50 hover:opacity-100 transition-all cursor-pointer mb-1 pointer-events-auto"
+                        <div className="relative">
+                            {params.showSettingsMenu && (
+                                <div
+                                    className="pointer-events-none absolute -left-5 bottom-10 w-96 flex flex-col-reverse gap-0 p-2 text-lg fan-left"
+                                    id="settings-menu"
                                 >
-                                    {Icons.SaveIcon}
+                                    <a
+                                        onClick={params.toggleLLMSettings}
+                                        className="menu-item"
+                                    >
+                                        <div>{Icons.GenerateIcon}</div>
+                                        AI Settings
+                                    </a>
+                                    {params.edited && (
+                                        <a
+                                            onClick={(e) =>
+                                                (window.location.href = "/")
+                                            }
+                                            className="menu-item"
+                                        >
+                                            <div>{Icons.NewIcon}</div>
+                                            New
+                                        </a>
+                                    )}
+
+                                    {params.loaded &&
+                                        params.edited &&
+                                        params.hyperedges.length > 0 && (
+                                            <a
+                                                onClick={(e) =>
+                                                    params.handleDownload()
+                                                }
+                                                className="menu-item"
+                                            >
+                                                <div>{Icons.SaveIcon}</div>
+                                                Save
+                                            </a>
+                                        )}
+
+                                    <a
+                                        onClick={() => {
+                                            console.log("load");
+                                        }}
+                                        className="menu-item"
+                                    >
+                                        <div>{Icons.LoadIcon}</div>
+                                        Load
+                                    </a>
+                                </div>
+                            )}
+                            {!params.isAnimating && (
+                                <a
+                                    onClick={params.setShowSettingsMenu}
+                                    onMouseEnter={params.setShowSettingsMenu}
+                                    title="Settings"
+                                    id="settings-icon"
+                                    className="select-none opacity-40 hover:opacity-100 transition-all cursor-pointer pointer-events-auto"
+                                >
+                                    {Icons.SettingsIcon}
                                 </a>
                             )}
+                        </div>
                         {isWeb && !params.isAnimating && (
                             <a
                                 className="text-sm lg:text- text-white opacity-50 hover:opacity-100 transition-all cursor-pointer mb-1 pointer-events-auto"

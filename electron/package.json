@@ -38,6 +38,7 @@
         "react-force-graph-2d": "^1.25.4",
         "react-force-graph-3d": "^1.24.1",
         "react-hot-toast": "^2.4.1",
+        "react-tooltip": "^5.26.3",
         "slugify": "^1.6.6",
         "three": "^0.160.0",
         "three-spritetext": "^1.8.1",
