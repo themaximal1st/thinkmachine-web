@@ -1,7 +1,5 @@
-* Add tooltips to icons/buttons
-* add cac.app feedback widget
-
- - Need a View button popup in bottom right corner to control all the views?
+* remember inputMode choice, default to it (unless Search)
+* click should depend on what mode you are in. add, generate or search
 
 * electron: generate
 * electron: wormhole
@@ -15,10 +13,11 @@
 * Shared README
 * Can we create a package.json in common and not have it mess up?
   * If so, create shared scripts, npm run desktop, npm run web
-* click should depend on what mode you are in. add, generate or search
-* remember inputMode choice, default to it (unless Search)
 
 * Depth is still messed up. If you go down depth, it loses maxDepth
+
+* add cac.app feedback widget
+
 
 ---
 
@@ -91,7 +90,6 @@
 * notes, add text to a node. what about a hyperedge?
 * Improve Onboarding
   * Onboarding video linked
-* Simplify chrome UX...lots of buttons/icons and not clear what they do
 * easy to to render an image from CSV...people just want to do cool visualization pictures
 
 * QUESTION: should adding data should really add a filter..otherwise you can't see what you just added
