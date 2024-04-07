@@ -279,14 +279,6 @@ export default class App extends React.Component {
         });
     }
 
-    addText(text) {
-        const hyperedge = [...this.state.hyperedge, text];
-
-        this.setState({ hyperedge }, async () => {
-            await this.reloadData();
-        });
-    }
-
     // this doesn't really work
     zoom(amount = 0) {
         const cameraPosition = this.graphRef.current.cameraPosition();
@@ -860,11 +852,11 @@ export default class App extends React.Component {
                 return;
             }
 
-            await this.handleSearchInput(e);
+            await this.handleSearchInput();
         }
     }
 
-    async handleGenerateInput(e) {
+    async handleGenerateInput() {
         await this.handleEmptyHypergraph();
 
         const llm = this.state.llm;
@@ -911,30 +903,25 @@ export default class App extends React.Component {
         await this.handleEmptyHypergraph();
 
         let hyperedge = this.state.hyperedge;
-        let input = this.state.input;
-        let reset = false;
+        let input = this.state.input.trim();
 
-        if (this.state.input.trim().length === 0) {
-            input = hyperedge.pop();
-            reset = true;
+        if (input.length === 0) {
+            this.setState({
+                input: "",
+                edited: true,
+                hyperedge: [],
+            });
+
+            return;
         }
 
-        let newHyperedge = [...hyperedge, input];
-
-        const containsHyperedge = GraphUtils.containsHyperedge(
-            this,
-            newHyperedge
-        );
-
-        if (hyperedge.length > 0 && !containsHyperedge) {
-            await window.api.hyperedges.add(hyperedge, input);
-        }
+        await window.api.hyperedges.add(hyperedge, input);
 
         this.setState(
             {
                 input: "",
                 edited: true,
-                hyperedge: reset ? [] : newHyperedge,
+                hyperedge: [...hyperedge, input],
             },
             async () => {
                 await this.reloadData();
@@ -944,9 +931,15 @@ export default class App extends React.Component {
 
     handleClickNode(node, e) {
         window.api.analytics.track("app.clickNode");
+
         if (this.state.inputMode === "add") {
-            this.addText(node.name);
+            this.setState({ input: node.name }, async () => {
+                await this.handleAddInput(e);
+            });
         } else if (this.state.inputMode === "generate") {
+            this.setState({ input: node.name }, async () => {
+                await this.handleGenerateInput();
+            });
         } else if (this.state.inputMode === "search") {
             this.searchText(node.name, e.shiftKey);
         }
