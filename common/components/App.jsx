@@ -67,7 +67,7 @@ export default class App extends React.Component {
             reloads: 0,
             interwingle: 3,
             input: "",
-            inputMode: "add",
+            inputMode: window.localStorage.getItem("inputMode") || "generate",
             hyperedge: [],
             hyperedges: [],
             filters: [],
@@ -82,6 +82,19 @@ export default class App extends React.Component {
     //
     // GET
     //
+
+    get dynamicInputMode() {
+        if (this.state.hyperedges.length > 0) {
+            return this.state.inputMode;
+        }
+
+        // don't allow search mode if there are no hyperedges
+        if (this.state.inputMode === "search") {
+            return "generate";
+        }
+
+        return this.state.inputMode;
+    }
 
     get inputReference() {
         if (!this.inputRef) return {};
@@ -220,6 +233,12 @@ export default class App extends React.Component {
     //
     // ACTIONS
     //
+
+    updateInputMode(inputMode) {
+        window.api.analytics.track("app.toggleInputMode");
+        window.localStorage.setItem("inputMode", inputMode);
+        this.setState({ inputMode });
+    }
 
     async loadSettings() {
         try {
@@ -661,7 +680,7 @@ export default class App extends React.Component {
         if (this.state.hyperedges.length > 0) return;
         if (this.state.input.length > 0) return;
         if (this.state.edited) return;
-        if (this.state.inputMode !== "generate") return;
+        if (this.dynamicInputMode !== "generate") return;
 
         const prompt = decodeURIComponent(
             window.location.pathname.substring(1)
@@ -752,11 +771,11 @@ export default class App extends React.Component {
         }
 
         if (e.key === "1" && e.metaKey) {
-            this.setState({ inputMode: "add" });
+            this.updateInputMode("add");
         } else if (e.key === "2" && e.metaKey) {
-            this.setState({ inputMode: "generate" });
+            this.updateInputMode("generate");
         } else if (e.key === "3" && e.metaKey) {
-            this.setState({ inputMode: "search" });
+            this.updateInputMode("search");
         } else if (e.key === "Tab") {
             this.toggleInterwingle();
         } else if (e.key === "`") {
@@ -837,16 +856,16 @@ export default class App extends React.Component {
     async handleInput(e) {
         e.preventDefault();
 
-        if (this.state.inputMode === "add") {
+        if (this.dynamicInputMode === "add") {
             await this.handleAddInput(e);
-        } else if (this.state.inputMode === "generate") {
+        } else if (this.dynamicInputMode === "generate") {
             if (this.state.input.trim().length === 0) {
                 toast.error("Please enter a phrase");
                 return;
             }
 
             await this.handleGenerateInput(e);
-        } else if (this.state.inputMode === "search") {
+        } else if (this.dynamicInputMode === "search") {
             if (this.state.input.trim().length === 0) {
                 toast.error("Please enter a search term");
                 return;
@@ -932,15 +951,15 @@ export default class App extends React.Component {
     handleClickNode(node, e) {
         window.api.analytics.track("app.clickNode");
 
-        if (this.state.inputMode === "add") {
+        if (this.dynamicInputMode === "add") {
             this.setState({ input: node.name }, async () => {
                 await this.handleAddInput(e);
             });
-        } else if (this.state.inputMode === "generate") {
+        } else if (this.dynamicInputMode === "generate") {
             this.setState({ input: node.name }, async () => {
                 await this.handleGenerateInput();
             });
-        } else if (this.state.inputMode === "search") {
+        } else if (this.dynamicInputMode === "search") {
             this.searchText(node.name, e.shiftKey);
         }
     }
@@ -1006,8 +1025,8 @@ export default class App extends React.Component {
                 <Typer
                     inputRef={this.inputRef}
                     input={this.state.input}
-                    inputMode={this.state.inputMode}
-                    setInputMode={(inputMode) => this.setState({ inputMode })}
+                    inputMode={this.dynamicInputMode}
+                    setInputMode={this.updateInputMode.bind(this)}
                     isGenerating={this.state.isGenerating}
                     loaded={this.state.loaded}
                     handleCreateTutorial={this.createThinkMachineTutorial.bind(

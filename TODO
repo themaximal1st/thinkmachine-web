@@ -1,8 +1,9 @@
-* remember inputMode choice, default to it (unless Search)
 * when you're adding new information in a large graph, it resets the camera view. try to maintain it
 * Shift + Tab toggle interwingle backwards
 * changelog / in repo and on website
 * deploy web version
+
+* thinkmachine 0.0.2 -> announcement video
 
 * electron: generate
 * electron: wormhole
@@ -127,6 +128,8 @@
 
 
 **Super Future**
+
+- Clicking a node to search could/should have an alternate feature of just expanding that node out by 1 depth. with filters it makes it hard because so many pop in...but if just a few popped in (and you could easily see how many more there were down that path)
 
 - Layout
  - Could give more specific control over sublayout
