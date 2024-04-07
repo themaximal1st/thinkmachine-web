@@ -1,7 +1,8 @@
+* when you're adding new information in a large graph, it resets the camera view. try to maintain it
+
 * changelog / in repo and on website
 
 * remember inputMode choice, default to it (unless Search)
-* click should depend on what mode you are in. add, generate or search
 
 * electron: generate
 * electron: wormhole
@@ -19,6 +20,8 @@
 * Depth is still messed up. If you go down depth, it loses maxDepth
 
 * add cac.app feedback widget
+
+* Shift + Tab toggle interwingle backwards
 
 
 ---
@@ -77,6 +80,8 @@
 
 
 **Near-future**
+
+* Thinkable Type should have new concept of mini bridge, a two-item hyperedge, A->B or a double bridge A -> B && B -> A. These shouldn't use typical bridges, but confluence bridges to make the graph smaller.
 
 * console needs work
  * should be able to edit it
