@@ -1,4 +1,14 @@
-* Shift + Tab toggle interwingle backwards
+* release on web
+* record video
+* update everything, github/repos
+* electron version
+
+TODAY
+* refactor
+* tests
+* depth
+* rate limit
+
 * changelog / in repo and on website
 * deploy web version
 
@@ -17,7 +27,6 @@
 * Can we create a package.json in common and not have it mess up?
   * If so, create shared scripts, npm run desktop, npm run web
 * Depth is still messed up. If you go down depth, it loses maxDepth
-* add cac.app feedback widget
 
 * Hold shift while clicking changes current context to be that context
 

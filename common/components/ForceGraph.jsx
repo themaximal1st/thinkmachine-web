@@ -5,8 +5,6 @@ import ForceGraph2D from "react-force-graph-2d";
 import SpriteText from "three-spritetext";
 import * as Three from "three";
 
-import { useState } from "react";
-
 export default function ForceGraph(params) {
     const Graph = params.graphType === "3d" ? ForceGraph3D : ForceGraph2D;
 
@@ -19,15 +17,8 @@ export default function ForceGraph(params) {
             controlType={params.controlType}
             backgroundColor="#000000"
             onNodeClick={params.onNodeClick}
-            onBackgroundClick={(e) => {
-                console.log("ZOOMING?", e);
-            }}
-            onBackgroundRightClick={(e) => {
-                console.log("RIGHT ZOOMING?", e);
-            }}
-            onZoomEnd={(e) => {
-                // console.log("ZOOM END", e);
-            }}
+            onBackgroundClick={(e) => {}}
+            onBackgroundRightClick={(e) => {}}
             graphData={params.data}
             showNavInfo={false}
             linkColor={(link) => {

@@ -108,7 +108,7 @@ export default class App extends React.Component {
 
         // don't allow search mode or chat if there are no hyperedges
         if (
-            this.state.inputMode === "add" &&
+            this.state.inputMode !== "add" &&
             this.state.inputMode !== "generate"
         ) {
             return "generate";
@@ -126,7 +126,11 @@ export default class App extends React.Component {
     }
 
     get isFocusingTextInput() {
-        return this.isFocusingInput || this.isFocusingChatInput;
+        return (
+            this.isFocusingInput ||
+            this.isFocusingChatInput ||
+            this.isFocusingFeedbackInput
+        );
     }
 
     get isFocusingInput() {
@@ -135,6 +139,20 @@ export default class App extends React.Component {
 
     get isFocusingChatInput() {
         return document.activeElement == this.chatInputRef.current;
+    }
+
+    get isFocusingFeedbackInput() {
+        if (!document.activeElement) return false;
+        // if isn't textarea
+        if (document.activeElement.tagName !== "TEXTAREA") return false;
+        console.log("MAYBE");
+        return true;
+    }
+
+    get canFocusInput() {
+        if (this.isFocusingFeedbackInput) return false;
+        if (this.isFocusingFeedbackInput) return false;
+        return true;
     }
 
     get uniqueSymbols() {
@@ -661,14 +679,19 @@ export default class App extends React.Component {
         this.setState({ isAnimating });
     }
 
-    toggleInterwingle(interwingle) {
+    toggleInterwingle(interwingle, backwards = false) {
         window.api.analytics.track("app.toggleInterwingle");
         if (typeof interwingle === "undefined") {
             interwingle = this.state.interwingle;
-            interwingle++;
+            if (backwards) {
+                interwingle--;
+            } else {
+                interwingle++;
+            }
         }
 
         if (interwingle > 3) interwingle = 0;
+        if (interwingle < 0) interwingle = 3;
 
         this.setState({ interwingle }, () => {
             this.reloadData({ zoom: true });
@@ -948,14 +971,19 @@ ${hyperedges}`;
 
         if (e.key === "1" && e.metaKey) {
             this.updateInputMode("add");
+            e.preventDefault();
         } else if (e.key === "2" && e.metaKey) {
             this.updateInputMode("generate");
+            e.preventDefault();
         } else if (e.key === "3" && e.metaKey) {
             this.updateInputMode("search");
+            e.preventDefault();
         } else if (e.key === "4" && e.metaKey) {
             this.updateInputMode("chat");
+            e.preventDefault();
         } else if (e.key === "Tab") {
-            this.toggleInterwingle();
+            this.toggleInterwingle(undefined, e.shiftKey);
+            e.preventDefault();
         } else if (e.key === "`") {
             this.setState({ showConsole: !this.state.showConsole });
         } else if (e.key === "-" && !this.isFocusingTextInput) {
@@ -997,7 +1025,7 @@ ${hyperedges}`;
             }
             // this.toggleDepth(this.state.depth + 1);
         } else if (e.key === "Backspace") {
-            if (this.isFocusingChatInput) return;
+            if (!this.canFocusInput) return;
 
             if (this.state.input === "") {
                 this.setState({
@@ -1015,7 +1043,7 @@ ${hyperedges}`;
         ) {
             return;
         } else {
-            if (e.key !== "Shift" && !this.isFocusingChatInput) {
+            if (e.key !== "Shift" && this.canFocusInput) {
                 this.inputReference.focus();
             }
         }
