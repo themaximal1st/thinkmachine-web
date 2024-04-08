@@ -68,7 +68,7 @@ export function zoomPadding(numSymbols, graphType = "3d") {
         } else if (numSymbols >= 3) {
             return 175;
         } else if (numSymbols === 1) {
-            return 400;
+            return 300;
         }
     } else {
         return 100;

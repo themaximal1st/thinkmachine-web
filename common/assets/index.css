@@ -20,27 +20,19 @@ body {
 
 #titlebar {
     -webkit-app-region: drag;
-    @apply absolute z-50 top-0 left-0 right-0 h-8 text-white text-center text-xs pt-2 text-gray-400;
+    @apply absolute z-10 top-0 left-0 right-0 h-8 text-center text-xs;
 }
 
 #wormhole {
     @apply absolute z-50 inset-0;
 }
 
-.electron #typer #typerInner {
-    @apply mt-10;
-}
-
-.electron #typer #typerInput {
-    @apply mt-10;
+.electron #typerInput {
+    @apply mt-8;
 }
 
 .electron #console {
     @apply pt-10 z-50;
-}
-
-.electron #filters {
-    @apply mt-10;
 }
 
 .fan-left a:nth-child(1) {
@@ -110,6 +102,11 @@ body {
     to {
         opacity: 1;
     }
+}
+
+.electron #add-context-header,
+.electron #search-context-header {
+    @apply mt-8;
 }
 
 #cac-feedback-wrapper {

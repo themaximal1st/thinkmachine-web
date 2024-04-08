@@ -72,6 +72,7 @@ export default function Typer(params) {
                             }}
                         />
                         <div
+                            id="add-context-header"
                             data-tooltip-id="add-tooltip"
                             data-tooltip-content="Adding these symbols and connections"
                             className="uppercase text-sm select-none tracking-widest font-medium text-gray-200 inline-block"

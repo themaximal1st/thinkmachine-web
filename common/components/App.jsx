@@ -1201,7 +1201,7 @@ ${hyperedges}`;
                         }}
                     />
                 </div>
-                {isElectron && <a id="titlebar">Think Machine</a>}
+                {isElectron && <a id="titlebar"></a>}
                 <License
                     licenseKey={this.state.licenseKey}
                     licenseValid={this.state.licenseValid}

@@ -15,6 +15,7 @@ export default function Filters(params) {
             />
             {params.filters.length > 0 && (
                 <div
+                    id="search-context-header"
                     data-tooltip-id="filter-tooltip"
                     data-tooltip-content="Filter graph by symbol or connection"
                     className="uppercase text-sm select-none tracking-widest font-medium text-gray-200"
