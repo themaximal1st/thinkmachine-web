@@ -1,3 +1,5 @@
+import * as utils from "@lib/utils";
+
 // turn array into a map for quick indexing
 export function createIndex(items) {
     const index = new Map();
@@ -91,7 +93,8 @@ export async function zoom(app, oldData = null) {
 
     // 3d is ok to focus on nodes, but in 2d it zooms too much
     if (graphType === "2d") {
-        app.graphRef.current.zoomToFit(timing, padding);
+        console.log("2d zoom", timing, padding);
+        app.graphRef.current.zoomToFit(timing, 100);
     } else {
         app.graphRef.current.zoomToFit(timing, padding, (node) => {
             if (nodes.length === 0) return true;
@@ -146,4 +149,93 @@ export function hasNodesOff2DScreen(app) {
     if (coordinate.y > height) { return true }
 
     return false;
+}
+
+export function cameraPositionStable(lastCameraPosition, currentCameraPosition) {
+    if (!lastCameraPosition || !currentCameraPosition) return false;
+    return (
+        lastCameraPosition.x === currentCameraPosition.x &&
+        lastCameraPosition.y === currentCameraPosition.y &&
+        lastCameraPosition.z === currentCameraPosition.z
+    );
+}
+
+export function CameraPosition2D(app) {
+    const centerAt = app.graphRef.current.centerAt();
+    const zoom = app.graphRef.current.zoom();
+    return { x: centerAt.x, y: centerAt.y, z: zoom };
+}
+
+export function smart2DZoom(app, oldData, shouldZoom = false) {
+    return new Promise(async (resolve) => {
+        let newCamera = CameraPosition2D(app);
+        let oldCamera = app.state.cameraPosition;
+
+        // user hasn't moved camera
+        if (cameraPositionStable(newCamera, oldCamera)) {
+            shouldZoom = true;
+        }
+
+        if (!oldCamera || shouldZoom) {
+            await utils.delay(200);
+            await zoom(app, oldData);
+
+            let interval = null;
+
+            let i = 0;
+            interval = setInterval(async () => {
+                let currCamera = CameraPosition2D(app);
+                if (cameraPositionStable(newCamera, currCamera)) {
+                    console.log("STABLE");
+                    clearInterval(interval);
+                    return resolve(currCamera);
+                } else {
+                    newCamera = currCamera;
+                }
+
+                if (++i > 50) {
+                    console.log("ERROR FINDING STABLE CAMERA");
+                    clearInterval(interval);
+                    return resolve(null);
+                }
+            }, 100);
+        }
+    });
+
+}
+
+export function smart3DZoom(app, oldData, shouldZoom = false) {
+    return new Promise(async (resolve) => {
+        let newCamera = app.graphRef.current.cameraPosition();
+        let oldCamera = app.state.cameraPosition;
+
+        // user hasn't moved camera
+        if (cameraPositionStable(newCamera, oldCamera)) {
+            shouldZoom = true;
+        }
+
+        if (!oldCamera || shouldZoom) {
+            await utils.delay(200);
+            await zoom(app, oldData);
+
+            let interval = null;
+
+            let i = 0;
+            interval = setInterval(async () => {
+                let currCamera = app.graphRef.current.cameraPosition();
+                if (cameraPositionStable(newCamera, currCamera)) {
+                    clearInterval(interval);
+                    return resolve(currCamera);
+                } else {
+                    newCamera = currCamera;
+                }
+
+                if (++i > 50) {
+                    console.log("ERROR FINDING STABLE CAMERA");
+                    clearInterval(interval);
+                    return resolve(null);
+                }
+            }, 100);
+        }
+    });
 }

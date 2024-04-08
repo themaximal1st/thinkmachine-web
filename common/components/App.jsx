@@ -6,8 +6,8 @@ import * as THREE from "three";
 import ThinkMachineAPI from "@src/api";
 import * as services from "@src/services";
 import { isUUID } from "@lib/uuid";
-import * as GraphUtils from "@lib/GraphUtils";
 import * as utils from "@lib/utils";
+import * as GraphUtils from "@lib/GraphUtils";
 
 import Animation from "@lib/Animation";
 
@@ -86,6 +86,7 @@ export default class App extends React.Component {
             data: { nodes: [], links: [] },
             lastReloadedDate: new Date(),
             cooldownTicks: 5000,
+            cameraPosition: null,
             chatMessages: [],
             chatWindow: {
                 x: window.innerWidth - 400 - 10,
@@ -161,7 +162,7 @@ export default class App extends React.Component {
         ThinkMachineAPI.load().then(async () => {
             this.loadSettings();
 
-            await this.reloadData(null, true);
+            await this.reloadData({ zoom: true });
 
             window.api.analytics.track("app.load");
 
@@ -186,81 +187,76 @@ export default class App extends React.Component {
     // RELOAD
     //
 
-    reloadData(controlType = null, zoom = false) {
-        return new Promise(async (resolve, reject) => {
-            const start = Date.now();
+    async reloadData({ controlType, zoom = false } = {}) {
+        const start = Date.now();
 
-            const oldData = this.state.data;
-            const newData = await window.api.hypergraph.graphData(
-                this.state.filters,
-                {
-                    interwingle: this.state.interwingle,
-                    depth: this.state.depth,
-                }
+        const oldData = this.state.data;
+        const newData = await window.api.hypergraph.graphData(
+            this.state.filters,
+            {
+                interwingle: this.state.interwingle,
+                depth: this.state.depth,
+            }
+        );
+
+        const data = GraphUtils.restoreNodePositions(this.state.data, newData);
+
+        let depth = data.depth;
+        const maxDepth = data.maxDepth || 0;
+        if (depth > maxDepth) depth = maxDepth;
+        if (depth === maxDepth) depth = Infinity;
+
+        const hyperedges = await window.api.hyperedges.all();
+
+        let edited = this.state.edited;
+        if (hyperedges.length > 0) {
+            edited = true;
+        }
+
+        const state = {
+            data,
+            depth,
+            maxDepth,
+            loaded: true,
+            reloads: this.state.reloads + 1,
+            hyperedges,
+            edited,
+            lastReloadedDate: new Date(),
+            hideLabels: data.nodes.length >= this.state.hideLabelsThreshold,
+        };
+
+        if (controlType) {
+            state.controlType = controlType;
+        }
+
+        const elapsed = Date.now() - start;
+        console.log(`reloaded data in ${elapsed}ms`);
+
+        await this.asyncSetState(state);
+
+        GraphUtils.emitParticlesOnLinkChanges(this, oldData);
+
+        if (this.state.graphType === "3d") {
+            const cameraPosition = await GraphUtils.smart3DZoom(
+                this,
+                oldData,
+                zoom
             );
 
-            const data = GraphUtils.restoreNodePositions(
-                this.state.data,
-                newData
+            if (cameraPosition) {
+                this.setState({ cameraPosition });
+            }
+        } else if (this.state.graphType === "2d") {
+            await utils.delay(300);
+            const cameraPosition = await GraphUtils.smart2DZoom(
+                this,
+                oldData,
+                zoom
             );
-
-            let depth = data.depth;
-            const maxDepth = data.maxDepth || 0;
-            if (depth > maxDepth) depth = maxDepth;
-            if (depth === maxDepth) depth = Infinity;
-
-            const hyperedges = await window.api.hyperedges.all();
-
-            let edited = this.state.edited;
-            if (hyperedges.length > 0) {
-                edited = true;
+            if (cameraPosition) {
+                this.setState({ cameraPosition });
             }
-
-            const state = {
-                data,
-                depth,
-                maxDepth,
-                loaded: true,
-                reloads: this.state.reloads + 1,
-                hyperedges,
-                edited,
-                lastReloadedDate: new Date(),
-                hideLabels: data.nodes.length >= this.state.hideLabelsThreshold,
-            };
-
-            if (controlType) {
-                state.controlType = controlType;
-            }
-
-            const elapsed = Date.now() - start;
-            console.log(`reloaded data in ${elapsed}ms`);
-
-            this.setState(state, async () => {
-                GraphUtils.emitParticlesOnLinkChanges(this, oldData);
-
-                if (this.state.hyperedges.length === 1) {
-                    zoom = true;
-                }
-
-                if (this.state.graphType === "2d") {
-                    await utils.delay(100);
-                }
-                if (
-                    !zoom &&
-                    this.state.graphType === "2d" &&
-                    GraphUtils.hasNodesOff2DScreen(this)
-                ) {
-                    zoom = true;
-                }
-
-                if (zoom) {
-                    await utils.delay(200);
-                    await GraphUtils.zoom(this, oldData);
-                }
-
-                resolve();
-            });
-        });
+        }
     }
 
     maybeReloadData(duration = 1000) {
@@ -536,7 +532,7 @@ export default class App extends React.Component {
             await window.api.hyperedges.add(hyperedge, last);
         }
         this.setState({ interwingle: 3, depth: Infinity }, async () => {
-            await this.reloadData(null, true);
+            await this.reloadData({ zoom: true });
         });
     }
 
@@ -579,7 +575,7 @@ export default class App extends React.Component {
         } catch (e) {
             console.log("ERROR", e);
         } finally {
-            await this.reloadData(null, true);
+            await this.reloadData({ zoom: true });
             this.stopWormhole();
         }
     }
@@ -683,7 +679,7 @@ export default class App extends React.Component {
         if (interwingle > 3) interwingle = 0;
 
         this.setState({ interwingle }, () => {
-            this.reloadData();
+            this.reloadData({ zoom: true });
         });
     }
 
@@ -1002,7 +998,6 @@ ${hyperedges}`;
             return;
         } else {
             if (e.key !== "Shift" && !this.isFocusingChatInput) {
-                console.log("IS FOCUSING CHAT", this.isFocusingChatInput);
                 this.inputReference.focus();
             }
         }

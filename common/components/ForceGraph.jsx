@@ -19,6 +19,15 @@ export default function ForceGraph(params) {
             controlType={params.controlType}
             backgroundColor="#000000"
             onNodeClick={params.onNodeClick}
+            onBackgroundClick={(e) => {
+                console.log("ZOOMING?", e);
+            }}
+            onBackgroundRightClick={(e) => {
+                console.log("RIGHT ZOOMING?", e);
+            }}
+            onZoomEnd={(e) => {
+                // console.log("ZOOM END", e);
+            }}
             graphData={params.data}
             showNavInfo={false}
             linkColor={(link) => {
