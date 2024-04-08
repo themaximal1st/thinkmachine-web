@@ -19,7 +19,7 @@ if [[ $UPDATES != *"Already up to date"* ]] || [[ $FORCE_DEPLOY == true ]]; then
   if pm2 list | grep -q $APP_NAME; then
     pm2 restart $APP_NAME
   else
-    NODE_ENV=production pm2 start src/server/main.js --name $APP_NAME
+    NODE_ENV=production pm2 start src/server/server.js --name $APP_NAME
   fi
 else
   echo "No updates found. Nothing to do."
