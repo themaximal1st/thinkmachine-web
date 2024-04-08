@@ -1,3 +1,4 @@
+import { Tooltip } from "react-tooltip";
 import { bouncy } from "ldrs";
 bouncy.register();
 
@@ -61,8 +62,19 @@ export default function Typer(params) {
             >
                 {params.hyperedge.length > 0 && (
                     <div>
-                        <div className="uppercase text-sm select-none tracking-widest font-medium text-gray-200 inline-block">
-                            CURRENT
+                        <Tooltip
+                            id="add-tooltip"
+                            style={{
+                                backgroundColor: "#1A1A1A", // gray-1000
+                                color: "#f5f6f6", // gray-50
+                            }}
+                        />
+                        <div
+                            data-tooltip-id="add-tooltip"
+                            data-tooltip-content="Adding these symbols and connections"
+                            className="uppercase text-sm select-none tracking-widest font-medium text-gray-200 inline-block"
+                        >
+                            ADD
                         </div>
                     </div>
                 )}

@@ -55,31 +55,44 @@ export default function ForceGraph(params) {
             linkWidth={2}
             linkDirectionalParticleColor={(link) => link.color || "#ffffff"}
             linkDirectionalParticleWidth={2}
-            linkDirectionalParticleSpeed={0.025}
+            linkDirectionalParticleSpeed={0.0125}
         />
     );
 }
 
 ForceGraph.load = function (graphRef, graphType) {
     if (graphType === "3d") {
-        graphRef.current.d3Force("link").distance((link) => {
-            return link.length || 40;
-        });
-
-        graphRef.current.d3Force("charge").strength((link) => {
-            return -100;
-        });
-
-        graphRef.current.d3Force("charge").distanceMax(300);
-        graphRef.current.d3Force("charge").distanceMin(10);
-
-        graphRef.current.d3Force("center").strength(1);
-
         const bloomPass = new UnrealBloomPass();
         bloomPass.strength = 1.25;
         bloomPass.radius = 1;
         bloomPass.threshold = 0;
         graphRef.current.postProcessingComposer().addPass(bloomPass);
+
+        graphRef.current.d3Force("link").distance((link) => {
+            return link.length || 40;
+        });
+
+        graphRef.current.d3Force("charge").strength((link) => {
+            return -50;
+        });
+
+        graphRef.current.d3Force("charge").distanceMax(100);
+        graphRef.current.d3Force("charge").distanceMin(10);
+
+        graphRef.current.d3Force("center").strength(1);
+    } else {
+        graphRef.current.d3Force("link").distance((link) => {
+            return link.length || 100;
+        });
+
+        graphRef.current.d3Force("charge").strength((link) => {
+            return -150;
+        });
+
+        graphRef.current.d3Force("charge").distanceMax(400);
+        graphRef.current.d3Force("charge").distanceMin(10);
+
+        graphRef.current.d3Force("center").strength(1);
     }
 };
 

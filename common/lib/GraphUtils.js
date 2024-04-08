@@ -51,51 +51,57 @@ export function restoreNodePositions(oldData, newData) {
 }
 
 // TODO: This could probably be more sophisticated
-export function zoomPadding(numSymbols) {
-    let padding = 0;
-    if (numSymbols === 1) {
-        padding = 300;
-    } else if (numSymbols < 3) {
-        padding = 100;
-    } else if (numSymbols < 10) {
-        padding = 125;
-    } else if (numSymbols < 20) {
-        padding = 0;
-    } else if (numSymbols < 50) {
-        padding = 25;
-    } else if (numSymbols < 100) {
-        padding = -400;
-    } else if (numSymbols < 200) {
-        padding = -500;
-    }
+export function zoomPadding(numSymbols, graphType = "3d") {
+    if (graphType === "3d") {
+        let padding = 0;
+        if (numSymbols === 1) {
+            padding = 300;
+        } else if (numSymbols < 3) {
+            padding = 100;
+        } else if (numSymbols < 10) {
+            padding = 125;
+        } else if (numSymbols < 20) {
+            padding = 0;
+        } else if (numSymbols < 50) {
+            padding = 25;
+        } else if (numSymbols < 100) {
+            padding = -400;
+        } else if (numSymbols < 200) {
+            padding = -500;
+        }
 
-    padding = -550;
+        padding = -550;
+    } else {
+        return 100;
+    }
 }
 
 export async function zoom(app, oldData = null) {
 
-    const delay = 250;
+    console.log("ZOOMING");
+
     const timing = 200;
 
-    return new Promise((resolve) => {
+    const graphType = app.state.graphType;
 
-        setTimeout(() => {
-            const padding = zoomPadding(app.uniqueSymbols.length);
+    const padding = zoomPadding(app.uniqueSymbols.length, graphType);
 
-            const nodes = nodeChanges(app.state.data, oldData || app.state.data);
-            const nodeIndex = createIndex(nodes);
+    const nodes = nodeChanges(app.state.data, oldData || app.state.data);
+    const nodeIndex = createIndex(nodes);
 
-            app.graphRef.current.zoomToFit(timing, padding, (node) => {
-                if (nodes.length === 0) return true;
-                if (nodeIndex.has(node.id)) {
-                    return true;
-                }
-                return false;
-            });
+    // 3d is ok to focus on nodes, but in 2d it zooms too much
+    if (graphType === "2d") {
+        app.graphRef.current.zoomToFit(timing, padding);
+    } else {
+        app.graphRef.current.zoomToFit(timing, padding, (node) => {
+            if (nodes.length === 0) return true;
+            if (nodeIndex.has(node.id)) {
+                return true;
+            }
+            return false;
+        });
+    }
 
-            resolve();
-        }, delay);
-    });
 }
 
 
@@ -113,5 +119,31 @@ export function containsHyperedge(app, hyperedge) {
         const e2 = edge.join(" ");
         if (e1 === e2) return true;
     }
+    return false;
+}
+
+export function hasNodesOff2DScreen(app) {
+
+    const { x, y } = app.graphRef.current.getGraphBbox();
+
+    let coordinate = app.graphRef.current.graph2ScreenCoords(
+        x[0],
+        y[0]
+    );
+
+
+    if (coordinate.x < 0) { return true }
+    if (coordinate.y < 0) { return true }
+
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    coordinate = app.graphRef.current.graph2ScreenCoords(
+        x[1],
+        y[1]
+    );
+
+    if (coordinate.x > width) { return true }
+    if (coordinate.y > height) { return true }
+
     return false;
 }

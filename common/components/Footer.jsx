@@ -114,7 +114,7 @@ export default function Footer(params) {
                             </a>
                         )}
                     </div>
-                    <div class="grow"></div>
+                    <div className="grow"></div>
 
                     {params.graphType === "3d" &&
                         params.edited &&

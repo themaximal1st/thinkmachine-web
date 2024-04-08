@@ -19,7 +19,7 @@ export default function Filters(params) {
                     data-tooltip-content="Filter graph by symbol or connection"
                     className="uppercase text-sm select-none tracking-widest font-medium text-gray-200"
                 >
-                    Filters
+                    Search
                 </div>
             )}
             {params.filters.map((filter, i) => {

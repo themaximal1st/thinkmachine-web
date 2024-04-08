@@ -5,8 +5,8 @@ import { useState } from "react";
 
 export default function LayoutSettings(params) {
     let [linkDistance, setLinkDistance] = useState(40);
-    let [chargeStrength, setChargeStrength] = useState(-100);
-    let [chargeDistanceMax, setChargeDistanceMax] = useState(300);
+    let [chargeStrength, setChargeStrength] = useState(-50);
+    let [chargeDistanceMax, setChargeDistanceMax] = useState(100);
     let [chargeDistanceMin, setChargeDistanceMin] = useState(0);
     let [chargeTheta, setChargeTheta] = useState(0.81);
     let [centerStrength, setCenterStrength] = useState(0.5);

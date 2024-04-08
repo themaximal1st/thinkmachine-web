@@ -7,6 +7,7 @@ import ThinkMachineAPI from "@src/api";
 import * as services from "@src/services";
 import { isUUID } from "@lib/uuid";
 import * as GraphUtils from "@lib/GraphUtils";
+import * as utils from "@lib/utils";
 
 import Animation from "@lib/Animation";
 
@@ -21,6 +22,11 @@ import ForceGraph from "@components/ForceGraph";
 import Typer from "@components/Typer";
 import Wormhole from "@components/Wormhole.js";
 import ChatWindow from "@components/ChatWindow.jsx";
+
+// ZOOM CASES
+// VERY LARGE GRAPHS...probably dont want to reload
+// CLICKING ON NODES...don't want to zoom
+// USER HAS ZOOMED OR PANNED OR ROTATED...reset after when?
 
 export default class App extends React.Component {
     constructor(props) {
@@ -236,7 +242,19 @@ export default class App extends React.Component {
                     zoom = true;
                 }
 
+                if (this.state.graphType === "2d") {
+                    await utils.delay(100);
+                }
+                if (
+                    !zoom &&
+                    this.state.graphType === "2d" &&
+                    GraphUtils.hasNodesOff2DScreen(this)
+                ) {
+                    zoom = true;
+                }
+
                 if (zoom) {
+                    await utils.delay(200);
                     await GraphUtils.zoom(this, oldData);
                 }
 
@@ -965,16 +983,14 @@ ${hyperedges}`;
             }
             // this.toggleDepth(this.state.depth + 1);
         } else if (e.key === "Backspace") {
+            if (this.isFocusingChatInput) return;
+
             if (this.state.input === "") {
-                if (this.isFocusingInput) {
-                    this.setState({
-                        hyperedge: this.state.hyperedge.slice(0, -1),
-                    });
-                }
+                this.setState({
+                    hyperedge: this.state.hyperedge.slice(0, -1),
+                });
             } else {
-                if (!this.isFocusingChatInput) {
-                    this.inputReference.focus();
-                }
+                this.inputReference.focus();
             }
         } else if (this.state.controlType === "fly") {
             return;
