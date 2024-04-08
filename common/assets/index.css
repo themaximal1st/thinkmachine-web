@@ -68,7 +68,7 @@ body {
 }
 
 .fan-left .menu-item {
-    @apply pointer-events-auto text-gray-400 hover:text-gray-50  bg-gray-1000/50 hover:bg-gray-1000 transition-all p-2 opacity-0 inline-flex items-center gap-2 hover:cursor-pointer flex-none self-start rounded-lg text-base;
+    @apply pointer-events-auto text-gray-400 hover:text-gray-50  bg-gray-1000/50 hover:bg-gray-1000 transition-all p-2 opacity-0 inline-flex items-center gap-2 hover:cursor-pointer flex-none self-start rounded-lg text-sm;
 }
 
 .fan-left .menu-item:nth-child(1) {

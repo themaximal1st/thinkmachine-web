@@ -70,7 +70,7 @@ ForceGraph.load = function (graphRef, graphType) {
             return -100;
         });
 
-        graphRef.current.d3Force("charge").distanceMax(200);
+        graphRef.current.d3Force("charge").distanceMax(300);
         graphRef.current.d3Force("charge").distanceMin(10);
 
         graphRef.current.d3Force("center").strength(1);

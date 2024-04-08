@@ -49,8 +49,8 @@ export default class App extends React.Component {
             licenseValid: undefined,
             trialExpired: false,
             llm: {
-                service: "anthropic",
-                model: "claude-3-opus-20240229",
+                service: "openai",
+                model: "gpt-4-turbo-preview",
             },
             width: window.innerWidth,
             height: window.innerHeight,
@@ -581,7 +581,11 @@ export default class App extends React.Component {
         if (!showChat) {
             state.chatMessages = [];
         }
-        this.setState(state);
+        this.setState(state, () => {
+            if (showChat) {
+                this.chatInputRef.current.focus();
+            }
+        });
     }
 
     toggleShowLabsWarning(val) {
@@ -749,6 +753,7 @@ ${hyperedges}`;
     async handleChatMessage(e) {
         e.preventDefault();
         if (this.state.isChatting) return;
+        if (this.chatInputRef.current.value.trim().length === 0) return;
 
         const chatMessages = [...this.state.chatMessages];
 

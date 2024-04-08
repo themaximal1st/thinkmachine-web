@@ -114,6 +114,7 @@ export default function Footer(params) {
                             </a>
                         )}
                     </div>
+                    <div class="grow"></div>
 
                     {params.graphType === "3d" &&
                         params.edited &&
@@ -146,7 +147,7 @@ export default function Footer(params) {
                                         ? "Switch to 3D"
                                         : "Switch to 2D"
                                 }
-                                className="select-none opacity-40 hover:opacity-100 transition-all cursor-pointer pointer-events-auto text-lg"
+                                className="select-none opacity-40 hover:opacity-100 transition-all cursor-pointer pointer-events-auto text-xl"
                             >
                                 {params.graphType === "2d" ? "3D" : "2D"}
                             </a>

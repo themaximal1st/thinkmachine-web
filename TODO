@@ -1,6 +1,3 @@
-* notes
-* chat with graph
-
 * Shift + Tab toggle interwingle backwards
 * changelog / in repo and on website
 * deploy web version
@@ -21,6 +18,8 @@
   * If so, create shared scripts, npm run desktop, npm run web
 * Depth is still messed up. If you go down depth, it loses maxDepth
 * add cac.app feedback widget
+
+* Hold shift while clicking changes current context to be that context
 
 
 ---

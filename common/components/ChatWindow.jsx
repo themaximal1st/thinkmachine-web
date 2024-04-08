@@ -54,9 +54,9 @@ export default function ChatWindow(params) {
                                 <div className="flex flex-col gap-4">
                                     <div>Welcome to Think Machine Chat.</div>
                                     <div>
-                                        Ask questions about your knowledge
-                                        graph, and Think Machine will use the
-                                        current view to answer them.
+                                        Ask a question about your knowledge
+                                        graph and Think Machine will use the
+                                        current view to answer it.
                                     </div>
                                 </div>
                             )}
