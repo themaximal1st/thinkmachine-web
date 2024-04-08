@@ -55,24 +55,21 @@ export function restoreNodePositions(oldData, newData) {
 // TODO: This could probably be more sophisticated
 export function zoomPadding(numSymbols, graphType = "3d") {
     if (graphType === "3d") {
-        let padding = 0;
-        if (numSymbols === 1) {
-            padding = 300;
-        } else if (numSymbols < 3) {
-            padding = 100;
-        } else if (numSymbols < 10) {
-            padding = 125;
-        } else if (numSymbols < 20) {
-            padding = 0;
-        } else if (numSymbols < 50) {
-            padding = 25;
-        } else if (numSymbols < 100) {
-            padding = -400;
-        } else if (numSymbols < 200) {
-            padding = -500;
+        if (numSymbols >= 200) {
+            return -550;
+        } else if (numSymbols >= 100) {
+            return -400;
+        } else if (numSymbols >= 50) {
+            return -200;
+        } else if (numSymbols >= 20) {
+            return -100;
+        } else if (numSymbols >= 10) {
+            return 50;
+        } else if (numSymbols >= 3) {
+            return 175;
+        } else if (numSymbols === 1) {
+            return 400;
         }
-
-        padding = -550;
     } else {
         return 100;
     }
@@ -91,9 +88,10 @@ export async function zoom(app, oldData = null) {
 
     // 3d is ok to focus on nodes, but in 2d it zooms too much
     if (graphType === "2d") {
-        console.log("2d zoom", timing, padding);
+        // console.log("2d zoom");
         app.graphRef.current.zoomToFit(timing, 100);
     } else {
+        // console.log("3d zoom");
         app.graphRef.current.zoomToFit(timing, padding, (node) => {
             if (nodes.length === 0) return true;
             if (nodeIndex.has(node.id)) {
@@ -164,10 +162,17 @@ export function CameraPosition2D(app) {
     return { x: centerAt.x, y: centerAt.y, z: zoom };
 }
 
+function getCameraPosition(app) {
+    if (app.state.graphType === "3d") {
+        return app.graphRef.current.cameraPosition();
+    }
+
+    return CameraPosition2D(app);
+}
+
 // smartZoom knows if the user has zoomed/moved/panned the camera
 // we only zoom explicitly or if the camera hasn't changed
 export function smartZoom(app, oldData, shouldZoom = false) {
-    const getCameraPosition = app.state.graphType === "3d" ? app.graphRef.current.cameraPosition : CameraPosition2D;
 
     return new Promise(async (resolve) => {
         let newCamera = getCameraPosition(app);
