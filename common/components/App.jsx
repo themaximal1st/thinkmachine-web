@@ -150,7 +150,7 @@ export default class App extends React.Component {
     }
 
     get canFocusInput() {
-        if (this.isFocusingFeedbackInput) return false;
+        if (this.isFocusingChatInput) return false;
         if (this.isFocusingFeedbackInput) return false;
         return true;
     }
