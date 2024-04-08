@@ -51,6 +51,8 @@ export default function Typer(params) {
             placeholder = "Generate AI knowledge graph";
         } else if (params.inputMode === "search") {
             placeholder = "Search knowledge graph";
+        } else if (params.inputMode === "chat") {
+            placeholder = "Chat with knowledge graph";
         }
     }
 
@@ -153,11 +155,15 @@ export default function Typer(params) {
                         Search
                     </a>
                     <a
-                        className={`select-none text-sm pointer-events-auto flex items-center gap-[6px] py-1 px-2 rounded-lg hover:cursor-pointer transition-all opacity-60 hover:opacity-80 ${
-                            !params.edited && "hidden"
-                        }`}
+                        className={`select-none text-sm pointer-events-auto flex items-center gap-[6px] py-1 px-2 rounded-lg hover:cursor-pointer transition-all ${
+                            params.inputMode === "chat"
+                                ? "bg-gray-800/80 opacity-100"
+                                : "opacity-60 hover:opacity-80"
+                        } ${!params.edited && "hidden"}`}
                         onClick={() => {
-                            params.toggleChatWindow();
+                            if (params.edited) {
+                                params.setInputMode("chat");
+                            }
                         }}
                     >
                         {Icons.ChatIcon(5)}
@@ -167,8 +173,9 @@ export default function Typer(params) {
 
                 <form
                     onSubmit={async (e) => {
-                        await params.handleInput(e);
-                        reset();
+                        if (await params.handleInput(e)) {
+                            reset();
+                        }
                     }}
                     className="w-full overflow-y-hidden"
                 >
@@ -180,7 +187,6 @@ export default function Typer(params) {
                             type="text"
                             tabIndex={-1}
                             autoComplete="off"
-                            disabled={params.isGenerating}
                             placeholder={placeholder}
                             className="text-2xl w-full text-center text-white outline-none py-2 pointer-events-auto transition-all rounded-xl bg-gray-1000/50 focus:bg-gray-1000"
                             {...getInputProps({
@@ -201,7 +207,8 @@ export default function Typer(params) {
                                 What is Think Machine?
                             </a>
                         )}
-                        {params.isGenerating && (
+                        {((params.inputMode === "chat" && params.isChatting) ||
+                            params.isGenerating) && (
                             <div className="text-center mt-2">
                                 <l-bouncy
                                     size="25"

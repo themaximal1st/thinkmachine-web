@@ -106,8 +106,11 @@ export default class App extends React.Component {
             return this.state.inputMode;
         }
 
-        // don't allow search mode if there are no hyperedges
-        if (this.state.inputMode === "search") {
+        // don't allow search mode or chat if there are no hyperedges
+        if (
+            this.state.inputMode === "add" &&
+            this.state.inputMode !== "generate"
+        ) {
             return "generate";
         }
 
@@ -745,7 +748,10 @@ Hyperedges are represented with " -> " arrows.
 Each new line is a distinct hyperedge.
 
 You don't need to let the user know about the underlying hypergraph structure, they are looking at a visual representation of it.
-So you can speak about the knowledge graph by references the symbols and how they connect.
+So you can speak about the knowledge graph by references the names of the symbols and their connections.
+If the user asks for more information, you can provide additional details from your knowledge to complete the request.
+Always be helpful and informative.
+Try to be as accurate as possible, while still completing the users request.
 
 Here is the knowledge graph:
 ${hyperedges}`;
@@ -753,10 +759,26 @@ ${hyperedges}`;
         return prompt;
     }
 
-    async handleChatMessage(e) {
-        e.preventDefault();
-        if (this.state.isChatting) return;
-        if (this.chatInputRef.current.value.trim().length === 0) return;
+    async handleChatMessage(e = null) {
+        if (e) {
+            e.preventDefault();
+        }
+
+        if (this.state.isChatting) return false;
+
+        let chatInput = false;
+        let content = this.state.input.trim();
+        if (content.length === 0) {
+            if (this.isFocusingChatInput) {
+                content = this.chatInputRef.current.value.trim();
+                this.chatInputRef.current.value = "";
+                chatInput = true;
+            }
+        }
+
+        if (content.length === 0) return false;
+
+        await this.toggleChatWindow(true);
 
         const chatMessages = [...this.state.chatMessages];
 
@@ -770,7 +792,7 @@ ${hyperedges}`;
         }
 
         chatMessages.push({
-            content: this.chatInputRef.current.value,
+            content,
             role: "user",
             timestamp: Date.now() + 1,
         });
@@ -783,7 +805,6 @@ ${hyperedges}`;
         };
 
         await this.asyncSetState({ chatMessages, isChatting: true });
-        this.chatInputRef.current.value = "";
 
         const sortedChatMessages = [...chatMessages].sort((a, b) => {
             return a.timestamp - b.timestamp;
@@ -791,6 +812,12 @@ ${hyperedges}`;
 
         chatMessages.push(assistant);
         await this.asyncSetState({ chatMessages });
+
+        if (chatInput) {
+            this.chatInputRef.current.value = "";
+        } else {
+            await this.asyncSetState({ input: "" });
+        }
 
         try {
             const response = await window.api.chat(sortedChatMessages, {
@@ -811,7 +838,7 @@ ${hyperedges}`;
             await this.asyncSetState({ isChatting: false });
         }
 
-        console.log("HISTORY", this.state.chatMessages);
+        return false; // we'll handle reset
     }
 
     async handleDownload() {
@@ -925,6 +952,8 @@ ${hyperedges}`;
             this.updateInputMode("generate");
         } else if (e.key === "3" && e.metaKey) {
             this.updateInputMode("search");
+        } else if (e.key === "4" && e.metaKey) {
+            this.updateInputMode("chat");
         } else if (e.key === "Tab") {
             this.toggleInterwingle();
         } else if (e.key === "`") {
@@ -1014,18 +1043,27 @@ ${hyperedges}`;
         } else if (this.dynamicInputMode === "generate") {
             if (this.state.input.trim().length === 0) {
                 toast.error("Please enter a phrase");
-                return;
+                return false;
             }
 
             await this.handleGenerateInput(e);
         } else if (this.dynamicInputMode === "search") {
             if (this.state.input.trim().length === 0) {
                 toast.error("Please enter a search term");
-                return;
+                return false;
+            }
+            await this.handleSearchInput();
+        } else if (this.dynamicInputMode === "chat") {
+            if (this.state.isChatting) {
+                return false;
             }
 
-            await this.handleSearchInput();
+            return await this.handleChatMessage();
+        } else {
+            return false;
         }
+
+        return true;
     }
 
     async handleGenerateInput() {
@@ -1114,6 +1152,10 @@ ${hyperedges}`;
             });
         } else if (this.dynamicInputMode === "search") {
             this.searchText(node.name, e.shiftKey);
+        } else if (this.dynamicInputMode === "chat") {
+            this.setState({ input: node.name }, async () => {
+                await this.handleChatMessage();
+            });
         }
     }
 
@@ -1181,6 +1223,7 @@ ${hyperedges}`;
                     inputMode={this.dynamicInputMode}
                     setInputMode={this.updateInputMode.bind(this)}
                     isGenerating={this.state.isGenerating}
+                    isChatting={this.state.isChatting}
                     loaded={this.state.loaded}
                     toggleChatWindow={this.toggleChatWindow.bind(this)}
                     handleCreateTutorial={this.createThinkMachineTutorial.bind(
