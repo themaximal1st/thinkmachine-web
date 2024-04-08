@@ -80,8 +80,6 @@ export function zoomPadding(numSymbols, graphType = "3d") {
 
 export async function zoom(app, oldData = null) {
 
-    console.log("ZOOMING");
-
     const timing = 200;
 
     const graphType = app.state.graphType;
@@ -107,7 +105,6 @@ export async function zoom(app, oldData = null) {
 
 }
 
-
 export function emitParticlesOnLinkChanges(app, oldData) {
     const links = linkChanges(app.state.data, oldData);
     for (const link of links) {
@@ -125,6 +122,7 @@ export function containsHyperedge(app, hyperedge) {
     return false;
 }
 
+// works in 2D, doesn't work in 3D. might be useful in the future.
 export function hasNodesOff2DScreen(app) {
 
     const { x, y } = app.graphRef.current.getGraphBbox();
@@ -166,9 +164,13 @@ export function CameraPosition2D(app) {
     return { x: centerAt.x, y: centerAt.y, z: zoom };
 }
 
-export function smart2DZoom(app, oldData, shouldZoom = false) {
+// smartZoom knows if the user has zoomed/moved/panned the camera
+// we only zoom explicitly or if the camera hasn't changed
+export function smartZoom(app, oldData, shouldZoom = false) {
+    const getCameraPosition = app.state.graphType === "3d" ? app.graphRef.current.cameraPosition : CameraPosition2D;
+
     return new Promise(async (resolve) => {
-        let newCamera = CameraPosition2D(app);
+        let newCamera = getCameraPosition(app);
         let oldCamera = app.state.cameraPosition;
 
         // user hasn't moved camera
@@ -184,45 +186,9 @@ export function smart2DZoom(app, oldData, shouldZoom = false) {
 
             let i = 0;
             interval = setInterval(async () => {
-                let currCamera = CameraPosition2D(app);
-                if (cameraPositionStable(newCamera, currCamera)) {
-                    console.log("STABLE");
-                    clearInterval(interval);
-                    return resolve(currCamera);
-                } else {
-                    newCamera = currCamera;
-                }
+                let currCamera = getCameraPosition(app);
 
-                if (++i > 50) {
-                    console.log("ERROR FINDING STABLE CAMERA");
-                    clearInterval(interval);
-                    return resolve(null);
-                }
-            }, 100);
-        }
-    });
-
-}
-
-export function smart3DZoom(app, oldData, shouldZoom = false) {
-    return new Promise(async (resolve) => {
-        let newCamera = app.graphRef.current.cameraPosition();
-        let oldCamera = app.state.cameraPosition;
-
-        // user hasn't moved camera
-        if (cameraPositionStable(newCamera, oldCamera)) {
-            shouldZoom = true;
-        }
-
-        if (!oldCamera || shouldZoom) {
-            await utils.delay(200);
-            await zoom(app, oldData);
-
-            let interval = null;
-
-            let i = 0;
-            interval = setInterval(async () => {
-                let currCamera = app.graphRef.current.cameraPosition();
+                // stable
                 if (cameraPositionStable(newCamera, currCamera)) {
                     clearInterval(interval);
                     return resolve(currCamera);
@@ -238,4 +204,5 @@ export function smart3DZoom(app, oldData, shouldZoom = false) {
             }, 100);
         }
     });
+
 }

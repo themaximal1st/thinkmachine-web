@@ -236,26 +236,15 @@ export default class App extends React.Component {
 
         GraphUtils.emitParticlesOnLinkChanges(this, oldData);
 
-        if (this.state.graphType === "3d") {
-            const cameraPosition = await GraphUtils.smart3DZoom(
-                this,
-                oldData,
-                zoom
-            );
-
-            if (cameraPosition) {
-                this.setState({ cameraPosition });
-            }
-        } else if (this.state.graphType === "2d") {
+        if (this.state.graphType === "2d") {
+            // 2d graph needs a little longer to render & zoom for some reason
             await utils.delay(300);
-            const cameraPosition = await GraphUtils.smart2DZoom(
-                this,
-                oldData,
-                zoom
-            );
-            if (cameraPosition) {
-                this.setState({ cameraPosition });
-            }
+        }
+
+        const cameraPosition = await GraphUtils.smartZoom(this, oldData, zoom);
+
+        if (cameraPosition) {
+            this.setState({ cameraPosition });
         }
     }
 
