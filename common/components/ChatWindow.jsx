@@ -61,6 +61,7 @@ export default function ChatWindow(params) {
                                 </div>
                             )}
                             {sortedMessages.map((message, i) => {
+                                if (message.role === "system") return;
                                 return (
                                     <div key={`message-${i}`}>
                                         <div className="flex items-center gap-1">
@@ -73,8 +74,9 @@ export default function ChatWindow(params) {
                                                 </div>
                                             )}
                                         </div>
-                                        <div>
+                                        <div className="whitespace-pre-wrap">
                                             {i === 0 &&
+                                                params.isChatting &&
                                                 message.content.length ===
                                                     0 && (
                                                     <div className="text-white">
@@ -84,6 +86,14 @@ export default function ChatWindow(params) {
                                                             color="white"
                                                         ></l-bouncy>
                                                     </div>
+                                                )}
+                                            {i === 0 &&
+                                                !params.isChatting &&
+                                                message.content.length ===
+                                                    0 && (
+                                                    <em class="text-sm">
+                                                        (no content)
+                                                    </em>
                                                 )}
                                             {message.content}
                                         </div>
@@ -101,11 +111,23 @@ export default function ChatWindow(params) {
                                     placeholder="Type your message here..."
                                     className="w-full p-2 text-gray-50 rounded-b-lg bg-gray-900 focus:bg-gray-600 focus:outline-none nodrag placeholder:text-gray-400"
                                 />
-                                <input
-                                    type="submit"
-                                    value="→"
-                                    className="absolute text-white right-4 hover:cursor-pointer"
-                                />
+                                {!params.isChatting && (
+                                    <input
+                                        type="submit"
+                                        value="→"
+                                        className="absolute text-white right-4 hover:cursor-pointer"
+                                    />
+                                )}
+                                {params.isChatting && (
+                                    <a
+                                        onClick={() =>
+                                            params.toggleIsChatting(false)
+                                        }
+                                        className="absolute text-white right-4 hover:cursor-pointer"
+                                    >
+                                        {Icons.CloseIcon(4)}
+                                    </a>
+                                )}
                             </form>
                         </div>
                     </div>

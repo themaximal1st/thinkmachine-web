@@ -43,7 +43,7 @@ export default class App extends React.Component {
             showLLMSettings: false,
             showLayout: false,
             showLabsWarning: false,
-            showChat: true,
+            showChat: false,
 
             licenseKey: "",
             licenseValid: undefined,
@@ -570,10 +570,18 @@ export default class App extends React.Component {
     // TOGGLE
     //
 
+    toggleIsChatting(val) {
+        const isChatting = val === undefined ? !this.state.isChatting : val;
+        this.setState({ isChatting });
+    }
+
     toggleChatWindow(val) {
         const showChat = val === undefined ? !this.state.showChat : val;
-        console.log("SHOW CHAT", showChat);
-        this.setState({ showChat });
+        const state = { showChat };
+        if (!showChat) {
+            state.chatMessages = [];
+        }
+        this.setState(state);
     }
 
     toggleShowLabsWarning(val) {
@@ -711,48 +719,91 @@ export default class App extends React.Component {
         console.log("ENGINE STOPPED");
     }
 
+    knowledgeGraphPrompt() {
+        const hyperedges = this.state.hyperedges
+            .map((hyperedge) => {
+                return hyperedge.join(" -> ");
+            })
+            .join("\n");
+
+        const prompt = `You are a knowledge graph Chat AI assistant.
+You are helping me chat with my knowledge graph.
+
+First I will provide you with a knowledge graph, and then in future messages we'll chat about it.
+Be concise, and if you need more information, ask for it.
+The knowledge graph is based on a hypergraph.
+The hypergraph is made up of hyperedges.
+Hyperedges are made up of symbols.
+Hyperedges are represented with " -> " arrows.
+Each new line is a distinct hyperedge.
+
+You don't need to let the user know about the underlying hypergraph structure, they are looking at a visual representation of it.
+So you can speak about the knowledge graph by references the symbols and how they connect.
+
+Here is the knowledge graph:
+${hyperedges}`;
+
+        return prompt;
+    }
+
     async handleChatMessage(e) {
         e.preventDefault();
         if (this.state.isChatting) return;
 
         const chatMessages = [...this.state.chatMessages];
+
+        if (chatMessages.length === 0) {
+            const content = this.knowledgeGraphPrompt();
+            chatMessages.push({
+                role: "system",
+                content,
+                timestamp: Date.now(),
+            });
+        }
+
         chatMessages.push({
             content: this.chatInputRef.current.value,
             role: "user",
-            timestamp: Date.now(),
+            timestamp: Date.now() + 1,
         });
 
         const assistant = {
             content: "",
             model: this.state.llm.name,
             role: "assistant",
-            timestamp: Date.now() + 1,
+            timestamp: Date.now() + 2,
         };
 
         await this.asyncSetState({ chatMessages, isChatting: true });
         this.chatInputRef.current.value = "";
-        const oldChatMessages = [...chatMessages];
+
+        const sortedChatMessages = [...chatMessages].sort((a, b) => {
+            return a.timestamp - b.timestamp;
+        });
+
         chatMessages.push(assistant);
         await this.asyncSetState({ chatMessages });
 
         try {
-            const response = await window.api.chat(oldChatMessages, {
+            const response = await window.api.chat(sortedChatMessages, {
                 llm: this.state.llm,
             });
 
             for await (const data of response) {
+                if (!this.state.isChatting) {
+                    break;
+                }
+
                 assistant.content += data.data;
-                console.log("Assistant", assistant);
                 await this.asyncSetState({ chatMessages });
             }
         } catch (e) {
             console.log("ERROR DURING CHAT", e);
-            throw e;
         } finally {
             await this.asyncSetState({ isChatting: false });
         }
 
-        // TODO: Check message history
+        console.log("HISTORY", this.state.chatMessages);
     }
 
     async handleDownload() {
@@ -1168,6 +1219,8 @@ export default class App extends React.Component {
                     handleChatMessage={this.handleChatMessage.bind(this)}
                     chatInputRef={this.chatInputRef}
                     showChat={this.state.showChat}
+                    isChatting={this.state.isChatting}
+                    toggleIsChatting={this.toggleIsChatting.bind(this)}
                     toggleChatWindow={this.toggleChatWindow.bind(this)}
                     updateChatWindow={this.updateChatWindow.bind(this)}
                 />

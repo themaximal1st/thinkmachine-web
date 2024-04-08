@@ -110,6 +110,8 @@
  * Issue is switching from Isolated -> Confluence, the node IDs actually change
  * If there was a way to grab it's old node ID, that may or may not work
 
+* Tool calling, have chat generate new data/search/add, based on topics
+
 * If you could update/reload/filter the Graph without reloading it all, that would be phenomenal
 * What kinds of tests could we add? Integration tests kinda suck, but app is getting complex
  * inline browser? could be useful for quickly seeing references

@@ -142,9 +142,10 @@ export default class Bridge {
             return { role: msg.role, content: msg.content }
         });
 
+        console.log("MESSAGES", messages)
+
         try {
             const response = await LLM(messages, options);
-            console.log(response);
             for await (const data of response) {
                 console.log(data);
                 this.send({ event: "chat.message", data });

@@ -109,7 +109,7 @@ export default function Typer(params) {
                         }`}
                         onClick={() => params.setInputMode("add")}
                     >
-                        {Icons.AddIcon(4)}
+                        {Icons.AddIcon(5)}
                         Add
                     </a>
 
@@ -121,7 +121,7 @@ export default function Typer(params) {
                         }`}
                         onClick={() => params.setInputMode("generate")}
                     >
-                        {Icons.GenerateIcon(4)}
+                        {Icons.GenerateIcon(5)}
                         Generate
                     </a>
 
@@ -137,7 +137,7 @@ export default function Typer(params) {
                             }
                         }}
                     >
-                        {Icons.SearchIcon(4)}
+                        {Icons.SearchIcon(5)}
                         Search
                     </a>
                     <a
@@ -148,7 +148,7 @@ export default function Typer(params) {
                             params.toggleChatWindow();
                         }}
                     >
-                        {Icons.ChatIcon(4)}
+                        {Icons.ChatIcon(5)}
                         Chat
                     </a>
                 </div>

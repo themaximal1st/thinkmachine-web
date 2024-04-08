@@ -69,8 +69,6 @@ export default class WebBridge {
 
         this.stream("/api/chat", async ({ bridge, body, res }) => {
             let { messages, llm } = body;
-            console.log("MESSAGES", messages);
-            console.log("LLM", llm);
             return await bridge.chat(messages, { llm });
         });
 
