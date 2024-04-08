@@ -23,11 +23,6 @@ import Typer from "@components/Typer";
 import Wormhole from "@components/Wormhole.js";
 import ChatWindow from "@components/ChatWindow.jsx";
 
-// ZOOM CASES
-// VERY LARGE GRAPHS...probably dont want to reload
-// CLICKING ON NODES...don't want to zoom
-// USER HAS ZOOMED OR PANNED OR ROTATED...reset after when?
-
 export default class App extends React.Component {
     constructor(props) {
         super(props);
@@ -143,9 +138,7 @@ export default class App extends React.Component {
 
     get isFocusingFeedbackInput() {
         if (!document.activeElement) return false;
-        // if isn't textarea
         if (document.activeElement.tagName !== "TEXTAREA") return false;
-        console.log("MAYBE");
         return true;
     }
 
