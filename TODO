@@ -1,7 +1,15 @@
 * cac.app — enter email placeholder, little more UI improvement
 
-* desktop version
-* get feature-parity
+* desktop
+ - settings / llm
+ - chat
+* electron: generate
+* electron: wormhole
+* electron: scraping -> proxy api key?
+* electron: does FoceGraph toggling work? 2d? 3d?
+* electron: license
+* get menu working
+
 * massive refactor
 * tests
 
@@ -26,11 +34,6 @@ TODAY
 
 * thinkmachine 0.0.2 -> announcement video
 
-* electron: generate
-* electron: wormhole
-* electron: scraping -> proxy api key?
-* electron: does FoceGraph toggling work? 2d? 3d?
-* electron: license
 
 * Add githook to check versions are the same?
 
@@ -55,6 +58,7 @@ TODAY
 
 * license
 * Update README
+* Make desktop version work with 1-click ModelDeployer rate limited tokens
 
 
 **Web Version**

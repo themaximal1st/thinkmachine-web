@@ -1,15 +1,6 @@
 import { contextBridge, ipcRenderer } from "electron";
 
 const api = {
-    // settings: {
-    //     get: (key) => {
-    //         return ipcRenderer.invoke("settings.get", key);
-    //     },
-    //     set: (key, value) => {
-    //         return ipcRenderer.invoke("settings.set", key, value);
-    //     },
-    // },
-
     "edition": "electron",
     "isWeb": false,
     "isElectron": true,
@@ -33,6 +24,9 @@ const api = {
         graphData: (filter = [], options = null) => {
             return ipcRenderer.invoke("hypergraph.graphData", filter, options);
         },
+        create: () => {
+            return ipcRenderer.invoke("hypergraph.create");
+        }
     },
     hyperedges: {
         add: (hyperedge, symbol) => {

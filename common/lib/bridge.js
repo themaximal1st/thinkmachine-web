@@ -2,7 +2,7 @@ import LLM from "@themaximalist/llm.js"
 import ThinkableType from "@themaximalist/thinkabletype";
 
 import colors from "./colors.js";
-import { isUUID, isEmptyUUID } from "./uuid.js";
+import { isUUID, isEmptyUUID, generate as generateUUID } from "./uuid.js";
 // import Analytics from "./Analytics.js";
 import extractor from "./extractor.js";
 
@@ -43,10 +43,10 @@ export default class Bridge {
         return this.thinkabletype.export();
     }
 
-    isValidHypergraph(uuid) {
-        if (!uuid) return false;
-        if (!isUUID(uuid)) return false;
-        if (isEmptyUUID(uuid)) return false;
+    isValidHypergraph() {
+        if (!this.uuid) return false;
+        if (!isUUID(this.uuid)) return false;
+        if (isEmptyUUID(this.uuid)) return false;
         return true;
     }
 
@@ -152,5 +152,10 @@ export default class Bridge {
             console.error(e);
             throw e;
         }
+    }
+
+    async createHypergraph() {
+        this.uuid = generateUUID();
+        return this.uuid;
     }
 }

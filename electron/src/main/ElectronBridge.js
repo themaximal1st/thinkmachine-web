@@ -22,6 +22,7 @@ export default class ElectronBridge {
 
     async load() {
         const mapping = {
+            "hypergraph.create": "createHypergraph",
             "hypergraph.isValid": "isValidHypergraph",
             "hypergraph.graphData": "graphData",
             "analytics.track": "trackAnalytics",
