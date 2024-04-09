@@ -93,6 +93,16 @@ export default function Footer(params) {
                                             Labs
                                         </a>
                                     )}
+
+                                    {!isWeb && (
+                                        <a
+                                            onClick={params.toggleLicenseWindow}
+                                            className="menu-item"
+                                        >
+                                            <div>{Icons.LicenseIcon(6)}</div>
+                                            License
+                                        </a>
+                                    )}
                                 </div>
                             )}
                             {!params.isAnimating && (

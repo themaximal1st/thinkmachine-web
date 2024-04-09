@@ -50,6 +50,7 @@ export default class App extends React.Component {
             licenseKey: "",
             licenseValid: undefined,
             trialExpired: false,
+            trialRemaining: Infinity,
             llm: {
                 service: "openai",
                 model: "gpt-4-turbo-preview",
@@ -186,6 +187,8 @@ export default class App extends React.Component {
 
             window.api.analytics.track("app.load");
 
+            await this.fetchLicenseInfo();
+
             await this.handleAutoSearch();
         });
     }
@@ -317,14 +320,6 @@ export default class App extends React.Component {
         } catch (e) {
             console.error(e);
         }
-    }
-
-    async fetchLicenseInfo() {
-        // return;
-        // const license = await window.api.licenses.info();
-        // this.setState(license, async () => {
-        //     await this.validateAccess();
-        // });
     }
 
     async createNewHypergraph() {
@@ -459,23 +454,35 @@ export default class App extends React.Component {
         await this.reloadData();
     }
 
+    async fetchLicenseInfo() {
+        if (window.api.isElectron) {
+            const license = await window.api.license.info();
+            this.setState(license, async () => {
+                await this.validateAccess();
+            });
+        }
+    }
+
     async validateAccess() {
-        // const state = {
-        //     licenseValid: false,
-        //     trialExpired: this.state.trialRemaining <= 0,
-        // };
-        // if (this.state.licenseKey) {
-        //     state.licenseValid = await window.api.licenses.validate(
-        //         this.state.licenseKey
-        //     );
-        //     if (state.licenseValid) {
-        //         await window.api.settings.set("license", this.state.licenseKey);
-        //         state.error = null;
-        //     } else {
-        //         state.error = "License is not valid";
-        //     }
-        // }
-        // this.setState(state);
+        const state = {
+            licenseValid: false,
+            trialExpired: this.state.trialRemaining <= 0,
+        };
+
+        if (this.state.licenseKey) {
+            console.log("validating license");
+            state.licenseValid = await window.api.license.validate(
+                this.state.licenseKey
+            );
+            if (state.licenseValid) {
+                console.log("validated license");
+                await window.api.settings.set("license", this.state.licenseKey);
+                state.error = null;
+            } else {
+                state.error = "License is not valid";
+            }
+        }
+        this.setState(state);
     }
 
     async activateLicense(e) {
@@ -484,11 +491,10 @@ export default class App extends React.Component {
     }
 
     async deactivateLicense() {
-        // await window.api.settings.set("license", null);
-        // await window.api.settings.set("lastValidated", null);
-        this.setState({ licenseKey: "", licenseValid: false }, async () => {
-            await this.fetchLicenseInfo();
-        });
+        await window.api.settings.set("license", null);
+        await window.api.settings.set("lastValidated", null);
+
+        this.setState({ licenseKey: "", licenseValid: false });
     }
 
     async updateLLM(llm) {
@@ -609,6 +615,11 @@ export default class App extends React.Component {
     toggleIsChatting(val) {
         const isChatting = val === undefined ? !this.state.isChatting : val;
         this.setState({ isChatting });
+    }
+
+    toggleLicenseWindow(val) {
+        const showLicense = val === undefined ? !this.state.showLicense : val;
+        this.setState({ showLicense });
     }
 
     toggleChatWindow(val) {
@@ -1360,6 +1371,7 @@ ${hyperedges}`;
                     toggleShowLabsWarning={this.toggleShowLabsWarning.bind(
                         this
                     )}
+                    toggleLicenseWindow={this.toggleLicenseWindow.bind(this)}
                     handleDownload={this.handleDownload.bind(this)}
                     wormholeMode={this.state.wormholeMode}
                     showSettingsMenu={this.state.showSettingsMenu}

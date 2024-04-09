@@ -54,12 +54,12 @@ const api = {
             return ipcRenderer.invoke("hyperedges.wormhole", input, options);
         }
     },
-    licenses: {
+    license: {
         validate: (license) => {
-            return ipcRenderer.invoke("licenses.validate", license);
+            return ipcRenderer.invoke("license.validate", license);
         },
         info: () => {
-            return ipcRenderer.invoke("licenses.info");
+            return ipcRenderer.invoke("license.info");
         },
     },
     messages: {
@@ -69,7 +69,15 @@ const api = {
     },
     chat: (messages, options = {}) => {
         return ipcRenderer.stream("chat", messages, options);
-    }
+    },
+    settings: {
+        get: (key) => {
+            return ipcRenderer.invoke("settings.get", key);
+        },
+        set: (key, value) => {
+            return ipcRenderer.invoke("settings.set", key, value);
+        },
+    },
 };
 
 try {

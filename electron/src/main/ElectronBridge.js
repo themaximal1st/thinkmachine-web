@@ -1,6 +1,8 @@
 import { ipcMain } from "electron";
 
 import Bridge from "@lib/bridge"
+import License from "./License.js";
+import * as settings from "./settings.js";
 
 export default class ElectronBridge {
     constructor(app) {
@@ -61,13 +63,39 @@ export default class ElectronBridge {
                 console.log("ERROR DURING HANDLE", e)
             }
         }
+
+        this.handle("license.info", this.licenseInfo.bind(this));
+        this.handle("license.validate", this.validateLicense.bind(this));
+        this.handle("settings.get", this.getSetting.bind(this));
+        this.handle("settings.set", this.setSetting.bind(this));
+    }
+
+    licenseInfo() {
+        const info = {};
+        if (License.license) {
+            info.licenseKey = License.license;
+        }
+
+        info.trialExpired = License.trialExpired;
+        info.trialRemaining = License.trialDurationRemaining;
+
+        return info;
+    }
+
+    async validateLicense(license) {
+        return await License.check(license);
+    }
+
+    getSetting(key) {
+        return settings.get(key);
+    }
+
+    setSetting(key, value) {
+        return settings.set(key, value);
     }
 }
 
 /*
-import * as settings from "./settings";
-import License from "./License.js";
-
 import * as services from "@services/index.js";
 
 export default class ElectronBridge {
@@ -98,20 +126,7 @@ export default class ElectronBridge {
         return settings.set(key, value);
     }
 
-    async validateLicense(_, license) {
-        return await License.check(license);
-    }
-
     async licenseInfo() {
-        const info = {};
-        if (License.license) {
-            info.licenseKey = License.license;
-        }
-
-        info.trialExpired = License.trialExpired;
-        info.trialRemaining = License.trialDurationRemaining;
-
-        return info;
     }
 
     static async load(thinkabletype, thinkmachine) {
