@@ -29,6 +29,9 @@ const api = {
         },
         create: () => {
             return ipcRenderer.invoke("hypergraph.create");
+        },
+        export: () => {
+            return ipcRenderer.invoke("hypergraph.export");
         }
     },
     hyperedges: {
@@ -47,8 +50,8 @@ const api = {
         "export": () => {
             return ipcRenderer.invoke("hyperedges.export",);
         },
-        "wormhole": () => {
-            return ipcRenderer.invoke("hyperedges.wormhole");
+        "wormhole": (input, options) => {
+            return ipcRenderer.invoke("hyperedges.wormhole", input, options);
         }
     },
     licenses: {

@@ -112,7 +112,7 @@ export default class Bridge {
         this.send({ event: "hyperedges.generate.stop" });
     }
 
-    async *generateWormhole(input, options = {}) {
+    async generateWormhole(input, options = {}) {
         this.trackAnalytics("hyperedges.wormhole");
 
         if (options.llm) {
@@ -126,7 +126,6 @@ export default class Bridge {
 
         for await (const hyperedges of response) {
             this.thinkabletype.addHyperedges(hyperedges);
-            yield hyperedges;
         }
     }
 
@@ -159,6 +158,7 @@ export default class Bridge {
 
     async createHypergraph() {
         this.uuid = generateUUID();
+        this.thinkabletype = new ThinkableType({ colors });
         return this.uuid;
     }
 }

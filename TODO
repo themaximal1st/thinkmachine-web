@@ -1,10 +1,10 @@
 * cac.app — enter email placeholder, little more UI improvement
 
-* electron: wormhole
-* electron: scraping -> proxy api key?
-* electron: does FoceGraph toggling work? 2d? 3d? all the icons? modes?
 * electron: license / trial / validating
 * get menu working
+
+* electron: wormhole
+* electron: scraping -> proxy api key?
 
 * massive refactor
 * tests
@@ -13,9 +13,6 @@
 * post blog post?
 * update repos
 
-* problem with build on server, postcss expects module vs es6
-* release on web
-* record video
 * update everything, github/repos
 * electron version
 
@@ -25,10 +22,9 @@ TODAY
 * depth
 * rate limit
 
-* changelog / in repo and on website
-* deploy web version
+* reduce cases of isWeb & isElectron...make services
 
-* thinkmachine 0.0.2 -> announcement video
+* changelog / in repo and on website
 
 
 * Add githook to check versions are the same?

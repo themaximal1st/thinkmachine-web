@@ -82,11 +82,8 @@ export default class WebBridge {
 
             const input = symbols.join("\n");
 
-            const response = await bridge.generateWormhole(input, { llm });
-            for await (const hyperedges of response) {
-                req.thinkabletype.addHyperedges(hyperedges);
-                await this.saveHypergraph(req);
-            }
+            await bridge.generateWormhole(input, { llm });
+            await this.saveHypergraph(req);
         });
     }
 

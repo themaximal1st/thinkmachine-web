@@ -29,7 +29,7 @@ export default function Footer(params) {
                                     className="pointer-events-none absolute -left-5 bottom-10 w-96 flex flex-col-reverse gap-4 p-2 text-lg fan-left"
                                     id="settings-menu"
                                 >
-                                    {params.loaded &&
+                                    {isWeb &&
                                         params.edited &&
                                         params.hyperedges.length > 0 && (
                                             <a
@@ -42,7 +42,7 @@ export default function Footer(params) {
                                                 Save
                                             </a>
                                         )}
-                                    {params.edited && (
+                                    {isWeb && params.edited && (
                                         <a
                                             onClick={(e) =>
                                                 (window.location.href = "/")
@@ -54,15 +54,17 @@ export default function Footer(params) {
                                         </a>
                                     )}
 
-                                    <a
-                                        onClick={() => {
-                                            console.log("load");
-                                        }}
-                                        className="menu-item"
-                                    >
-                                        <div>{Icons.LoadIcon}</div>
-                                        Load
-                                    </a>
+                                    {isWeb && (
+                                        <a
+                                            onClick={() => {
+                                                console.log("load");
+                                            }}
+                                            className="menu-item"
+                                        >
+                                            <div>{Icons.LoadIcon}</div>
+                                            Load
+                                        </a>
+                                    )}
 
                                     <a
                                         onClick={() =>
@@ -82,13 +84,15 @@ export default function Footer(params) {
                                         <div>{Icons.LayoutIcon}</div>
                                         Layout
                                     </a>
-                                    <a
-                                        onClick={handleToggleWormhole}
-                                        className="menu-item"
-                                    >
-                                        <div>{Icons.LabIcon}</div>
-                                        Labs
-                                    </a>
+                                    {false && (
+                                        <a
+                                            onClick={handleToggleWormhole}
+                                            className="menu-item"
+                                        >
+                                            <div>{Icons.LabIcon}</div>
+                                            Labs
+                                        </a>
+                                    )}
                                 </div>
                             )}
                             {!params.isAnimating && (

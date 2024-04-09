@@ -38,6 +38,7 @@ export default class ElectronBridge {
             "hypergraph.create": "createHypergraph",
             "hypergraph.isValid": "isValidHypergraph",
             "hypergraph.graphData": "graphData",
+            "hypergraph.export": "exportHypergraph",
             "analytics.track": "trackAnalytics",
             "uuid.get": "getUUID",
             "uuid.set": "setUUID",
@@ -45,8 +46,10 @@ export default class ElectronBridge {
             "hyperedges.add": "addHyperedges",
             "hyperedges.remove": "removeHyperedges",
             "hyperedges.generate": "generateHyperedges",
+            "hyperedges.wormhole": "generateWormhole",
             "chat": "chat",
         };
+
 
         this.bridge.send = this.send.bind(this);
         this.bridge.save = this.save.bind(this);

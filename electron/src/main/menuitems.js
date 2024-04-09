@@ -19,7 +19,7 @@ export function SaveMenuItem(App) {
 
 export function LoadMenuItem(App) {
     return new MenuItem({
-        label: "Load ThinkableType File",
+        label: "Load Think Machine",
         accelerator: "CmdOrCtrl+O",
         click: services.openFile.bind(null, App),
     });
