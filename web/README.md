@@ -3,11 +3,10 @@
 <img src="logo-square.png" alt="Think Machine — Multidimensional Mind Mapping" class="logo" style="max-width: 450px;" />
 
 <div class="badges" style="text-align: center; margin-top: -10px;">
-<a href="https://github.com/themaximalist/thinkmachine-web"><img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/themaximal1st/thinkmachine-web"></a>
-<a href="https://github.com/themaximalist/thinkmachine-web"><img alt="GitHub code size in bytes" src="https://img.shields.io/github/languages/code-size/themaximal1st/thinkmachine-web"></a>
-<a href="https://github.com/themaximalist/thinkmachine-web"><img alt="GitHub License" src="https://img.shields.io/github/license/themaximal1st/thinkmachine-web"></a>
+<a href="https://github.com/themaximalist/thinkmachine"><img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/themaximal1st/thinkmachine"></a>
+<a href="https://github.com/themaximalist/thinkmachine"><img alt="GitHub code size in bytes" src="https://img.shields.io/github/languages/code-size/themaximal1st/thinkmachine"></a>
+<a href="https://github.com/themaximalist/thinkmachine"><img alt="GitHub License" src="https://img.shields.io/github/license/themaximal1st/thinkmachine"></a>
 </div>
-
 <br />
 
 Think Machine is a multidimensional mind mapper for the Web.  It creates a 3D interface for exploring complex ideas, brainstorming and performing research.
