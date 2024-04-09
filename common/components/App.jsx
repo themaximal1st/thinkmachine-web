@@ -10,6 +10,7 @@ import * as utils from "@lib/utils";
 import * as GraphUtils from "@lib/GraphUtils";
 
 import Animation from "@lib/Animation";
+import LocalSettings from "@lib/LocalSettings";
 
 import License from "@components/License";
 import Console from "@components/Console";
@@ -53,6 +54,7 @@ export default class App extends React.Component {
                 service: "openai",
                 model: "gpt-4-turbo-preview",
             },
+            apikeys: LocalSettings.apikeys,
             width: window.innerWidth,
             height: window.innerHeight,
 
@@ -121,11 +123,15 @@ export default class App extends React.Component {
     }
 
     get isFocusingTextInput() {
-        return (
-            this.isFocusingInput ||
-            this.isFocusingChatInput ||
-            this.isFocusingFeedbackInput
-        );
+        if (this.isFocusingInput) return true;
+        if (this.isFocusingChatInput) return true;
+        if (this.isFocusingFeedbackInput) return true;
+
+        if (!document.activeElement) return false;
+        if (document.activeElement.tagName === "INPUT") return true;
+        if (document.activeElement.tagName === "TEXTAREA") return true;
+
+        return false;
     }
 
     get isFocusingInput() {
@@ -287,6 +293,10 @@ export default class App extends React.Component {
             newChatWindow
         );
         this.setState({ chatWindow });
+    }
+
+    updateAPIKeys(apikeys) {
+        LocalSettings.apikeys = apikeys;
     }
 
     async asyncSetState(state = {}) {
@@ -492,6 +502,15 @@ export default class App extends React.Component {
         window.localStorage.setItem("llm", JSON.stringify(llm));
     }
 
+    get llmSettings() {
+        const llm = this.state.llm;
+        if (window.api.isElectron) {
+            llm.apikey = LocalSettings.apiKeyForService(llm.service);
+        }
+
+        return llm;
+    }
+
     async createThinkMachineTutorial() {
         if (this.state.hyperedges.length > 0) return;
 
@@ -572,7 +591,7 @@ export default class App extends React.Component {
 
         try {
             await window.api.hyperedges.wormhole(hyperedges, {
-                llm: this.state.llm,
+                llm: this.llmSettings,
                 from_uuid,
             });
         } catch (e) {
@@ -837,7 +856,7 @@ ${hyperedges}`;
 
         try {
             const response = await window.api.chat(sortedChatMessages, {
-                llm: this.state.llm,
+                llm: this.llmSettings,
             });
 
             for await (const data of response) {
@@ -1121,15 +1140,31 @@ ${hyperedges}`;
 
         await this.handleEmptyHypergraph();
 
-        const llm = this.state.llm;
+        const llm = this.llmSettings;
         const options = { llm };
+
+        if (!llm.apikey) {
+            toast.error("API key is required for generating results");
+            this.setState({ showLLMSettings: true });
+            return;
+        }
 
         await this.asyncSetState({ input: "" });
 
-        const response = await window.api.hyperedges.generate(input, options);
+        try {
+            const response = await window.api.hyperedges.generate(
+                input,
+                options
+            );
 
-        for await (const message of response) {
-            await this.handleGenerateMessage(message);
+            for await (const message of response) {
+                await this.handleGenerateMessage(message);
+            }
+        } catch (e) {
+            console.log("ERROR", e);
+            toast.error("Error generating results");
+        } finally {
+            this.setState({ isGenerating: false });
         }
     }
 
@@ -1287,8 +1322,11 @@ ${hyperedges}`;
                 <LLMSettings
                     llm={this.state.llm}
                     updateLLM={this.updateLLM.bind(this)}
+                    apikeys={this.state.apikeys}
+                    updateAPIKeys={this.updateAPIKeys.bind(this)}
                     showLLMSettings={this.state.showLLMSettings}
                     toggleLLMSettings={this.toggleLLMSettings.bind(this)}
+                    loaded={this.state.loaded}
                 />
                 <ChatWindow
                     chatWindow={this.state.chatWindow}
@@ -1333,39 +1371,4 @@ ${hyperedges}`;
             </div>
         );
     }
-}
-
-function callbackToAsyncGenerator(subscribe) {
-    // This function returns an async generator
-    return async function* () {
-        const queue = [];
-        let resolve;
-
-        // This listener handles incoming data, resolving the current promise or queuing data
-        const listener = (data) => {
-            if (resolve) {
-                resolve(data);
-                resolve = null;
-            } else {
-                queue.push(data);
-            }
-        };
-
-        // Subscribe to the callback, receiving a cleanup function
-        const cleanup = subscribe(listener);
-
-        try {
-            while (true) {
-                // If the queue has data, yield it immediately
-                // Otherwise, yield a new promise that resolves upon the next callback call
-                if (queue.length > 0) {
-                    yield queue.shift();
-                } else {
-                    yield new Promise((_resolve) => (resolve = _resolve));
-                }
-            }
-        } finally {
-            cleanup(); // Ensure cleanup is called when the generator is done
-        }
-    };
 }

@@ -183,6 +183,11 @@ export function smartZoom(app, oldData, shouldZoom = false) {
             shouldZoom = true;
         }
 
+        // always zoom on first symbol
+        if (app.uniqueSymbols.length === 1) {
+            shouldZoom = true;
+        }
+
         if (!oldCamera || shouldZoom) {
             await utils.delay(200);
             await zoom(app, oldData);

@@ -51,7 +51,11 @@ export default class ElectronBridge {
         this.bridge.save = this.save.bind(this);
 
         for (const [event, method] of Object.entries(mapping)) {
-            this.handle(event, this.bridge[method].bind(this.bridge));
+            try {
+                this.handle(event, this.bridge[method].bind(this.bridge));
+            } catch (e) {
+                console.log("ERROR DURING HANDLE", e)
+            }
         }
     }
 }
