@@ -3,9 +3,9 @@
 <img src="logo-square.png" alt="Think Machine — Multidimensional Mind Mapping" class="logo" style="max-width: 450px;" />
 
 <div class="badges" style="text-align: center; margin-top: -10px;">
-<a href="https://github.com/themaximalist/thinkmachine"><img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/themaximal1st/thinkmachine"></a>
-<a href="https://github.com/themaximalist/thinkmachine"><img alt="GitHub code size in bytes" src="https://img.shields.io/github/languages/code-size/themaximal1st/thinkmachine"></a>
-<a href="https://github.com/themaximalist/thinkmachine"><img alt="GitHub License" src="https://img.shields.io/github/license/themaximal1st/thinkmachine"></a>
+<a href="https://github.com/themaximalist/thinkmachine"><img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/themaximalist/thinkmachine"></a>
+<a href="https://github.com/themaximalist/thinkmachine"><img alt="GitHub code size in bytes" src="https://img.shields.io/github/languages/code-size/themaximalist/thinkmachine"></a>
+<a href="https://github.com/themaximalist/thinkmachine"><img alt="GitHub License" src="https://img.shields.io/github/license/themaximalist/thinkmachine"></a>
 </div>
 <br />
 
