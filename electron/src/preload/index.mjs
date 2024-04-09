@@ -1,4 +1,31 @@
 import { contextBridge, ipcRenderer } from "electron";
+import { EventIterator } from "event-iterator"
+
+const validChannels = [
+    "hyperedges",
+    "chat",
+];
+
+// don't think this is how cleanup is supposed to be handled, but the only way I could figure it out
+export function stream(channel) {
+    let cleanup = null;
+
+    const iterator = new EventIterator(
+        ({ push }) => {
+            if (!validChannels.includes(channel)) return null;
+
+            const subscription = (event, ...args) => push(...args);
+            ipcRenderer.on(channel, subscription);
+            cleanup = () => {
+                ipcRenderer.removeListener(channel, subscription);
+            }
+
+            return cleanup;
+        }
+    )
+
+    return { iterator, cleanup };
+}
 
 const api = {
     "edition": "electron",
@@ -38,8 +65,13 @@ const api = {
         all: () => {
             return ipcRenderer.invoke("hyperedges.all");
         },
-        generate: (input, options = {}) => {
-            return ipcRenderer.invoke("hyperedges.generate", input, options);
+        generate: async (input, options = {}) => {
+            const { iterator, cleanup } = await stream("hyperedges");
+            const response = ipcRenderer.invoke("hyperedges.generate", input, options);
+            response.then(() => {
+                cleanup();
+            });
+            return iterator;
         },
         "export": () => {
             return ipcRenderer.invoke("hyperedges.export",);
@@ -58,18 +90,7 @@ const api = {
     },
     messages: {
         receive: (channel, func) => {
-            console.log("CHANNEL");
-            const validChannels = ["message-from-main"];
-            if (validChannels.includes(channel)) {
-                console.log("GOOD");
-                const subscription = (event, ...args) => func(...args);
-                console.log("SUB", subscription, channel);
-                ipcRenderer.on(channel, subscription);
-                return () => {
-                    console.log("REMOVING");
-                    ipcRenderer.removeListener(channel, subscription);
-                }
-            }
+            return subscribe(func, channel);
         },
     },
 };

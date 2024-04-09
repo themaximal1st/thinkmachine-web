@@ -20,8 +20,14 @@ export default class ElectronBridge {
         });
     }
 
-    send(message, object = null) {
-        this.app.browserWindow.webContents.send("message-from-main", message, object);
+    send(event) {
+        let channel = "message-from-main";
+        if (event.event) {
+            channel = event.event.split(".")[0];
+        }
+
+        console.log("SENDING", channel, event);
+        this.app.browserWindow.webContents.send(channel, event);
     }
 
     save() {

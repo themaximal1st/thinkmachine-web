@@ -1116,7 +1116,6 @@ ${hyperedges}`;
     }
 
     async handleGenerateMessage(message) {
-        console.log("MESSAGE", message);
         switch (message.event) {
             case "hyperedges.generate.result":
                 this.maybeReloadData();
@@ -1125,10 +1124,10 @@ ${hyperedges}`;
                 this.setState({ isGenerating: true, edited: true });
                 toast.success("Generating...");
                 break;
-            // case "hyperedges.generate.stop":
-            //     this.setState({ isGenerating: false });
-            //     this.reloadData();
-            //     break;
+            case "hyperedges.generate.stop":
+                this.setState({ isGenerating: false });
+                this.reloadData();
+                break;
             case "success":
                 toast.success(
                     message.message || "Successfully generated results"
@@ -1144,16 +1143,35 @@ ${hyperedges}`;
     }
 
     async handleGenerateInput() {
+        const input = this.state.input.trim();
+        if (input.length === 0) {
+            return;
+        }
+
         await this.handleEmptyHypergraph();
 
         const llm = this.state.llm;
         const options = { llm };
 
+        await this.asyncSetState({ input: "" });
+
+        const response = await window.api.hyperedges.generate(input, options);
+
+        console.log("BEFORE ALL");
+        for await (const message of response) {
+            console.log("MESSAGE", message);
+            await this.handleGenerateMessage(message);
+        }
+        console.log("AFTER ALL");
+
+        // response();
+
+        /*
         let removeListener = null;
         try {
             if (window.api.isElectron) {
                 removeListener = await window.api.messages.receive(
-                    "message-from-main",
+                    "generate-message",
                     this.handleGenerateMessage.bind(this)
                 );
                 console.log("remove", removeListener);
@@ -1182,6 +1200,7 @@ ${hyperedges}`;
             this.reloadData();
             console.log("FINALLY");
         }
+        */
     }
 
     async handleSearchInput(e) {

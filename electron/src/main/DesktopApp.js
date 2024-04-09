@@ -45,6 +45,9 @@ export default class DesktopApp {
         fileMenu.submenu.insert(0, LoadMenuItem(this));
         fileMenu.submenu.insert(0, NewMenuItem(this));
         Menu.setApplicationMenu(menu);
+
+        // open electron dev tools window
+        if (is.dev) this.browserWindow.webContents.openDevTools();
     }
 
     static titleBarStyle() {
