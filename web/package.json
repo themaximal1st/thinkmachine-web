@@ -1,6 +1,6 @@
 {
     "name": "thinkmachine-web",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "scripts": {
         "dev": "nodemon --preserve-symlinks src/server/server.js -w src/server",
         "start": "NODE_ENV=production node --preserve-symlinks src/server/server.js",
