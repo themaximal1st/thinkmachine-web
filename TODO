@@ -1,8 +1,5 @@
 * cac.app — enter email placeholder, little more UI improvement
 
-* desktop
- - settings / llm
- - chat
 * electron: wormhole
 * electron: scraping -> proxy api key?
 * electron: does FoceGraph toggling work? 2d? 3d? all the icons? modes?

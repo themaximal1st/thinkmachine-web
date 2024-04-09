@@ -136,6 +136,7 @@ export default class Bridge {
         if (opts.llm) {
             if (opts.llm.service) { options.service = opts.llm.service }
             if (opts.llm.model) { options.model = opts.llm.model }
+            if (opts.llm.apikey) { options.apikey = opts.llm.apikey }
         }
 
         const messages = msgs.map((msg) => {
@@ -147,6 +148,8 @@ export default class Bridge {
             for await (const data of response) {
                 this.send({ event: "chat.message", data });
             }
+
+            this.send({ event: "chat.stop" });
         } catch (e) {
             console.log("ERRR");
             console.error(e);

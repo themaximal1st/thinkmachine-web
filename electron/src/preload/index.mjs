@@ -64,6 +64,9 @@ const api = {
             return subscribe(func, channel);
         },
     },
+    chat: (messages, options = {}) => {
+        return ipcRenderer.stream("chat", messages, options);
+    }
 };
 
 try {

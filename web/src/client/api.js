@@ -142,9 +142,7 @@ export default class ThinkMachineAPI {
 
     async *chat(messages, options) {
         if (!this.isValid) return;
-        console.log("CHATTING");
         const response = await this.stream("chat", { messages, ...options });
-        console.log("CHAT", response);
         for await (const message of ThinkMachineAPI.readChunks(response.body.getReader())) {
             yield message;
         }

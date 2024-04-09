@@ -860,12 +860,14 @@ ${hyperedges}`;
             });
 
             for await (const data of response) {
-                if (!this.state.isChatting) {
+                if (!this.state.isChatting || data.event === "chat.stop") {
                     break;
                 }
 
-                assistant.content += data.data;
-                await this.asyncSetState({ chatMessages });
+                if (data.event === "chat.message") {
+                    assistant.content += data.data;
+                    await this.asyncSetState({ chatMessages });
+                }
             }
         } catch (e) {
             console.log("ERROR DURING CHAT", e);

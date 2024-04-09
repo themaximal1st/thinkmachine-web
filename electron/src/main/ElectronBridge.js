@@ -45,6 +45,7 @@ export default class ElectronBridge {
             "hyperedges.add": "addHyperedges",
             "hyperedges.remove": "removeHyperedges",
             "hyperedges.generate": "generateHyperedges",
+            "chat": "chat",
         };
 
         this.bridge.send = this.send.bind(this);
