@@ -1,6 +1,6 @@
 ## Think Machine
 
-<img src="electron/src/renderer/src/assets/logo-square.png" alt="Think Machine — Multidimensional Mind Mapping" class="logo" style="max-width: 450px;" />
+<img src="logo-square.png" alt="Think Machine — Multidimensional Mind Mapping" class="logo" style="max-width: 450px;" />
 
 <div class="badges" style="text-align: center; margin-top: -10px;">
 <a href="https://github.com/themaximalist/thinkmachine"><img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/themaximal1st/thinkmachine"></a>
