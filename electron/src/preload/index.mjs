@@ -6,25 +6,29 @@ const validChannels = [
     "chat",
 ];
 
-// don't think this is how cleanup is supposed to be handled, but the only way I could figure it out
-export function stream(channel) {
-    let cleanup = null;
-
-    const iterator = new EventIterator(
-        ({ push }) => {
+export function stream(event, input, options = {}) {
+    const channel = event.split(".")[0];
+    return new EventIterator(
+        (queue) => {
             if (!validChannels.includes(channel)) return null;
 
-            const subscription = (event, ...args) => push(...args);
+            const subscription = (event, ...args) => queue.push(...args);
             ipcRenderer.on(channel, subscription);
-            cleanup = () => {
+
+            const response = ipcRenderer.invoke(event, input, options);
+            response.catch(queue.fail);
+            response.then(() => {
+                // hack but messages can get caught in the queue
+                setTimeout(() => {
+                    queue.stop();
+                }, 500);
+            });
+
+            return () => {
                 ipcRenderer.removeListener(channel, subscription);
             }
-
-            return cleanup;
         }
     )
-
-    return { iterator, cleanup };
 }
 
 const api = {
@@ -66,12 +70,7 @@ const api = {
             return ipcRenderer.invoke("hyperedges.all");
         },
         generate: async (input, options = {}) => {
-            const { iterator, cleanup } = await stream("hyperedges");
-            const response = ipcRenderer.invoke("hyperedges.generate", input, options);
-            response.then(() => {
-                cleanup();
-            });
-            return iterator;
+            return stream("hyperedges.generate", input, options);
         },
         "export": () => {
             return ipcRenderer.invoke("hyperedges.export",);
