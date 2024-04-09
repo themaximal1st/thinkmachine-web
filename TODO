@@ -7,24 +7,11 @@
 
 * massive refactor
 * tests
-
-* update website open-source
 * post blog post?
-* update repos
-
-* update everything, github/repos
-* electron version
-
-TODAY
-* refactor
-* tests
-* depth
-* rate limit
-
+* depth needs a lot of work
 * reduce cases of isWeb & isElectron...make services
-
 * changelog / in repo and on website
-
+* rate limit
 
 * Add githook to check versions are the same?
 
