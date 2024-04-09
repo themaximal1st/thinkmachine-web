@@ -1,6 +1,6 @@
 ## Think Machine
 
-<img src="src/renderer/src/assets/logo-square.png" alt="Think Machine — Multidimensional Mind Mapping" class="logo" style="max-width: 450px;" />
+<img src="electron/src/renderer/src/assets/logo-square.png" alt="Think Machine — Multidimensional Mind Mapping" class="logo" style="max-width: 450px;" />
 
 <div class="badges" style="text-align: center; margin-top: -10px;">
 <a href="https://github.com/themaximalist/thinkmachine"><img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/themaximal1st/thinkmachine"></a>
@@ -16,16 +16,17 @@ Think Machine is a multidimensional mind mapper for Mac, Windows and Linux.  It 
 Features
 * 3d and 2d mind mapping
 * Learn ideas inside and out
-* AI brainstorming
+* AI graph brainstorming
+* Chat with AI about knowledge graph
 * Manage interconnections with a click
 * Search, filter and go down rabbit holes
-* and a lot more
+* and a lot more!
 
 <a href="https://app.thinkmachine.com">Try the web version now!</a>
 
 Learn more at [https://thinkmachine.com](https://thinkmachine.com) or [Download Now](https://thinkmachine.com/download).
 
-Think Machine also has a [web version](https://github.com/themaximalist/thinkmachine-web).
+Think Machine also has a web version you can access in the root of this repo, under the `web` directory.
 
 ## Install
 
@@ -58,7 +59,6 @@ Think Machine is currently used in the following projects:
 
 -   [ThinkableType](https://thinkabletype.com)
 -   [Think Machine](https://thinkmachine.com)
--   [Think Machine Web](https://github.com/themaximalist/thinkmachine-web)
 
 ## Author
 

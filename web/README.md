@@ -17,15 +17,16 @@ Think Machine is a multidimensional mind mapper for the Web.  It creates a 3D in
 Features
 * 3d and 2d mind mapping
 * Learn ideas inside and out
-* AI brainstorming
+* AI graph brainstorming
+* Chat with AI about knowledge graph
 * Manage interconnections with a click
 * Search, filter and go down rabbit holes
-* and a lot more
+* and a lot more!
 
 Learn more at [https://thinkmachine.com](https://thinkmachine.com) or <a href="https://app.thinkmachine.com">Try it now!</a>
 
 
-Think Machine also has a [desktop version](https://github.com/themaximalist/thinkmachine).
+Think Machine also has a desktop version you can access in the root of this repo, under `electron`.
 
 ## Install
 
@@ -50,7 +51,6 @@ Think Machine is currently used in the following projects:
 
 -   [ThinkableType](https://thinkabletype.com)
 -   [Think Machine](https://thinkmachine.com)
--   [Think Machine Desktop](https://github.com/themaximalist/thinkmachine)
 
 ## Author
 
