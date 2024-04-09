@@ -44,6 +44,9 @@ npm install
 npm run dev
 ```
 
+You can access Think Machine at http://localhost:3000
+
+
 ## Projects
 
 Think Machine is currently used in the following projects:
