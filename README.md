@@ -25,9 +25,9 @@ Features
 Learn more at [https://thinkmachine.com](https://thinkmachine.com) or <a href="https://app.thinkmachine.com">Try it now!</a>
 
 
-This repo contains the code both Think Machine web and desktop.
-
 ## Install
+
+This repo contains the code both Think Machine web and desktop.
 
 To install, check out the README in the the `electron` or `web` directory—whichever version you want to run.
 
