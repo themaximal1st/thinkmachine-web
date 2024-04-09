@@ -176,11 +176,6 @@ export default class App extends React.Component {
         ThinkMachineAPI.load().then(async () => {
             this.loadSettings();
 
-            window.api.messages.receive(
-                "message-from-main",
-                this.handleMessageFromMain.bind(this)
-            );
-
             await this.reloadData({ zoom: true });
 
             window.api.analytics.track("app.load");
@@ -1121,6 +1116,7 @@ ${hyperedges}`;
     }
 
     async handleGenerateMessage(message) {
+        console.log("MESSAGE", message);
         switch (message.event) {
             case "hyperedges.generate.result":
                 this.maybeReloadData();
@@ -1129,10 +1125,10 @@ ${hyperedges}`;
                 this.setState({ isGenerating: true, edited: true });
                 toast.success("Generating...");
                 break;
-            case "hyperedges.generate.stop":
-                this.setState({ isGenerating: false });
-                this.reloadData();
-                break;
+            // case "hyperedges.generate.stop":
+            //     this.setState({ isGenerating: false });
+            //     this.reloadData();
+            //     break;
             case "success":
                 toast.success(
                     message.message || "Successfully generated results"
@@ -1153,16 +1149,38 @@ ${hyperedges}`;
         const llm = this.state.llm;
         const options = { llm };
 
-        const response = await window.api.hyperedges.generate(
-            this.state.input,
-            options
-        );
+        let removeListener = null;
+        try {
+            if (window.api.isElectron) {
+                removeListener = await window.api.messages.receive(
+                    "message-from-main",
+                    this.handleGenerateMessage.bind(this)
+                );
+                console.log("remove", removeListener);
+            }
 
-        // Electron streams messages back through the main process...a little hacky would be good to clean this up
-        if (window.api.isElectron) return;
+            const response = await window.api.hyperedges.generate(
+                this.state.input,
+                options
+            );
 
-        for await (const message of response) {
-            await this.handleGenerateMessage(message);
+            if (window.api.isWeb) {
+                for await (const message of response) {
+                    await this.handleGenerateMessage(message);
+                }
+            }
+        } catch (e) {
+            console.log("ERR", e);
+        } finally {
+            if (removeListener) {
+                console.log("REMOVING");
+                removeListener();
+                removeListener = null;
+            }
+
+            this.setState({ isGenerating: false });
+            this.reloadData();
+            console.log("FINALLY");
         }
     }
 

@@ -100,6 +100,8 @@ TODAY
 
 **Near-future**
 
+* Simplify bridge sync/async concept between electron + web. should have same interface on both
+
 * Thinkable Type should have new concept of mini bridge, a two-item hyperedge, A->B or a double bridge A -> B && B -> A. These shouldn't use typical bridges, but confluence bridges to make the graph smaller.
 
 * console needs work

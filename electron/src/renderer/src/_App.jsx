@@ -179,7 +179,7 @@ export default class App extends React.Component {
         }
     }
 
-    handleMessageFromMain(event, message) {
+    _handleMessageFromMain(event, message) {
         switch (event) {
             case "show-license-info":
                 this.setState({ showLicense: true });

@@ -58,9 +58,17 @@ const api = {
     },
     messages: {
         receive: (channel, func) => {
+            console.log("CHANNEL");
             const validChannels = ["message-from-main"];
             if (validChannels.includes(channel)) {
-                ipcRenderer.on(channel, (event, ...args) => func(...args));
+                console.log("GOOD");
+                const subscription = (event, ...args) => func(...args);
+                console.log("SUB", subscription, channel);
+                ipcRenderer.on(channel, subscription);
+                return () => {
+                    console.log("REMOVING");
+                    ipcRenderer.removeListener(channel, subscription);
+                }
             }
         },
     },
