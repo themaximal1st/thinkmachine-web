@@ -20,6 +20,14 @@ export default class ElectronBridge {
         });
     }
 
+    send(message, object = null) {
+        this.app.browserWindow.webContents.send("message-from-main", message, object);
+    }
+
+    save() {
+        // saving happens automatically with electron right now because it's single document
+    }
+
     async load() {
         const mapping = {
             "hypergraph.create": "createHypergraph",
@@ -31,7 +39,11 @@ export default class ElectronBridge {
             "hyperedges.all": "allHyperedges",
             "hyperedges.add": "addHyperedges",
             "hyperedges.remove": "removeHyperedges",
+            "hyperedges.generate": "generateHyperedges",
         };
+
+        this.bridge.send = this.send.bind(this);
+        this.bridge.save = this.save.bind(this);
 
         for (const [event, method] of Object.entries(mapping)) {
             this.handle(event, this.bridge[method].bind(this.bridge));
@@ -63,13 +75,6 @@ export default class ElectronBridge {
 
 
 
-    send(message, object = null) {
-        this.thinkmachine.browserWindow.webContents.send(
-            "message-from-main",
-            message,
-            object
-        );
-    }
 
 
     getSetting(_, key) {

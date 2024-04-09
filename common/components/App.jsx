@@ -176,6 +176,11 @@ export default class App extends React.Component {
         ThinkMachineAPI.load().then(async () => {
             this.loadSettings();
 
+            window.api.messages.receive(
+                "message-from-main",
+                this.handleMessageFromMain.bind(this)
+            );
+
             await this.reloadData({ zoom: true });
 
             window.api.analytics.track("app.load");
@@ -928,7 +933,6 @@ ${hyperedges}`;
                 }
             }
 
-            console.log("CLOSE CLOSE CLOSE");
             this.setState({ showSettingsMenu: false });
         }
     }
@@ -1087,41 +1091,78 @@ ${hyperedges}`;
         return true;
     }
 
+    async handleMessageFromMain(message) {
+        if (!message) return;
+        if (!message.event) return;
+
+        if (message.event.startsWith("hyperedges.generate")) {
+            await this.handleGenerateMessage(message);
+        }
+
+        /*
+        switch (event) {
+            case "show-license-info":
+                this.setState({ showLicense: true });
+                break;
+            case "show-settings":
+                this.setState({ showSettings: true });
+                break;
+            case "success":
+                toast.success(message);
+                break;
+            case "error":
+                toast.error(message);
+                break;
+            default:
+                console.log("UNKNOWN MESSAGE", message);
+                break;
+        }
+        */
+    }
+
+    async handleGenerateMessage(message) {
+        switch (message.event) {
+            case "hyperedges.generate.result":
+                this.maybeReloadData();
+                break;
+            case "hyperedges.generate.start":
+                this.setState({ isGenerating: true, edited: true });
+                toast.success("Generating...");
+                break;
+            case "hyperedges.generate.stop":
+                this.setState({ isGenerating: false });
+                this.reloadData();
+                break;
+            case "success":
+                toast.success(
+                    message.message || "Successfully generated results"
+                );
+                break;
+            case "error":
+                toast.error(message.message || "Error generating results");
+                break;
+            default:
+                console.log("UNKNOWN MESSAGE", message);
+                break;
+        }
+    }
+
     async handleGenerateInput() {
         await this.handleEmptyHypergraph();
 
         const llm = this.state.llm;
         const options = { llm };
+
         const response = await window.api.hyperedges.generate(
             this.state.input,
             options
         );
 
+        // Electron streams messages back through the main process...a little hacky would be good to clean this up
+        if (window.api.isElectron) return;
+
         for await (const message of response) {
-            switch (message.event) {
-                case "hyperedges.generate.result":
-                    this.maybeReloadData();
-                    break;
-                case "hyperedges.generate.start":
-                    this.setState({ isGenerating: true, edited: true });
-                    toast.success("Generating...");
-                    break;
-                case "hyperedges.generate.stop":
-                    this.setState({ isGenerating: false });
-                    this.reloadData();
-                    break;
-                case "success":
-                    toast.success(
-                        message.message || "Successfully generated results"
-                    );
-                    break;
-                case "error":
-                    toast.error(message.message || "Error generating results");
-                    break;
-                default:
-                    console.log("UNKNOWN MESSAGE", message);
-                    break;
-            }
+            await this.handleGenerateMessage(message);
         }
     }
 
@@ -1325,4 +1366,39 @@ ${hyperedges}`;
             </div>
         );
     }
+}
+
+function callbackToAsyncGenerator(subscribe) {
+    // This function returns an async generator
+    return async function* () {
+        const queue = [];
+        let resolve;
+
+        // This listener handles incoming data, resolving the current promise or queuing data
+        const listener = (data) => {
+            if (resolve) {
+                resolve(data);
+                resolve = null;
+            } else {
+                queue.push(data);
+            }
+        };
+
+        // Subscribe to the callback, receiving a cleanup function
+        const cleanup = subscribe(listener);
+
+        try {
+            while (true) {
+                // If the queue has data, yield it immediately
+                // Otherwise, yield a new promise that resolves upon the next callback call
+                if (queue.length > 0) {
+                    yield queue.shift();
+                } else {
+                    yield new Promise((_resolve) => (resolve = _resolve));
+                }
+            }
+        } finally {
+            cleanup(); // Ensure cleanup is called when the generator is done
+        }
+    };
 }

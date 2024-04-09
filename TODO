@@ -3,11 +3,10 @@
 * desktop
  - settings / llm
  - chat
-* electron: generate
 * electron: wormhole
 * electron: scraping -> proxy api key?
-* electron: does FoceGraph toggling work? 2d? 3d?
-* electron: license
+* electron: does FoceGraph toggling work? 2d? 3d? all the icons? modes?
+* electron: license / trial / validating
 * get menu working
 
 * massive refactor
