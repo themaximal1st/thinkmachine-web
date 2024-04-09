@@ -1,35 +1,7 @@
 import { contextBridge, ipcRenderer } from "electron";
-import { EventIterator } from "event-iterator"
+import { stream } from "./stream.js";
 
-const validChannels = [
-    "hyperedges",
-    "chat",
-];
-
-export function stream(event, input, options = {}) {
-    const channel = event.split(".")[0];
-    return new EventIterator(
-        (queue) => {
-            if (!validChannels.includes(channel)) return null;
-
-            const subscription = (event, ...args) => queue.push(...args);
-            ipcRenderer.on(channel, subscription);
-
-            const response = ipcRenderer.invoke(event, input, options);
-            response.catch(queue.fail);
-            response.then(() => {
-                // hack but messages can get caught in the queue
-                setTimeout(() => {
-                    queue.stop();
-                }, 500);
-            });
-
-            return () => {
-                ipcRenderer.removeListener(channel, subscription);
-            }
-        }
-    )
-}
+ipcRenderer.stream = stream;
 
 const api = {
     "edition": "electron",
@@ -70,7 +42,7 @@ const api = {
             return ipcRenderer.invoke("hyperedges.all");
         },
         generate: async (input, options = {}) => {
-            return stream("hyperedges.generate", input, options);
+            return ipcRenderer.stream("hyperedges.generate", input, options);
         },
         "export": () => {
             return ipcRenderer.invoke("hyperedges.export",);

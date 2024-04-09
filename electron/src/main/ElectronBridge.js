@@ -26,7 +26,6 @@ export default class ElectronBridge {
             channel = event.event.split(".")[0];
         }
 
-        console.log("SENDING", channel, event);
         this.app.browserWindow.webContents.send(channel, event);
     }
 

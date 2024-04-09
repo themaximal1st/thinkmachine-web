@@ -1086,35 +1086,6 @@ ${hyperedges}`;
         return true;
     }
 
-    async handleMessageFromMain(message) {
-        if (!message) return;
-        if (!message.event) return;
-
-        if (message.event.startsWith("hyperedges.generate")) {
-            await this.handleGenerateMessage(message);
-        }
-
-        /*
-        switch (event) {
-            case "show-license-info":
-                this.setState({ showLicense: true });
-                break;
-            case "show-settings":
-                this.setState({ showSettings: true });
-                break;
-            case "success":
-                toast.success(message);
-                break;
-            case "error":
-                toast.error(message);
-                break;
-            default:
-                console.log("UNKNOWN MESSAGE", message);
-                break;
-        }
-        */
-    }
-
     async handleGenerateMessage(message) {
         switch (message.event) {
             case "hyperedges.generate.result":
@@ -1157,50 +1128,9 @@ ${hyperedges}`;
 
         const response = await window.api.hyperedges.generate(input, options);
 
-        console.log("BEFORE ALL");
         for await (const message of response) {
-            console.log("MESSAGE", message);
             await this.handleGenerateMessage(message);
         }
-        console.log("AFTER ALL");
-
-        // response();
-
-        /*
-        let removeListener = null;
-        try {
-            if (window.api.isElectron) {
-                removeListener = await window.api.messages.receive(
-                    "generate-message",
-                    this.handleGenerateMessage.bind(this)
-                );
-                console.log("remove", removeListener);
-            }
-
-            const response = await window.api.hyperedges.generate(
-                this.state.input,
-                options
-            );
-
-            if (window.api.isWeb) {
-                for await (const message of response) {
-                    await this.handleGenerateMessage(message);
-                }
-            }
-        } catch (e) {
-            console.log("ERR", e);
-        } finally {
-            if (removeListener) {
-                console.log("REMOVING");
-                removeListener();
-                removeListener = null;
-            }
-
-            this.setState({ isGenerating: false });
-            this.reloadData();
-            console.log("FINALLY");
-        }
-        */
     }
 
     async handleSearchInput(e) {
