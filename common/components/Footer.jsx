@@ -94,6 +94,14 @@ export default function Footer(params) {
                                         </a>
                                     )}
 
+                                    <a
+                                        onClick={params.takeScreenshot}
+                                        className="menu-item"
+                                    >
+                                        <div>{Icons.LabIcon}</div>
+                                        Screenshot
+                                    </a>
+
                                     {!isWeb && (
                                         <a
                                             onClick={params.toggleLicenseWindow}

@@ -2,7 +2,6 @@ import React from "react";
 import toast, { Toaster } from "react-hot-toast";
 import slugify from "slugify";
 import * as THREE from "three";
-import { CanvasCapture } from "canvas-capture";
 
 import ThinkMachineAPI from "@src/api";
 import * as services from "@src/services";
@@ -12,6 +11,7 @@ import * as GraphUtils from "@lib/GraphUtils";
 
 import Animation from "@lib/Animation";
 import LocalSettings from "@lib/LocalSettings";
+import Record from "@lib/Record";
 
 import License from "@components/License";
 import Console from "@components/Console";
@@ -99,6 +99,18 @@ export default class App extends React.Component {
     //
     // GET
     //
+
+    get name() {
+        if (this.state.hyperedges.length === 0) {
+            return `Think Machine`;
+        } else {
+            return `Think Machine ${this.state.hyperedges[0].join(" ")}`;
+        }
+    }
+
+    get slug() {
+        return slugify(`${this.name.toLowerCase()} ${Date.now()}`);
+    }
 
     get dynamicInputMode() {
         if (this.state.hyperedges.length > 0) {
@@ -193,6 +205,7 @@ export default class App extends React.Component {
             await this.handleAutoSearch();
 
             window.takeScreenshot = this.takeScreenshot.bind(this);
+            window.takeVideo = this.takeVideo.bind(this);
 
             // setTimeout(async () => {
             //     // await this.takeScreenshot();
@@ -291,104 +304,11 @@ export default class App extends React.Component {
     //
 
     async takeScreenshot() {
-        console.log("Taking screenshot");
-        const canvas = document.querySelector("canvas");
+        await Record.takeScreenshot(this.slug);
+    }
 
-        CanvasCapture.init(canvas, { showRecDot: true });
-        /*
-        CanvasCapture.bindKeyToJPEGSnapshot("j", {
-            onExportProgress: (progress) => {
-                console.log("PROGRESS", progress);
-            },
-            onExportFinish: () => {
-                console.log("FINISH");
-            },
-            onError: (error) => {
-                console.log("ERROR", error);
-            },
-        });
-        */
-
-        let i = 0;
-        async function loop() {
-            if (i < 2) {
-                requestAnimationFrame(loop);
-            }
-
-            i++;
-
-            if (i === 2) {
-                await CanvasCapture.takeJPEGSnapshot();
-            }
-        }
-
-        loop(); // Start loop.
-
-        // setTimeout(async () => {
-        //     console.log("CAPTURE");
-        //     const capture = await CanvasCapture.takeJPEGSnapshot();
-        //     console.log(capture);
-        // }, 2000);
-
-        // CanvasCapture.bindKeyToPNGSnapshot("p");
-
-        // CanvasCapture.bindKeyToVideoRecord("v", {
-        //     format: "webm", // Options are optional, more info below.
-        //     name: "myVideo",
-        //     fps: 30,
-        //     quality: 0.6,
-        // });
-
-        // console.log("BEGINRECORD VIDEO");
-        // CanvasCapture.beginVideoRecord({
-        //     format: CanvasCapture.WEBM,
-        // });
-        // console.log("AFTER RECORD VIDEO");
-
-        // function loop() {
-        //     console.log("LOOP");
-
-        //     requestAnimationFrame(loop);
-
-        //     CanvasCapture.checkHotkeys();
-
-        //     // // You need to call recordFrame() only if you are recording
-        //     // // a video, gif, or frames.
-        //     // if (CanvasCapture.isRecording()) CanvasCapture.recordFrame();
-        //     // CanvasCapture.recordFrame();
-        // }
-
-        // loop(); // Start loop.
-
-        // await CanvasCapture.takeJPEGSnapshot();
-
-        // CanvasCapture.recordFrame();
-        // CanvasCapture.stopRecord();
-
-        /*
-        const canvas = document.querySelector("canvas");
-        if (!canvas) return;
-
-        canvas.toBlob(async (blob) => {
-            console.log("BLOB", blob);
-
-            // await services.saveFile(blob, `thinkmachine.jpg`, "image/jpg");
-
-            // const blob = new Blob([text], { type });
-
-            const a = document.createElement("a");
-            a.download = "thinkmachine.jpg";
-            a.href = URL.createObjectURL(blob);
-            a.addEventListener("click", (e) => {
-                setTimeout(() => URL.revokeObjectURL(a.href), 30 * 1000);
-            });
-            a.click();
-        });
-        */
-
-        //         .toBlob(function(blob) { console.log(blob) })
-        //         var myBlob =
-        // var blobUrl = URL.createObjectURL(myBlob);
+    async takeVideo() {
+        await Record.takeVideo(this.slug);
     }
 
     updateInputMode(inputMode) {
@@ -999,12 +919,7 @@ ${hyperedges}`;
 
     async handleDownload() {
         const data = await window.api.hypergraph.export();
-
-        const name = slugify(
-            `thinkmachine ${this.state.hyperedges[0].join(" ")} ${Date.now()}`
-        );
-
-        await services.saveFile(data, `${name}.csv`, "text/csv");
+        await services.saveFile(data, `${this.slug}.csv`, "text/csv");
     }
 
     async handleAutoSearch() {
@@ -1489,6 +1404,7 @@ ${hyperedges}`;
                     setCooldownTicks={(cooldownTicks) => {
                         this.setState({ cooldownTicks });
                     }}
+                    takeScreenshot={this.takeScreenshot.bind(this)}
                 />
             </div>
         );
