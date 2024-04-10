@@ -28,7 +28,6 @@
         "@themaximalist/keygen.js": "^0.0.4",
         "@themaximalist/llm.js": "^0.6.4",
         "@themaximalist/thinkabletype": "^0.1.8",
-        "canvas-capture": "github:amandaghassaei/canvas-capture#dev",
         "classnames": "^2.5.1",
         "debug": "^4.3.4",
         "downshift": "^8.4.0",

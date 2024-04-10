@@ -1,5 +1,3 @@
-import Record from "@lib/Record";
-
 import React from "react";
 import toast, { Toaster } from "react-hot-toast";
 import slugify from "slugify";
@@ -10,9 +8,9 @@ import * as services from "@src/services";
 import { isUUID } from "@lib/uuid";
 import * as utils from "@lib/utils";
 import * as GraphUtils from "@lib/GraphUtils";
-
 import Animation from "@lib/Animation";
 import LocalSettings from "@lib/LocalSettings";
+import Recorder from "@lib/Recorder";
 
 import License from "@components/License";
 import Console from "@components/Console";
@@ -307,13 +305,17 @@ export default class App extends React.Component {
     //
 
     async takeScreenshot() {
-        await Record.takeScreenshot(this.slug);
+        await Recorder.takeScreenshot(this.slug);
     }
 
     async recordVideo() {
         // this.graphRef.current.stopAnimation();
+        const recorder = new Recorder();
+        recorder.start();
 
-        await Record.recordVideo(this.slug);
+        setTimeout(() => {
+            recorder.stop();
+        }, 1500);
     }
 
     updateInputMode(inputMode) {
