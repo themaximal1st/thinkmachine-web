@@ -1,3 +1,5 @@
+import Record from "@lib/Record";
+
 import React from "react";
 import toast, { Toaster } from "react-hot-toast";
 import slugify from "slugify";
@@ -11,7 +13,6 @@ import * as GraphUtils from "@lib/GraphUtils";
 
 import Animation from "@lib/Animation";
 import LocalSettings from "@lib/LocalSettings";
-import Record from "@lib/Record";
 
 import License from "@components/License";
 import Console from "@components/Console";
@@ -205,7 +206,9 @@ export default class App extends React.Component {
             await this.handleAutoSearch();
 
             window.takeScreenshot = this.takeScreenshot.bind(this);
-            window.takeVideo = this.takeVideo.bind(this);
+            window.recordVideo = this.recordVideo.bind(this);
+
+            await this.recordVideo();
 
             // setTimeout(async () => {
             //     // await this.takeScreenshot();
@@ -307,8 +310,10 @@ export default class App extends React.Component {
         await Record.takeScreenshot(this.slug);
     }
 
-    async takeVideo() {
-        await Record.takeVideo(this.slug);
+    async recordVideo() {
+        // this.graphRef.current.stopAnimation();
+
+        await Record.recordVideo(this.slug);
     }
 
     updateInputMode(inputMode) {
