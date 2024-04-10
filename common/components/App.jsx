@@ -2,6 +2,7 @@ import React from "react";
 import toast, { Toaster } from "react-hot-toast";
 import slugify from "slugify";
 import * as THREE from "three";
+import { CanvasCapture } from "canvas-capture";
 
 import ThinkMachineAPI from "@src/api";
 import * as services from "@src/services";
@@ -190,6 +191,12 @@ export default class App extends React.Component {
             await this.fetchLicenseInfo();
 
             await this.handleAutoSearch();
+
+            window.takeScreenshot = this.takeScreenshot.bind(this);
+
+            // setTimeout(async () => {
+            //     // await this.takeScreenshot();
+            // }, 5000);
         });
     }
 
@@ -282,6 +289,107 @@ export default class App extends React.Component {
     //
     // ACTIONS
     //
+
+    async takeScreenshot() {
+        console.log("Taking screenshot");
+        const canvas = document.querySelector("canvas");
+
+        CanvasCapture.init(canvas, { showRecDot: true });
+        /*
+        CanvasCapture.bindKeyToJPEGSnapshot("j", {
+            onExportProgress: (progress) => {
+                console.log("PROGRESS", progress);
+            },
+            onExportFinish: () => {
+                console.log("FINISH");
+            },
+            onError: (error) => {
+                console.log("ERROR", error);
+            },
+        });
+        */
+
+        let i = 0;
+        async function loop() {
+            if (i < 2) {
+                requestAnimationFrame(loop);
+            }
+
+            i++;
+
+            if (i === 2) {
+                await CanvasCapture.takeJPEGSnapshot();
+            }
+        }
+
+        loop(); // Start loop.
+
+        // setTimeout(async () => {
+        //     console.log("CAPTURE");
+        //     const capture = await CanvasCapture.takeJPEGSnapshot();
+        //     console.log(capture);
+        // }, 2000);
+
+        // CanvasCapture.bindKeyToPNGSnapshot("p");
+
+        // CanvasCapture.bindKeyToVideoRecord("v", {
+        //     format: "webm", // Options are optional, more info below.
+        //     name: "myVideo",
+        //     fps: 30,
+        //     quality: 0.6,
+        // });
+
+        // console.log("BEGINRECORD VIDEO");
+        // CanvasCapture.beginVideoRecord({
+        //     format: CanvasCapture.WEBM,
+        // });
+        // console.log("AFTER RECORD VIDEO");
+
+        // function loop() {
+        //     console.log("LOOP");
+
+        //     requestAnimationFrame(loop);
+
+        //     CanvasCapture.checkHotkeys();
+
+        //     // // You need to call recordFrame() only if you are recording
+        //     // // a video, gif, or frames.
+        //     // if (CanvasCapture.isRecording()) CanvasCapture.recordFrame();
+        //     // CanvasCapture.recordFrame();
+        // }
+
+        // loop(); // Start loop.
+
+        // await CanvasCapture.takeJPEGSnapshot();
+
+        // CanvasCapture.recordFrame();
+        // CanvasCapture.stopRecord();
+
+        /*
+        const canvas = document.querySelector("canvas");
+        if (!canvas) return;
+
+        canvas.toBlob(async (blob) => {
+            console.log("BLOB", blob);
+
+            // await services.saveFile(blob, `thinkmachine.jpg`, "image/jpg");
+
+            // const blob = new Blob([text], { type });
+
+            const a = document.createElement("a");
+            a.download = "thinkmachine.jpg";
+            a.href = URL.createObjectURL(blob);
+            a.addEventListener("click", (e) => {
+                setTimeout(() => URL.revokeObjectURL(a.href), 30 * 1000);
+            });
+            a.click();
+        });
+        */
+
+        //         .toBlob(function(blob) { console.log(blob) })
+        //         var myBlob =
+        // var blobUrl = URL.createObjectURL(myBlob);
+    }
 
     updateInputMode(inputMode) {
         window.api.analytics.track("app.toggleInputMode");
@@ -1156,7 +1264,7 @@ ${hyperedges}`;
         const llm = this.llmSettings;
         const options = { llm };
 
-        if (!llm.apikey) {
+        if (window.api.isElectron && !llm.apikey) {
             toast.error("API key is required for generating results");
             this.setState({ showLLMSettings: true });
             return;

@@ -26,7 +26,7 @@ export default class Animation {
                 // Recalculate the angle and distance based on the position when dragging stopped
                 this.distance = Math.sqrt(
                     Math.pow(this.dragEndPosition.x, 2) +
-                        Math.pow(this.dragEndPosition.z, 2)
+                    Math.pow(this.dragEndPosition.z, 2)
                 );
                 this.angle = Math.atan2(
                     this.dragEndPosition.x,

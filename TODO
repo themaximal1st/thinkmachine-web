@@ -1,13 +1,29 @@
+* project work
+  * post blog post?
+
+* marketing
+* full launch
+
+
+
+
+
+* Keyboard shortcut menu
+* Amplitude Analytics
+
 * cac.app — enter email placeholder, little more UI improvement
 
 * get menu working
 
-* electron: wormhole
-* electron: scraping -> proxy api key?
 
-* massive refactor
-* tests
-* post blog post?
+* NEEDS IMPLEMENTING
+  * electron: wormhole
+  * electron: scraping -> proxy api key?
+
+
+* CLEANUP
+  * massive refactor
+  * tests
 * depth needs a lot of work
 * reduce cases of isWeb & isElectron...make services
 * changelog / in repo and on website
@@ -28,8 +44,6 @@
 
 **Common**
 
-* Keyboard shortcut menu
-* Amplitude Analytics
 
 
 **Electron**

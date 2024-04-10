@@ -13,6 +13,8 @@
         "@themaximalist/keygen.js": "^0.0.4",
         "@themaximalist/llm.js": "^0.6.4",
         "@themaximalist/thinkabletype": "^0.1.8",
+        "canvas-capture": "github:amandaghassaei/canvas-capture#dev",
+        "ccapture.js": "^1.1.0",
         "classnames": "^2.5.1",
         "cookie-parser": "^1.4.6",
         "debug": "^4.3.4",
