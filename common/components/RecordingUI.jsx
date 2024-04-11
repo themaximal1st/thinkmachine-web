@@ -31,32 +31,45 @@ export default function RecordingUI(props) {
         <>
             {props.showRecordingModal && (
                 <Modal onClose={onClose}>
-                    <h1 className="font-bold font-green-500 flex gap-2 items-center uppercase tracking-widest">
-                        <div className="w-6 h-6">{Icons.RecordIcon()}</div>
-                        Record Video
-                    </h1>
-                    <p>
-                        Save a video of your Think Machine session—great for use in videos
-                        and presentations!
-                    </p>
-                    <div className="flex gap-4 my-2 mb-8">
-                        {videos.map((video) => (
-                            <RecordingShot
-                                key={`video-${video.type}`}
-                                video={video}
-                                recordType={recordType}
-                                setRecordType={setRecordType}
-                            />
-                        ))}
+                    <div className="flex flex-col gap-4">
+                        <div>
+                            <h1 className="font-bold font-green-500 flex gap-2 items-center uppercase tracking-widest">
+                                <div className="w-6 h-6">{Icons.RecordIcon()}</div>
+                                Record Video
+                            </h1>
+                            <p>
+                                Save a video of your Think Machine session—great for use
+                                in videos and presentations!
+                            </p>
+                        </div>
+                        <div className="flex gap-4">
+                            {videos.map((video) => (
+                                <RecordingShot
+                                    key={`video-${video.type}`}
+                                    video={video}
+                                    recordType={recordType}
+                                    setRecordType={setRecordType}
+                                />
+                            ))}
+                        </div>
+                        {recordType === "record" && (
+                            <div>
+                                To stop recording, click the red button in the top right
+                                corner.
+                            </div>
+                        )}
+                        {recordType !== "record" && (
+                            <div>Recording will stop automatically when complete.</div>
+                        )}
+                        <button
+                            onClick={() => {
+                                onClose();
+                                props.handleStartRecording(recordType);
+                            }}
+                            className="bg-purple-600 hover:bg-purple-500 text-white px-4 py-2 rounded-md tracking-widest font-bold">
+                            Start Recording
+                        </button>
                     </div>
-                    <button
-                        onClick={() => {
-                            onClose();
-                            props.handleStartRecording(recordType);
-                        }}
-                        className="bg-purple-600 hover:bg-purple-500 text-white px-4 py-2 rounded-md tracking-widest font-bold">
-                        Start Recording
-                    </button>
                 </Modal>
             )}
 

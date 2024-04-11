@@ -1,4 +1,5 @@
 **v0.0.3**
+- Take Screenshots
 - Video Recorder, record your session or use great camera scene defaults
 
 **v0.0.2**

@@ -29,6 +29,11 @@ export default function SettingsMenu(props) {
         onClose();
     };
 
+    const takeScreenshot = () => {
+        props.takeScreenshot();
+        onClose();
+    };
+
     return (
         <ModalBackground onClose={onClose} opacity={0}>
             <div className="absolute -left-5 bottom-14 w-96 flex flex-col-reverse gap-1 lg:gap-4 p-2 lg:text-lg fan-left">
@@ -45,14 +50,12 @@ export default function SettingsMenu(props) {
                     </a>
                 )}
 
-                <a onClick={toggleLLMSettings} className="menu-item">
-                    <div>{Icons.GenerateIcon(6)}</div>
-                    AI Settings
-                </a>
-                <a onClick={toggleLayout} className="menu-item">
-                    <div>{Icons.LayoutIcon}</div>
-                    Layout
-                </a>
+                {props.edited && (
+                    <a onClick={takeScreenshot} className="menu-item">
+                        <div>{Icons.ScreenshotIcon()}</div>
+                        Screenshot
+                    </a>
+                )}
 
                 {isWeb && props.edited && (
                     <a onClick={toggleRecording} className="menu-item">
@@ -60,6 +63,16 @@ export default function SettingsMenu(props) {
                         Record Video
                     </a>
                 )}
+
+                <a onClick={toggleLLMSettings} className="menu-item">
+                    <div>{Icons.GenerateIcon(6)}</div>
+                    AI Settings
+                </a>
+
+                <a onClick={toggleLayout} className="menu-item">
+                    <div>{Icons.LayoutIcon}</div>
+                    Advanced Layout
+                </a>
 
                 {!isWeb && (
                     <a onClick={props.toggleLicenseWindow} className="menu-item">

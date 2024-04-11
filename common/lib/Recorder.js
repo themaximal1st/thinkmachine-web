@@ -1,9 +1,9 @@
 // TODO: Max size
-import { blobToBase64, base64ToBlob } from "@lib/utils";
+import { blobToBase64, base64ToBlob, downloadImage } from "@lib/utils";
 
-export default class Record {
+export default class Recorder {
     constructor(canvas = null, options = {}) {
-        this.canvas = canvas || Record.canvas;
+        this.canvas = canvas || Recorder.canvas;
         if (!this.canvas) {
             console.error("Canvas not found");
             return;
@@ -122,19 +122,11 @@ export default class Record {
         return document.querySelector("canvas");
     }
 
-    /*
-    static async _takeScreenshot(name = "thinkmachine-screenshot", quality = 1, dpi = 300) {
-        console.log("Taking screenshot");
+    static async takeScreenshot(name = "thinkmachine-screenshot") {
 
-        CanvasCapture.init(Record.canvas);
-
-        window.requestAnimationFrame(() => {
-            CanvasCapture.takeJPEGSnapshot({
-                name,
-                quality,
-                dpi,
-            });
+        requestAnimationFrame(() => {
+            const image = Recorder.canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+            downloadImage(image, `${name}.png`);
         });
     }
-    */
 }

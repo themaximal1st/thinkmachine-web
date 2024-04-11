@@ -24,3 +24,12 @@ export function base64ToBlob(base64, mimeType) {
 
     return new Blob([bytes], { type: mimeType });
 }
+
+
+export function downloadImage(data, filename = "untitled.png") {
+    var a = document.createElement('a');
+    a.href = data;
+    a.download = filename;
+    // document.body.appendChild(a);
+    a.click();
+}

@@ -218,12 +218,6 @@ export default class App extends React.Component {
             this.recorder.onprocess = this.handleRecorderProcess.bind(this);
             this.recorder.onfile = this.handleRecorderFile.bind(this);
             this.recorder.onerror = this.handleRecorderError.bind(this);
-
-            // await this.recordVideo();
-
-            // setTimeout(async () => {
-            //     // await this.takeScreenshot();
-            // }, 5000);
         });
     }
 
@@ -1041,12 +1035,14 @@ ${hyperedges}`;
             this.updateInputMode("chat");
             e.preventDefault();
         } else if (e.key === "F1") {
-            this.toggleRecord();
+            this.takeScreenshot();
         } else if (e.key === "F2") {
-            RecorderShots.orbit(this);
+            this.toggleRecord();
         } else if (e.key === "F3") {
-            RecorderShots.flyby(this);
+            RecorderShots.orbit(this);
         } else if (e.key === "F4") {
+            RecorderShots.flyby(this);
+        } else if (e.key === "F5") {
             RecorderShots.zoom(this);
         } else if (e.key === "Tab") {
             this.toggleInterwingle(undefined, e.shiftKey);
@@ -1430,6 +1426,7 @@ ${hyperedges}`;
                         this.setState({ cooldownTicks });
                     }}
                     toggleShowRecordingModal={this.toggleShowRecordingModal.bind(this)}
+                    takeScreenshot={this.takeScreenshot.bind(this)}
                 />
                 <RecordingUI
                     showRecordingModal={this.state.showRecordingModal}
