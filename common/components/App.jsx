@@ -49,7 +49,7 @@ export default class App extends React.Component {
             showLayout: false,
             showLabsWarning: false,
             showChat: false,
-            showRecordingModal: true,
+            showRecordingModal: false,
 
             licenseKey: "",
             licenseValid: undefined,

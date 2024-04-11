@@ -38,7 +38,7 @@ export function Modal(props) {
 
     return (
         <ModalBackground {...props}>
-            <div className="modal bg-gray-900/50 p-8 rounded-xl shadow-2xl relative flex flex-col justify-between">
+            <div className="modal bg-gray-900/50 p-8 rounded-xl shadow-2xl relative flex flex-col justify-between max-w-2xl">
                 <a
                     className="cursor-pointer absolute -top-5 -right-3 font-bold opacity-50 hover:opacity-100 transition-all"
                     onClick={props.onClose}>
