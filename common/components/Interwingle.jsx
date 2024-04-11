@@ -25,8 +25,7 @@ export default function Interwingle(params) {
                     onClick={(e) => params.toggleInterwingle(3)}
                     className={`select-none cursor-pointer ${
                         params.interwingle == 3 ? "opacity-100" : "opacity-50"
-                    } hover:opacity-100 transition-all`}
-                >
+                    } hover:opacity-100 transition-all`}>
                     <img src={Interwingle3} className="w-8 h-8" />
                 </a>
                 <a
@@ -35,8 +34,7 @@ export default function Interwingle(params) {
                     data-tooltip-content="Connect start and end"
                     className={`select-none cursor-pointer ${
                         params.interwingle == 2 ? "opacity-100" : "opacity-50"
-                    } hover:opacity-100 transition-all`}
-                >
+                    } hover:opacity-100 transition-all`}>
                     <img src={Interwingle2} className="w-8 h-8" />
                 </a>
                 <a
@@ -45,8 +43,7 @@ export default function Interwingle(params) {
                     data-tooltip-content="Connect start"
                     className={`select-none cursor-pointer ${
                         params.interwingle == 1 ? "opacity-100" : "opacity-50"
-                    } hover:opacity-100 transition-all`}
-                >
+                    } hover:opacity-100 transition-all`}>
                     <img src={Interwingle1} className="w-8 h-8" />
                 </a>
                 <a
@@ -55,8 +52,7 @@ export default function Interwingle(params) {
                     data-tooltip-content="Don't connect"
                     className={`select-none cursor-pointer ${
                         params.interwingle == 0 ? "opacity-100" : "opacity-50"
-                    } hover:opacity-100 transition-all`}
-                >
+                    } hover:opacity-100 transition-all`}>
                     <img src={Interwingle0} className="w-8 h-8" />
                 </a>
             </div>

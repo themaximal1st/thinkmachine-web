@@ -5,8 +5,7 @@ export default function Filters(params) {
     return (
         <div
             className="flex text-white mt-1 text-sm gap-1 px-2 w-4/12 absolute z-20 flex-col right-0 items-end"
-            id="filters"
-        >
+            id="filters">
             <Tooltip
                 id="filter-tooltip"
                 style={{
@@ -19,8 +18,7 @@ export default function Filters(params) {
                     id="search-context-header"
                     data-tooltip-id="filter-tooltip"
                     data-tooltip-content="Filter graph by symbol or connection"
-                    className="uppercase text-sm select-none tracking-widest font-medium text-gray-200"
-                >
+                    className="uppercase text-sm select-none tracking-widest font-medium text-gray-200">
                     Search
                 </div>
             )}
@@ -32,10 +30,7 @@ export default function Filters(params) {
                                 <a
                                     key={`${symbol}-${j}`}
                                     className="cursor-pointer text-sm opacity-50 hover:opacity-100 transition-all pointer-events-auto py-1 select-none"
-                                    onClick={(e) =>
-                                        params.removeFilter(filter, symbol)
-                                    }
-                                >
+                                    onClick={(e) => params.removeFilter(filter, symbol)}>
                                     {symbol}
                                 </a>
                             );

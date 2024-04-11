@@ -31,8 +31,7 @@ export default function ChatWindow(params) {
                         height: ref.style.height,
                         ...position,
                     });
-                }}
-            >
+                }}>
                 <div className="bg-gray-1000/70 h-full w-full overflow-hidden rounded-lg text-gray-50">
                     <div className="flex flex-col justify-between h-full">
                         <div className="p-2 bg-gray-1000 flex justify-between items-center">
@@ -44,8 +43,7 @@ export default function ChatWindow(params) {
                                 onClick={() => {
                                     params.toggleChatWindow(false);
                                 }}
-                                className="nodrag hover:cursor-pointer"
-                            >
+                                className="nodrag hover:cursor-pointer">
                                 {Icons.CloseIcon(4)}
                             </a>
                         </div>
@@ -54,9 +52,9 @@ export default function ChatWindow(params) {
                                 <div className="flex flex-col gap-4">
                                     <div>Welcome to Think Machine Chat.</div>
                                     <div>
-                                        Ask a question about your knowledge
-                                        graph and Think Machine will use the
-                                        current view to answer it.
+                                        Ask a question about your knowledge graph and
+                                        Think Machine will use the current view to answer
+                                        it.
                                     </div>
                                 </div>
                             )}
@@ -77,23 +75,18 @@ export default function ChatWindow(params) {
                                         <div className="whitespace-pre-wrap">
                                             {i === 0 &&
                                                 params.isChatting &&
-                                                message.content.length ===
-                                                    0 && (
+                                                message.content.length === 0 && (
                                                     <div className="text-white">
                                                         <l-bouncy
                                                             size="15"
                                                             speed="1.75"
-                                                            color="white"
-                                                        ></l-bouncy>
+                                                            color="white"></l-bouncy>
                                                     </div>
                                                 )}
                                             {i === 0 &&
                                                 !params.isChatting &&
-                                                message.content.length ===
-                                                    0 && (
-                                                    <em class="text-sm">
-                                                        (no content)
-                                                    </em>
+                                                message.content.length === 0 && (
+                                                    <em class="text-sm">(no content)</em>
                                                 )}
                                             {message.content}
                                         </div>
@@ -104,8 +97,7 @@ export default function ChatWindow(params) {
                         <div>
                             <form
                                 onSubmit={params.handleChatMessage}
-                                className="flex items-center relative mt-2"
-                            >
+                                className="flex items-center relative mt-2">
                                 <input
                                     ref={params.chatInputRef}
                                     placeholder="Type your message here..."
@@ -120,11 +112,8 @@ export default function ChatWindow(params) {
                                 )}
                                 {params.isChatting && (
                                     <a
-                                        onClick={() =>
-                                            params.toggleIsChatting(false)
-                                        }
-                                        className="absolute text-white right-4 hover:cursor-pointer"
-                                    >
+                                        onClick={() => params.toggleIsChatting(false)}
+                                        className="absolute text-white right-4 hover:cursor-pointer">
                                         {Icons.CloseIcon(4)}
                                     </a>
                                 )}

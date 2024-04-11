@@ -38,21 +38,18 @@ export default function Settings(params) {
         <div
             id="settings-modal"
             onClick={handleCloseModal}
-            className="bg-black/90 text-white absolute z-40 inset-0 flex flex-col gap-4 justify-center items-center"
-        >
+            className="bg-black/90 text-white absolute z-40 inset-0 flex flex-col gap-4 justify-center items-center">
             <div className="relative w-full max-w-lg mx-auto">
                 <a
                     className="cursor-pointer absolute -top-4 -right-4 font-bold opacity-50 hover:opacity-100 transition-all"
-                    onClick={() => params.toggleLLMSettings(false)}
-                >
+                    onClick={() => params.toggleLLMSettings(false)}>
                     {Icons.CloseIcon(6)}
                 </a>
                 <div className="relative w-full max-w-lg mx-auto flex flex-col gap-4">
                     <div>
                         <h1 className="text-xl font-bold ">AI Model</h1>
                         <p>
-                            Choose one of the models below to use during AI
-                            brainstorming.
+                            Choose one of the models below to use during AI brainstorming.
                         </p>
                     </div>
 
@@ -67,16 +64,13 @@ export default function Settings(params) {
                                         key={`service-${i}`}
                                         onClick={(e) => {
                                             const clickedEditAPIKey =
-                                                e.target.className.includes(
-                                                    "apikey"
-                                                );
+                                                e.target.className.includes("apikey");
                                             if (!clickedEditAPIKey) {
                                                 params.updateLLM(service);
                                                 setIsEditingAPIKey(false);
                                             }
                                         }}
-                                        className="text-sm flex w-full justify-between items-center py-3 pointer-events-auto hover:cursor-pointer hover:bg-gray-1000 px-2 gap-4"
-                                    >
+                                        className="text-sm flex w-full justify-between items-center py-3 pointer-events-auto hover:cursor-pointer hover:bg-gray-1000 px-2 gap-4">
                                         <div>
                                             <div>{service.name}</div>
                                             <div className="text-gray-300">
@@ -97,8 +91,7 @@ export default function Settings(params) {
                                                                 ).value
                                                             );
                                                         }}
-                                                        className="text-xs bg-gray-800 font-mono mr-4 apikey rounded-full gap-1 flex items-center w-full max-w-[250px]"
-                                                    >
+                                                        className="text-xs bg-gray-800 font-mono mr-4 apikey rounded-full gap-1 flex items-center w-full max-w-[250px]">
                                                         <input
                                                             type="text"
                                                             defaultValue={
@@ -118,12 +111,9 @@ export default function Settings(params) {
                                                 {!isEditingAPIKey && (
                                                     <a
                                                         onClick={() =>
-                                                            setIsEditingAPIKey(
-                                                                true
-                                                            )
+                                                            setIsEditingAPIKey(true)
                                                         }
-                                                        className="text-xs bg-gray-800 font-mono mr-4 apikey p-1 rounded-full px-2"
-                                                    >
+                                                        className="text-xs bg-gray-800 font-mono mr-4 apikey p-1 rounded-full px-2">
                                                         {getMaskedAPIKey(
                                                             service.service
                                                         ) || "NEEDS API KEY"}
@@ -139,8 +129,7 @@ export default function Settings(params) {
                                                     viewBox="0 0 24 24"
                                                     strokeWidth={1.5}
                                                     stroke="currentColor"
-                                                    className="w-5 h-5"
-                                                >
+                                                    className="w-5 h-5">
                                                     <path
                                                         strokeLinecap="round"
                                                         strokeLinejoin="round"

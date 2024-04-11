@@ -16,10 +16,7 @@ export default function Typer(params) {
         const lowerCasedInputValue = inputValue.toLowerCase();
 
         return function symbolFilter(symbol) {
-            return (
-                !inputValue ||
-                symbol.toLowerCase().includes(lowerCasedInputValue)
-            );
+            return !inputValue || symbol.toLowerCase().includes(lowerCasedInputValue);
         };
     }
 
@@ -60,8 +57,7 @@ export default function Typer(params) {
         <div>
             <div
                 className="flex flex-col text-white mt-1 text-sm gap-1 px-2 w-4/12 absolute z-20 flex-wrap"
-                id="typerInner"
-            >
+                id="typerInner">
                 {params.hyperedge.length > 0 && (
                     <div>
                         <Tooltip
@@ -75,8 +71,7 @@ export default function Typer(params) {
                             id="add-context-header"
                             data-tooltip-id="add-tooltip"
                             data-tooltip-content="Adding these symbols and connections"
-                            className="uppercase text-sm select-none tracking-widest font-medium text-gray-200 inline-block"
-                        >
+                            className="uppercase text-sm select-none tracking-widest font-medium text-gray-200 inline-block">
                             ADD
                         </div>
                     </div>
@@ -87,13 +82,10 @@ export default function Typer(params) {
                             <div className="flex gap-1 items-center" key={i}>
                                 <a
                                     onClick={(e) => params.removeIndex(i)}
-                                    className="cursor-pointer text-sm opacity-80 hover:opacity-100 transition-all select-none py-1"
-                                >
+                                    className="cursor-pointer text-sm opacity-80 hover:opacity-100 transition-all select-none py-1">
                                     {symbol}
                                 </a>
-                                <span className="opacity-80 select-none">
-                                    →
-                                </span>
+                                <span className="opacity-80 select-none">→</span>
                             </div>
                         );
                     })}
@@ -103,8 +95,7 @@ export default function Typer(params) {
                 id="typerInput"
                 className={`absolute inset-0 mt-2  flex flex-col gap-2 pointer-events-none z-40 items-center transition-all ${
                     params.edited ? "justify-start" : "justify-center"
-                }`}
-            >
+                }`}>
                 {params.edited === false && (
                     <a href="https://thinkmachine.com">
                         <img
@@ -122,8 +113,7 @@ export default function Typer(params) {
                                 ? "bg-gray-800/80 opacity-100"
                                 : "opacity-60 hover:opacity-80"
                         }`}
-                        onClick={() => params.setInputMode("add")}
-                    >
+                        onClick={() => params.setInputMode("add")}>
                         {Icons.AddIcon(5)}
                         Add
                     </a>
@@ -134,8 +124,7 @@ export default function Typer(params) {
                                 ? "bg-gray-800/80 opacity-100"
                                 : "opacity-60 hover:opacity-80"
                         }`}
-                        onClick={() => params.setInputMode("generate")}
-                    >
+                        onClick={() => params.setInputMode("generate")}>
                         {Icons.GenerateIcon(5)}
                         Generate
                     </a>
@@ -150,8 +139,7 @@ export default function Typer(params) {
                             if (params.edited) {
                                 params.setInputMode("search");
                             }
-                        }}
-                    >
+                        }}>
                         {Icons.SearchIcon(5)}
                         Search
                     </a>
@@ -165,8 +153,7 @@ export default function Typer(params) {
                             if (params.edited) {
                                 params.setInputMode("chat");
                             }
-                        }}
-                    >
+                        }}>
                         {Icons.ChatIcon(5)}
                         Chat
                     </a>
@@ -178,12 +165,10 @@ export default function Typer(params) {
                             reset();
                         }
                     }}
-                    className="w-full overflow-y-hidden"
-                >
+                    className="w-full overflow-y-hidden">
                     <div
                         className="mx-auto w-full max-w-lg flex flex-col"
-                        ref={params.inputRef}
-                    >
+                        ref={params.inputRef}>
                         <input
                             type="text"
                             tabIndex={-1}
@@ -203,19 +188,14 @@ export default function Typer(params) {
                         {!params.edited && (
                             <a
                                 onClick={(e) => params.handleCreateTutorial()}
-                                className="text-gray-500 hover:text-gray-200 transition-all underline pointer-events-auto mt-2 text-sm text-center hover:cursor-pointer"
-                            >
+                                className="text-gray-500 hover:text-gray-200 transition-all underline pointer-events-auto mt-2 text-sm text-center hover:cursor-pointer">
                                 What is Think Machine?
                             </a>
                         )}
                         {((params.inputMode === "chat" && params.isChatting) ||
                             params.isGenerating) && (
                             <div className="text-center mt-2">
-                                <l-bouncy
-                                    size="25"
-                                    speed="1.75"
-                                    color="white"
-                                ></l-bouncy>
+                                <l-bouncy size="25" speed="1.75" color="white"></l-bouncy>
                             </div>
                         )}
                     </div>
@@ -224,20 +204,17 @@ export default function Typer(params) {
                         className={`pointer-events-auto max-w-md mx-auto h-[calc(100dvh)] overflow-y-scroll ${
                             !(isOpen && items.length) && "hidden"
                         }`}
-                        {...getMenuProps()}
-                    >
+                        {...getMenuProps()}>
                         {isOpen &&
                             items.map((item, index) => (
                                 <li
                                     className={cx(
-                                        highlightedIndex === index &&
-                                            "bg-gray-1000",
+                                        highlightedIndex === index && "bg-gray-1000",
                                         selectedItem === item && "font-bold",
                                         "py-2 px-3 shadow-sm flex flex-col text-white text-center rounded-lg hover:cursor-pointer"
                                     )}
                                     key={index}
-                                    {...getItemProps({ item, index })}
-                                >
+                                    {...getItemProps({ item, index })}>
                                     <span>{item}</span>
                                 </li>
                             ))}
