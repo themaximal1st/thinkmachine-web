@@ -9,7 +9,7 @@ import Database from "./database.js"
 import { getAdminDashboardContent } from "./admin.js";
 
 const app = express();
-app.use(express.json({ limit: "50mb" }));
+app.use(express.json({ limit: "100mb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
 

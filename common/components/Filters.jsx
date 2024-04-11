@@ -1,6 +1,7 @@
 import { Tooltip } from "react-tooltip";
 
 export default function Filters(params) {
+    if (!params.show) return;
     return (
         <div
             className="flex text-white mt-1 text-sm gap-1 px-2 w-4/12 absolute z-20 flex-col right-0 items-end"

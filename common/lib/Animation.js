@@ -41,7 +41,7 @@ export default class Animation {
             }
 
             // Increment the angle for the animation
-            this.angle += Math.PI / 100;
+            this.angle += Math.PI / 333;
             this.angle %= 2 * Math.PI; // Normalize the angle
 
             if (callback) {

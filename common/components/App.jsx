@@ -184,6 +184,10 @@ export default class App extends React.Component {
         return Array.from(symbols);
     }
 
+    get shouldHideControls() {
+        return this.state.isAnimating || this.state.isRecording;
+    }
+
     //
     // MOUNT / UNMOUNT
     //
@@ -1115,6 +1119,8 @@ ${hyperedges}`;
             RecorderShots.orbit(this);
         } else if (e.key === "F3") {
             RecorderShots.zoom(this);
+        } else if (e.key === "F4") {
+            RecorderShots.fly(this);
         } else if (e.key === "Tab") {
             this.toggleInterwingle(undefined, e.shiftKey);
             e.preventDefault();
@@ -1384,6 +1390,7 @@ ${hyperedges}`;
                 />
                 <Filters
                     filters={this.state.filters}
+                    show={!this.shouldHideControls}
                     removeFilter={this.removeFilterSymbol.bind(this)}
                 />
                 <Console
@@ -1395,13 +1402,13 @@ ${hyperedges}`;
                 <Interwingle
                     interwingle={this.state.interwingle}
                     toggleInterwingle={this.toggleInterwingle.bind(this)}
-                    show={this.state.isAnimating === false && this.state.edited}
+                    show={!this.shouldHideControls && this.state.edited}
                 />
                 <Depth
                     depthRef={this.depthRef}
                     depth={this.state.depth}
                     maxDepth={this.state.maxDepth}
-                    show={this.state.isAnimating === false && this.state.edited}
+                    show={!this.shouldHideControls && this.state.edited}
                     toggleDepth={this.toggleDepth.bind(this)}
                 />
                 <Typer
@@ -1424,7 +1431,7 @@ ${hyperedges}`;
                         this.setState({ input });
                     }}
                     hyperedge={this.state.hyperedge}
-                    show={!this.state.showConsole && !this.state.isAnimating}
+                    show={!this.state.showConsole && !this.shouldHideControls}
                     llm={this.state.llm}
                     edited={this.state.edited}
                 />
@@ -1467,6 +1474,7 @@ ${hyperedges}`;
                     loaded={this.state.loaded}
                     edited={this.state.edited}
                     isAnimating={this.state.isAnimating}
+                    shouldHideControls={this.shouldHideControls}
                     controlType={this.state.controlType}
                     graphRef={this.graphRef}
                     graphType={this.state.graphType}
@@ -1491,7 +1499,6 @@ ${hyperedges}`;
                     setCooldownTicks={(cooldownTicks) => {
                         this.setState({ cooldownTicks });
                     }}
-                    takeScreenshot={this.takeScreenshot.bind(this)}
                     toggleRecord={this.toggleRecord.bind(this)}
                 />
                 <RecordingUI

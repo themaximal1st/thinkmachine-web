@@ -94,13 +94,20 @@ export default function Footer(params) {
                                         </a>
                                     )}
 
-                                    <a
-                                        onClick={() => params.toggleRecord()}
-                                        className="menu-item"
-                                    >
-                                        <div>{Icons.RecordIcon()}</div>
-                                        Record Video
-                                    </a>
+                                    {isWeb && params.edited && (
+                                        <a
+                                            onClick={() => {
+                                                params.toggleSettingsMenu(
+                                                    false
+                                                );
+                                                params.toggleRecord();
+                                            }}
+                                            className="menu-item"
+                                        >
+                                            <div>{Icons.RecordIcon()}</div>
+                                            Record Video
+                                        </a>
+                                    )}
 
                                     {!isWeb && (
                                         <a
@@ -113,7 +120,7 @@ export default function Footer(params) {
                                     )}
                                 </div>
                             )}
-                            {!params.isAnimating && (
+                            {!params.shouldHideControls && (
                                 <a
                                     onClick={() => params.toggleSettingsMenu()}
                                     title="Settings"
@@ -124,7 +131,7 @@ export default function Footer(params) {
                                 </a>
                             )}
                         </div>
-                        {isWeb && !params.isAnimating && (
+                        {isWeb && !params.shouldHideControls && (
                             <a
                                 className="text-sm lg:text- text-white opacity-50 hover:opacity-100 transition-all cursor-pointer mb-1 pointer-events-auto"
                                 href="https://thinkmachine.com/download"
@@ -158,7 +165,7 @@ export default function Footer(params) {
                         )}
 
                     <div className="flex gap-4 items-center">
-                        {!params.isAnimating && (
+                        {!params.shouldHideControls && (
                             <a
                                 onClick={() => params.toggleGraphType()}
                                 title="Toggle 2D and 3D"
@@ -175,7 +182,7 @@ export default function Footer(params) {
                             </a>
                         )}
 
-                        {!params.isAnimating &&
+                        {!params.shouldHideControls &&
                             params.graphType === "3d" &&
                             params.edited && (
                                 <a
