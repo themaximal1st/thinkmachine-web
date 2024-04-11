@@ -49,7 +49,7 @@ export default class App extends React.Component {
             showLayout: false,
             showLabsWarning: false,
             showChat: false,
-            showRecordingModal: true,
+            showRecordingModal: false,
 
             licenseKey: "",
             licenseValid: undefined,
@@ -423,6 +423,7 @@ export default class App extends React.Component {
 
     // this doesn't really work
     zoom(amount = 0) {
+        console.log("ZOOMING", amount);
         const cameraPosition = this.graphRef.current.cameraPosition();
         this.graphRef.current.cameraPosition({ z: cameraPosition.z + amount });
     }
@@ -1128,9 +1129,9 @@ ${hyperedges}`;
         } else if (e.key === "F2") {
             RecorderShots.orbit(this);
         } else if (e.key === "F3") {
-            RecorderShots.zoom(this);
+            RecorderShots.flyby(this);
         } else if (e.key === "F4") {
-            RecorderShots.fly(this);
+            RecorderShots.zoom(this);
         } else if (e.key === "Tab") {
             this.toggleInterwingle(undefined, e.shiftKey);
             e.preventDefault();
@@ -1193,7 +1194,11 @@ ${hyperedges}`;
         ) {
             return;
         } else {
-            if (e.key !== "Shift" && this.canFocusInput) {
+            if (
+                e.key !== "Shift" &&
+                this.canFocusInput &&
+                this.inputReference
+            ) {
                 this.inputReference.focus();
             }
         }
@@ -1362,6 +1367,20 @@ ${hyperedges}`;
         }
     }
 
+    handleStartRecording(recordType) {
+        if (recordType === "record") {
+            this.toggleRecord(true);
+        } else if (recordType === "orbit") {
+            RecorderShots.orbit(this);
+        } else if (recordType === "zoom") {
+            RecorderShots.zoom(this);
+        } else if (recordType === "flyby") {
+            RecorderShots.flyby(this);
+        } else {
+            console.log("UNKNOWN RECORD TYPE", recordType);
+        }
+    }
+
     //
     // RENDER
     //
@@ -1520,6 +1539,7 @@ ${hyperedges}`;
                     )}
                     isRecording={this.state.isRecording}
                     isProcessing={this.state.isProcessing}
+                    handleStartRecording={this.handleStartRecording.bind(this)}
                     stopRecord={this.stopRecord.bind(this)}
                 />
             </div>

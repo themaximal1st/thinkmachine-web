@@ -2,9 +2,6 @@ import * as utils from "@lib/utils";
 import toast, { Toaster } from "react-hot-toast";
 
 // Specific camera shots for Recorder.js
-//
-// These shots are tempremental.
-// If the cameraPosition is too far from the original position, the recording will not always work
 export default class RecorderShots {
 
 
@@ -20,7 +17,7 @@ export default class RecorderShots {
 
             app.animation.start(async () => {
                 app.recorder.stop();
-                await app.asyncSetState({ isAnimating: false });
+                await app.toggleAnimation(false);
                 resolve();
             });
 
@@ -28,10 +25,10 @@ export default class RecorderShots {
         });
     }
 
-    static async zoom(app) {
+    static async flyby(app) {
         return new Promise(async (resolve, reject) => {
             if (!RecorderShots.needsOrbit(app)) {
-                toast.error("Zoom recording needs 3D and orbit mode");
+                toast.error("Flyby recording needs 3D and orbit mode");
                 return reject();
             }
 
@@ -60,19 +57,17 @@ export default class RecorderShots {
         });
     }
 
-    static async fly(app) {
+    static async zoom(app) {
         return new Promise(async (resolve, reject) => {
             if (!RecorderShots.needsFly(app)) {
-                toast.error("Fly recording needs 3D and fly mode");
+                toast.error("Zoom recording needs 3D and fly mode");
                 return reject();
             }
-
-            console.log("FLY THROUGH");
 
             const cameraPosition = app.graphRef.current.cameraPosition();
             let x = cameraPosition.x;
             let y = cameraPosition.y;
-            let z = cameraPosition.z + 500;
+            let z = cameraPosition.z;// + 500;
 
             let initialPosition = cameraPosition;
 

@@ -127,9 +127,7 @@ export default function RecordingUI(params) {
                             <button
                                 onClick={() => {
                                     params.toggleVideoRecordingModal(false);
-                                    console.log("STARTING", recordType);
-                                    // params.onClose();
-                                    // params.onStart();
+                                    params.handleStartRecording(recordType);
                                 }}
                                 className="bg-purple-600 hover:bg-purple-500 text-white px-4 py-2 rounded-md tracking-widest font-bold"
                             >
