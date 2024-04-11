@@ -161,6 +161,9 @@ export default class ThinkMachineAPI {
         return uuid;
     }
 
+    async webmToMp4(buffer) {
+        return await this.send("convert/webmToMp4", { buffer });
+    }
 
     setupBridge() {
         if (window.api) { return }
@@ -193,6 +196,9 @@ export default class ThinkMachineAPI {
                 },
                 isValid: async () => this.isValid,
             },
+            convert: {
+                webmToMp4: this.webmToMp4.bind(this),
+            }
         };
     }
 

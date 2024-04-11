@@ -85,6 +85,10 @@ export default class WebBridge {
             await bridge.generateWormhole(input, { llm });
             await this.saveHypergraph(req);
         });
+
+        this.post("/api/convert/webmToMp4", async ({ bridge, body }) => {
+            return await bridge.webmToMp4(body.buffer);
+        }, { save: false });
     }
 
     async createHypergraph(req) {

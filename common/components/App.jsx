@@ -315,7 +315,7 @@ export default class App extends React.Component {
 
         setTimeout(() => {
             recorder.stop();
-        }, 1500);
+        }, 30000);
     }
 
     updateInputMode(inputMode) {

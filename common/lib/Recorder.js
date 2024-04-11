@@ -1,9 +1,31 @@
-// import 'webm2mp4-js'
 // import { CanvasCapture } from "canvas-capture";
-import { FFmpeg } from '@ffmpeg/ffmpeg';
-import { fetchFile, toBlobURL } from '@ffmpeg/util';
 
 import * as services from "@src/services";
+
+// TODO: Max size
+
+function blobToBase64(blob) {
+    return new Promise((resolve, _) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            const result = reader.result.replace(/^data:.*;base64,/, "");
+            resolve(result);
+        }
+        reader.readAsDataURL(blob);
+    });
+}
+
+export function base64ToBlob(base64, mimeType) {
+    const binaryString = atob(base64);
+    const length = binaryString.length;
+    const bytes = new Uint8Array(length);
+
+    for (let i = 0; i < length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+    }
+
+    return new Blob([bytes], { type: mimeType });
+}
 
 const bps = {
     "4K": 40000000,
@@ -23,7 +45,7 @@ export default class Record {
         }
 
         this.fps = options.fps || 30;
-        this.bps = options.bps || bps["360p"];
+        this.bps = options.bps || bps["4K"];
         this.mimetype = options.mimetype || "video/webm";
 
 
@@ -77,34 +99,25 @@ export default class Record {
     }
 
     async onstop() {
+        if (this.chunks.length === 0) {
+            console.error("No data recorded");
+            return;
+        }
+
         console.log("STOP");
         console.log(this.chunks);
         const blob = new Blob(this.chunks, { "type": this.chunks[0].type });
+        console.log(blob);
 
-        console.log("NEW");
-        const ffmpeg = new FFmpeg();
+        const buffer = await blobToBase64(blob);
+        console.log(buffer);
+        const mp4 = await window.api.convert.webmToMp4(buffer);
 
-        const baseURL = "https://unpkg.com/@ffmpeg/core@0.12.6/dist/esm"
+        // convert
+        const mp4Blob = await base64ToBlob(mp4, "video/mp4");
+        console.log("MP4", mp4Blob);
 
-        console.log("LOADING");
-        await ffmpeg.load({
-            coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, 'text/javascript'),
-            wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, 'application/wasm'),
-        });
-
-        console.log("LOADED");
-
-        // ffmpeg.FS("writeFile", "video.webm", new Uint8Array(await blob.arrayBuffer()));
-        console.log("WRITE");
-        await ffmpeg.writeFile("video.webm", new Uint8Array(await blob.arrayBuffer()));
-
-        console.log("EXEC");
-        await ffmpeg.exec(['-i', 'video.webm', 'output.mp4']);
-        const data = await ffmpeg.readFile('output.mp4');
-        console.log(data);
-
-
-        services.saveFile(data, "thinkmachine-video.mp4", "video/mp4");
+        services.saveFile(mp4Blob, "thinkmachine-video.mp4", "video/mp4");
     }
 
     ondata(event) {
