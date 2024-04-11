@@ -4,6 +4,9 @@
 * update main website (chat, video export, testimonials)
 * more blog posts / videos explaining features
 
+* bring ffmpeg to electron
+* electron release
+
 * marketing
 * full launch
 
@@ -22,6 +25,7 @@
 
 * CLEANUP
   * massive refactor
+   * dependency injection via Services
   * tests
 * depth needs a lot of work
 * reduce cases of isWeb & isElectron...make services
