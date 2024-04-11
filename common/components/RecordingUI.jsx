@@ -110,6 +110,7 @@ export default function RecordingUI(params) {
                                             src={video.src}
                                             muted
                                             loop
+                                            playsInline
                                             onMouseEnter={onHover}
                                             onMouseLeave={onLeave}
                                             className={`w-full aspect-square hover:opacity-100 transition-all ${

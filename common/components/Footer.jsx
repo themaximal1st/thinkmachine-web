@@ -21,12 +21,12 @@ export default function Footer(params) {
     return (
         <div>
             <div className="relative pointer-events-none">
-                <div className="absolute text-white bottom-2 left-3 right-3 z-20 flex gap-4 pointer-events-none justify-between items-center">
+                <div className="absolute text-white bottom-2 left-3 right-3 z-50 flex gap-4 pointer-events-none justify-between items-center">
                     <div className="flex gap-4 items-center">
                         <div className="relative">
                             {params.showSettingsMenu && (
                                 <div
-                                    className="pointer-events-none absolute -left-5 bottom-10 w-96 flex flex-col-reverse gap-4 p-2 text-lg fan-left"
+                                    className="pointer-events-none absolute -left-5 bottom-10 w-96 flex flex-col-reverse gap-1 lg:gap-4 p-2 lg:text-lg fan-left"
                                     id="settings-menu"
                                 >
                                     {isWeb &&
