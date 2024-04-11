@@ -1,6 +1,5 @@
 import LLM from "@themaximalist/llm.js"
 import ThinkableType from "@themaximalist/thinkabletype";
-import fs from "fs";
 
 import colors from "./colors.js";
 import { isUUID, isEmptyUUID, generate as generateUUID } from "./uuid.js";
@@ -165,8 +164,15 @@ export default class Bridge {
     }
 
     async webmToMp4(encoded) {
-        const buffer = await base64ToBuffer(encoded);
-        const mp4 = await webmToMp4(buffer);
-        return Buffer.from(mp4).toString("base64");
+        try {
+            const buffer = await base64ToBuffer(encoded);
+            console.log("BUFFER", buffer);
+            const mp4 = await webmToMp4(buffer);
+            if (!mp4) throw new Error("No mp4 buffer");
+            return Buffer.from(mp4).toString("base64");
+        } catch (e) {
+            console.error(e);
+            return null;
+        }
     }
 }

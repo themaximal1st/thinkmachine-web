@@ -1,31 +1,5 @@
-// import { CanvasCapture } from "canvas-capture";
-
-import * as services from "@src/services";
-
 // TODO: Max size
-
-function blobToBase64(blob) {
-    return new Promise((resolve, _) => {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-            const result = reader.result.replace(/^data:.*;base64,/, "");
-            resolve(result);
-        }
-        reader.readAsDataURL(blob);
-    });
-}
-
-export function base64ToBlob(base64, mimeType) {
-    const binaryString = atob(base64);
-    const length = binaryString.length;
-    const bytes = new Uint8Array(length);
-
-    for (let i = 0; i < length; i++) {
-        bytes[i] = binaryString.charCodeAt(i);
-    }
-
-    return new Blob([bytes], { type: mimeType });
-}
+import { blobToBase64, base64ToBlob } from "@lib/utils";
 
 const bps = {
     "4K": 40000000,
@@ -48,6 +22,12 @@ export default class Record {
         this.bps = options.bps || bps["4K"];
         this.mimetype = options.mimetype || "video/webm";
 
+        this.onstart = options.onstart || async function () { };
+        this.onstop = options.onstop || async function () { };
+        this.onerror = options.onerror || async function () { };
+        this.ondata = options.ondata || async function () { };
+        this.onprocess = options.onprocess || async function () { };
+        this.onfile = options.onfile || async function () { };
 
         this.stream = null;
         this.recorder = null;
@@ -55,7 +35,11 @@ export default class Record {
         this.bytes = 0;
     }
 
-    start() {
+    get recording() {
+        return this.recorder;
+    }
+
+    async start() {
         if (!this.canvas) {
             console.error("Canvas not found");
             return;
@@ -66,61 +50,65 @@ export default class Record {
             return;
         }
 
-
         this.stream = this.canvas.captureStream(this.fps);
-        console.log("STREAM", this.stream);
+
 
         this.recorder = new MediaRecorder(this.stream, {
             mimetype: this.mimetype,
             "bitspersecond": this.bps
         });
 
-        this.recorder.addEventListener("start", this.onstart.bind(this), false);
-        this.recorder.addEventListener("stop", this.onstop.bind(this), false);
-        this.recorder.addEventListener("dataavailable", this.ondata.bind(this), false);
-        this.recorder.addEventListener("error", this.onerror.bind(this), false);
+        this.recorder.addEventListener("start", this.handleStart.bind(this), false);
+        this.recorder.addEventListener("stop", this.handleStop.bind(this), false);
+        this.recorder.addEventListener("dataavailable", this.handleData.bind(this), false);
+        this.recorder.addEventListener("error", this.handleError.bind(this), false);
 
-        this.recorder.start(100);
+        this.recorder.start(1000);
+
+        await this.onstart();
     }
 
-    stop() {
-        if (this.recorder.state !== "inactive") {
+    async stop() {
+        if (this.recorder && this.recorder.state !== "inactive") {
             this.recorder.stop();
         }
-
-        // this.recorder = null;
-        // this.stream = null;
-        // this.chunks = [];
-        // this.bytes = 0;
     }
 
-    onstart() {
-        console.log("START");
+    reset() {
+        this.recorder = null;
+        this.stream = null;
+        this.chunks = [];
+        this.bytes = 0;
     }
 
-    async onstop() {
+    handleStart() {
+        console.log("START RECORDER");
+    }
+
+    async handleStop() {
         if (this.chunks.length === 0) {
             console.error("No data recorded");
             return;
         }
 
-        console.log("STOP");
-        console.log(this.chunks);
-        const blob = new Blob(this.chunks, { "type": this.chunks[0].type });
-        console.log(blob);
+        await this.onstop();
 
-        const buffer = await blobToBase64(blob);
-        console.log(buffer);
-        const mp4 = await window.api.convert.webmToMp4(buffer);
+        await this.onprocess();
 
-        // convert
-        const mp4Blob = await base64ToBlob(mp4, "video/mp4");
-        console.log("MP4", mp4Blob);
+        const webmBlob = new Blob(this.chunks, { "type": this.chunks[0].type });
+        const webmBuffer = await blobToBase64(webmBlob);
 
-        services.saveFile(mp4Blob, "thinkmachine-video.mp4", "video/mp4");
+        try {
+            const mp4Buffer = await window.api.convert.webmToMp4(webmBuffer);
+            const mp4Blob = await base64ToBlob(mp4Buffer, "video/mp4");
+
+            await this.onfile(mp4Blob);
+        } catch (e) {
+            await this.onerror(e);
+        }
     }
 
-    ondata(event) {
+    handleData(event) {
         const blob = event.data;
 
         if (blob.size) {
@@ -129,7 +117,7 @@ export default class Record {
         }
     }
 
-    onerror(e) {
+    handleError(e) {
         console.log("ON ERROR", e);
     }
 
@@ -139,24 +127,6 @@ export default class Record {
     }
 
     /*
-    static async recordVideo(name = "thinkmachine-video", fps = 30) {
-
-
-
-    }
-    */
-
-    // recorder.removeEventListener(
-    //     "dataavailable", fn, false
-    // );
-    // recorder("stop", fn, false);
-    // recorder("error", fn, false);
-
-    // if (recorder.state !== "inactive") {
-    //     recorder.stop();
-    // }
-
-
     static async _takeScreenshot(name = "thinkmachine-screenshot", quality = 1, dpi = 300) {
         console.log("Taking screenshot");
 
@@ -170,4 +140,5 @@ export default class Record {
             });
         });
     }
+    */
 }

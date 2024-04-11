@@ -11,8 +11,13 @@ export async function webmToMp4(buffer) {
 
     const output = `/tmp/${uuid.generate()}.mp4`;
     function cleanup() {
-        fs.unlinkSync(input);
-        fs.unlinkSync(output);
+        if (fs.existsSync(input)) {
+            fs.unlinkSync(input);
+        }
+
+        if (fs.existsSync(output)) {
+            fs.unlinkSync(output);
+        }
     }
 
     return new Promise((resolve, reject) => {
@@ -25,7 +30,6 @@ export async function webmToMp4(buffer) {
             }
 
             const mp4buffer = fs.readFileSync(output);
-            console.log(mp4buffer);
 
             if (!mp4buffer) {
                 cleanup();

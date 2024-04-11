@@ -33,6 +33,7 @@ export default class App extends React.Component {
         this.graphRef = React.createRef();
         this.depthRef = React.createRef();
         this.wormhole = new Wormhole();
+        this.recorder = null;
         this.animation = new Animation(this.graphRef);
         this.state = {
             loaded: false,
@@ -71,6 +72,9 @@ export default class App extends React.Component {
             isShiftDown: false,
             isGenerating: false,
             isChatting: false,
+
+            isRecording: false,
+            isProcessing: false, // hack
 
             reloads: 0,
             interwingle: 3,
@@ -206,7 +210,14 @@ export default class App extends React.Component {
             window.takeScreenshot = this.takeScreenshot.bind(this);
             window.recordVideo = this.recordVideo.bind(this);
 
-            await this.recordVideo();
+            this.recorder = new Recorder();
+            this.recorder.onstart = this.handleRecorderStart.bind(this);
+            this.recorder.onstop = this.handleRecorderStop.bind(this);
+            this.recorder.onprocess = this.handleRecorderProcess.bind(this);
+            this.recorder.onfile = this.handleRecorderFile.bind(this);
+            this.recorder.onerror = this.handleRecorderError.bind(this);
+
+            // await this.recordVideo();
 
             // setTimeout(async () => {
             //     // await this.takeScreenshot();
@@ -309,13 +320,21 @@ export default class App extends React.Component {
     }
 
     async recordVideo() {
-        // this.graphRef.current.stopAnimation();
-        const recorder = new Recorder();
-        recorder.start();
+        if (this.recorder.recording) {
+            console.log("already recording");
+            return;
+        }
 
-        setTimeout(() => {
-            recorder.stop();
-        }, 30000);
+        this.recorder.start();
+    }
+
+    async stopRecord() {
+        if (!this.recorder.recording) {
+            console.log("not recording");
+            return;
+        }
+
+        this.recorder.stop();
     }
 
     updateInputMode(inputMode) {
@@ -647,6 +666,17 @@ export default class App extends React.Component {
     // TOGGLE
     //
 
+    toggleRecord(val) {
+        const isRecording = val === undefined ? !this.state.isRecording : val;
+
+        this.setState({ isRecording }, () => {
+            if (this.state.isRecording) {
+                this.recordVideo();
+            } else {
+                this.stopRecord();
+            }
+        });
+    }
     toggleIsChatting(val) {
         const isChatting = val === undefined ? !this.state.isChatting : val;
         this.setState({ isChatting });
@@ -801,6 +831,45 @@ export default class App extends React.Component {
     //
     // HANDLE
     //
+
+    handleRecorderStart() {
+        console.log("STARTED RECORDING");
+        toast.success("Recording started");
+        this.setState({ isRecording: true });
+    }
+
+    handleRecorderStop() {
+        console.log("STOPPED RECORDING");
+        // toast.success("Recording stopped");
+        this.setState({ isRecording: false });
+    }
+
+    handleRecorderProcess() {
+        console.log("PROCESSING");
+        toast.success("Processing recording");
+        this.setState({ isRecording: false, isProcessing: true });
+    }
+
+    handleRecorderFile(blob) {
+        if (!blob) {
+            toast.error("Error recording video");
+            return;
+        }
+
+        services.saveFile(blob, `${this.slug}.mp4`, "video/mp4");
+        toast.success("Saved!");
+        this.setState({ isRecording: false, isProcessing: false });
+
+        this.recorder.reset();
+    }
+
+    handleRecorderError(e) {
+        console.log("RECORDER ERROR", e);
+        toast.error("Error recording video");
+        this.setState({ isRecording: false, isProcessing: false });
+
+        this.recorder.reset();
+    }
 
     handleTick() {
         this.checkForCollisions();
@@ -1035,6 +1104,8 @@ ${hyperedges}`;
         } else if (e.key === "4" && e.metaKey) {
             this.updateInputMode("chat");
             e.preventDefault();
+        } else if (e.key === "F1") {
+            this.toggleRecord();
         } else if (e.key === "Tab") {
             this.toggleInterwingle(undefined, e.shiftKey);
             e.preventDefault();
