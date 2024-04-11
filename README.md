@@ -19,6 +19,7 @@ Features
 * AI graph brainstorming
 * Chat with AI about knowledge graph
 * Manage interconnections with a click
+* Video Exporter
 * Search, filter and go down rabbit holes
 * and a lot more!
 
