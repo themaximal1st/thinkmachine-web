@@ -23,6 +23,7 @@ import ForceGraph from "@components/ForceGraph";
 import Typer from "@components/Typer";
 import Wormhole from "@components/Wormhole.js";
 import ChatWindow from "@components/ChatWindow.jsx";
+import RecordingUI from "@components/RecordingUI.jsx";
 
 export default class App extends React.Component {
     constructor(props) {
@@ -1483,6 +1484,11 @@ ${hyperedges}`;
                         this.setState({ cooldownTicks });
                     }}
                     takeScreenshot={this.takeScreenshot.bind(this)}
+                />
+                <RecordingUI
+                    isRecording={this.state.isRecording}
+                    isProcessing={this.state.isProcessing}
+                    stopRecord={this.stopRecord.bind(this)}
                 />
             </div>
         );
