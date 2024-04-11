@@ -27,28 +27,21 @@ export default function Footer(params) {
                             {params.showSettingsMenu && (
                                 <div
                                     className="pointer-events-none absolute -left-5 bottom-10 w-96 flex flex-col-reverse gap-1 lg:gap-4 p-2 lg:text-lg fan-left"
-                                    id="settings-menu"
-                                >
+                                    id="settings-menu">
                                     {isWeb &&
                                         params.edited &&
                                         params.hyperedges.length > 0 && (
                                             <a
-                                                onClick={(e) =>
-                                                    params.handleDownload()
-                                                }
-                                                className="menu-item"
-                                            >
+                                                onClick={(e) => params.handleDownload()}
+                                                className="menu-item">
                                                 <div>{Icons.SaveIcon}</div>
                                                 Save
                                             </a>
                                         )}
                                     {isWeb && params.edited && (
                                         <a
-                                            onClick={(e) =>
-                                                (window.location.href = "/")
-                                            }
-                                            className="menu-item"
-                                        >
+                                            onClick={(e) => (window.location.href = "/")}
+                                            className="menu-item">
                                             <div>{Icons.NewIcon}</div>
                                             New
                                         </a>
@@ -59,36 +52,28 @@ export default function Footer(params) {
                                             onClick={() => {
                                                 console.log("load");
                                             }}
-                                            className="menu-item"
-                                        >
+                                            className="menu-item">
                                             <div>{Icons.LoadIcon}</div>
                                             Load
                                         </a>
                                     )}
 
                                     <a
-                                        onClick={() =>
-                                            params.toggleLLMSettings()
-                                        }
-                                        className="menu-item"
-                                    >
+                                        onClick={() => params.toggleLLMSettings()}
+                                        className="menu-item">
                                         <div>{Icons.GenerateIcon(6)}</div>
                                         AI Settings
                                     </a>
                                     <a
-                                        onClick={() =>
-                                            params.toggleShowLayout()
-                                        }
-                                        className="menu-item"
-                                    >
+                                        onClick={() => params.toggleShowLayout()}
+                                        className="menu-item">
                                         <div>{Icons.LayoutIcon}</div>
                                         Layout
                                     </a>
                                     {false && (
                                         <a
                                             onClick={handleToggleWormhole}
-                                            className="menu-item"
-                                        >
+                                            className="menu-item">
                                             <div>{Icons.LabIcon}</div>
                                             Labs
                                         </a>
@@ -97,13 +82,10 @@ export default function Footer(params) {
                                     {isWeb && params.edited && (
                                         <a
                                             onClick={() => {
-                                                params.toggleSettingsMenu(
-                                                    false
-                                                );
+                                                params.toggleSettingsMenu(false);
                                                 params.toggleShowRecordingModal();
                                             }}
-                                            className="menu-item"
-                                        >
+                                            className="menu-item">
                                             <div>{Icons.RecordIcon()}</div>
                                             Record Video
                                         </a>
@@ -112,8 +94,7 @@ export default function Footer(params) {
                                     {!isWeb && (
                                         <a
                                             onClick={params.toggleLicenseWindow}
-                                            className="menu-item"
-                                        >
+                                            className="menu-item">
                                             <div>{Icons.LicenseIcon(6)}</div>
                                             License
                                         </a>
@@ -125,8 +106,7 @@ export default function Footer(params) {
                                     onClick={() => params.toggleSettingsMenu()}
                                     title="Settings"
                                     id="settings-icon"
-                                    className="select-none opacity-40 hover:opacity-100 transition-all cursor-pointer pointer-events-auto"
-                                >
+                                    className="select-none opacity-40 hover:opacity-100 transition-all cursor-pointer pointer-events-auto">
                                     {Icons.SettingsIcon(6)}
                                 </a>
                             )}
@@ -134,8 +114,7 @@ export default function Footer(params) {
                         {isWeb && !params.shouldHideControls && (
                             <a
                                 className="text-sm lg:text- text-white opacity-50 hover:opacity-100 transition-all cursor-pointer mb-1 pointer-events-auto"
-                                href="https://thinkmachine.com/download"
-                            >
+                                href="https://thinkmachine.com/download">
                                 Download{" "}
                                 <span className="select-none hidden lg:inline">
                                     Think Machine
@@ -158,8 +137,7 @@ export default function Footer(params) {
                                     params.wormholeMode === -1
                                         ? "text-white opacity-40"
                                         : "text-orange-400 opacity-80"
-                                }`}
-                            >
+                                }`}>
                                 {Icons.LabIcon}
                             </a>
                         )}
@@ -176,8 +154,7 @@ export default function Footer(params) {
                                         ? "Switch to 3D"
                                         : "Switch to 2D"
                                 }
-                                className="select-none opacity-40 hover:opacity-100 transition-all cursor-pointer pointer-events-auto text-xl"
-                            >
+                                className="select-none opacity-40 hover:opacity-100 transition-all cursor-pointer pointer-events-auto text-xl">
                                 {params.graphType === "2d" ? "3D" : "2D"}
                             </a>
                         )}
@@ -195,12 +172,9 @@ export default function Footer(params) {
                                             ? "Switch to Fly"
                                             : "Switch to Orbit"
                                     }
-                                    className="select-none opacity-40 hover:opacity-100 transition-all cursor-pointer pointer-events-auto"
-                                >
-                                    {params.controlType === "orbit" &&
-                                        Icons.CameraIcon}
-                                    {params.controlType === "fly" &&
-                                        Icons.MouseIcon}
+                                    className="select-none opacity-40 hover:opacity-100 transition-all cursor-pointer pointer-events-auto">
+                                    {params.controlType === "orbit" && Icons.CameraIcon}
+                                    {params.controlType === "fly" && Icons.MouseIcon}
                                 </a>
                             )}
                         {params.graphType === "3d" && params.edited && (
@@ -214,8 +188,7 @@ export default function Footer(params) {
                                         ? "Stop Animation"
                                         : "Start Animation"
                                 }
-                                className="select-none opacity-40 hover:opacity-100 transition-all cursor-pointer pointer-events-auto"
-                            >
+                                className="select-none opacity-40 hover:opacity-100 transition-all cursor-pointer pointer-events-auto">
                                 {!params.isAnimating && Icons.RotateIcon(6)}
                                 {params.isAnimating && Icons.PauseIcon(6)}
                             </a>

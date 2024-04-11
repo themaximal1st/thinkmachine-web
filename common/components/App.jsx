@@ -68,9 +68,7 @@ export default class App extends React.Component {
 
             hideLabelsThreshold: 1000,
             hideLabels: true,
-            wormholeMode: parseInt(
-                window.localStorage.getItem("wormholeMode") || -1
-            ),
+            wormholeMode: parseInt(window.localStorage.getItem("wormholeMode") || -1),
             isAnimating: false,
             isShiftDown: false,
             isGenerating: false,
@@ -124,10 +122,7 @@ export default class App extends React.Component {
         }
 
         // don't allow search mode or chat if there are no hyperedges
-        if (
-            this.state.inputMode !== "add" &&
-            this.state.inputMode !== "generate"
-        ) {
+        if (this.state.inputMode !== "add" && this.state.inputMode !== "generate") {
             return "generate";
         }
 
@@ -236,10 +231,7 @@ export default class App extends React.Component {
         this.animation.stop();
         document.removeEventListener("keydown", this.handleKeyDown.bind(this));
         document.removeEventListener("keyup", this.handleKeyUp.bind(this));
-        document.removeEventListener(
-            "mousedown",
-            this.handleMouseDown.bind(this)
-        );
+        document.removeEventListener("mousedown", this.handleMouseDown.bind(this));
         document.removeEventListener("mouseup", this.handleMouseUp.bind(this));
         document.removeEventListener("wheel", this.handleZoom.bind(this));
         window.removeEventListener("resize", this.handleResize.bind(this));
@@ -253,13 +245,10 @@ export default class App extends React.Component {
         const start = Date.now();
 
         const oldData = this.state.data;
-        const newData = await window.api.hypergraph.graphData(
-            this.state.filters,
-            {
-                interwingle: this.state.interwingle,
-                depth: this.state.depth,
-            }
-        );
+        const newData = await window.api.hypergraph.graphData(this.state.filters, {
+            interwingle: this.state.interwingle,
+            depth: this.state.depth,
+        });
 
         const data = GraphUtils.restoreNodePositions(this.state.data, newData);
 
@@ -351,11 +340,7 @@ export default class App extends React.Component {
     }
 
     updateChatWindow(newChatWindow = {}) {
-        const chatWindow = Object.assign(
-            {},
-            this.state.chatWindow,
-            newChatWindow
-        );
+        const chatWindow = Object.assign({}, this.state.chatWindow, newChatWindow);
         this.setState({ chatWindow });
     }
 
@@ -391,11 +376,7 @@ export default class App extends React.Component {
                 throw new Error("Hypergraph was not initialized properly");
             }
 
-            window.history.pushState(
-                { urlPath: `/${uuid}` },
-                document.title,
-                `/${uuid}`
-            );
+            window.history.pushState({ urlPath: `/${uuid}` }, document.title, `/${uuid}`);
 
             return uuid;
         } catch (e) {
@@ -431,9 +412,7 @@ export default class App extends React.Component {
     rotate(angleDegrees) {
         const cameraPosition = this.graphRef.current.cameraPosition();
 
-        const distance = Math.sqrt(
-            cameraPosition.x ** 2 + cameraPosition.z ** 2
-        );
+        const distance = Math.sqrt(cameraPosition.x ** 2 + cameraPosition.z ** 2);
 
         const initialAngle = Math.atan2(cameraPosition.x, cameraPosition.z);
 
@@ -443,11 +422,7 @@ export default class App extends React.Component {
         const x = distance * Math.sin(newAngle);
         const z = distance * Math.cos(newAngle);
 
-        this.graphRef.current.cameraPosition(
-            { x, y: cameraPosition.y, z },
-            null,
-            100
-        );
+        this.graphRef.current.cameraPosition({ x, y: cameraPosition.y, z }, null, 100);
     }
 
     panX(amount) {
@@ -532,9 +507,7 @@ export default class App extends React.Component {
 
         if (this.state.licenseKey) {
             console.log("validating license");
-            state.licenseValid = await window.api.license.validate(
-                this.state.licenseKey
-            );
+            state.licenseValid = await window.api.license.validate(this.state.licenseKey);
             if (state.licenseValid) {
                 console.log("validated license");
                 await window.api.settings.set("license", this.state.licenseKey);
@@ -597,18 +570,10 @@ export default class App extends React.Component {
             ["Think Machine", "teachers", "immersive learning"],
             ["Think Machine", "designers", "information architecture"],
             ["Think Machine", "marketers", "customer journey visualization"],
-            [
-                "Think Machine",
-                "healthcare professionals",
-                "medical data visualization",
-            ],
+            ["Think Machine", "healthcare professionals", "medical data visualization"],
             ["Think Machine", "AI integration", "knowledge graph generation"],
             ["knowledge graph", "data addition", "simple process"],
-            [
-                "Think Machine",
-                "search functionality",
-                "context-based exploration",
-            ],
+            ["Think Machine", "search functionality", "context-based exploration"],
             ["complex ideas", "visualization", "Think Machine"],
             ["information research", "exploration", "Think Machine"],
             ["idea brainstorming", "connection discovery", "Think Machine"],
@@ -710,8 +675,7 @@ export default class App extends React.Component {
     }
 
     toggleShowLabsWarning(val) {
-        const showLabsWarning =
-            val === undefined ? !this.state.showLabsWarning : val;
+        const showLabsWarning = val === undefined ? !this.state.showLabsWarning : val;
         this.setState({ showLabsWarning });
     }
 
@@ -727,8 +691,7 @@ export default class App extends React.Component {
     }
 
     toggleSettingsMenu(val) {
-        const showSettingsMenu =
-            val === undefined ? !this.state.showSettingsMenu : val;
+        const showSettingsMenu = val === undefined ? !this.state.showSettingsMenu : val;
         this.setState({ showSettingsMenu });
     }
 
@@ -739,8 +702,7 @@ export default class App extends React.Component {
 
     toggleCamera() {
         window.api.analytics.track("app.toggleCamera");
-        const controlType =
-            this.state.controlType === "orbit" ? "fly" : "orbit";
+        const controlType = this.state.controlType === "orbit" ? "fly" : "orbit";
 
         window.localStorage.setItem("controlType", controlType);
 
@@ -748,8 +710,7 @@ export default class App extends React.Component {
     }
 
     toggleLLMSettings(val) {
-        const showLLMSettings =
-            val === undefined ? !this.state.showLLMSettings : val;
+        const showLLMSettings = val === undefined ? !this.state.showLLMSettings : val;
         this.setState({ showLLMSettings });
     }
 
@@ -1020,9 +981,7 @@ ${hyperedges}`;
         if (this.state.edited) return;
         if (this.dynamicInputMode !== "generate") return;
 
-        const prompt = decodeURIComponent(
-            window.location.pathname.substring(1)
-        );
+        const prompt = decodeURIComponent(window.location.pathname.substring(1));
 
         if (!prompt) return;
         if (prompt.trim().length === 0) return;
@@ -1032,11 +991,7 @@ ${hyperedges}`;
 
         this.setState({ input: prompt }, async () => {
             this.handleGenerateInput();
-            window.history.replaceState(
-                {},
-                document.title,
-                window.location.pathname
-            );
+            window.history.replaceState({}, document.title, window.location.pathname);
         });
     }
 
@@ -1068,8 +1023,7 @@ ${hyperedges}`;
                         parent.id === "settings-menu" ||
                         parent.id === "settings-icon" ||
                         parent.parentElement.id === "settings-icon" ||
-                        parent.parentElement.parentElement.id ===
-                            "settings-icon"
+                        parent.parentElement.parentElement.id === "settings-icon"
                     ) {
                         e.preventDefault();
                         return;
@@ -1197,11 +1151,7 @@ ${hyperedges}`;
         ) {
             return;
         } else {
-            if (
-                e.key !== "Shift" &&
-                this.canFocusInput &&
-                this.inputReference
-            ) {
+            if (e.key !== "Shift" && this.canFocusInput && this.inputReference) {
                 this.inputReference.focus();
             }
         }
@@ -1266,9 +1216,7 @@ ${hyperedges}`;
                 this.reloadData();
                 break;
             case "success":
-                toast.success(
-                    message.message || "Successfully generated results"
-                );
+                toast.success(message.message || "Successfully generated results");
                 break;
             case "error":
                 toast.error(message.message || "Error generating results");
@@ -1299,10 +1247,7 @@ ${hyperedges}`;
         await this.asyncSetState({ input: "" });
 
         try {
-            const response = await window.api.hyperedges.generate(
-                input,
-                options
-            );
+            const response = await window.api.hyperedges.generate(input, options);
 
             for await (const message of response) {
                 await this.handleGenerateMessage(message);
@@ -1415,9 +1360,7 @@ ${hyperedges}`;
                     activateLicense={this.activateLicense.bind(this)}
                     deactivateLicense={this.deactivateLicense.bind(this)}
                     error={this.state.error}
-                    updateLicenseKey={(licenseKey) =>
-                        this.setState({ licenseKey })
-                    }
+                    updateLicenseKey={(licenseKey) => this.setState({ licenseKey })}
                     closeLicense={() => this.setState({ showLicense: false })}
                 />
                 <Filters
@@ -1452,9 +1395,7 @@ ${hyperedges}`;
                     isChatting={this.state.isChatting}
                     loaded={this.state.loaded}
                     toggleChatWindow={this.toggleChatWindow.bind(this)}
-                    handleCreateTutorial={this.createThinkMachineTutorial.bind(
-                        this
-                    )}
+                    handleCreateTutorial={this.createThinkMachineTutorial.bind(this)}
                     hyperedges={this.state.hyperedges}
                     symbols={this.uniqueSymbols}
                     handleInput={this.handleInput.bind(this)}
@@ -1518,9 +1459,7 @@ ${hyperedges}`;
                     toggleLLMSettings={this.toggleLLMSettings.bind(this)}
                     toggleSettingsMenu={this.toggleSettingsMenu.bind(this)}
                     toggleShowLayout={this.toggleShowLayout.bind(this)}
-                    toggleShowLabsWarning={this.toggleShowLabsWarning.bind(
-                        this
-                    )}
+                    toggleShowLabsWarning={this.toggleShowLabsWarning.bind(this)}
                     toggleLicenseWindow={this.toggleLicenseWindow.bind(this)}
                     handleDownload={this.handleDownload.bind(this)}
                     wormholeMode={this.state.wormholeMode}
@@ -1531,15 +1470,11 @@ ${hyperedges}`;
                     setCooldownTicks={(cooldownTicks) => {
                         this.setState({ cooldownTicks });
                     }}
-                    toggleShowRecordingModal={this.toggleShowRecordingModal.bind(
-                        this
-                    )}
+                    toggleShowRecordingModal={this.toggleShowRecordingModal.bind(this)}
                 />
                 <RecordingUI
                     showRecordingModal={this.state.showRecordingModal}
-                    toggleShowRecordingModal={this.toggleShowRecordingModal.bind(
-                        this
-                    )}
+                    toggleShowRecordingModal={this.toggleShowRecordingModal.bind(this)}
                     isRecording={this.state.isRecording}
                     isProcessing={this.state.isProcessing}
                     handleStartRecording={this.handleStartRecording.bind(this)}
