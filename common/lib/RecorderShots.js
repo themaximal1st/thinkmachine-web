@@ -32,18 +32,20 @@ export default class RecorderShots {
                 return reject();
             }
 
-            const cameraPosition = app.graphRef.current.cameraPosition();
-            let x = cameraPosition.x + 150;
-            let y = cameraPosition.y + 150;
-            let z = cameraPosition.z;
+            await app.reloadData({ zoom: true });
 
-            app.graphRef.current.cameraPosition({ x, y, z }, null, 0);
+            let x = 150;
+            let y = 150;
+            let z = 200;
+
+            app.graphRef.current.cameraPosition({ x, y, z }, null, 500);
+
+            await utils.delay(1000);
 
             let initialZ = z;
             let interval = setInterval(async () => {
                 const cameraPosition = app.graphRef.current.cameraPosition();
                 if (cameraPosition.z < initialZ * -1) {
-                    console.log("DONE!");
                     clearInterval(interval);
                     app.recorder.stop();
                     app.asyncSetState({ isAnimating: false });
@@ -71,7 +73,9 @@ export default class RecorderShots {
 
             let initialPosition = cameraPosition;
 
-            app.graphRef.current.cameraPosition({ x, y, z }, null, 0);
+            app.graphRef.current.cameraPosition({ x, y, z }, null, 100);
+
+            await delay(100);
 
             let interval = setInterval(async () => {
                 const cameraPosition = app.graphRef.current.cameraPosition();

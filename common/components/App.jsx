@@ -423,7 +423,6 @@ export default class App extends React.Component {
 
     // this doesn't really work
     zoom(amount = 0) {
-        console.log("ZOOMING", amount);
         const cameraPosition = this.graphRef.current.cameraPosition();
         this.graphRef.current.cameraPosition({ z: cameraPosition.z + amount });
     }
@@ -1049,7 +1048,6 @@ ${hyperedges}`;
     }
 
     handleZoom() {
-        console.log("ZOOM");
         this.animation.pause();
         this.animation.resume();
     }
