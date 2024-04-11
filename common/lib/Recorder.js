@@ -1,6 +1,5 @@
 // TODO: Max size
 import { blobToBase64, base64ToBlob } from "@lib/utils";
-import * as services from "@src/services";
 
 export default class Record {
     constructor(canvas = null, options = {}) {

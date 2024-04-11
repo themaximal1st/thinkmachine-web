@@ -21,7 +21,7 @@ export async function webmToMp4(buffer) {
     }
 
     return new Promise((resolve, reject) => {
-        const cmd = `ffmpeg -i "${input}"  -vf "crop=trunc(iw/2)*2:trunc(ih/2)*2" -c:v libx264 -preset veryslow -crf 18 -pix_fmt yuv420p -an "${output}"`
+        const cmd = `ffmpeg -i "${input}"  -vf "crop=trunc(iw/2)*2:trunc(ih/2)*2" -c:v libx264 -preset slow -crf 20 -pix_fmt yuv420p -an "${output}"`
 
         exec(cmd, (error, stdout, stderr) => {
             if (error) {

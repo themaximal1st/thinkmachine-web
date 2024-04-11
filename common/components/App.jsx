@@ -24,6 +24,7 @@ import Typer from "@components/Typer";
 import Wormhole from "@components/Wormhole.js";
 import ChatWindow from "@components/ChatWindow.jsx";
 import RecordingUI from "@components/RecordingUI.jsx";
+import RecorderShots from "../lib/RecorderShots";
 
 export default class App extends React.Component {
     constructor(props) {
@@ -318,22 +319,6 @@ export default class App extends React.Component {
 
     async takeScreenshot() {
         await Recorder.takeScreenshot(this.slug);
-    }
-
-    async recordOrbitVideo() {
-        if (this.recorder.recording) {
-            console.log("already recording");
-            return;
-        }
-
-        this.recorder.start();
-
-        this.animation.start(() => {
-            this.recorder.stop();
-            this.setState({ isAnimating: false });
-        });
-
-        this.setState({ isAnimating: true });
     }
 
     async recordVideo() {
@@ -1127,7 +1112,9 @@ ${hyperedges}`;
         } else if (e.key === "F1") {
             this.toggleRecord();
         } else if (e.key === "F2") {
-            this.recordOrbitVideo();
+            RecorderShots.orbit(this);
+        } else if (e.key === "F3") {
+            RecorderShots.zoom(this);
         } else if (e.key === "Tab") {
             this.toggleInterwingle(undefined, e.shiftKey);
             e.preventDefault();
