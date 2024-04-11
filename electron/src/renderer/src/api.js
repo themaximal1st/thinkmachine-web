@@ -8,3 +8,10 @@ export default class ThinkMachineAPI {
         return api;
     }
 }
+
+window.api = {
+    "edition": "electron",
+    isWeb: false,
+    isElectron: true,
+    preloaded: true,
+};

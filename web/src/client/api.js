@@ -170,7 +170,7 @@ export default class ThinkMachineAPI {
     }
 
     setupBridge() {
-        if (window.api) { return }
+        if (window.api && !window.api.preloaded) { return }
 
         window.api = {
             "edition": "web",
@@ -241,3 +241,10 @@ export default class ThinkMachineAPI {
 }
 
 ThinkMachineAPI.EMPTY_UUID = "00000000-0000-0000-0000-000000000000";
+
+window.api = {
+    "edition": "web",
+    isWeb: true,
+    isElectron: false,
+    preloaded: true,
+};

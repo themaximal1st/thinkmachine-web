@@ -45,7 +45,7 @@ export default class App extends React.Component {
             showConsole: false,
             showLicense: false,
             showSettingsMenu: false,
-            showLLMSettings: false,
+            showLLMSettings: true,
             showLayout: false,
             showLabsWarning: false,
             showChat: false,

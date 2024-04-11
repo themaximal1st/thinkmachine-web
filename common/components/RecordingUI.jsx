@@ -26,6 +26,7 @@ export default function RecordingUI(props) {
     const [recordType, setRecordType] = useState("record");
 
     const onClose = () => props.toggleShowRecordingModal(false);
+
     return (
         <>
             {props.showRecordingModal && (
@@ -41,6 +42,7 @@ export default function RecordingUI(props) {
                     <div className="flex gap-4 my-2 mb-8">
                         {videos.map((video) => (
                             <RecordingShot
+                                key={`video-${video.type}`}
                                 video={video}
                                 recordType={recordType}
                                 setRecordType={setRecordType}
