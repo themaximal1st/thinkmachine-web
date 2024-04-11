@@ -49,6 +49,7 @@ export default class App extends React.Component {
             showLayout: false,
             showLabsWarning: false,
             showChat: false,
+            showRecordingModal: true,
 
             licenseKey: "",
             licenseValid: undefined,
@@ -714,6 +715,12 @@ export default class App extends React.Component {
         this.setState({ showLabsWarning });
     }
 
+    toggleVideoRecordingModal(val) {
+        const showRecordingModal =
+            val === undefined ? !this.state.showRecordingModal : val;
+        this.setState({ showRecordingModal });
+    }
+
     toggleShowLayout(val) {
         const showLayout = val === undefined ? !this.state.showLayout : val;
         this.setState({ showLayout });
@@ -1098,6 +1105,9 @@ ${hyperedges}`;
             }
             if (this.state.showLayout) {
                 this.toggleShowLayout();
+            }
+            if (this.state.showRecordingModal) {
+                this.toggleVideoRecordingModal();
             }
         }
 
@@ -1499,9 +1509,15 @@ ${hyperedges}`;
                     setCooldownTicks={(cooldownTicks) => {
                         this.setState({ cooldownTicks });
                     }}
-                    toggleRecord={this.toggleRecord.bind(this)}
+                    toggleVideoRecordingModal={this.toggleVideoRecordingModal.bind(
+                        this
+                    )}
                 />
                 <RecordingUI
+                    showRecordingModal={this.state.showRecordingModal}
+                    toggleVideoRecordingModal={this.toggleVideoRecordingModal.bind(
+                        this
+                    )}
                     isRecording={this.state.isRecording}
                     isProcessing={this.state.isProcessing}
                     stopRecord={this.stopRecord.bind(this)}
