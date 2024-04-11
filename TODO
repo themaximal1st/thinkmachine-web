@@ -5,7 +5,12 @@
 * more blog posts / videos explaining features
 
 * bring ffmpeg to electron
+
 * electron release
+
+* web
+  * rate limit
+  * pro -> HD/long video renderings
 
 * marketing
 * full launch
@@ -30,7 +35,6 @@
 * depth needs a lot of work
 * reduce cases of isWeb & isElectron...make services
 * changelog / in repo and on website
-* rate limit
 
 * Add githook to check versions are the same?
 
