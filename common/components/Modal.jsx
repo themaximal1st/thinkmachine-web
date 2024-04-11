@@ -3,6 +3,7 @@ import React, { useEffect } from "react";
 
 export function ModalBackground(props) {
     const onClose = props.onClose || (() => {});
+    const opacity = typeof props.opacity !== "undefined" ? props.opacity : 90;
 
     useEffect(() => {
         const handleEsc = (event) => {
@@ -27,7 +28,7 @@ export function ModalBackground(props) {
     return (
         <div
             onClick={handleClickOff}
-            className="modal-bg bg-black/80 absolute inset-0 z-50 text-white flex justify-center items-center">
+            className={`modal-bg bg-black/${opacity} absolute inset-0 z-50 text-white flex justify-center items-center`}>
             {props.children}
         </div>
     );

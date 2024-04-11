@@ -1,4 +1,5 @@
 import { useState } from "react";
+import * as Icons from "@assets/Icons";
 
 // TODO: Add save as defaults
 // TODO: Add reset
@@ -62,7 +63,13 @@ export default function LayoutSettings(params) {
         <div
             className="absolute top-0 right-0 bottom-0 w-3/12 bg-gray-1000/60 z-40 p-6 text-gray-300 flex flex-col gap-4"
             id="layout-settings">
-            <div className="uppercase text-sm select-none tracking-widest font-medium text-gray-200">
+            <a
+                className="cursor-pointer absolute top-5 right-5 font-bold opacity-80 hover:opacity-100 transition-all"
+                onClick={() => params.toggleShowLayout(false)}>
+                {Icons.CloseIcon()}
+            </a>
+            <div className="uppercase text-sm select-none tracking-widest font-medium text-gray-200 flex items-center gap-2">
+                {Icons.LayoutIcon}
                 Layout Settings
             </div>
             <label className="flex flex-col gap-1">
@@ -138,14 +145,6 @@ export default function LayoutSettings(params) {
                     onChange={(e) => handleCooldownTicks(e)}
                 />
             </label>
-            <div className="grow"></div>
-            <div>
-                <button
-                    onClick={() => params.toggleShowLayout()}
-                    className="bg-gray-800 hover:bg-gray-700 text-gray-300 px-4 py-2 rounded-md">
-                    Close
-                </button>
-            </div>
         </div>
     );
 }

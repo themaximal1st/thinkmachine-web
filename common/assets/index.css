@@ -60,7 +60,7 @@ body {
 }
 
 .fan-left .menu-item {
-    @apply pointer-events-auto text-gray-400 hover:text-gray-50  bg-gray-1000/50 hover:bg-gray-1000 transition-all p-2 opacity-0 inline-flex items-center gap-2 hover:cursor-pointer flex-none self-start rounded-lg text-sm;
+    @apply pointer-events-auto text-gray-200 hover:text-gray-50  bg-gray-800/50 hover:bg-gray-500/50 transition-all p-2 opacity-0 inline-flex items-center gap-2 hover:cursor-pointer flex-none self-start rounded-lg text-sm pr-4;
 }
 
 .fan-left .menu-item:nth-child(1) {
@@ -88,7 +88,7 @@ body {
 }
 
 #layout-settings input {
-    @apply accent-gray-400;
+    @apply accent-purple-500;
 }
 
 .react-draggable {

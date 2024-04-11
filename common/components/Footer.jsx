@@ -3,6 +3,7 @@ import * as Icons from "@assets/Icons";
 
 import LayoutSettings from "./LayoutSettings";
 import LabsWarning from "./LabsWarning";
+import SettingsMenu from "./SettingsMenu";
 
 export default function Footer(params) {
     function handleToggleWormhole() {
@@ -13,107 +14,32 @@ export default function Footer(params) {
         }
     }
 
-    let isWeb = false;
-    if (params.loaded) {
-        isWeb = window.api.isWeb;
-    }
+    const isWeb = window.api.isWeb;
 
     return (
         <div>
+            <SettingsMenu {...params} />
             <div className="relative pointer-events-none">
                 <div className="absolute text-white bottom-2 left-3 right-3 z-50 flex gap-4 pointer-events-none justify-between items-center">
                     <div className="flex gap-4 items-center">
-                        <div className="relative">
-                            {params.showSettingsMenu && (
-                                <div
-                                    className="pointer-events-none absolute -left-5 bottom-10 w-96 flex flex-col-reverse gap-1 lg:gap-4 p-2 lg:text-lg fan-left"
-                                    id="settings-menu">
-                                    {isWeb &&
-                                        params.edited &&
-                                        params.hyperedges.length > 0 && (
-                                            <a
-                                                onClick={(e) => params.handleDownload()}
-                                                className="menu-item">
-                                                <div>{Icons.SaveIcon}</div>
-                                                Save
-                                            </a>
-                                        )}
-                                    {isWeb && params.edited && (
-                                        <a
-                                            onClick={(e) => (window.location.href = "/")}
-                                            className="menu-item">
-                                            <div>{Icons.NewIcon}</div>
-                                            New
-                                        </a>
-                                    )}
-
-                                    {isWeb && (
-                                        <a
-                                            onClick={() => {
-                                                console.log("load");
-                                            }}
-                                            className="menu-item">
-                                            <div>{Icons.LoadIcon}</div>
-                                            Load
-                                        </a>
-                                    )}
-
-                                    <a
-                                        onClick={() => params.toggleLLMSettings()}
-                                        className="menu-item">
-                                        <div>{Icons.GenerateIcon(6)}</div>
-                                        AI Settings
-                                    </a>
-                                    <a
-                                        onClick={() => params.toggleShowLayout()}
-                                        className="menu-item">
-                                        <div>{Icons.LayoutIcon}</div>
-                                        Layout
-                                    </a>
-                                    {false && (
-                                        <a
-                                            onClick={handleToggleWormhole}
-                                            className="menu-item">
-                                            <div>{Icons.LabIcon}</div>
-                                            Labs
-                                        </a>
-                                    )}
-
-                                    {isWeb && params.edited && (
-                                        <a
-                                            onClick={() => {
-                                                params.toggleSettingsMenu(false);
-                                                params.toggleShowRecordingModal();
-                                            }}
-                                            className="menu-item">
-                                            <div>{Icons.RecordIcon()}</div>
-                                            Record Video
-                                        </a>
-                                    )}
-
-                                    {!isWeb && (
-                                        <a
-                                            onClick={params.toggleLicenseWindow}
-                                            className="menu-item">
-                                            <div>{Icons.LicenseIcon(6)}</div>
-                                            License
-                                        </a>
-                                    )}
-                                </div>
-                            )}
-                            {!params.shouldHideControls && (
-                                <a
-                                    onClick={() => params.toggleSettingsMenu()}
-                                    title="Settings"
-                                    id="settings-icon"
-                                    className="select-none opacity-40 hover:opacity-100 transition-all cursor-pointer pointer-events-auto">
-                                    {Icons.SettingsIcon(6)}
-                                </a>
-                            )}
-                        </div>
+                        {!params.shouldHideControls && (
+                            <a
+                                onClick={() => params.toggleSettingsMenu()}
+                                title="Settings"
+                                id="settings-icon"
+                                className={`select-none hover:opacity-100 transition-all cursor-pointer pointer-events-auto
+                                    ${
+                                        params.showSettingsMenu
+                                            ? "opacity-60"
+                                            : "opacity-40"
+                                    }
+                                    `}>
+                                {Icons.SettingsIcon(9, 2)}
+                            </a>
+                        )}
                         {isWeb && !params.shouldHideControls && (
                             <a
-                                className="text-sm lg:text- text-white opacity-50 hover:opacity-100 transition-all cursor-pointer mb-1 pointer-events-auto"
+                                className="text-sm lg:text-lg text-white opacity-50 hover:opacity-100 transition-all cursor-pointer mb-1 pointer-events-auto"
                                 href="https://thinkmachine.com/download">
                                 Download{" "}
                                 <span className="select-none hidden lg:inline">

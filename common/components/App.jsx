@@ -45,7 +45,7 @@ export default class App extends React.Component {
             showConsole: false,
             showLicense: false,
             showSettingsMenu: false,
-            showLLMSettings: true,
+            showLLMSettings: false,
             showLayout: false,
             showLabsWarning: false,
             showChat: false,
@@ -1009,30 +1009,6 @@ ${hyperedges}`;
 
     handleMouseDown(e) {
         this.animation.interact();
-        this.handleCloseSettingsMenu(e);
-    }
-
-    // TODO: turn to modal background
-    handleCloseSettingsMenu(e) {
-        if (this.state.showSettingsMenu) {
-            const target = e.target;
-            if (target) {
-                const parent = target.parentElement;
-                if (parent) {
-                    if (
-                        parent.id === "settings-menu" ||
-                        parent.id === "settings-icon" ||
-                        parent.parentElement.id === "settings-icon" ||
-                        parent.parentElement.parentElement.id === "settings-icon"
-                    ) {
-                        e.preventDefault();
-                        return;
-                    }
-                }
-            }
-
-            this.setState({ showSettingsMenu: false });
-        }
     }
 
     handleMouseUp(e) {
@@ -1046,28 +1022,11 @@ ${hyperedges}`;
             this.setState({ isShiftDown: true });
         }
 
-        /*
         if (e.key === "Escape") {
-            if (this.state.showLLMSettings) {
-                this.toggleLLMSettings();
-            }
-            if (this.state.showSettingsMenu) {
-                this.toggleSettingsMenu();
-            }
             if (this.state.showConsole) {
                 this.toggleConsole();
             }
-            if (this.state.showLabsWarning) {
-                this.toggleShowLabsWarning();
-            }
-            if (this.state.showLayout) {
-                this.toggleShowLayout();
-            }
-            if (this.state.showRecordingModal) {
-                this.toggleShowRecordingModal();
-            }
         }
-        */
 
         if (e.key === "1" && e.metaKey) {
             this.updateInputMode("add");

@@ -1,16 +1,15 @@
 * double check flyby zoom works in other camera positions
 * auto switch to fly in zoom mode..auto switch out
 
-* free type doesn't work
-* create UI for video recorder
 * get screenshot working again
+
+
 * video recorder blog post
 * update docs
 * update main website (chat, video export, testimonials)
 * more blog posts / videos explaining features
 
 * bring ffmpeg to electron
-
 * electron release
 
 * web
