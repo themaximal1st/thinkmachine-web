@@ -1,14 +1,6 @@
 // TODO: Max size
 import { blobToBase64, base64ToBlob } from "@lib/utils";
-
-const bps = {
-    "4K": 40000000,
-    "2K": 16000000,
-    "1080p": 8000000,
-    "720p": 5000000,
-    "480p": 2500000,
-    "360p": 1000000
-};
+import * as services from "@src/services";
 
 export default class Record {
     constructor(canvas = null, options = {}) {
@@ -19,8 +11,10 @@ export default class Record {
         }
 
         this.fps = options.fps || 30;
-        this.bps = options.bps || bps["4K"];
-        this.mimetype = options.mimetype || "video/webm";
+        this.bps = options.bps || 1024 * 1024 * 50;
+        // this.mimetype = options.mimetype || "video/webm";
+        this.mimetype = options.mimetype || 'video/webm; codecs=vp9';
+
 
         this.onstart = options.onstart || async function () { };
         this.onstop = options.onstop || async function () { };
@@ -55,7 +49,7 @@ export default class Record {
 
         this.recorder = new MediaRecorder(this.stream, {
             mimetype: this.mimetype,
-            "bitspersecond": this.bps
+            bitsPerSecond: 50 * 1024 * 1024,
         });
 
         this.recorder.addEventListener("start", this.handleStart.bind(this), false);
@@ -96,6 +90,9 @@ export default class Record {
         await this.onprocess();
 
         const webmBlob = new Blob(this.chunks, { "type": this.chunks[0].type });
+
+        // await services.saveFile(webmBlob, `file.webm`, "video/webm");
+
         const webmBuffer = await blobToBase64(webmBlob);
 
         try {

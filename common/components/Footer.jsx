@@ -95,11 +95,11 @@ export default function Footer(params) {
                                     )}
 
                                     <a
-                                        onClick={params.takeScreenshot}
+                                        onClick={() => params.toggleRecord()}
                                         className="menu-item"
                                     >
-                                        <div>{Icons.LabIcon}</div>
-                                        Screenshot
+                                        <div>{Icons.RecordIcon()}</div>
+                                        Record Video
                                     </a>
 
                                     {!isWeb && (

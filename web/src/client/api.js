@@ -5,6 +5,8 @@ export default class ThinkMachineAPI {
     BASE_API_URL = "http://localhost:3000/api";
 
     constructor(uuid, options = {}) {
+        this.options = options;
+
         this.uuid = uuid;
         if (!this.uuid) throw new Error("missing uuid");
 
@@ -126,10 +128,9 @@ export default class ThinkMachineAPI {
 
     async generateWormhole(hyperedges, options) {
         if (!this.isValid) return;
-        const timeout = this.timeout;
         this.timeout = this.timeout * 4;
         await this.send("hyperedges/wormhole", { hyperedges, ...options });
-        this.timeout = timeout;
+        this.timeout = this.options.timeout || 10000;
     }
 
     async *generateHyperedges(input, options) {
@@ -162,7 +163,10 @@ export default class ThinkMachineAPI {
     }
 
     async webmToMp4(buffer) {
-        return await this.send("convert/webmToMp4", { buffer });
+        this.timeout = this.timeout * 10;
+        const response = await this.send("convert/webmToMp4", { buffer });
+        this.timeout = this.options.timeout || 10000;
+        return response;
     }
 
     setupBridge() {

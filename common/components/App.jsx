@@ -320,6 +320,22 @@ export default class App extends React.Component {
         await Recorder.takeScreenshot(this.slug);
     }
 
+    async recordOrbitVideo() {
+        if (this.recorder.recording) {
+            console.log("already recording");
+            return;
+        }
+
+        this.recorder.start();
+
+        this.animation.start(() => {
+            this.recorder.stop();
+            this.setState({ isAnimating: false });
+        });
+
+        this.setState({ isAnimating: true });
+    }
+
     async recordVideo() {
         if (this.recorder.recording) {
             console.log("already recording");
@@ -669,6 +685,8 @@ export default class App extends React.Component {
 
     toggleRecord(val) {
         const isRecording = val === undefined ? !this.state.isRecording : val;
+
+        console.log("TOGGLE RECORD", val);
 
         this.setState({ isRecording }, () => {
             if (this.state.isRecording) {
@@ -1034,6 +1052,7 @@ ${hyperedges}`;
     }
 
     handleZoom() {
+        console.log("ZOOM");
         this.animation.pause();
         this.animation.resume();
     }
@@ -1107,6 +1126,8 @@ ${hyperedges}`;
             e.preventDefault();
         } else if (e.key === "F1") {
             this.toggleRecord();
+        } else if (e.key === "F2") {
+            this.recordOrbitVideo();
         } else if (e.key === "Tab") {
             this.toggleInterwingle(undefined, e.shiftKey);
             e.preventDefault();
@@ -1484,6 +1505,7 @@ ${hyperedges}`;
                         this.setState({ cooldownTicks });
                     }}
                     takeScreenshot={this.takeScreenshot.bind(this)}
+                    toggleRecord={this.toggleRecord.bind(this)}
                 />
                 <RecordingUI
                     isRecording={this.state.isRecording}

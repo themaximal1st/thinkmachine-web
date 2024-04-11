@@ -6,11 +6,15 @@ export default class Animation {
         this.animationInterval = null;
     }
 
-    start() {
+    start(callback = null) {
         const initialPosition = this.graphRef.current.cameraPosition();
         this.distance = Math.sqrt(Math.pow(-5, 2) + Math.pow(-500, 2)); // Set the initial distance
         this.angle = Math.atan2(-5, -500); // Set the initial angle
         this.initialY = initialPosition.y; // Store the initial Y-coordinate
+
+        let originalAngle = null;
+        let stop = false;
+        let isLessThan = false;
 
         const updateCameraPosition = () => {
             if (this.isPausing || this.isInteracting) {
@@ -37,8 +41,24 @@ export default class Animation {
             }
 
             // Increment the angle for the animation
-            this.angle += Math.PI / 1000;
+            this.angle += Math.PI / 100;
             this.angle %= 2 * Math.PI; // Normalize the angle
+
+            if (callback) {
+                if (originalAngle === null) {
+                    originalAngle = this.angle;
+                } else {
+                    if (this.angle < originalAngle) {
+                        isLessThan = true;
+                    }
+
+                    if (isLessThan && this.angle >= originalAngle) {
+                        this.angle = originalAngle;
+                        stop = true;
+                        callback(this.angle);
+                    }
+                }
+            }
 
             // Update camera position
             this.graphRef.current.cameraPosition({
@@ -46,6 +66,10 @@ export default class Animation {
                 y: this.initialY, // Use the updated Y-coordinate
                 z: this.distance * Math.cos(this.angle),
             });
+
+            if (stop) {
+                this.stop();
+            }
         };
 
         this.animationInterval = setInterval(updateCameraPosition, 33); // About 30 FPS
@@ -78,7 +102,7 @@ export default class Animation {
         this.isPausing = true;
     }
 
-    resume(interval = 1000) {
+    resume(interval = 0) {
         if (this.resumeAnimationInterval) return;
 
         this.resumeAnimationInterval = setTimeout(() => {
