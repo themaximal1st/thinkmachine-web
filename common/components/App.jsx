@@ -49,7 +49,7 @@ export default class App extends React.Component {
             showLayout: false,
             showLabsWarning: false,
             showChat: false,
-            showRecordingModal: false,
+            showRecordingModal: true,
 
             licenseKey: "",
             licenseValid: undefined,
@@ -715,7 +715,7 @@ export default class App extends React.Component {
         this.setState({ showLabsWarning });
     }
 
-    toggleVideoRecordingModal(val) {
+    toggleShowRecordingModal(val) {
         const showRecordingModal =
             val === undefined ? !this.state.showRecordingModal : val;
         this.setState({ showRecordingModal });
@@ -1057,6 +1057,7 @@ ${hyperedges}`;
         this.handleCloseSettingsMenu(e);
     }
 
+    // TODO: turn to modal background
     handleCloseSettingsMenu(e) {
         if (this.state.showSettingsMenu) {
             const target = e.target;
@@ -1066,7 +1067,9 @@ ${hyperedges}`;
                     if (
                         parent.id === "settings-menu" ||
                         parent.id === "settings-icon" ||
-                        parent.parentElement.id === "settings-icon"
+                        parent.parentElement.id === "settings-icon" ||
+                        parent.parentElement.parentElement.id ===
+                            "settings-icon"
                     ) {
                         e.preventDefault();
                         return;
@@ -1089,6 +1092,7 @@ ${hyperedges}`;
             this.setState({ isShiftDown: true });
         }
 
+        /*
         if (e.key === "Escape") {
             if (this.state.showLLMSettings) {
                 this.toggleLLMSettings();
@@ -1106,9 +1110,10 @@ ${hyperedges}`;
                 this.toggleShowLayout();
             }
             if (this.state.showRecordingModal) {
-                this.toggleVideoRecordingModal();
+                this.toggleShowRecordingModal();
             }
         }
+        */
 
         if (e.key === "1" && e.metaKey) {
             this.updateInputMode("add");
@@ -1526,13 +1531,13 @@ ${hyperedges}`;
                     setCooldownTicks={(cooldownTicks) => {
                         this.setState({ cooldownTicks });
                     }}
-                    toggleVideoRecordingModal={this.toggleVideoRecordingModal.bind(
+                    toggleShowRecordingModal={this.toggleShowRecordingModal.bind(
                         this
                     )}
                 />
                 <RecordingUI
                     showRecordingModal={this.state.showRecordingModal}
-                    toggleVideoRecordingModal={this.toggleVideoRecordingModal.bind(
+                    toggleShowRecordingModal={this.toggleShowRecordingModal.bind(
                         this
                     )}
                     isRecording={this.state.isRecording}

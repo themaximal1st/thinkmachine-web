@@ -100,7 +100,7 @@ export default function Footer(params) {
                                                 params.toggleSettingsMenu(
                                                     false
                                                 );
-                                                params.toggleVideoRecordingModal();
+                                                params.toggleShowRecordingModal();
                                             }}
                                             className="menu-item"
                                         >

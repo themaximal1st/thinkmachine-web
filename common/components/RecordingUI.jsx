@@ -9,7 +9,19 @@ import FlyByVideo from "@assets/videos/flyby.mp4";
 import ZoomVideo from "@assets/videos/zoom.mp4";
 import RecordVideo from "@assets/videos/record.mp4";
 
+import { Modal } from "@components/Modal";
+
 export default function RecordingUI(params) {
+    if (!params.showRecordingModal) {
+        return;
+    }
+
+    const onClose = () => params.toggleShowRecordingModal(false);
+
+    return (
+        <Modal onClose={onClose}>Hey there this is a modal background!</Modal>
+    );
+
     if (
         !params.isRecording &&
         !params.isProcessing &&
