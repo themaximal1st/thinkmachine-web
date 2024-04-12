@@ -73,6 +73,7 @@ export async function getAdminDashboardContent() {
     });
 
 
+    /*
     // event data
     content += "<h2>Event Data in Last 36 Hours</h2>";
     content += "<ul>";
@@ -85,6 +86,7 @@ export async function getAdminDashboardContent() {
     });
 
     content += "</ul>";
+    */
 
 
     return content;
