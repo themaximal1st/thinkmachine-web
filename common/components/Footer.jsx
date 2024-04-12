@@ -39,7 +39,7 @@ export default function Footer(params) {
                         )}
                         {isWeb && !params.shouldHideControls && (
                             <a
-                                className="text-sm lg:text-lg text-white opacity-50 hover:opacity-100 transition-all cursor-pointer mb-1 pointer-events-auto"
+                                className="text-sm lg:text-base text-white opacity-50 hover:opacity-100 transition-all cursor-pointer mb-1 pointer-events-auto"
                                 href="https://thinkmachine.com/download">
                                 Download{" "}
                                 <span className="select-none hidden lg:inline">
