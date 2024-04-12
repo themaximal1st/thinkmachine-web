@@ -32,7 +32,7 @@ export default function RecordingUI(props) {
             {props.showRecordingModal && (
                 <Modal onClose={onClose}>
                     <div className="flex flex-col gap-4">
-                        <div>
+                        <div className="flex flex-col gap-2">
                             <h1 className="font-bold font-green-500 flex gap-2 items-center uppercase tracking-widest">
                                 <div className="w-6 h-6">{Icons.RecordIcon()}</div>
                                 Record Video
@@ -61,6 +61,40 @@ export default function RecordingUI(props) {
                         {recordType !== "record" && (
                             <div>Recording will stop automatically when complete.</div>
                         )}
+
+                        <div className="my-4">
+                            <div className="mb-2">Format</div>
+                            <div className="flex items-center mb-4">
+                                <input
+                                    id="default-radio-1"
+                                    type="radio"
+                                    checked={props.videoType === "webm"}
+                                    onChange={() => props.toggleVideoType("webm")}
+                                    name="default-radio"
+                                    className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 hover:cursor-pointer"
+                                />
+                                <label
+                                    htmlFor="default-radio-1"
+                                    className="ms-2 text-sm font-medium text-gray-50 hover:cursor-pointer">
+                                    webm (fast processing time)
+                                </label>
+                            </div>
+                            <div className="flex items-center">
+                                <input
+                                    id="default-radio-2"
+                                    type="radio"
+                                    checked={props.videoType === "mp4"}
+                                    onChange={() => props.toggleVideoType("mp4")}
+                                    name="default-radio"
+                                    className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 hover:cursor-pointer"
+                                />
+                                <label
+                                    htmlFor="default-radio-2"
+                                    className="ms-2 text-sm font-medium text-gray-50 hover:cursor-pointer">
+                                    mp4 (slow processing time)
+                                </label>
+                            </div>
+                        </div>
                         <button
                             onClick={() => {
                                 onClose();

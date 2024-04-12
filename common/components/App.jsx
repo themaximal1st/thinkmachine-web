@@ -65,6 +65,7 @@ export default class App extends React.Component {
 
             graphType: window.localStorage.getItem("graphType") || "3d",
             controlType: window.localStorage.getItem("controlType") || "orbit",
+            videoType: window.localStorage.getItem("videoType") || "webm",
 
             hideLabelsThreshold: 1000,
             hideLabels: true,
@@ -315,6 +316,7 @@ export default class App extends React.Component {
             return;
         }
 
+        this.recorder.videoType = this.state.videoType;
         this.recorder.start();
     }
 
@@ -632,6 +634,13 @@ export default class App extends React.Component {
     // TOGGLE
     //
 
+    toggleVideoType(val) {
+        const videoType =
+            val === undefined ? (this.state.videoType === "webm" ? "mp4" : "webm") : val;
+        localStorage.setItem("videoType", videoType);
+        this.setState({ videoType });
+    }
+
     toggleRecord(val) {
         const isRecording = val === undefined ? !this.state.isRecording : val;
 
@@ -826,7 +835,18 @@ export default class App extends React.Component {
             return;
         }
 
-        services.saveFile(blob, `${this.slug}.mp4`, "video/mp4");
+        let extension;
+        let mimeType;
+
+        if (this.recorder.videoType === "webm") {
+            extension = "webm";
+            mimeType = "video/webm";
+        } else {
+            extension = "mp4";
+            mimeType = "video/mp4";
+        }
+
+        services.saveFile(blob, `${this.slug}.${extension}`, mimeType);
         toast.success("Saved!");
         this.setState({ isRecording: false, isProcessing: false });
 
@@ -1431,6 +1451,8 @@ ${hyperedges}`;
                 <RecordingUI
                     showRecordingModal={this.state.showRecordingModal}
                     toggleShowRecordingModal={this.toggleShowRecordingModal.bind(this)}
+                    videoType={this.state.videoType}
+                    toggleVideoType={this.toggleVideoType.bind(this)}
                     isRecording={this.state.isRecording}
                     isProcessing={this.state.isProcessing}
                     handleStartRecording={this.handleStartRecording.bind(this)}

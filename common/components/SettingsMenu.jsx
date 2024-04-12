@@ -36,7 +36,7 @@ export default function SettingsMenu(props) {
 
     return (
         <ModalBackground onClose={onClose} opacity={0}>
-            <div className="absolute -left-5 bottom-14 w-96 flex flex-col-reverse gap-1 lg:gap-4 p-2 lg:text-lg fan-left">
+            <div className="absolute left-4 bottom-14 w-96 flex flex-col-reverse gap-1 lg:gap-4 p-2 lg:text-lg fan-left">
                 {isWeb && props.edited && props.hyperedges.length > 0 && (
                     <a onClick={onSave} className="menu-item">
                         <div>{Icons.SaveIcon}</div>

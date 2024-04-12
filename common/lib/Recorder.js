@@ -11,8 +11,8 @@ export default class Recorder {
 
         this.fps = options.fps || 30;
         this.bps = options.bps || 1024 * 1024 * 50;
-        // this.mimetype = options.mimetype || "video/webm";
-        this.mimetype = options.mimetype || 'video/webm; codecs=vp9';
+        this.mimetype = options.mimetype || "video/webm";
+        this.videoType = options.videoType || "webm";
 
 
         this.onstart = options.onstart || async function () { };
@@ -44,7 +44,6 @@ export default class Recorder {
         }
 
         this.stream = this.canvas.captureStream(this.fps);
-
 
         this.recorder = new MediaRecorder(this.stream, {
             mimetype: this.mimetype,
@@ -90,7 +89,10 @@ export default class Recorder {
 
         const webmBlob = new Blob(this.chunks, { "type": this.chunks[0].type });
 
-        // await services.saveFile(webmBlob, `file.webm`, "video/webm");
+        if (this.videoType === "webm") {
+            await this.onfile(webmBlob);
+            return;
+        }
 
         const webmBuffer = await blobToBase64(webmBlob);
 
