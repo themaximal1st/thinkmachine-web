@@ -77,7 +77,7 @@ export default class RecorderShots {
 
             app.graphRef.current.cameraPosition({ x, y, z }, null, 500);
 
-            await delay(1000);
+            await utils.delay(1000);
 
             let interval = setInterval(async () => {
                 const cameraPosition = app.graphRef.current.cameraPosition();
