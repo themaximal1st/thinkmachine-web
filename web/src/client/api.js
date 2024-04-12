@@ -163,7 +163,7 @@ export default class ThinkMachineAPI {
     }
 
     async webmToMp4(buffer) {
-        this.timeout = this.timeout * 10;
+        this.timeout = 10 * 60 * 1000;
         const response = await this.send("convert/webmToMp4", { buffer });
         this.timeout = this.options.timeout || 10000;
         return response;
