@@ -11,7 +11,9 @@ export default class Recorder {
 
         this.fps = options.fps || 30;
         this.bps = options.bps || 1024 * 1024 * 50;
-        this.mimetype = options.mimetype || "video/webm";
+        // this.mimetype = options.mimetype || "video/webm";
+        this.mimetype = options.mimetype || "video/webm; codecs=vp9";
+
         this.videoType = options.videoType || "webm";
 
 
