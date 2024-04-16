@@ -1,168 +1,93 @@
-* auto search is broken?
-
-* video recorder blog post
-* update docs
-* update main website (chat, video export, testimonials)
-* more blog posts / videos explaining features
-
-* bring ffmpeg to electron
-* electron release
-
-* web
-  * rate limit
-  * pro -> HD/long video renderings
-
-* marketing
-* full launch
-
-* Keyboard shortcut menu
-* Amplitude Analytics
-
-* cac.app — enter email placeholder, little more UI improvement
-
-* get menu working
+* Rate limits
+* Electron release
+* Cleanup
+ - app.jsx refactor (dependency injection)
+ - Simplify bridge sync/async concept between electron + web. should have same interface on both
 
 
-* NEEDS IMPLEMENTING
-  * electron: wormhole
-  * electron: scraping -> proxy api key?
+* BUGS
+- Recorder should product videos you can upload to social media sites
+- depth needs a lot of work
+
+* UX IMPROVEMENTS
+- easier to delete a node...right click menu options? rename? add to context?
+- tilde key is confusing...need an easier way to edit data. remove console?
+- Keyboard shortcut menu
+- ask before quitting if unsaved changes
+
+* WEBSITE
+- Better docs
+- track custom data on purchase for attribution
+- paddle SaaS integration
+- redo pricing page to show all options (open source, desktop, web, saas)
+- Add Testimonials
+- have a bunch of embeddable examples on home page, let people click and see what's interesting..maybe don't make the default generate?
+  - full screen mode
+  - embed think machine above the fold in thinkmachine.com?
+
+* MARKETING
+- Recorder
+- Auto Search
+- Update marketing video with new features
+- Full Launch
+- cac.app — enter email placeholder, little more UI improvement
+- changelog / in repo and on website
+- ads
+
+* WEB
+- Amplitude Analytics
+- Rate limits
+- Sign up for higher limits
+- Pay for higher limits
+- pro -> HD/long video renderings
+- pro -> modify prompt
+- pro -> modify colors
+- pro -> private knowledge graphs
 
 
-* CLEANUP
-  * massive refactor
-   * dependency injection via Services
-  * tests
-* depth needs a lot of work
-* reduce cases of isWeb & isElectron...make services
-* changelog / in repo and on website
+* ELECTRON
+- FFMPEG encoder
+- electron: scraping -> proxy api key?
 
-* Add githook to check versions are the same?
-
-
-* Shared README
-* Can we create a package.json in common and not have it mess up?
-  * If so, create shared scripts, npm run desktop, npm run web
-* Depth is still messed up. If you go down depth, it loses maxDepth
-
-* Hold shift while clicking changes current context to be that context
-
-
----
-
-**Common**
-
-
-
-**Electron**
-
-* license
-* Update README
-* Make desktop version work with 1-click ModelDeployer rate limited tokens
+* FUTURE
+- Hold shift while clicking changes current context to be that context
+- (maybe?) Make desktop version work with 1-click ModelDeployer rate limited tokens
+- console needs work
+ - should be able to edit it
+ - should be able to load context up from an existing item (continue it)
+ - delete an individual data item
+ - add a data item
+ - edit
+ - should be really simple. textarea with csv?
+- obsidian / json canvas
+- notes, add text to a node
+- label a hyperedge
+- Onboarding video linked
+- Click to focus on a node
+ - perfect place to display more information and context about what you're reading
+ - should be able to navigate through hypergraph like this with keyboard or mouse
+    - ...next, next next would be a cool recorder visualization too
 
 
-**Web Version**
-
-* rate limit (based on guid & ip)
-* premium version
-  - paddle SaaS integration
-  - redo pricing page to show all options (open source, desktop, web, saas)
-  - unlimited generations
-  - customize prompt
-  - more LLMs
-  - private knowledge graphs
-* different keyboard shortucts, should desktop change too?
-* Update README
-
-
-**Deploy**
-
-* Update github repos
-* Update Open-Source links on website
-* Deploy website
-* Copy over release from thinkmachine to thinkmachine-web before you rename back to thinkmachine
-* Release update
-* update ads
-
-
-
-**Website**
-
- - Add Testimonials
- - Landing Page
-   - Should app.thinkmachine.com become thinkmachine.com? and just move the marketing site to /about? /desktop
-   - have a bunch of examples on home page, let people click and see what's interesting..maybe don't make the default generate?
-    - full screen mode
-    - embed think machine above the fold in thinkmachine.com?
-
-
-
-
-
-**Near-future**
-
-* Simplify bridge sync/async concept between electron + web. should have same interface on both
-
-* Thinkable Type should have new concept of mini bridge, a two-item hyperedge, A->B or a double bridge A -> B && B -> A. These shouldn't use typical bridges, but confluence bridges to make the graph smaller.
-
-* console needs work
- * should be able to edit it
- * should be able to load context up from an existing item (continue it)
- * delete an individual data item
- * add a data item
- * edit
- * should be really simple. textarea with csv?
-
-* URL scraping should be very accurate. we don't want to generate too much, just take from what's there. needs new prompt
-  * PDFs extraction -> scraping web
-* obsidian / json canvas
-* notes, add text to a node. what about a hyperedge?
-* Improve Onboarding
-  * Onboarding video linked
-* easy to to render an image from CSV...people just want to do cool visualization pictures
-
-* QUESTION: should adding data should really add a filter..otherwise you can't see what you just added
-  * perhaps we just zoom the camera to make sure we can see that position?
-
-* ask before quitting if unsaved changes
-
-* Click to focus, should be able to navigate through hypergraph like this with keyboard or mouse
- * perfect place to display more information and context about what you're reading
-* Emit link particles to see how things flow through the graph
-
-
-**Future**
-* There's an opportunity to make updates even smoother
- * Issue is switching from Isolated -> Confluence, the node IDs actually change
- * If there was a way to grab it's old node ID, that may or may not work
-
-* Tool calling, have chat generate new data/search/add, based on topics
-
-* If you could update/reload/filter the Graph without reloading it all, that would be phenomenal
-* What kinds of tests could we add? Integration tests kinda suck, but app is getting complex
- * inline browser? could be useful for quickly seeing references
- * Chat integration, chat with your knowledge graph
-
+* SUPER FUTURE
+- URL scraping should be very accurate. we don't want to generate too much, just take from what's there. needs new prompt
+  - PDFs extraction -> scraping web
+- There's an opportunity to make updates even smoother
+ - Issue is switching from Isolated -> Confluence, the node IDs actually change
+ - If there was a way to grab it's old node ID, that may or may not work
+- Tool calling, have chat generate new data/search/add, based on topics
+- What kinds of tests could we add? Integration tests kinda suck, but app is getting complex
+- inline browser? could be useful for quickly seeing references
 - Google Extension...right-click any word and get a knowledge graph?
 - VR/AR would be super dope
 - collaboration, make actions async 
-- let users change colors
-- Visually connect two links
-- Label a hyperedge
-- Delete individual nodes, not just a hyperedge
 - Copy & paste nodes
 - App Stores
   - Publish to Mac App Store
   - Publish to Windows App Store
-
-
-
-**Super Future**
-
 - 360 photo
 - Clicking a node to search could/should have an alternate feature of just expanding that node out by 1 depth. with filters it makes it hard because so many pop in...but if just a few popped in (and you could easily see how many more there were down that path)
-
 - Minimap: https://github.com/vasturiano/react-force-graph/issues/490
-
 - Layout
  - Could give more specific control over sublayout
    - Line wide
@@ -172,14 +97,6 @@
    - PageRank
    - Similar Embeddings
    - more controls to manipulate
-
-- Easy way to print out mind maps
- - Export to high-res
- - Connect with website to print them
-
-
-- what would HTML -> Think Machine look like? browsing the web with think machine? 2-way links like ted nelson intended?
-
 - Background sync UI
 - linux
 - Pagerank UI
@@ -192,5 +109,4 @@
   - Pinokio Store
   - iOS App
   - Obsidian Plugin
-
 - image mode, dream machine — where nodes turn into images
