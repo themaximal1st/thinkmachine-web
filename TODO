@@ -1,13 +1,7 @@
 * Rate limits
-* Electron release
 * Cleanup
- - app.jsx refactor (dependency injection)
  - Simplify bridge sync/async concept between electron + web. should have same interface on both
 
-
-* BUGS
-- Recorder should product videos you can upload to social media sites
-- depth needs a lot of work
 
 * UX IMPROVEMENTS
 - easier to delete a node...right click menu options? rename? add to context?
@@ -45,11 +39,12 @@
 - pro -> modify colors
 - pro -> private knowledge graphs
 
-
 * ELECTRON
 - electron: scraping -> proxy api key?
 
+
 * FUTURE
+- depth needs a lot of work
 - Hold shift while clicking changes current context to be that context
 - (maybe?) Make desktop version work with 1-click ModelDeployer rate limited tokens
 - console needs work
