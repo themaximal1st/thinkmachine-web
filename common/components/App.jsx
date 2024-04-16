@@ -374,9 +374,12 @@ export default class App extends React.Component {
                 throw new Error("Hypergraph was not initialized properly");
             }
 
-            const urlPath = window.api.isWeb ? `/${uuid}` : `/`;
-
-            window.history.pushState({ urlPath }, document.title, urlPath);
+            if (window.api.isWeb) {
+                const urlPath = `/${uuid}`;
+                window.history.pushState({ urlPath }, document.title, urlPath);
+            } else {
+                window.location.href = window.location.href;
+            }
 
             return uuid;
         } catch (e) {
