@@ -69,14 +69,14 @@ ForceGraph.load = function (graphRef, graphType) {
         graphRef.current.postProcessingComposer().addPass(bloomPass);
 
         graphRef.current.d3Force("link").distance((link) => {
-            return link.length || 40;
+            return link.length || 50;
         });
 
         graphRef.current.d3Force("charge").strength((link) => {
             return -50;
         });
 
-        graphRef.current.d3Force("charge").distanceMax(100);
+        graphRef.current.d3Force("charge").distanceMax(150);
         graphRef.current.d3Force("charge").distanceMin(10);
 
         graphRef.current.d3Force("center").strength(1);

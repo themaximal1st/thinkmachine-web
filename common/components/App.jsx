@@ -11,6 +11,7 @@ import * as GraphUtils from "@lib/GraphUtils";
 import Animation from "@lib/Animation";
 import LocalSettings from "@lib/LocalSettings";
 import Recorder from "@lib/Recorder";
+import Tutorial from "@lib/Tutorial";
 
 import License from "@components/License";
 import Console from "@components/Console";
@@ -24,7 +25,7 @@ import Typer from "@components/Typer";
 import Wormhole from "@components/Wormhole.js";
 import ChatWindow from "@components/ChatWindow.jsx";
 import RecordingUI from "@components/RecordingUI.jsx";
-import RecorderShots from "../lib/RecorderShots";
+import RecorderShots from "@lib/RecorderShots";
 
 export default class App extends React.Component {
     constructor(props) {
@@ -548,42 +549,7 @@ export default class App extends React.Component {
     }
 
     async createThinkMachineTutorial() {
-        if (this.state.hyperedges.length > 0) return;
-
-        const tutorial = [
-            ["Think Machine", "mind mapping", "3D visualization"],
-            ["Think Machine", "brainstorming", "idea exploration"],
-            ["Think Machine", "knowledge graph", "information connections"],
-            ["mind mapping", "complex information", "visualization"],
-            ["mind mapping", "hierarchical structure", "limitations"],
-            ["brainstorming", "research", "idea exploration"],
-            ["knowledge graph", "hidden connections", "discovery"],
-            ["Think Machine", "students", "visual learning"],
-            ["Think Machine", "researchers", "complex data analysis"],
-            ["Think Machine", "project managers", "project roadmap"],
-            ["Think Machine", "writers", "narrative development"],
-            ["Think Machine", "entrepreneurs", "strategy planning"],
-            ["Think Machine", "teachers", "immersive learning"],
-            ["Think Machine", "designers", "information architecture"],
-            ["Think Machine", "marketers", "customer journey visualization"],
-            ["Think Machine", "healthcare professionals", "medical data visualization"],
-            ["Think Machine", "AI integration", "knowledge graph generation"],
-            ["knowledge graph", "data addition", "simple process"],
-            ["Think Machine", "search functionality", "context-based exploration"],
-            ["complex ideas", "visualization", "Think Machine"],
-            ["information research", "exploration", "Think Machine"],
-            ["idea brainstorming", "connection discovery", "Think Machine"],
-            ["Think Machine", "local application", "privacy"],
-            ["Think Machine", "cross-platform compatibility", "open-source"],
-        ];
-
-        for (const hyperedge of tutorial) {
-            const last = hyperedge.pop();
-            await window.api.hyperedges.add(hyperedge, last);
-        }
-        this.setState({ interwingle: 3, depth: Infinity }, async () => {
-            await this.reloadData({ zoom: true });
-        });
+        Tutorial(this);
     }
 
     // Function to check for collisions between the camera and nodes when wormhole is enabled
