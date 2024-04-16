@@ -4,7 +4,7 @@ import slugify from "slugify";
 import * as THREE from "three";
 
 import ThinkMachineAPI from "@src/api";
-import * as services from "@src/services";
+import { saveFile } from "@lib/files";
 import { isUUID } from "@lib/uuid";
 import * as utils from "@lib/utils";
 import * as GraphUtils from "@lib/GraphUtils";
@@ -829,7 +829,7 @@ export default class App extends React.Component {
         this.setState({ isRecording: false, isProcessing: true });
     }
 
-    handleRecorderFile(blob) {
+    async handleRecorderFile(blob) {
         if (!blob) {
             toast.error("Error recording video");
             return;
@@ -846,7 +846,7 @@ export default class App extends React.Component {
             mimeType = "video/mp4";
         }
 
-        services.saveFile(blob, `${this.slug}.${extension}`, mimeType);
+        await saveFile(blob, `${this.slug}.${extension}`, mimeType);
         toast.success("Saved!");
         this.setState({ isRecording: false, isProcessing: false });
 
@@ -985,7 +985,7 @@ ${hyperedges}`;
 
     async handleDownload() {
         const data = await window.api.hypergraph.export();
-        await services.saveFile(data, `${this.slug}.csv`, "text/csv");
+        await saveFile(data, `${this.slug}.csv`, "text/csv");
     }
 
     async handleAutoSearch() {

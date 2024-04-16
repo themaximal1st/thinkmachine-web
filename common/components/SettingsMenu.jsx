@@ -62,7 +62,7 @@ export default function SettingsMenu(props) {
                     </a>
                 )}
 
-                {isWeb && props.edited && (
+                {props.edited && (
                     <a onClick={toggleRecording} className="menu-item">
                         <div>{Icons.RecordIcon()}</div>
                         Record Video
