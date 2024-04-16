@@ -4,6 +4,8 @@ import Bridge from "@lib/bridge"
 import License from "./License.js";
 import * as settings from "./settings.js";
 
+import { webmToMp4, base64ToBuffer } from "@lib/ffmpeg.js";
+
 export default class ElectronBridge {
     constructor(app) {
         this.bridge = new Bridge();
@@ -50,6 +52,7 @@ export default class ElectronBridge {
             "hyperedges.generate": "generateHyperedges",
             "hyperedges.wormhole": "generateWormhole",
             "chat": "chat",
+            "convert.webmToMp4": "webmToMp4",
         };
 
 
@@ -93,45 +96,5 @@ export default class ElectronBridge {
     setSetting(key, value) {
         return settings.set(key, value);
     }
+
 }
-
-/*
-import * as services from "@services/index.js";
-
-export default class ElectronBridge {
-    constructor(thinkabletype, thinkmachine) {
-        this.thinkabletype = thinkabletype;
-        this.thinkmachine = thinkmachine;
-        this.uuid = null;
-
-        ipcMain.handle(
-            "hyperedges.generate",
-            this.generateHyperedges.bind(this)
-        );
-        ipcMain.handle("settings.get", this.getSetting.bind(this));
-        ipcMain.handle("settings.set", this.setSetting.bind(this));
-        ipcMain.handle("licenses.info", this.licenseInfo.bind(this));
-        ipcMain.handle("licenses.validate", this.validateLicense.bind(this));
-    }
-
-
-
-
-
-    getSetting(_, key) {
-        return settings.get(key);
-    }
-
-    setSetting(_, key, value) {
-        return settings.set(key, value);
-    }
-
-    async licenseInfo() {
-    }
-
-    static async load(thinkabletype, thinkmachine) {
-        return new Bridge(thinkabletype, thinkmachine);
-    }
-}
-
-*/

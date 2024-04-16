@@ -1,15 +1,17 @@
 import { exec } from "child_process";
 import * as uuid from "./uuid.js";
 import fs from "fs"
+import temp from "temp"
 
 // Convert webm buffer to mp4 buffer
 // ...not great. ideally could just be done in the browser, but output is webm which also isn't great
 // Expects ffmpeg to be in path
 export async function webmToMp4(buffer) {
-    const input = `/tmp/${uuid.generate()}.webm`;
+    const input = temp.path({ suffix: '.webm' });
     fs.writeFileSync(input, buffer);
 
-    const output = `/tmp/${uuid.generate()}.mp4`;
+    const output = temp.path({ suffix: '.mp4' });
+
     function cleanup() {
         if (fs.existsSync(input)) {
             fs.unlinkSync(input);
@@ -21,7 +23,7 @@ export async function webmToMp4(buffer) {
     }
 
     return new Promise((resolve, reject) => {
-        const cmd = `ffmpeg -i "${input}"  -vf "crop=trunc(iw/2)*2:trunc(ih/2)*2" -c:v libx264 -preset slow -r 60 -crf 20 -pix_fmt yuv420p -an "${output}"`
+        const cmd = `ffmpeg -i "${input}"  -vf "crop=trunc(iw/2)*2:trunc(ih/2)*2" -c:v libx264 -preset slow -r 30 -crf 20 -pix_fmt yuv420p -an "${output}"`
 
         exec(cmd, (error, stdout, stderr) => {
             if (error) {

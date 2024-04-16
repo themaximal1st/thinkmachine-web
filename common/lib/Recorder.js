@@ -11,10 +11,8 @@ export default class Recorder {
 
         this.fps = options.fps || 30;
         this.bps = options.bps || 1024 * 1024 * 50;
-        // this.mimetype = options.mimetype || "video/webm";
         this.mimetype = options.mimetype || "video/webm; codecs=vp9";
-
-        this.videoType = options.videoType || "webm";
+        this.videoType = options.videoType || "webm"; // final video type
 
 
         this.onstart = options.onstart || async function () { };
@@ -96,9 +94,8 @@ export default class Recorder {
             return;
         }
 
-        const webmBuffer = await blobToBase64(webmBlob);
-
         try {
+            const webmBuffer = await blobToBase64(webmBlob);
             const mp4Buffer = await window.api.convert.webmToMp4(webmBuffer);
             const mp4Blob = await base64ToBlob(mp4Buffer, "video/mp4");
 
@@ -127,7 +124,6 @@ export default class Recorder {
     }
 
     static async takeScreenshot(name = "thinkmachine-screenshot") {
-
         requestAnimationFrame(() => {
             const image = Recorder.canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
             downloadImage(image, `${name}.png`);

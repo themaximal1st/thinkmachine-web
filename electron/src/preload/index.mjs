@@ -78,6 +78,11 @@ const api = {
             return ipcRenderer.invoke("settings.set", key, value);
         },
     },
+    convert: {
+        webmToMp4: (buffer) => {
+            return ipcRenderer.invoke("convert.webmToMp4", buffer);
+        }
+    },
 };
 
 try {

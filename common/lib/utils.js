@@ -30,6 +30,5 @@ export function downloadImage(data, filename = "untitled.png") {
     var a = document.createElement('a');
     a.href = data;
     a.download = filename;
-    // document.body.appendChild(a);
     a.click();
 }

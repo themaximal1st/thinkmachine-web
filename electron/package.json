@@ -43,6 +43,7 @@
         "react-rnd": "^10.4.1",
         "react-tooltip": "^5.26.3",
         "slugify": "^1.6.6",
+        "temp": "^0.9.4",
         "three": "^0.160.0",
         "three-spritetext": "^1.8.1",
         "troika-three-text": "^0.49.0",

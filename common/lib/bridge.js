@@ -166,7 +166,6 @@ export default class Bridge {
     async webmToMp4(encoded) {
         try {
             const buffer = await base64ToBuffer(encoded);
-            console.log("BUFFER", buffer);
             const mp4 = await webmToMp4(buffer);
             if (!mp4) throw new Error("No mp4 buffer");
             return Buffer.from(mp4).toString("base64");
