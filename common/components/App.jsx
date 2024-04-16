@@ -12,6 +12,8 @@ import Animation from "@lib/Animation";
 import LocalSettings from "@lib/LocalSettings";
 import Recorder from "@lib/Recorder";
 import Tutorial from "@lib/Tutorial";
+import RecorderShots from "@lib/RecorderShots";
+import ChatPrompt from "@lib/ChatPrompt";
 
 import License from "@components/License";
 import Console from "@components/Console";
@@ -25,7 +27,6 @@ import Typer from "@components/Typer";
 import Wormhole from "@components/Wormhole.js";
 import ChatWindow from "@components/ChatWindow.jsx";
 import RecordingUI from "@components/RecordingUI.jsx";
-import RecorderShots from "@lib/RecorderShots";
 
 export default class App extends React.Component {
     constructor(props) {
@@ -835,36 +836,6 @@ export default class App extends React.Component {
         console.log("ENGINE STOPPED");
     }
 
-    knowledgeGraphPrompt() {
-        const hyperedges = this.state.hyperedges
-            .map((hyperedge) => {
-                return hyperedge.join(" -> ");
-            })
-            .join("\n");
-
-        const prompt = `You are a knowledge graph Chat AI assistant.
-You are helping me chat with my knowledge graph.
-
-First I will provide you with a knowledge graph, and then in future messages we'll chat about it.
-Be concise, and if you need more information, ask for it.
-The knowledge graph is based on a hypergraph.
-The hypergraph is made up of hyperedges.
-Hyperedges are made up of symbols.
-Hyperedges are represented with " -> " arrows.
-Each new line is a distinct hyperedge.
-
-You don't need to let the user know about the underlying hypergraph structure, they are looking at a visual representation of it.
-So you can speak about the knowledge graph by references the names of the symbols and their connections.
-If the user asks for more information, you can provide additional details from your knowledge to complete the request.
-Always be helpful and informative.
-Try to be as accurate as possible, while still completing the users request.
-
-Here is the knowledge graph:
-${hyperedges}`;
-
-        return prompt;
-    }
-
     async handleChatMessage(e = null) {
         if (e) {
             e.preventDefault();
@@ -889,7 +860,7 @@ ${hyperedges}`;
         const chatMessages = [...this.state.chatMessages];
 
         if (chatMessages.length === 0) {
-            const content = this.knowledgeGraphPrompt();
+            const content = ChatPrompt(this);
             chatMessages.push({
                 role: "system",
                 content,

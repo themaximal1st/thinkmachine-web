@@ -86,7 +86,9 @@ export default function ChatWindow(params) {
                                             {i === 0 &&
                                                 !params.isChatting &&
                                                 message.content.length === 0 && (
-                                                    <em class="text-sm">(no content)</em>
+                                                    <em className="text-sm">
+                                                        (no content)
+                                                    </em>
                                                 )}
                                             {message.content}
                                         </div>
