@@ -983,7 +983,12 @@ export default class App extends React.Component {
         ) {
             return;
         } else {
-            if (e.key !== "Shift" && this.canFocusInput && this.inputReference) {
+            if (
+                e.key !== "Shift" &&
+                this.canFocusInput &&
+                this.inputReference &&
+                this.inputReference.focus
+            ) {
                 this.inputReference.focus();
             }
         }
