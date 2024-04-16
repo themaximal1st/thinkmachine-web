@@ -34,6 +34,11 @@ export default function SettingsMenu(props) {
         onClose();
     };
 
+    const toggleLicenseWindow = () => {
+        props.toggleLicenseWindow();
+        onClose();
+    };
+
     return (
         <ModalBackground onClose={onClose} opacity={0}>
             <div className="absolute left-4 bottom-14 w-96 flex flex-col-reverse gap-1 lg:gap-4 p-2 lg:text-lg fan-left">
@@ -75,7 +80,7 @@ export default function SettingsMenu(props) {
                 </a>
 
                 {!isWeb && (
-                    <a onClick={props.toggleLicenseWindow} className="menu-item">
+                    <a onClick={toggleLicenseWindow} className="menu-item">
                         <div>{Icons.LicenseIcon(6)}</div>
                         License
                     </a>
