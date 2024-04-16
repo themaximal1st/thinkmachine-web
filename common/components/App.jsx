@@ -13,7 +13,7 @@ import LocalSettings from "@lib/LocalSettings";
 import Recorder from "@lib/Recorder";
 import Tutorial from "@lib/Tutorial";
 import RecorderShots from "@lib/RecorderShots";
-import ChatPrompt from "@lib/ChatPrompt";
+import ChatHandler from "@lib/ChatHandler";
 
 import License from "@components/License";
 import Console from "@components/Console";
@@ -837,87 +837,7 @@ export default class App extends React.Component {
     }
 
     async handleChatMessage(e = null) {
-        if (e) {
-            e.preventDefault();
-        }
-
-        if (this.state.isChatting) return false;
-
-        let chatInput = false;
-        let content = this.state.input.trim();
-        if (content.length === 0) {
-            if (this.isFocusingChatInput) {
-                content = this.chatInputRef.current.value.trim();
-                this.chatInputRef.current.value = "";
-                chatInput = true;
-            }
-        }
-
-        if (content.length === 0) return false;
-
-        await this.toggleChatWindow(true);
-
-        const chatMessages = [...this.state.chatMessages];
-
-        if (chatMessages.length === 0) {
-            const content = ChatPrompt(this);
-            chatMessages.push({
-                role: "system",
-                content,
-                timestamp: Date.now(),
-            });
-        }
-
-        chatMessages.push({
-            content,
-            role: "user",
-            timestamp: Date.now() + 1,
-        });
-
-        const assistant = {
-            content: "",
-            model: this.state.llm.name,
-            role: "assistant",
-            timestamp: Date.now() + 2,
-        };
-
-        await this.asyncSetState({ chatMessages, isChatting: true });
-
-        const sortedChatMessages = [...chatMessages].sort((a, b) => {
-            return a.timestamp - b.timestamp;
-        });
-
-        chatMessages.push(assistant);
-        await this.asyncSetState({ chatMessages });
-
-        if (chatInput) {
-            this.chatInputRef.current.value = "";
-        } else {
-            await this.asyncSetState({ input: "" });
-        }
-
-        try {
-            const response = await window.api.chat(sortedChatMessages, {
-                llm: this.llmSettings,
-            });
-
-            for await (const data of response) {
-                if (!this.state.isChatting || data.event === "chat.stop") {
-                    break;
-                }
-
-                if (data.event === "chat.message") {
-                    assistant.content += data.data;
-                    await this.asyncSetState({ chatMessages });
-                }
-            }
-        } catch (e) {
-            console.log("ERROR DURING CHAT", e);
-        } finally {
-            await this.asyncSetState({ isChatting: false });
-        }
-
-        return false; // we'll handle reset
+        return await ChatHandler(this, e);
     }
 
     async handleDownload() {
