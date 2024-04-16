@@ -10,6 +10,7 @@ export default function SettingsMenu(props) {
         props.handleDownload();
         onClose();
     };
+
     const onNew = () => {
         window.location.href = "/";
     };
