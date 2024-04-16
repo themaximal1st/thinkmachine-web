@@ -50,4 +50,4 @@ npmRebuild: false
 publish:
     provider: github
     repo: thinkmachine
-    owner: themaximal1st
+    owner: themaximalist
