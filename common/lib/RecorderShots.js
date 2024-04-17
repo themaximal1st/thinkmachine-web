@@ -13,6 +13,8 @@ export default class RecorderShots {
                 return reject();
             }
 
+
+            app.recorder.videoType = app.state.videoType;
             app.recorder.start();
 
             app.animation.start(async () => {
@@ -55,6 +57,8 @@ export default class RecorderShots {
             }, 10);
 
             await app.asyncSetState({ isAnimating: true });
+
+            app.recorder.videoType = app.state.videoType;
             app.recorder.start();
         });
     }
@@ -94,6 +98,8 @@ export default class RecorderShots {
             }, 10);
 
             await app.asyncSetState({ isAnimating: true });
+
+            app.recorder.videoType = app.state.videoType;
             app.recorder.start();
         });
     }
