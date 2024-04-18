@@ -1,6 +1,10 @@
 export default async function Tutorial(app) {
     if (app.state.hyperedges.length > 0) return;
 
+    if (!await window.api.hypergraph.isValid()) {
+        await app.createNewHypergraph();
+    }
+
     const tutorial = [
         ["Think Machine", "mind mapping", "3D visualization"],
         ["Think Machine", "brainstorming", "idea exploration"],

@@ -1,39 +1,65 @@
-* Rate limits
-* Cleanup
- - Simplify bridge sync/async concept between electron + web. should have same interface on both
+* ThinkableType 2-point connector without bridge
+ - A -> B -> C
+ - 1 -> 2 -> 3
+ - B -> 2 (shouldn't use bridge...except...when?)
 
-
-* UX IMPROVEMENTS
-- easier to delete a node...right click menu options? rename? add to context?
-- tilde key is confusing...need an easier way to edit data. remove console?
-- Keyboard shortcut menu
+* iOS / Android testing..whole website & app
+* Docs
+- cac.app — enter email placeholder, little more UI improvement
+ - link to docs
 - ask before quitting if unsaved changes
 
+* Rate limits
+* Blog post - recorder
+- Blog — How Think Machine Was Built
+- Blog auto search
+- Walkthrough video for each documentation page
+
+- changelog / in repo and on website
+- context adder should be simpler...a button clear everything
+- console needs work
+ - should be able to edit it
+ - should be able to load context up from an existing item (continue it)
+ - delete an individual data item
+ - add a data item
+ - edit
+ - should be really simple. textarea with csv?
+- obsidian / json canvas
+- if you're going to do these, do them sooner than later and figure out the UI/data model
+  - notes, add text to a node
+  - label a hyperedge
+- Simplify bridge sync/async concept between electron + web. should have same interface on both
+- easier to delete a node...right click menu options? rename? add to context?
+- tilde key is confusing...needs an icon. need an easier way to edit data. remove console?
+- Keyboard shortcut menu
+- Amplitude Analytics
+- depth needs a lot of work
+- App Stores
+  - Publish to Mac App Store
+  - Publish to Windows App Store
+- Onboarding video linked
+- (Right?) Click to focus on a node
+ - perfect place to display more information and context about what you're reading
+ - could offer a popup menu to do more things (delete, rename, etc..)
+ - should be able to navigate through hypergraph like this with keyboard or mouse
+    - ...next, next next would be a cool recorder visualization too
+
+
 * WEBSITE
-- Better docs
 - track custom data on purchase for attribution
-- paddle SaaS integration
-- redo pricing page to show all options (open source, desktop, web, saas)
 - Add Testimonials
 - have a bunch of embeddable examples on home page, let people click and see what's interesting..maybe don't make the default generate?
   - full screen mode
   - embed think machine above the fold in thinkmachine.com?
 
 * MARKETING
-- Recorder
-- Auto Search
 - Update marketing video with new features
 - Full Launch
-- Blog — How Think Machine Was Built
-- cac.app — enter email placeholder, little more UI improvement
-- changelog / in repo and on website
+- Public knowledge graph gallery
 - ads
 
 * WEB
-- Amplitude Analytics
-- Rate limits
 - Sign up for higher limits
-- Pay for higher limits
 - pro -> HD/long video renderings
 - pro -> modify prompt
 - pro -> modify colors
@@ -44,27 +70,12 @@
 
 
 * FUTURE
-- depth needs a lot of work
 - Hold shift while clicking changes current context to be that context
 - (maybe?) Make desktop version work with 1-click ModelDeployer rate limited tokens
-- console needs work
- - should be able to edit it
- - should be able to load context up from an existing item (continue it)
- - delete an individual data item
- - add a data item
- - edit
- - should be really simple. textarea with csv?
-- obsidian / json canvas
-- notes, add text to a node
-- label a hyperedge
-- Onboarding video linked
-- Click to focus on a node
- - perfect place to display more information and context about what you're reading
- - should be able to navigate through hypergraph like this with keyboard or mouse
-    - ...next, next next would be a cool recorder visualization too
 
 
 * SUPER FUTURE
+- iOS / Android apps?
 - URL scraping should be very accurate. we don't want to generate too much, just take from what's there. needs new prompt
   - PDFs extraction -> scraping web
 - There's an opportunity to make updates even smoother
@@ -77,9 +88,6 @@
 - VR/AR would be super dope
 - collaboration, make actions async 
 - Copy & paste nodes
-- App Stores
-  - Publish to Mac App Store
-  - Publish to Windows App Store
 - 360 photo
 - Clicking a node to search could/should have an alternate feature of just expanding that node out by 1 depth. with filters it makes it hard because so many pop in...but if just a few popped in (and you could easily see how many more there were down that path)
 - Minimap: https://github.com/vasturiano/react-force-graph/issues/490
@@ -105,3 +113,4 @@
   - iOS App
   - Obsidian Plugin
 - image mode, dream machine — where nodes turn into images
+
