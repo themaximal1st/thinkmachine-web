@@ -851,6 +851,7 @@ export default class App extends React.Component {
     }
 
     async handleAutoSearch() {
+        if (!window.api.isWeb) return;
         if (!this.state.loaded) return;
         if (this.state.hyperedges.length > 0) return;
         if (this.state.input.length > 0) return;

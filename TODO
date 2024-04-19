@@ -1,4 +1,5 @@
 llama / groq
+- electron -> custom LLM
 
 * ThinkableType 2-point connector without bridge
  - A -> B -> C
