@@ -61,9 +61,9 @@ export default class LocalSettings {
                 description: "Good LLM from Google",
             },
             {
-                name: "Mistral Large",
-                service: "mistral",
-                model: "mistral-large-latest",
+                name: "Llama 3",
+                service: "together",
+                model: "meta-llama/Llama-3-8b-chat-hf",
                 description: "Best open LLM",
             },
             {

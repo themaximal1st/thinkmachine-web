@@ -199,6 +199,7 @@ export default class WebBridge {
                 const event = route;
                 await this.handle({ req, res, event, handler, options });
             } catch (e) {
+                console.log("E", e);
                 bridge.send({ event: "error", message: e.message });
             } finally {
                 res.end();

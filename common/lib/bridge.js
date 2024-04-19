@@ -93,24 +93,28 @@ export default class Bridge {
             if (options.llm.apikey) { this.thinkabletype.options.llm.apikey = options.llm.apikey }
         }
 
-        const response = await this.thinkabletype.generate(input, options);
+        try {
+            const response = await this.thinkabletype.generate(input, options);
 
-        let generated = false;
-        for await (const hyperedges of response) {
-            generated = true;
-            this.thinkabletype.addHyperedges(hyperedges);
-            for (const hyperedge of hyperedges) {
-                this.send({ event: "hyperedges.generate.result", hyperedge });
+            let generated = false;
+            for await (const hyperedges of response) {
+                generated = true;
+                this.thinkabletype.addHyperedges(hyperedges);
+                for (const hyperedge of hyperedges) {
+                    this.send({ event: "hyperedges.generate.result", hyperedge });
+                }
+
+                this.save();
             }
 
-            this.save();
-        }
+            if (generated) {
+                this.send({ event: "success", message: "Generated knowledge graph" });
+            }
 
-        if (generated) {
-            this.send({ event: "success", message: "Generated knowledge graph" });
+            this.send({ event: "hyperedges.generate.stop" });
+        } catch (e) {
+            this.send({ event: "error", message: "Error generating knowledge graph" });
         }
-
-        this.send({ event: "hyperedges.generate.stop" });
     }
 
     async generateWormhole(input, options = {}) {

@@ -1,6 +1,7 @@
 **v0.0.3**
 - Take Screenshots
 - Video Recorder, record your session or use great camera scene defaults
+- Improve information shape with direct connections
 
 **v0.0.2**
 - Chat

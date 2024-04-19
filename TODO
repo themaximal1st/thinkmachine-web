@@ -1,13 +1,20 @@
+llama / groq
+
 * ThinkableType 2-point connector without bridge
  - A -> B -> C
  - 1 -> 2 -> 3
  - B -> 2 (shouldn't use bridge...except...when?)
 
 * iOS / Android testing..whole website & app
+ - flying
+ - adding / return?
+
 * Docs
 - cac.app — enter email placeholder, little more UI improvement
  - link to docs
 - ask before quitting if unsaved changes
+
+* Depth without filter?
 
 * Rate limits
 * Blog post - recorder
@@ -62,6 +69,7 @@
 - Sign up for higher limits
 - pro -> HD/long video renderings
 - pro -> modify prompt
+ - pro -> model temperature
 - pro -> modify colors
 - pro -> private knowledge graphs
 
