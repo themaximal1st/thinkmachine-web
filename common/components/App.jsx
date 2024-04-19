@@ -378,7 +378,7 @@ export default class App extends React.Component {
                 const urlPath = `/${uuid}`;
                 window.history.pushState({ urlPath }, document.title, urlPath);
             } else {
-                window.location.href = window.location.href;
+                await this.reloadData();
             }
 
             return uuid;
