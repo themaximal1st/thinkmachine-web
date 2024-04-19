@@ -2,6 +2,7 @@
 - Take Screenshots
 - Video Recorder, record your session or use great camera scene defaults
 - Improve information shape with direct connections
+- Added Llama3
 
 **v0.0.2**
 - Chat
