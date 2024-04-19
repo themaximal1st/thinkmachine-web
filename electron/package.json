@@ -14,7 +14,7 @@
         "clean": "rm -rf dist/*",
         "dev": "electron-vite dev",
         "build": "electron-vite build",
-        "publish": "electron-vite build && electron-builder --win --mac --publish always",
+        "publish": "electron-builder --win --mac --publish always",
         "test": "vitest",
         "postinstall": "electron-builder install-app-deps",
         "build:all": "npm run build && electron-builder --win --mac",
