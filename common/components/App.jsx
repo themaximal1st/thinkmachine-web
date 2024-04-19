@@ -87,7 +87,7 @@ export default class App extends React.Component {
             hyperedge: [],
             hyperedges: [],
             filters: [],
-            depth: Infinity,
+            depth: 0,
             maxDepth: 0,
             data: { nodes: [], links: [] },
             lastReloadedDate: new Date(),
@@ -252,7 +252,6 @@ export default class App extends React.Component {
         let depth = data.depth;
         const maxDepth = data.maxDepth || 0;
         if (depth > maxDepth) depth = maxDepth;
-        if (depth === maxDepth) depth = Infinity;
 
         const hyperedges = await window.api.hyperedges.all();
 
