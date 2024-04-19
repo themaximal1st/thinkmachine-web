@@ -1,3 +1,8 @@
+**v0.0.4**
+- Improve information shape with direct connections
+- Added Llama3
+- Fix bug with Electron first graph created
+
 **v0.0.3**
 - Take Screenshots
 - Video Recorder, record your session or use great camera scene defaults
