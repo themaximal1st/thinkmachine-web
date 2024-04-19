@@ -2,6 +2,7 @@
 - Improve information shape with direct connections
 - Added Llama3
 - Fix bug with Electron first graph created
+* Fixed depth slider
 
 **v0.0.3**
 - Take Screenshots
