@@ -22,8 +22,32 @@ export default class LocalSettings {
         }
     }
 
+    static get customSettings() {
+        let llm;
+
+        try {
+            llm = JSON.parse(window.localStorage.getItem("customSettings"));
+        } catch (e) {
+            llm = {
+                service: "ollama",
+                model: "llama3",
+                options: {
+                    temperature: 1,
+                },
+            };
+        }
+        llm.name = "Custom";
+        llm.custom = true;
+        llm.description = "Use a custom, private LLM";
+        return llm;
+    }
+
+    static set customSettings(customSettings) {
+        window.localStorage.setItem("customSettings", JSON.stringify(customSettings));
+    }
+
     static get services() {
-        return [
+        const services = [
             {
                 name: "Claude 3 Opus",
                 service: "anthropic",
@@ -73,7 +97,11 @@ export default class LocalSettings {
                 description: "Fastest open LLM",
             },
         ];
+
+        if (window.api.isElectron) {
+            services.push(this.customSettings);
+        }
+
+        return services;
     }
-
-
 }

@@ -163,6 +163,7 @@ export default class Bridge {
         } catch (e) {
             const message = e.message || e;
             this.log(`Error in chat: ${message}`);
+            this.send({ event: "chat.error", message: `Error in chat: ${message}` });
             throw e;
         }
     }

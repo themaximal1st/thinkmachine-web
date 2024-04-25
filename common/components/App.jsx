@@ -1082,7 +1082,13 @@ export default class App extends React.Component {
         const llm = this.llmSettings;
         const options = { llm };
 
-        if (window.api.isElectron && !llm.apikey) {
+        if (
+            window.api.isElectron &&
+            !llm.apikey &&
+            llm.service !== "llamafile" &&
+            llm.service !== "ollama"
+        ) {
+            // hacky but we don't need an API key for llamafile or ollama
             toast.error("API key is required for generating results");
             this.setState({ showLLMSettings: true });
             return;
@@ -1181,10 +1187,10 @@ export default class App extends React.Component {
 
         return (
             <div className={isElectron ? "electron" : "web"}>
-                <div className="absolute inset-0 z-50 pointer-events-none">
+                <div className="absolute inset-0 z-[999] pointer-events-none">
                     <Toaster
                         position="bottom-center"
-                        containerStyle={{ zIndex: 60 }}
+                        containerStyle={{ zIndex: 999 }}
                         toastOptions={{
                             style: {
                                 background: "#000",

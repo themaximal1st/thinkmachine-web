@@ -1,7 +1,7 @@
-LLM custom model
-Think Machine desktop LLM bug -> throw better error
- -> where are logs stored in production? log there....
 VR / AR 
+
+- (thinkmachine.com/purchase) desktop -> custom models
+- docs
 
 - editing a node is very involved, should be simple
 - simpler UX mode. way to use mouse to edit?
@@ -10,7 +10,6 @@ VR / AR
  - japanese
 
 llama / groq
-- electron -> custom LLM
 
 * iOS / Android testing..whole website & app
  - flying

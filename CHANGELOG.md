@@ -1,6 +1,7 @@
 **v0.0.5**
 - Added logging
 - Fixed bugs with generate
+- Added Custom local LLM models on Electron
 
 **v0.0.4**
 - Improve information shape with direct connections

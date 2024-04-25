@@ -1,3 +1,5 @@
+import toast from "react-hot-toast";
+
 export default async function ChatHandler(app, e = null) {
     if (e) {
         e.preventDefault();
@@ -38,7 +40,7 @@ export default async function ChatHandler(app, e = null) {
 
     const assistant = {
         content: "",
-        model: app.state.llm.name,
+        model: app.state.llm.name || app.state.llm.model,
         role: "assistant",
         timestamp: Date.now() + 2,
     };
@@ -74,7 +76,9 @@ export default async function ChatHandler(app, e = null) {
             }
         }
     } catch (e) {
-        console.log("ERROR DURING CHAT", e);
+        const message = e.message || e;
+        console.log("ERROR DURING CHAT", message);
+        toast.error(`Error during chat: ${message}`);
     } finally {
         await app.asyncSetState({ isChatting: false });
     }

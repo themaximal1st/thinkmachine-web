@@ -97,7 +97,9 @@ export default function Typer(params) {
                     params.edited ? "justify-start" : "justify-center"
                 }`}>
                 {params.edited === false && (
-                    <a href="https://thinkmachine.com">
+                    <a
+                        target={window.api.isElectron ? "_blank" : "_self"}
+                        href="https://thinkmachine.com">
                         <img
                             src={Logo}
                             className="max-w-lg w-full mb-4 pointer-events-auto px-8"
