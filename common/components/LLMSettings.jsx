@@ -19,12 +19,14 @@ function LLMSetting({ llm, service, ...props }) {
     function getMaskedAPIKey(service) {
         const apikey = LocalSettings.apiKeyForService(service);
         if (!apikey) return;
+        if (apikey.length < 8) return apikey;
         return apikey.slice(0, 4) + "..." + apikey.slice(-4);
     }
 
     return (
         <div
             onClick={(e) => {
+                if (!e || !e.target || e.target.tagName !== "INPUT") return;
                 const clickedEditAPIKey = e.target.className.includes("apikey");
                 if (!clickedEditAPIKey) {
                     props.updateLLM(service);

@@ -1057,9 +1057,11 @@ export default class App extends React.Component {
                 this.setState({ isGenerating: false });
                 this.reloadData();
                 break;
+            case "hyperedges.success":
             case "success":
                 toast.success(message.message || "Successfully generated results");
                 break;
+            case "hyperedges.error":
             case "error":
                 toast.error(message.message || "Error generating results");
                 break;
@@ -1095,7 +1097,6 @@ export default class App extends React.Component {
                 await this.handleGenerateMessage(message);
             }
         } catch (e) {
-            console.log("ERROR", e);
             toast.error("Error generating results");
         } finally {
             this.setState({ isGenerating: false });

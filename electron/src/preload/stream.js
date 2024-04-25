@@ -21,12 +21,14 @@ export async function stream(event, input, options = {}) {
                 }
             }
 
+            this.addListener("error", queue.fail)
             ipcRenderer.on(channel, subscription);
 
             const response = ipcRenderer.invoke(event, input, options);
             response.catch(queue.fail);
 
             return () => {
+                this.removeListener("error", queue.fail)
                 ipcRenderer.removeListener(channel, subscription);
             }
         }

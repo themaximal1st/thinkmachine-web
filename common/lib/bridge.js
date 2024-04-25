@@ -111,9 +111,11 @@ export default class Bridge {
                 this.send({ event: "success", message: "Generated knowledge graph" });
             }
 
-            this.send({ event: "hyperedges.generate.stop" });
         } catch (e) {
-            this.send({ event: "error", message: "Error generating knowledge graph" });
+            const message = e.message || e;
+            this.send({ event: "hyperedges.error", message: `Error generating knowledge graph: ${message}` });
+        } finally {
+            this.send({ event: "hyperedges.generate.stop" });
         }
     }
 

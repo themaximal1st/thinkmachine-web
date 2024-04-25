@@ -1,10 +1,16 @@
+LLM custom model
+Think Machine desktop LLM bug -> throw better error
+ -> where are logs stored in production? log there....
+VR / AR 
+
+- editing a node is very involved, should be simple
+- simpler UX mode. way to use mouse to edit?
+
+- translations
+ - japanese
+
 llama / groq
 - electron -> custom LLM
-
-* ThinkableType 2-point connector without bridge
- - A -> B -> C
- - 1 -> 2 -> 3
- - B -> 2 (shouldn't use bridge...except...when?)
 
 * iOS / Android testing..whole website & app
  - flying
@@ -41,7 +47,6 @@ llama / groq
 - tilde key is confusing...needs an icon. need an easier way to edit data. remove console?
 - Keyboard shortcut menu
 - Amplitude Analytics
-- depth needs a lot of work
 - App Stores
   - Publish to Mac App Store
   - Publish to Windows App Store
