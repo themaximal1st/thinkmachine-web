@@ -1,1 +1,1 @@
-import "@lib/main"
+import "@lib/main";

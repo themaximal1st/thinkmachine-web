@@ -14,6 +14,7 @@ export default class Bridge {
         this.uuid = uuid;
         this.send = function () { throw new Error("send not implemented") }
         this.save = function () { throw new Error("save not implemented") }
+        this.log = function (msg) { console.log(msg) }
     }
 
     graphData(filter = [], options = {}) {
@@ -28,7 +29,7 @@ export default class Bridge {
 
     trackAnalytics(event) {
         // TODO: implement
-        console.log("ANALYTICS", event);
+        this.log(`Analytics: ${event}`);
         // Analytics.track(event)
     }
 
@@ -79,6 +80,8 @@ export default class Bridge {
                 this.send({ event: "success", message: "Scraped URL!" });
                 input = data;
             } catch (e) {
+                const message = e.message || e;
+                this.log(`Error scraping URL ${input}: ${message}`);
                 this.send({ event: "error", message: "Couldn't scrape URL" });
                 throw e;
             }
@@ -113,6 +116,7 @@ export default class Bridge {
 
         } catch (e) {
             const message = e.message || e;
+            this.log(`Error generating knowledge graph: ${message}`);
             this.send({ event: "hyperedges.error", message: `Error generating knowledge graph: ${message}` });
         } finally {
             this.send({ event: "hyperedges.generate.stop" });
@@ -157,8 +161,8 @@ export default class Bridge {
 
             this.send({ event: "chat.stop" });
         } catch (e) {
-            console.log("ERRR");
-            console.error(e);
+            const message = e.message || e;
+            this.log(`Error in chat: ${message}`);
             throw e;
         }
     }
@@ -176,7 +180,8 @@ export default class Bridge {
             if (!mp4) throw new Error("No mp4 buffer");
             return Buffer.from(mp4).toString("base64");
         } catch (e) {
-            console.error(e);
+            const message = e.message || e;
+            this.log(`Error in webToMp4: ${message}`);
             return null;
         }
     }

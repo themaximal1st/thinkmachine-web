@@ -1,4 +1,6 @@
 import { ipcMain } from "electron";
+import log from "electron-log/main.js";
+
 
 import Bridge from "@lib/bridge"
 import License from "./License.js";
@@ -56,12 +58,13 @@ export default class ElectronBridge {
 
         this.bridge.send = this.send.bind(this);
         this.bridge.save = this.save.bind(this);
+        this.bridge.log = log.info.bind(log);
 
         for (const [event, method] of Object.entries(mapping)) {
             try {
                 this.handle(event, this.bridge[method].bind(this.bridge));
             } catch (e) {
-                console.log("ERROR DURING HANDLE", e)
+                log.error(`error handling ${event}: ${e}`);
             }
         }
 

@@ -1,3 +1,7 @@
+**v0.0.5**
+- Added logging
+- Fixed bugs with generate
+
 **v0.0.4**
 - Improve information shape with direct connections
 - Added Llama3
