@@ -27,6 +27,10 @@ export default class LocalSettings {
 
         try {
             llm = JSON.parse(window.localStorage.getItem("customSettings"));
+            if (!llm) throw new Error("No custom settings found");
+            if (typeof llm !== "object") throw new Error("Invalid custom settings");
+            if (!llm.service) throw new Error("Service not found");
+            if (!llm.model) throw new Error("Model not found");
         } catch (e) {
             llm = {
                 service: "ollama",

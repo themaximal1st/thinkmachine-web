@@ -545,9 +545,15 @@ export default class App extends React.Component {
     }
 
     get llmSettings() {
-        const llm = this.state.llm;
+        const llm = {};
+        if (this.state.llm.name) llm.name = this.state.llm.name;
+        if (this.state.llm.service) llm.service = this.state.llm.service;
+        if (this.state.llm.model) llm.model = this.state.llm.model;
+        if (this.state.llm.options) llm.options = this.state.llm.options;
+
         if (window.api.isElectron) {
-            llm.apikey = LocalSettings.apiKeyForService(llm.service);
+            const apikey = LocalSettings.apiKeyForService(llm.service);
+            if (apikey) llm.apikey = apikey;
         }
 
         return llm;
