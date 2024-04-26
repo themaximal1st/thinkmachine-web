@@ -1,63 +1,84 @@
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
-import ForceGraph3D from "react-force-graph-3d";
-import ForceGraph2D from "react-force-graph-2d";
+import {
+    ForceGraph2D,
+    ForceGraph3D,
+    ForceGraphVR,
+    ForceGraphAR,
+} from "react-force-graph";
 
 import SpriteText from "three-spritetext";
 import * as Three from "three";
 
 export default function ForceGraph(params) {
-    const Graph = params.graphType === "3d" ? ForceGraph3D : ForceGraph2D;
-
-    return (
-        <Graph
-            nodeLabel={(node) => ""}
-            ref={params.graphRef}
-            width={params.width}
-            height={params.height}
-            controlType={params.controlType}
-            backgroundColor="#000000"
-            onNodeClick={params.onNodeClick}
-            onBackgroundClick={(e) => {}}
-            onBackgroundRightClick={(e) => {}}
-            graphData={params.data}
-            showNavInfo={false}
-            linkColor={(link) => {
-                return link.color || "#333333";
-            }}
-            nodeCanvasObject={(node, ctx, globalScale) => {
-                if (params.hideLabels) {
-                    return null;
-                }
-                return nodeCanvasObject(node, ctx, globalScale);
-            }}
-            nodeThreeObject={(node) => {
-                if (params.hideLabels) {
-                    return null;
-                }
-                return nodeThreeObject(node);
-            }}
-            nodePointerAreaPaint={(node, color, ctx) => {
-                return nodePointerAreaPaint(node, color, ctx);
-            }}
-            onEngineTick={params.onTick}
-            onEngineStop={params.onEngineStop}
-            cooldownTicks={params.cooldownTicks}
-            linkDirectionalArrowLength={(link) => {
-                if (params.graphType === "3d") {
-                    return 3;
-                }
-
+    const props = {
+        ref: params.graphRef,
+        width: params.width,
+        height: params.height,
+        controlType: params.controlType,
+        backgroundColor: "#000000",
+        onNodeClick: params.onNodeClick,
+        onBackgroundClick: (e) => {},
+        onBackgroundRightClick: (e) => {},
+        graphData: params.data,
+        showNavInfo: false,
+        linkColor: (link) => {
+            return link.color || "#333333";
+        },
+        nodePointerAreaPaint: (node, color, ctx) => {
+            return nodePointerAreaPaint(node, color, ctx);
+        },
+        onEngineTick: params.onTick,
+        onEngineStop: params.onEngineStop,
+        cooldownTicks: params.cooldownTicks,
+        linkDirectionalArrowLength: (link) => {
+            if (params.graphType === "3d") {
+                return 3;
+            } else if (params.graphType === "2d") {
                 return 1;
-            }}
-            linkDirectionalArrowRelPos={1}
-            linkCurvature={0.05}
-            linkCurveRotation={0.5}
-            linkWidth={2}
-            linkDirectionalParticleColor={(link) => link.color || "#ffffff"}
-            linkDirectionalParticleWidth={2}
-            linkDirectionalParticleSpeed={0.0125}
-        />
-    );
+            }
+
+            return 1;
+        },
+        linkDirectionalArrowRelPos: 1,
+        linkCurvature: 0.05,
+        linkCurveRotation: 0.5,
+        linkWidth: 2,
+        linkDirectionalParticleColor: (link) => link.color || "#ffffff",
+        linkDirectionalParticleWidth: 2,
+        linkDirectionalParticleSpeed: 0.0125,
+    };
+
+    let Graph;
+    if (params.graphType === "2d") {
+        Graph = ForceGraph2D;
+
+        props.nodeLabel = (node) => "";
+        props.nodeCanvasObject = (node, ctx, globalScale) => {
+            if (params.hideLabels) {
+                return null;
+            }
+            return nodeCanvasObject(node, ctx, globalScale);
+        };
+    } else if (params.graphType === "3d") {
+        Graph = ForceGraph3D;
+
+        props.nodeLabel = (node) => "";
+        props.nodeThreeObject = (node) => {
+            if (params.hideLabels) {
+                return null;
+            }
+            return nodeThreeObject(node);
+        };
+    } else if (params.graphType === "vr") {
+        Graph = ForceGraphVR;
+    } else if (params.graphType === "ar") {
+        Graph = ForceGraphAR; // never tested, let me know if it works!
+    } else {
+        console.error("Invalid graph type");
+        throw new Error("Invalid graph type");
+    }
+
+    return <Graph {...props} />;
 }
 
 ForceGraph.load = function (graphRef, graphType) {
@@ -80,7 +101,7 @@ ForceGraph.load = function (graphRef, graphType) {
         graphRef.current.d3Force("charge").distanceMin(10);
 
         graphRef.current.d3Force("center").strength(1);
-    } else {
+    } else if (graphType === "2d") {
         graphRef.current.d3Force("link").distance((link) => {
             return link.length || 100;
         });

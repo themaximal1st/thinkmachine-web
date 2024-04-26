@@ -688,9 +688,10 @@ export default class App extends React.Component {
         this.setState({ showLLMSettings });
     }
 
-    toggleGraphType() {
+    toggleGraphType(val) {
         window.api.analytics.track("app.toggleGraphType");
-        const graphType = this.state.graphType === "2d" ? "3d" : "2d";
+        const graphType =
+            val === undefined ? (this.state.graphType === "3d" ? "2d" : "3d") : val;
 
         window.localStorage.setItem("graphType", graphType);
         window.location.href = window.location.href;

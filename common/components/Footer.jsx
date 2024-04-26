@@ -68,23 +68,12 @@ export default function Footer(params) {
                             </a>
                         )}
 
-                    <div className="flex gap-4 items-center">
-                        {!params.shouldHideControls && (
-                            <a
-                                onClick={() => params.toggleGraphType()}
-                                title="Toggle 2D and 3D"
-                                data-tooltip-id="bottom-icons-tooltip"
-                                data-tooltip-place="top-end"
-                                data-tooltip-content={
-                                    params.graphType === "2d"
-                                        ? "Switch to 3D"
-                                        : "Switch to 2D"
-                                }
-                                className="select-none opacity-40 hover:opacity-100 transition-all cursor-pointer pointer-events-auto text-xl">
-                                {params.graphType === "2d" ? "3D" : "2D"}
-                            </a>
-                        )}
-
+                    <div
+                        className={`flex gap-4 items-center ${
+                            params.graphType === "vr" || params.graphType === "ar"
+                                ? "mr-16"
+                                : ""
+                        }`}>
                         {!params.shouldHideControls &&
                             params.graphType === "3d" &&
                             params.edited && (
@@ -119,6 +108,49 @@ export default function Footer(params) {
                                 {params.isAnimating && Icons.PauseIcon(6)}
                             </a>
                         )}
+
+                        <div className="relative w-6 h-8">
+                            <div className="flex flex-col-reverse h-8 overflow-hidden hover:h-16 absolute right-0 bottom-[1px]">
+                                {!params.shouldHideControls &&
+                                    params.graphType !== "3d" && (
+                                        <a
+                                            onClick={() => params.toggleGraphType("3d")}
+                                            title="Switch to 3D"
+                                            data-tooltip-id="bottom-icons-tooltip"
+                                            data-tooltip-place="top-end"
+                                            data-tooltip-content="Switch to 3D"
+                                            className="select-none opacity-40 hover:opacity-100 transition-all cursor-pointer pointer-events-auto text-xl">
+                                            3D
+                                        </a>
+                                    )}
+
+                                {!params.shouldHideControls &&
+                                    params.graphType !== "2d" && (
+                                        <a
+                                            onClick={() => params.toggleGraphType("2d")}
+                                            title="Switch to 2D"
+                                            data-tooltip-id="bottom-icons-tooltip"
+                                            data-tooltip-place="top-end"
+                                            data-tooltip-content="Switch to 2D"
+                                            className="select-none opacity-40 hover:opacity-100 transition-all cursor-pointer pointer-events-auto text-xl">
+                                            2D
+                                        </a>
+                                    )}
+
+                                {!params.shouldHideControls &&
+                                    params.graphType !== "vr" && (
+                                        <a
+                                            onClick={() => params.toggleGraphType("vr")}
+                                            title="Switch to VR"
+                                            data-tooltip-id="bottom-icons-tooltip"
+                                            data-tooltip-place="top-end"
+                                            data-tooltip-content="Switch to VR"
+                                            className="select-none opacity-40 hover:opacity-100 transition-all cursor-pointer pointer-events-auto text-xl">
+                                            VR
+                                        </a>
+                                    )}
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

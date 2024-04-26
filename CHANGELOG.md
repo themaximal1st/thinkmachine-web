@@ -1,4 +1,5 @@
 **v0.0.5**
+- Added VR mode (beta)
 - Added logging
 - Fixed bugs with generate
 - Added Custom local LLM models on Electron

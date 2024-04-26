@@ -115,11 +115,11 @@ body {
 }
 
 #cac-feedback-link {
-    @apply fixed bottom-12 right-3 z-50 text-white select-none opacity-40 hover:opacity-100 transition-all cursor-pointer pointer-events-auto;
+    @apply fixed bottom-20 right-3 z-50 text-white select-none opacity-40 hover:opacity-100 transition-all cursor-pointer pointer-events-auto;
 }
 
 #cac-feedback-form {
-    @apply fixed bottom-12 right-3;
+    @apply fixed bottom-20 right-3;
 }
 
 #cac-feedback-form textarea {

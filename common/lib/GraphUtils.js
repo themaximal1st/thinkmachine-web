@@ -90,7 +90,7 @@ export async function zoom(app, oldData = null) {
     if (graphType === "2d") {
         // console.log("2d zoom");
         app.graphRef.current.zoomToFit(timing, 100);
-    } else {
+    } else if (graphType === "3d") {
         // console.log("3d zoom");
         app.graphRef.current.zoomToFit(timing, padding, (node) => {
             if (nodes.length === 0) return true;
@@ -165,9 +165,12 @@ export function CameraPosition2D(app) {
 function getCameraPosition(app) {
     if (app.state.graphType === "3d") {
         return app.graphRef.current.cameraPosition();
+    } else if (app.state.graphType === "2d") {
+        return CameraPosition2D(app);
+    } else if (app.state.graphType === "vr") {
+        return { x: 0, y: 0, z: 0 }
+        // return app.graphRef.current.cameraPosition();
     }
-
-    return CameraPosition2D(app);
 }
 
 // smartZoom knows if the user has zoomed/moved/panned the camera
