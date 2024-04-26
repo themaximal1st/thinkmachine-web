@@ -16,9 +16,8 @@ export default function ForceGraph(params) {
         height: params.height,
         controlType: params.controlType,
         backgroundColor: "#000000",
-        onNodeClick: params.onNodeClick,
-        onBackgroundClick: (e) => {},
-        onBackgroundRightClick: (e) => {},
+        // onBackgroundClick: (e) => {},
+        // onBackgroundRightClick: (e) => {},
         graphData: params.data,
         showNavInfo: false,
         linkColor: (link) => {
@@ -52,6 +51,7 @@ export default function ForceGraph(params) {
     if (params.graphType === "2d") {
         Graph = ForceGraph2D;
 
+        props.onNodeClick = params.onNodeClick;
         props.nodeLabel = (node) => "";
         props.nodeCanvasObject = (node, ctx, globalScale) => {
             if (params.hideLabels) {
@@ -62,6 +62,7 @@ export default function ForceGraph(params) {
     } else if (params.graphType === "3d") {
         Graph = ForceGraph3D;
 
+        props.onNodeClick = params.onNodeClick;
         props.nodeLabel = (node) => "";
         props.nodeThreeObject = (node) => {
             if (params.hideLabels) {
@@ -71,6 +72,13 @@ export default function ForceGraph(params) {
         };
     } else if (params.graphType === "vr") {
         Graph = ForceGraphVR;
+
+        props.nodeThreeObject = (node) => {
+            if (params.hideLabels) {
+                return null;
+            }
+            return nodeThreeObject(node);
+        };
     } else if (params.graphType === "ar") {
         Graph = ForceGraphAR; // never tested, let me know if it works!
     } else {

@@ -39,7 +39,6 @@ function LLMSetting({ llm, service, ...props }) {
         LocalSettings.customSettings = llm;
 
         props.updateLLM(llm);
-        // props.toggleLLMSettings(false);
 
         toast.success("Saved custom settings!");
     }
