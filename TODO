@@ -1,131 +1,82 @@
-- AR
+website
+* changelog (connected to repo)
+* Simplify purchase page (desktop -> custom models)
+* Customer testimonials
+* Add sub-features section. Add VR, Recordings and other features
+* create gallery of public knowledge graphs
+* track custom data on purchase for attribution
+* embed app.thinkmachine.com example in thinkmachine.com (full screen mode)
 
-- (thinkmachine.com/purchase) desktop -> custom models
-- docs
+website content
+* even better docs
+* documentation videos
+* Blog: The Origins of Think Machine
+* blog posts for major features (auto search, custom models, VR) (1/week)
 
-- editing a node is very involved, should be simple
-- simpler UX mode. way to use mouse to edit?
+videos
+* New main walkthrough video
+* New main marketing video (vertical format)
+* Video: The Origins of Think Machine
 
-- translations
- - japanese
+0.0.6
+* rate limit
+* web licensing
+* pro: no limits / mode models / modify prompt / modify colors / light mode
+* support older versions of macOS
+* translations: (japanese, indian, chinese)
+* ask before quitting if unsaved changes
+* Amplitude Web Analytics
+* Mac App Store
+* Windows App Store
 
-llama / groq
+0.0.7
+* pro: private knowledge graphs
+* ui/ux refresh. make simple. context menu?
+* console refresh. delete a node. edit node. button for tilde key. button to clear current context
+* help: link video
+* help: keyboard shortcut menu
+* help: cac.app widget, enter email placeholder, more UI improvement, link to docs
+* fix zoom and rotate axis bugs
+* Better mobile web support
 
-- grayscale mode / strip of colors
-
-* iOS / Android testing..whole website & app
- - flying
- - adding / return?
-
-* Docs
-- cac.app — enter email placeholder, little more UI improvement
- - link to docs
-- ask before quitting if unsaved changes
-
+0.0.8
+* obsidian / json canvas
+* notes, add text to a node
+* label a hyperedge
 * Depth without filter?
-
-* Rate limits
-* Blog post - recorder
-- Blog — How Think Machine Was Built
-- Blog auto search
-- Walkthrough video for each documentation page
-
-- changelog / in repo and on website
-- context adder should be simpler...a button clear everything
-- console needs work
- - should be able to edit it
- - should be able to load context up from an existing item (continue it)
- - delete an individual data item
- - add a data item
- - edit
- - should be really simple. textarea with csv?
-- obsidian / json canvas
-- if you're going to do these, do them sooner than later and figure out the UI/data model
-  - notes, add text to a node
-  - label a hyperedge
-- Simplify bridge sync/async concept between electron + web. should have same interface on both
-- easier to delete a node...right click menu options? rename? add to context?
-- tilde key is confusing...needs an icon. need an easier way to edit data. remove console?
-- Keyboard shortcut menu
-- Amplitude Analytics
-- App Stores
-  - Publish to Mac App Store
-  - Publish to Windows App Store
-- Onboarding video linked
-- (Right?) Click to focus on a node
- - perfect place to display more information and context about what you're reading
- - could offer a popup menu to do more things (delete, rename, etc..)
- - should be able to navigate through hypergraph like this with keyboard or mouse
-    - ...next, next next would be a cool recorder visualization too
+* Right click to focus on a node (more info, popup, chat, edit, etc...) (next, next, next keyboard)
+* inline browser
 
 
-* WEBSITE
-- track custom data on purchase for attribution
-- Add Testimonials
-- have a bunch of embeddable examples on home page, let people click and see what's interesting..maybe don't make the default generate?
-  - full screen mode
-  - embed think machine above the fold in thinkmachine.com?
+0.0.9
+* Simplify bridge sync/async concept between electron + web. should have same interface on both
+* Scraping Web (any url / pdf) very accurate generation
+* Make updates even smoother. Give nodes unique ID that never changes.
+* Integration tests
+* Multiple tabs/windows
 
-* MARKETING
-- Update marketing video with new features
-- Full Launch
-- Public knowledge graph gallery
-- ads
+0.1.0
+* Chat tool calling, have chat generate new data/search/add, based on topics
+* Collaboration, make actions async 
+* Minimap: https://github.com/vasturiano/react-force-graph/issues/490
+* More complex layout control
 
-* WEB
-- Sign up for higher limits
-- pro -> HD/long video renderings
-- pro -> modify prompt
- - pro -> model temperature
-- pro -> modify colors
-- pro -> private knowledge graphs
+0.1.1
+* Pagerank / Embeddings / Vector Search UI
+* AI Autocomplete in text input
 
-* ELECTRON
-- electron: scraping -> proxy api key?
+0.1.2
+* Image mode..turn symbols into visual images
+* iOS / Android app
 
-
-* FUTURE
-- Hold shift while clicking changes current context to be that context
-- (maybe?) Make desktop version work with 1-click ModelDeployer rate limited tokens
-
-
-* SUPER FUTURE
-- iOS / Android apps?
-- URL scraping should be very accurate. we don't want to generate too much, just take from what's there. needs new prompt
-  - PDFs extraction -> scraping web
-- There's an opportunity to make updates even smoother
- - Issue is switching from Isolated -> Confluence, the node IDs actually change
- - If there was a way to grab it's old node ID, that may or may not work
-- Tool calling, have chat generate new data/search/add, based on topics
-- What kinds of tests could we add? Integration tests kinda suck, but app is getting complex
-- inline browser? could be useful for quickly seeing references
-- Google Extension...right-click any word and get a knowledge graph?
-- VR/AR would be super dope
-- collaboration, make actions async 
-- Copy & paste nodes
-- 360 photo
-- Clicking a node to search could/should have an alternate feature of just expanding that node out by 1 depth. with filters it makes it hard because so many pop in...but if just a few popped in (and you could easily see how many more there were down that path)
-- Minimap: https://github.com/vasturiano/react-force-graph/issues/490
-- Layout
- - Could give more specific control over sublayout
-   - Line wide
-   - Arrow sizes
-   - Bridge nodes
-   - Confluence nodes
-   - PageRank
-   - Similar Embeddings
-   - more controls to manipulate
-- Background sync UI
-- linux
-- Pagerank UI
-- Embeddings / Vector Search
-- AI Autocomplete in text input
-- multiple tabs/windows
-- fix zoom and rotate axis bugs
-- Distribution
-  - ChatGPT plugin
-  - Pinokio Store
-  - iOS App
-  - Obsidian Plugin
-- image mode, dream machine — where nodes turn into images
-
+distribution
+* Link Aggregators
+* Influencers
+* PPC
+* ChatGPT plugin
+* Pinokio Store
+* iOS App Store
+* Android App Store
+* Meta Store
+* infinitecanvas.tools
+* Obsidian Plugin
