@@ -1,3 +1,5 @@
+import { renderToString } from "react-dom/server";
+
 import { CSS2DRenderer, CSS2DObject } from "three/addons/renderers/CSS2DRenderer.js";
 
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
@@ -11,6 +13,7 @@ import {
 import SpriteText from "three-spritetext";
 import * as Three from "three";
 import * as utils from "@lib/utils";
+import * as Icons from "@assets/Icons";
 
 let mesh = null;
 
@@ -142,7 +145,7 @@ export default function ForceGraph(params) {
             if (params.hideLabels) {
                 return null;
             }
-            return nodeThreeObject(node);
+            return nodeThreeObject(node, params.activeNode);
         };
     } else if (params.graphType === "vr") {
         Graph = ForceGraphVR;
@@ -199,7 +202,7 @@ ForceGraph.load = function (graphRef, graphType) {
     }
 };
 
-function nodeThreeObject(node) {
+function nodeThreeObject(node, activeNode = null) {
     if (node.bridge) {
         const mesh = new Three.Mesh(
             new Three.SphereGeometry(1),
@@ -222,31 +225,64 @@ function nodeThreeObject(node) {
 
     const group = new THREE.Group();
 
+    const title = new SpriteText(name);
+    title.color = node.color;
+    title.textHeight = node.textHeight || 8;
+    title.fontFace = "Helvetica";
+    if (activeNode && activeNode === node.id) {
+        title.backgroundColor = "black";
+    }
+
+    if (!activeNode || activeNode !== node.id) {
+        return title;
+    }
+
+    group.add(title);
+
+    const content = new SpriteText(
+        "Some longer form content goes here\nand then more goes here and\neven more goes right here"
+    );
+    content.color = node.color;
+    content.backgroundColor = "black";
+    content.padding = 1;
+    content.fontSize = 100;
+    content.borderRadius = 5;
+    content.textHeight = 2;
+    content.fontFace = "Helvetica";
+
+    // Calculate the bounding box of the title text
+    const titleBoundingBox = new THREE.Box3().setFromObject(title);
+
+    // Get the size of the bounding box
+    const titleSize = new THREE.Vector3();
+    titleBoundingBox.getSize(titleSize);
+
+    // Calculate the position of the content text relative to the title text
+    const contentPosition = new THREE.Vector3(0, -titleSize.y - 2, -1); // Adjust the offset as needed
+
+    // Set the position of the content text
+    content.position.copy(contentPosition);
+
+    group.add(content);
+
     const div = document.createElement("div");
     div.className = "label";
-    div.textContent = "7.342e22 kg";
-    div.style.backgroundColor = "red";
     div.style.pointerEvents = "auto";
     div.style.userSelect = "all";
-    div.innerHTML = `<div>
-    <button onclick="alert('${name}')">Click me</button>
-    <p>This is some text</p>
-    <p>This is some text</p>
-    <p>This is some text</p>
-    <p>This is some text</p>
-    </div>
-    `;
+    div.innerHTML = renderToString(
+        <div className="text-white pointer-events-auto">
+            <button className="pointer-events-auto" onClick={() => alert("Clicked")}>
+                {Icons.AddIcon(10)}
+            </button>
+        </div>
+    );
+
+    const divPosition = new THREE.Vector3(0, titleSize.y, -1); // Adjust the offset as needed
 
     const label = new CSS2DObject(div);
-    label.position.set(0, 0, 0);
-    label.center.set(0, 0);
+    label.position.copy(divPosition);
+    // label.center.set(0, 0);
     group.add(label);
-
-    const sprite = new SpriteText(name);
-    sprite.color = node.color;
-    sprite.textHeight = node.textHeight || 8;
-    sprite.fontFace = "Helvetica";
-    group.add(sprite);
 
     return group;
 }

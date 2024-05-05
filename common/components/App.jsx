@@ -72,11 +72,11 @@ export default class App extends React.Component {
             hideLabelsThreshold: 1000,
             hideLabels: true,
             wormholeMode: parseInt(window.localStorage.getItem("wormholeMode") || -1),
+            activeNode: null,
             isAnimating: false,
             isShiftDown: false,
             isGenerating: false,
             isChatting: false,
-
             isRecording: false,
             isProcessing: false, // hack
 
@@ -1152,8 +1152,9 @@ export default class App extends React.Component {
     }
 
     handleClickNode(node, e) {
-        console.log(node);
         const camera = this.graphRef.current.cameraPosition();
+
+        this.setState({ activeNode: node.id });
 
         // Define a fixed "up" vector (world up)
         const worldUp = { x: 0, y: 1, z: 0 };
@@ -1210,15 +1211,6 @@ export default class App extends React.Component {
         //     },
         //     1000
         // );
-
-        // const nodes = this.state.data.nodes.map((n) => {
-        //     if (n.id === node.id) {
-        //         n.name =
-        //             n.name +
-        //             "\n\nthis is a much longer name with much longer\ntext and i wonder how much we could\ncustomize this";
-        //     }
-        //     return n;
-        // });
 
         // this.setState({ data: { nodes: nodes, links: this.state.data.links } });
 
@@ -1348,6 +1340,7 @@ export default class App extends React.Component {
                     onNodeClick={this.handleClickNode.bind(this)}
                     showLabels={!this.state.hideLabels}
                     cooldownTicks={this.state.cooldownTicks}
+                    activeNode={this.state.activeNode}
                 />
                 <LLMSettings
                     llm={this.state.llm}
