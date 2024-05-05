@@ -1152,6 +1152,77 @@ export default class App extends React.Component {
     }
 
     handleClickNode(node, e) {
+        console.log(node);
+        const camera = this.graphRef.current.cameraPosition();
+
+        // Define a fixed "up" vector (world up)
+        const worldUp = { x: 0, y: 1, z: 0 };
+
+        // Calculate normalized direction from the node to the camera
+        let direction = {
+            x: camera.x - node.x,
+            y: camera.y - node.y,
+            z: camera.z - node.z,
+        };
+        let mag = Math.sqrt(direction.x ** 2 + direction.y ** 2 + direction.z ** 2);
+        direction.x /= mag;
+        direction.y /= mag;
+        direction.z /= mag;
+
+        // Determine the new camera position offset by 100 units away from the node
+        let offsetDistance = 75; // Distance to offset from the node
+        let newPosition = {
+            x: node.x + direction.x * offsetDistance,
+            y: node.y + direction.y * offsetDistance,
+            z: node.z + direction.z * offsetDistance,
+        };
+
+        // Check if the new position is very close to flipping over
+        let dotWithUp =
+            direction.x * worldUp.x + direction.y * worldUp.y + direction.z * worldUp.z;
+        if (Math.abs(dotWithUp) > 0.95) {
+            // Threshold to adjust to avoid gimbal lock issues
+            newPosition = {
+                // Adjust position slightly to avoid direct alignment with up vector
+                x: newPosition.x + worldUp.x * 10,
+                y: newPosition.y + worldUp.y * 10,
+                z: newPosition.z + worldUp.z * 10,
+            };
+        }
+
+        // Update camera position and target
+        this.graphRef.current.cameraPosition(
+            newPosition, // new camera position
+            { x: node.x, y: node.y, z: node.z }, // camera looks at the node
+            1000 // transition duration in milliseconds
+        );
+
+        // this.graphRef.current.cameraPosition(
+        //     {
+        //         x: node.x,
+        //         y: node.y,
+        //         z: node.z,
+        //     },
+        //     {
+        //         x: node.x,
+        //         y: node.y,
+        //         z: node.z - 100,
+        //     },
+        //     1000
+        // );
+
+        // const nodes = this.state.data.nodes.map((n) => {
+        //     if (n.id === node.id) {
+        //         n.name =
+        //             n.name +
+        //             "\n\nthis is a much longer name with much longer\ntext and i wonder how much we could\ncustomize this";
+        //     }
+        //     return n;
+        // });
+
+        // this.setState({ data: { nodes: nodes, links: this.state.data.links } });
+
+        return;
         window.api.analytics.track("app.clickNode");
 
         if (this.dynamicInputMode === "add") {

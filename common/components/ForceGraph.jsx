@@ -1,3 +1,5 @@
+import { CSS2DRenderer, CSS2DObject } from "three/addons/renderers/CSS2DRenderer.js";
+
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
 import {
     ForceGraph2D,
@@ -8,6 +10,9 @@ import {
 
 import SpriteText from "three-spritetext";
 import * as Three from "three";
+import * as utils from "@lib/utils";
+
+let mesh = null;
 
 export default function ForceGraph(params) {
     const props = {
@@ -63,6 +68,75 @@ export default function ForceGraph(params) {
         Graph = ForceGraph3D;
 
         props.onNodeClick = params.onNodeClick;
+        props.extraRenderers = [new CSS2DRenderer()];
+        // props.nodeThreeObjectExtend = true;
+
+        props._onNodeClick = async (node) => {
+            console.log("NODE", node);
+
+            node.name =
+                node.name +
+                "This is a much longer label where we explain more information";
+            return;
+
+            if (mesh) {
+                params.graphRef.current.scene().remove(mesh);
+                mesh = null;
+            }
+
+            params.graphRef.current.cameraPosition(
+                {
+                    x: node.x,
+                    y: node.y,
+                    z: node.z - 100,
+                },
+                {
+                    x: node.x,
+                    y: node.y,
+                    z: node.z,
+                },
+                1000
+            );
+
+            // await utils.delay(100);
+
+            // Create a canvas element
+            const canvas = document.createElement("canvas");
+            const ctx = canvas.getContext("2d");
+
+            // Set canvas size
+            canvas.width = 512; // Adjust as needed
+            canvas.height = 512; // Adjust as needed
+
+            // Set text styles
+            ctx.fillStyle = "white"; // Text color
+            ctx.font = "Bold 40px Helvetica"; // Bold text and font size
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+
+            // Draw text
+            ctx.fillText(node.name, canvas.width / 2, canvas.height / 2);
+
+            // Create a texture from the canvas
+            const texture = new THREE.Texture(canvas);
+            texture.needsUpdate = true; // Update texture
+
+            const planeGeometry = new THREE.PlaneGeometry(50, 50, 1, 1);
+            const planeMaterial = new THREE.MeshLambertMaterial({
+                map: texture, // Use the canvas texture
+                color: 0xffffff,
+                side: THREE.DoubleSide,
+            });
+
+            mesh = new THREE.Mesh(planeGeometry, planeMaterial);
+            mesh.position.set(node.x - 25 - 10, node.y, node.z);
+            mesh.rotation.y = Math.PI; // Rotate 180 degrees around the Y-axis
+
+            params.graphRef.current.scene().add(mesh);
+
+            console.log(params.graphRef.current);
+        };
+
         props.nodeLabel = (node) => "";
         props.nodeThreeObject = (node) => {
             if (params.hideLabels) {
@@ -139,19 +213,42 @@ function nodeThreeObject(node) {
     }
 
     let name = node.name || "";
-    if (name.length > 30) {
-        name = `${name.substring(0, 27)}...`;
-    }
+    // if (name.length > 30) {
+    //     name = `${name.substring(0, 27)}...`;
+    // }
     if (!name) {
         return null;
     }
 
+    const group = new THREE.Group();
+
+    const div = document.createElement("div");
+    div.className = "label";
+    div.textContent = "7.342e22 kg";
+    div.style.backgroundColor = "red";
+    div.style.pointerEvents = "auto";
+    div.style.userSelect = "all";
+    div.innerHTML = `<div>
+    <button onclick="alert('${name}')">Click me</button>
+    <p>This is some text</p>
+    <p>This is some text</p>
+    <p>This is some text</p>
+    <p>This is some text</p>
+    </div>
+    `;
+
+    const label = new CSS2DObject(div);
+    label.position.set(0, 0, 0);
+    label.center.set(0, 0);
+    group.add(label);
+
     const sprite = new SpriteText(name);
     sprite.color = node.color;
     sprite.textHeight = node.textHeight || 8;
-    sprite.fontFace = "sans-serif";
+    sprite.fontFace = "Helvetica";
+    group.add(sprite);
 
-    return sprite;
+    return group;
 }
 
 function nodeCanvasObject(node, ctx, globalScale) {
