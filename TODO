@@ -1,4 +1,7 @@
+
 new UX
+ - embed external media / search google / youtube for references?
+
 - how to recenter camera? is node-select a mode?
 - navigate through node-select with arrow keys
 - partial-text view—click to expand and see full text. click something and zoom around
@@ -27,6 +30,7 @@ new UX
  - function calling built in to chat..makes good suggestions (clippy)
 - click to generate just generates one, quickly. press multiple times to generate
  - generate automatically goes to next one? down the rabbit hole....
+- typer mode...for brainstorming and fast input..default is mouse
 
 - bug: menu zoom bug is super annoying. after you zoom out, leave node mode?
 - bug: possible to only show menu once fully zoomed?

@@ -288,10 +288,14 @@ export default class App extends React.Component {
             await utils.delay(300);
         }
 
-        const cameraPosition = await GraphUtils.smartZoom(this, oldData, zoom);
-
-        if (cameraPosition) {
-            this.setState({ cameraPosition });
+        console.log("A4");
+        if (this.state.activeNode) {
+            // ??
+        } else {
+            const cameraPosition = await GraphUtils.smartZoom(this, oldData, zoom);
+            if (cameraPosition) {
+                this.setState({ cameraPosition });
+            }
         }
     }
 
@@ -614,6 +618,7 @@ export default class App extends React.Component {
         // TODO: Keep this on double escape?
         // this.graphRef.current.zoomToFit(1250, 100);
 
+        console.log("RESET ACTIVE NODE");
         this.setState({ activeNode: null });
     }
 
@@ -1016,7 +1021,8 @@ export default class App extends React.Component {
                 this.inputReference &&
                 this.inputReference.focus
             ) {
-                this.inputReference.focus();
+                // TODO: what do do with typer?
+                // this.inputReference.focus();
             }
         }
     }
@@ -1166,10 +1172,8 @@ export default class App extends React.Component {
         );
     }
 
-    handleClickNode(node, e) {
+    focusCameraOnNode(node) {
         const camera = this.graphRef.current.cameraPosition();
-
-        this.setState({ activeNode: node.id });
 
         // Define a fixed "up" vector (world up)
         const worldUp = { x: 0, y: 1, z: 0 };
@@ -1212,25 +1216,44 @@ export default class App extends React.Component {
             { x: node.x, y: node.y, z: node.z }, // camera looks at the node
             1250 // transition duration in milliseconds
         );
+    }
 
-        // this.graphRef.current.cameraPosition(
-        //     {
-        //         x: node.x,
-        //         y: node.y,
-        //         z: node.z,
-        //     },
-        //     {
-        //         x: node.x,
-        //         y: node.y,
-        //         z: node.z - 100,
-        //     },
-        //     1000
-        // );
+    async handleClickNode(node, e) {
+        if (e && e.target && e.target.tagName === "INPUT") {
+            // also make it active..add an edge..change mode to connect mode
+            e.preventDefault();
+            return;
+        }
 
-        // this.setState({ data: { nodes: nodes, links: this.state.data.links } });
+        // node.content = "This is some really long content ".repeat(20);
+        let interval = setInterval(() => {
+            console.log(node);
+            console.log("CONTENT", node.content);
+            node.content += "BOOM TOWN NOW and more goes here\n";
+            if (node.content.length > 500) {
+                clearInterval(interval);
+            }
+
+            this.setState({ data: this.state.data });
+        }, 100);
+        node.content = "BOOM TOWN NOW";
+        // console.log(interval);
+
+        window.api.analytics.track("app.clickNode");
+
+        // Switch to connect mode!
+        // Build up connections in UI, let user click to remove—have final add button
+        if (e.shiftKey) {
+            console.log("SHIFT!");
+            return;
+        }
+
+        await this.asyncSetState({ activeNode: node.id });
+        console.log("MY ACTIVE NODE", this.state.activeNode);
+
+        this.focusCameraOnNode(node);
 
         return;
-        window.api.analytics.track("app.clickNode");
 
         if (this.dynamicInputMode === "add") {
             this.setState({ input: node.name }, async () => {
@@ -1247,6 +1270,22 @@ export default class App extends React.Component {
                 await this.handleChatMessage();
             });
         }
+
+        // this.graphRef.current.cameraPosition(
+        //     {
+        //         x: node.x,
+        //         y: node.y,
+        //         z: node.z,
+        //     },
+        //     {
+        //         x: node.x,
+        //         y: node.y,
+        //         z: node.z - 100,
+        //     },
+        //     1000
+        // );
+
+        // this.setState({ data: { nodes: nodes, links: this.state.data.links } });
     }
 
     handleStartRecording(recordType) {

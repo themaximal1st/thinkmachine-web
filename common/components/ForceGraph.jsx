@@ -248,11 +248,16 @@ function nodeThreeObject(node, activeNode = null, graphRef = null) {
         return title;
     }
 
+    function calculateTextSize(obj) {
+        const bounds = new THREE.Box3().setFromObject(obj);
+        const size = new THREE.Vector3();
+        bounds.getSize(size);
+        return size;
+    }
+
     group.add(title);
 
-    const content = new SpriteText(
-        "Some longer form content goes here\nand then more goes here and\neven more goes right here"
-    );
+    const content = new SpriteText(utils.wordWrap(node.content, 80));
     content.color = node.color;
     content.backgroundColor = "black";
     content.padding = 1;
@@ -261,42 +266,65 @@ function nodeThreeObject(node, activeNode = null, graphRef = null) {
     content.textHeight = 2;
     content.fontFace = "Helvetica";
 
-    // Calculate the bounding box of the title text
-    const titleBoundingBox = new THREE.Box3().setFromObject(title);
+    const titleSize = calculateTextSize(title);
+    const contentSize = calculateTextSize(content);
 
-    // Get the size of the bounding box
-    const titleSize = new THREE.Vector3();
-    titleBoundingBox.getSize(titleSize);
+    console.log(titleSize);
+    console.log(contentSize);
+
+    const contentY = -titleSize.y - contentSize.y / 2 + 2;
 
     // Calculate the position of the content text relative to the title text
-    const contentPosition = new THREE.Vector3(0, -titleSize.y - 2, -1); // Adjust the offset as needed
+    const contentPosition = new THREE.Vector3(0, contentY, -1); // Adjust the offset as needed
     content.position.copy(contentPosition);
 
     group.add(content);
 
-    const div = document.createElement("div");
-    div.className = "label";
-    div.style.pointerEvents = "auto";
-    div.style.userSelect = "all";
-    div.innerHTML = `<div 
-        style="background-color: ${node.color}"
-        class="text-white flex gap-4 items-center saturate-50 hover:saturate-100 transition-all bg-gray-800 px-3 py-2 rounded-full">
-            <button onClick='alert("Clicked ${name}")'>
-                ${renderToString(Icons.AddIcon(6))}
+    const backgroundColor = hexToRGBA(node.color, 0.5);
+    const buttonsDiv = document.createElement("div");
+    buttonsDiv.className = "label";
+    buttonsDiv.style.pointerEvents = "auto";
+    buttonsDiv.style.userSelect = "all";
+    buttonsDiv.innerHTML = `<div 
+        style="background-color: ${backgroundColor}"
+        class="text-white flex gap-4 items-center justify-between transition-all bg-gray-50 px-3 py-2 rounded-full">
+            <button class="flex gap-1 uppercase font-medium tracking-wider text-xs items-center" onClick='alert("Clicked ${name}")'>
+                ${renderToString(Icons.AddIcon(3))}
+                Add
             </button>
-            <button onClick='alert("Clicked ${name}")'>
-                ${renderToString(Icons.GenerateIcon(6))}
+            <button class="flex gap-1 uppercase font-medium tracking-wider text-xs items-center" onClick='alert("Clicked ${name}")'>
+                ${renderToString(Icons.GenerateIcon(3))}
+                Generate
+            </button>
+            <button class="flex gap-1 uppercase font-medium tracking-wider text-xs items-center" onClick='alert("Clicked ${name}")'>
+                ${renderToString(Icons.SearchIcon(3))}
+                Search
+            </button>
+            <button class="flex gap-1 uppercase font-medium tracking-wider text-xs items-center" onClick='alert("Clicked ${name}")'>
+                ${renderToString(Icons.ChatIcon(3))}
+                Chat
             </button>
         </div>`;
 
-    const divPosition = new THREE.Vector3(0, titleSize.y - 2, -1); // Adjust the offset as needed
-
-    const divContainer = new CSS2DObject(div);
-    divContainer.position.copy(divPosition);
-
-    group.add(divContainer);
+    const buttonsPosition = new THREE.Vector3(0, titleSize.y - 2, -1);
+    const buttonsContainer = new CSS2DObject(buttonsDiv);
+    buttonsContainer.position.copy(buttonsPosition);
+    group.add(buttonsContainer);
 
     return group;
+}
+
+function hexToRGBA(hex, alpha) {
+    // Remove the hash at the beginning if it's there
+    hex = hex.replace(/^#/, "");
+
+    // Parse the hex color string
+    let r = parseInt(hex.substring(0, 2), 16);
+    let g = parseInt(hex.substring(2, 4), 16);
+    let b = parseInt(hex.substring(4, 6), 16);
+
+    // Return the RGBA color string
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }
 
 function nodeCanvasObject(node, ctx, globalScale) {

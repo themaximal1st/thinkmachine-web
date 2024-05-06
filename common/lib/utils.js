@@ -32,3 +32,40 @@ export function downloadImage(data, filename = "untitled.png") {
     a.download = filename;
     a.click();
 }
+
+
+
+export function wordWrap(text, maxLen = 80) {
+    const words = text.split(' ');
+    let currentLine = '';
+    let result = '';
+
+    for (const word of words) {
+        // Handle existing newlines within words
+        const parts = word.split('\n');
+        parts.forEach((part, index) => {
+            if (currentLine.length + part.length + 1 > maxLen) {
+                // Add the current line to result if it's not empty
+                if (currentLine.trim()) {
+                    result += currentLine.trim() + '\n';
+                }
+                currentLine = part + ' '; // Start new line with the part of the word
+            } else {
+                currentLine += part + ' ';
+            }
+            // If the part was followed by a newline, add the current line and reset
+            if (index !== parts.length - 1) {
+                result += currentLine.trim() + '\n';
+                currentLine = ''; // Reset line after an explicit newline
+            }
+        });
+    }
+    // Add any remaining text to the result
+    if (currentLine.trim()) {
+        result += currentLine.trim();
+    }
+
+    return result;
+}
+
+
