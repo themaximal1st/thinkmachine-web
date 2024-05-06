@@ -150,7 +150,7 @@ export default function ForceGraph(params) {
             if (params.hideLabels) {
                 return null;
             }
-            return nodeThreeObject(node, params.activeNode);
+            return nodeThreeObject(node, params.activeNode, params.graphRef);
         };
     } else if (params.graphType === "vr") {
         Graph = ForceGraphVR;
@@ -207,7 +207,7 @@ ForceGraph.load = function (graphRef, graphType) {
     }
 };
 
-function nodeThreeObject(node, activeNode = null) {
+function nodeThreeObject(node, activeNode = null, graphRef = null) {
     if (node.bridge) {
         const mesh = new Three.Mesh(
             new Three.SphereGeometry(1),
@@ -270,8 +270,6 @@ function nodeThreeObject(node, activeNode = null) {
 
     // Calculate the position of the content text relative to the title text
     const contentPosition = new THREE.Vector3(0, -titleSize.y - 2, -1); // Adjust the offset as needed
-
-    // Set the position of the content text
     content.position.copy(contentPosition);
 
     group.add(content);
@@ -289,13 +287,13 @@ function nodeThreeObject(node, activeNode = null) {
             <button onClick='alert("Clicked ${name}")'>
                 ${renderToString(Icons.GenerateIcon(6))}
             </button>
-            
         </div>`;
 
     const divPosition = new THREE.Vector3(0, titleSize.y - 2, -1); // Adjust the offset as needed
 
     const divContainer = new CSS2DObject(div);
     divContainer.position.copy(divPosition);
+
     group.add(divContainer);
 
     return group;
