@@ -32,7 +32,10 @@ const api = {
         },
         export: () => {
             return ipcRenderer.invoke("hypergraph.export");
-        }
+        },
+        explain: async (input, options = {}) => {
+            return ipcRenderer.stream("hypergraph.explain", input, options);
+        },
     },
     hyperedges: {
         add: (hyperedge, symbol) => {

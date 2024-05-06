@@ -167,6 +167,35 @@ export default class Bridge {
             throw e;
         }
     }
+    async explain(input, options) {
+        this.trackAnalytics("hyperedges.explain");
+
+        this.send({ event: "hyperedges.explain.start" });
+
+        // TODO: simplify this
+        if (options.llm) {
+            if (!this.thinkabletype.options.llm) { this.thinkabletype.options.llm = {} }
+            if (options.llm.service) { this.thinkabletype.options.llm.service = options.llm.service }
+            if (options.llm.model) { this.thinkabletype.options.llm.model = options.llm.model }
+            if (options.llm.apikey) { this.thinkabletype.options.llm.apikey = options.llm.apikey }
+        }
+
+        try {
+            const response = await this.thinkabletype.explain(input, options);
+
+            for await (const chunk of response) {
+                this.send({ event: "hyperedges.explain.chunk", chunk });
+            }
+
+        } catch (e) {
+            const message = e.message || e;
+            this.log(`Error explaining knowledge graph: ${message}`);
+            this.send({ event: "hyperedges.error", message: `Error explaining knowledge graph: ${message}` });
+        } finally {
+            this.send({ event: "hyperedges.explain.stop" });
+        }
+    }
+
 
     async createHypergraph() {
         this.uuid = generateUUID();

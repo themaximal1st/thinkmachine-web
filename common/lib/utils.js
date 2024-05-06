@@ -36,6 +36,8 @@ export function downloadImage(data, filename = "untitled.png") {
 
 
 export function wordWrap(text, maxLen = 80) {
+    if (!text || text.length === 0) return "";
+
     const words = text.split(' ');
     let currentLine = '';
     let result = '';

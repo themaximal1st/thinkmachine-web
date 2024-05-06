@@ -72,6 +72,11 @@ export default class WebBridge {
             return await bridge.chat(messages, { llm });
         });
 
+        this.stream("/api/hypergraph/explain", async ({ bridge, body, res }) => {
+            let { input, llm } = body;
+            return await bridge.explain(input, { llm });
+        });
+
         this.post("/api/hyperedges/wormhole", async ({ bridge, body, req, res }) => {
             const { hyperedges, from_uuid, llm } = body;
 

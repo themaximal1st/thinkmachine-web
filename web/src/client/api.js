@@ -149,6 +149,14 @@ export default class ThinkMachineAPI {
         }
     }
 
+    async *explain(input, options) {
+        if (!this.isValid) return;
+        const response = await this.stream("hypergraph/explain", { input, ...options });
+        for await (const message of ThinkMachineAPI.readChunks(response.body.getReader())) {
+            yield message;
+        }
+    }
+
     async track(event, properties = {}) {
         if (!this.isValid) return;
         return await this.send("analytics/track", { event, properties });
@@ -193,6 +201,7 @@ export default class ThinkMachineAPI {
             },
             hypergraph: {
                 graphData: this.graphData.bind(this),
+                explain: this.explain.bind(this),
                 export: this.exportHypergraph.bind(this),
                 create: async () => {
                     this.uuid = await this.createHypergraph();

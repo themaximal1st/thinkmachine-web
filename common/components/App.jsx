@@ -1225,6 +1225,7 @@ export default class App extends React.Component {
             return;
         }
 
+        /*
         // node.content = "This is some really long content ".repeat(20);
         let interval = setInterval(() => {
             console.log(node);
@@ -1238,6 +1239,7 @@ export default class App extends React.Component {
         }, 100);
         node.content = "BOOM TOWN NOW";
         // console.log(interval);
+        */
 
         window.api.analytics.track("app.clickNode");
 
@@ -1252,6 +1254,26 @@ export default class App extends React.Component {
         console.log("MY ACTIVE NODE", this.state.activeNode);
 
         this.focusCameraOnNode(node);
+
+        if (!node.content) {
+            console.log("NEEDS NODE CONTENT!");
+            const response = window.api.hypergraph.explain(node.name, {
+                llm: this.llmSettings,
+            });
+
+            let content = "";
+            for await (const message of response) {
+                if (
+                    message.event === "hyperedges.explain.chunk" &&
+                    message.chunk &&
+                    message.chunk.length > 0
+                ) {
+                    content += message.chunk;
+                    node.content = content;
+                    this.setState({ data: this.state.data });
+                }
+            }
+        }
 
         return;
 

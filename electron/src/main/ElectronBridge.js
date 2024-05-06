@@ -51,6 +51,7 @@ export default class ElectronBridge {
             "hyperedges.remove": "removeHyperedges",
             "hyperedges.generate": "generateHyperedges",
             "hyperedges.wormhole": "generateWormhole",
+            "hypergraph.explain": "explain",
             "chat": "chat",
             "convert.webmToMp4": "webmToMp4",
         };

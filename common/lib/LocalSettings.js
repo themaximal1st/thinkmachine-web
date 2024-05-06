@@ -61,7 +61,7 @@ export default class LocalSettings {
             {
                 name: "Claude 3 Sonnet",
                 service: "anthropic",
-                model: "claude-3-sonnet-model",
+                model: "claude-3-sonnet-20240229",
                 description: "Mixture of speed and quality",
             },
             {

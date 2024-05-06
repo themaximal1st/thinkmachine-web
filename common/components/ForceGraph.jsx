@@ -30,8 +30,8 @@ export default function ForceGraph(params) {
         graphData: params.data,
         showNavInfo: false,
         linkColor: (link) => {
-            return "rgba(255, 255, 255, 0.01)";
             if (params.activeNode) {
+                return "rgba(255, 255, 255, 0.04)";
             }
 
             return link.color || "#333333";
@@ -180,14 +180,14 @@ ForceGraph.load = function (graphRef, graphType) {
         graphRef.current.postProcessingComposer().addPass(bloomPass);
 
         graphRef.current.d3Force("link").distance((link) => {
-            return link.length || 50;
+            return link.length || 65;
         });
 
         graphRef.current.d3Force("charge").strength((link) => {
-            return -50;
+            return -130;
         });
 
-        graphRef.current.d3Force("charge").distanceMax(150);
+        graphRef.current.d3Force("charge").distanceMax(300);
         graphRef.current.d3Force("charge").distanceMin(10);
 
         graphRef.current.d3Force("center").strength(1);
