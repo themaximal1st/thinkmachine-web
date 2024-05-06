@@ -1,4 +1,5 @@
 import { renderToString } from "react-dom/server";
+import { marked } from "marked";
 
 import { CSS2DRenderer, CSS2DObject } from "three/addons/renderers/CSS2DRenderer.js";
 import { CSS3DRenderer, CSS3DObject } from "three/addons/renderers/CSS3DRenderer.js";
@@ -77,80 +78,12 @@ export default function ForceGraph(params) {
 
         props.onNodeClick = params.onNodeClick;
         props.extraRenderers = [new CSS2DRenderer()];
-        // props.nodeThreeObjectExtend = true;
-
-        props._onNodeClick = async (node) => {
-            console.log("NODE", node);
-
-            node.name =
-                node.name +
-                "This is a much longer label where we explain more information";
-            return;
-
-            if (mesh) {
-                params.graphRef.current.scene().remove(mesh);
-                mesh = null;
-            }
-
-            params.graphRef.current.cameraPosition(
-                {
-                    x: node.x,
-                    y: node.y,
-                    z: node.z - 100,
-                },
-                {
-                    x: node.x,
-                    y: node.y,
-                    z: node.z,
-                },
-                1000
-            );
-
-            // await utils.delay(100);
-
-            // Create a canvas element
-            const canvas = document.createElement("canvas");
-            const ctx = canvas.getContext("2d");
-
-            // Set canvas size
-            canvas.width = 512; // Adjust as needed
-            canvas.height = 512; // Adjust as needed
-
-            // Set text styles
-            ctx.fillStyle = "white"; // Text color
-            ctx.font = "Bold 40px Helvetica"; // Bold text and font size
-            ctx.textAlign = "center";
-            ctx.textBaseline = "middle";
-
-            // Draw text
-            ctx.fillText(node.name, canvas.width / 2, canvas.height / 2);
-
-            // Create a texture from the canvas
-            const texture = new THREE.Texture(canvas);
-            texture.needsUpdate = true; // Update texture
-
-            const planeGeometry = new THREE.PlaneGeometry(50, 50, 1, 1);
-            const planeMaterial = new THREE.MeshLambertMaterial({
-                map: texture, // Use the canvas texture
-                color: 0xffffff,
-                side: THREE.DoubleSide,
-            });
-
-            mesh = new THREE.Mesh(planeGeometry, planeMaterial);
-            mesh.position.set(node.x - 25 - 10, node.y, node.z);
-            mesh.rotation.y = Math.PI; // Rotate 180 degrees around the Y-axis
-
-            params.graphRef.current.scene().add(mesh);
-
-            console.log(params.graphRef.current);
-        };
-
         props.nodeLabel = (node) => "";
         props.nodeThreeObject = (node) => {
             if (params.hideLabels) {
                 return null;
             }
-            return nodeThreeObject(node, params.activeNode, params.graphRef);
+            return nodeThreeObject(node, params.activeNode, params.data);
         };
     } else if (params.graphType === "vr") {
         Graph = ForceGraphVR;
@@ -207,7 +140,68 @@ ForceGraph.load = function (graphRef, graphType) {
     }
 };
 
-function nodeThreeObject(node, activeNode = null, graphRef = null) {
+function linkContent(node, data) {
+    if (!node.content || node.content.length === 0) return "";
+
+    // return node.content;
+
+    let markdown = marked.parse(node.content);
+    markdown = markdown.replace(/[\[\]]*/g, "");
+    markdown = markdown.replace(/\([a-zA-Z0-9\_\-]*\)*/g, "");
+
+    // replace all links with javascript call
+    markdown = markdown.replace(
+        /<a href="([^"]*)">([^<]*)<\/a>/g,
+        `<a href="javascript:window.api.node.activateSlug('$1')">$2</a>`
+    );
+
+    const randomId = `id-${String(Math.floor(Math.random() * 1000000))}`;
+    const color = hexToRGBA(node.color, 1);
+    const css = `#${randomId} a { color: ${color}; } `;
+    return `<style>${css}</style><div id="${randomId}">${markdown}</div>`;
+
+    let words = node.content.split(" ");
+    for (const n of data.nodes) {
+        words = words.map((word) => {
+            if (
+                word &&
+                n.name &&
+                word.toLowerCase() === n.name.toLowerCase() &&
+                word.indexOf("<") === -1
+            ) {
+                return `<a href="javascript:window.api.node.activateId('${n.id}')" style="color: ${color}">${word}</a>`;
+            }
+            return word;
+        });
+        /*
+        if (!added.has(n.name)) {
+            node.content = node.content.replace(
+                n.name,
+                `<a href="javascript:window.api.node.activateId('${n.id}')" style="color: ${color}">${n.name}</a>`
+            );
+            added.add(n.name);
+        }
+        */
+    }
+
+    /*
+    node.content = node.content.replace(
+        "civilization",
+        `<a href="javascript:window.api.node.activateId('${node.id}')" style="color: ${color}">Civilization</a>`
+    );
+
+    node.content = node.content.replace(
+        "Enkidu",
+        `<a href="javascript:handleClick()" style="color: ${color}">Enkidu</a>`
+    );
+    */
+
+    return words.join(" ");
+    // console.log(node.content);
+    // return node.content;
+}
+
+function nodeThreeObject(node, activeNode = null, data) {
     if (node.bridge) {
         const mesh = new Three.Mesh(
             new Three.SphereGeometry(1),
@@ -221,9 +215,11 @@ function nodeThreeObject(node, activeNode = null, graphRef = null) {
     }
 
     let name = node.name || "";
+
     // if (name.length > 30) {
     //     name = `${name.substring(0, 27)}...`;
     // }
+
     if (!name) {
         return null;
     }
@@ -248,15 +244,11 @@ function nodeThreeObject(node, activeNode = null, graphRef = null) {
         return title;
     }
 
-    function calculateTextSize(obj) {
-        const bounds = new THREE.Box3().setFromObject(obj);
-        const size = new THREE.Vector3();
-        bounds.getSize(size);
-        return size;
-    }
-
     group.add(title);
 
+    const titleSize = calculateTextSize(title);
+
+    /*
     const content = new SpriteText(utils.wordWrap(node.content, 80));
     content.color = node.color;
     content.backgroundColor = "black";
@@ -266,11 +258,7 @@ function nodeThreeObject(node, activeNode = null, graphRef = null) {
     content.textHeight = 2;
     content.fontFace = "Helvetica";
 
-    const titleSize = calculateTextSize(title);
     const contentSize = calculateTextSize(content);
-
-    console.log(titleSize);
-    console.log(contentSize);
 
     const contentY = -titleSize.y - contentSize.y / 2 + 2;
 
@@ -279,6 +267,31 @@ function nodeThreeObject(node, activeNode = null, graphRef = null) {
     content.position.copy(contentPosition);
 
     group.add(content);
+    */
+
+    const contentColor = hexToRGBA("#000000", 0.5);
+    const contentDiv = document.createElement("div");
+    contentDiv.className = "label";
+    contentDiv.style.pointerEvents = "auto";
+    contentDiv.style.userSelect = "all";
+    console.log("CONTENT", node.content);
+    if (node.content) {
+        contentDiv.innerHTML = `<div class="select-text absolute top-0 -ml-[250px] w-[500px] text-white bg-gray-1000/50 p-4">
+    ${linkContent(node, data)}
+        </div>`;
+    }
+
+    const contentContainer = new CSS2DObject(contentDiv);
+    const contentSize = calculateTextSize(contentContainer);
+
+    const contentY = -titleSize.y - contentSize.y / 2 + 2;
+
+    // Calculate the position of the content text relative to the title text
+    const contentPosition = new THREE.Vector3(0, contentY, -1); // Adjust the offset as needed
+    contentContainer.position.copy(contentPosition);
+    group.add(contentContainer);
+
+    // buttonsa
 
     const backgroundColor = hexToRGBA(node.color, 0.5);
     const buttonsDiv = document.createElement("div");
@@ -363,4 +376,11 @@ function nodePointerAreaPaint(node, color, ctx) {
             node.y - bckgDimensions[1] / 2,
             ...bckgDimensions
         );
+}
+
+function calculateTextSize(obj) {
+    const bounds = new THREE.Box3().setFromObject(obj);
+    const size = new THREE.Vector3();
+    bounds.getSize(size);
+    return size;
 }

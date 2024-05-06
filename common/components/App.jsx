@@ -187,6 +187,25 @@ export default class App extends React.Component {
         return this.state.isAnimating || this.state.isRecording;
     }
 
+    nodeById(id) {
+        return this.state.data.nodes.find((node) => node.id === id);
+    }
+
+    nodeBySymbol(symbol) {
+        return this.state.data.nodes.find((node) => node.symbol === symbol);
+    }
+
+    nodeBySlug(slug) {
+        if (slug.indexOf("/") === 0) slug = slug.substring(1);
+
+        return this.state.data.nodes.find((node) => {
+            if (!node.name) return false;
+            if (slugify(node.name) === slug) return true;
+            if (slugify(node.name, "_") === slug) return true;
+            return false;
+        });
+    }
+
     //
     // MOUNT / UNMOUNT
     //
@@ -207,6 +226,8 @@ export default class App extends React.Component {
             await this.reloadData({ zoom: true });
 
             window.api.analytics.track("app.load");
+            window.api.node = {};
+            window.api.node.activateSlug = this.activateSlug.bind(this);
 
             await this.fetchLicenseInfo();
 
@@ -1225,89 +1246,54 @@ export default class App extends React.Component {
             return;
         }
 
-        /*
-        // node.content = "This is some really long content ".repeat(20);
-        let interval = setInterval(() => {
-            console.log(node);
-            console.log("CONTENT", node.content);
-            node.content += "BOOM TOWN NOW and more goes here\n";
-            if (node.content.length > 500) {
-                clearInterval(interval);
-            }
-
-            this.setState({ data: this.state.data });
-        }, 100);
-        node.content = "BOOM TOWN NOW";
-        // console.log(interval);
-        */
-
         window.api.analytics.track("app.clickNode");
+        this.activateNode(node, !!e.shiftKey);
+    }
 
-        // Switch to connect mode!
-        // Build up connections in UI, let user click to remove—have final add button
-        if (e.shiftKey) {
-            console.log("SHIFT!");
+    async activateSlug(symbol, add = false) {
+        const node = this.nodeBySlug(symbol);
+        if (!node) return;
+        return this.activateNode(node, add);
+    }
+
+    async activateNode(node, add = false) {
+        // TODO: Switch to connect mode!
+        // TODO: Build up connections in UI, let user click to remove—have final add button
+        if (add) {
+            console.log("ADDING!");
             return;
         }
 
+        let response;
+        if (!node.content) {
+            response = window.api.hypergraph.explain(node.name, {
+                llm: this.llmSettings,
+            });
+        }
+
         await this.asyncSetState({ activeNode: node.id });
-        console.log("MY ACTIVE NODE", this.state.activeNode);
 
         this.focusCameraOnNode(node);
 
-        if (!node.content) {
-            console.log("NEEDS NODE CONTENT!");
-            const response = window.api.hypergraph.explain(node.name, {
-                llm: this.llmSettings,
-            });
-
+        if (response) {
             let content = "";
             for await (const message of response) {
-                if (
-                    message.event === "hyperedges.explain.chunk" &&
-                    message.chunk &&
-                    message.chunk.length > 0
-                ) {
-                    content += message.chunk;
-                    node.content = content;
-                    this.setState({ data: this.state.data });
+                switch (message.event) {
+                    case "hyperedges.error":
+                        toast.error(message.message || "Error generating results");
+                        break;
+                    case "hyperedges.explain.chunk":
+                        if (message.chunk && message.chunk.length > 0) {
+                            content += message.chunk;
+                            node.content = content;
+                            this.setState({ data: this.state.data });
+                        }
+                        break;
+                    default:
+                        break;
                 }
             }
         }
-
-        return;
-
-        if (this.dynamicInputMode === "add") {
-            this.setState({ input: node.name }, async () => {
-                await this.handleAddInput(e);
-            });
-        } else if (this.dynamicInputMode === "generate") {
-            this.setState({ input: node.name }, async () => {
-                await this.handleGenerateInput();
-            });
-        } else if (this.dynamicInputMode === "search") {
-            this.searchText(node.name, e.shiftKey);
-        } else if (this.dynamicInputMode === "chat") {
-            this.setState({ input: node.name }, async () => {
-                await this.handleChatMessage();
-            });
-        }
-
-        // this.graphRef.current.cameraPosition(
-        //     {
-        //         x: node.x,
-        //         y: node.y,
-        //         z: node.z,
-        //     },
-        //     {
-        //         x: node.x,
-        //         y: node.y,
-        //         z: node.z - 100,
-        //     },
-        //     1000
-        // );
-
-        // this.setState({ data: { nodes: nodes, links: this.state.data.links } });
     }
 
     handleStartRecording(recordType) {

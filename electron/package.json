@@ -36,6 +36,7 @@
         "event-iterator": "^2.0.0",
         "jsdom": "^24.0.0",
         "ldrs": "^1.0.1",
+        "marked": "^12.0.2",
         "public-ip": "^6.0.1",
         "react-autosuggest": "^10.1.0",
         "react-force-graph": "^1.44.3",
