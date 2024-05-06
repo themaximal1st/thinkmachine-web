@@ -1,9 +1,40 @@
 new UX
 - how to recenter camera? is node-select a mode?
 - navigate through node-select with arrow keys
-- partial-text view—click to expand
+- partial-text view—click to expand and see full text. click something and zoom around
 - bold/hyperlink symbols and go directly to them
 - buttons to manage stuff...add/edit/remove/link/generate/chat
+- if you can add a background that'd be great
+- have default notes that tie everything together...but let user override or add notes
+- make it so all the planes are connected.. will make everything sharper and easier to add more ui (like chat)
+- more spacing in hypergraph by default
+- fade node/link colors when in node-focus mode
+    - in selected mode, highlight connections brighter (but not 100%)
+- monochrome mode (by default?)
+- eventually embeddings can be used to highlight what's related at a distance
+- New content suggestion! A new node appears that suggests new content could be generated
+- image generation (automatically)
+- rethink whole UI
+ - drop top "input modes"
+ - clicking on canvas should bring up menu natively
+ - keep interwingle
+ - keep depth
+ - rethink settings menu / icons at bottom
+ - rethink context / search
+ - weird idea: when you build context it builds multi-node selector. text from both. images from both. too granular?
+ - weird idea: build a tutorial on the fly from the knowledge graph
+ - weird idea: create a game / puzzle that can only be solved by exploring
+ - function calling built in to chat..makes good suggestions (clippy)
+- click to generate just generates one, quickly. press multiple times to generate
+ - generate automatically goes to next one? down the rabbit hole....
+
+- bug: menu zoom bug is super annoying. after you zoom out, leave node mode?
+- bug: possible to only show menu once fully zoomed?
+
+- Text / Image / Video generation
+- Free version could generate them on-the-fly
+- Pro version could generate ahead of time
+- Presentation mode...hide the UI buttons...just navigate through the content
 
 
 - linking think machine documents together --- creating a bigger web

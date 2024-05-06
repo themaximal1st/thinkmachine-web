@@ -1,6 +1,7 @@
 import { renderToString } from "react-dom/server";
 
 import { CSS2DRenderer, CSS2DObject } from "three/addons/renderers/CSS2DRenderer.js";
+import { CSS3DRenderer, CSS3DObject } from "three/addons/renderers/CSS3DRenderer.js";
 
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
 import {
@@ -29,6 +30,10 @@ export default function ForceGraph(params) {
         graphData: params.data,
         showNavInfo: false,
         linkColor: (link) => {
+            return "rgba(255, 255, 255, 0.01)";
+            if (params.activeNode) {
+            }
+
             return link.color || "#333333";
         },
         nodePointerAreaPaint: (node, color, ctx) => {
@@ -229,8 +234,14 @@ function nodeThreeObject(node, activeNode = null) {
     title.color = node.color;
     title.textHeight = node.textHeight || 8;
     title.fontFace = "Helvetica";
-    if (activeNode && activeNode === node.id) {
-        title.backgroundColor = "black";
+
+    if (activeNode) {
+        if (activeNode === node.id) {
+            title.backgroundColor = "black";
+        } else {
+            title.color = "rgba(255, 255, 255, 0.5)";
+            title.backgroundColor = "rgba(0, 0, 0, 0.5)";
+        }
     }
 
     if (!activeNode || activeNode !== node.id) {
@@ -269,20 +280,23 @@ function nodeThreeObject(node, activeNode = null) {
     div.className = "label";
     div.style.pointerEvents = "auto";
     div.style.userSelect = "all";
-    div.innerHTML = renderToString(
-        <div className="text-white pointer-events-auto">
-            <button className="pointer-events-auto" onClick={() => alert("Clicked")}>
-                {Icons.AddIcon(10)}
+    div.innerHTML = `<div 
+        style="background-color: ${node.color}"
+        class="text-white flex gap-4 items-center saturate-50 hover:saturate-100 transition-all bg-gray-800 px-3 py-2 rounded-full">
+            <button onClick='alert("Clicked ${name}")'>
+                ${renderToString(Icons.AddIcon(6))}
             </button>
-        </div>
-    );
+            <button onClick='alert("Clicked ${name}")'>
+                ${renderToString(Icons.GenerateIcon(6))}
+            </button>
+            
+        </div>`;
 
-    const divPosition = new THREE.Vector3(0, titleSize.y, -1); // Adjust the offset as needed
+    const divPosition = new THREE.Vector3(0, titleSize.y - 2, -1); // Adjust the offset as needed
 
-    const label = new CSS2DObject(div);
-    label.position.copy(divPosition);
-    // label.center.set(0, 0);
-    group.add(label);
+    const divContainer = new CSS2DObject(div);
+    divContainer.position.copy(divPosition);
+    group.add(divContainer);
 
     return group;
 }

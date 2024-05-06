@@ -607,6 +607,16 @@ export default class App extends React.Component {
         }
     }
 
+    resetActiveNode() {
+        // const cameraPosition = this.graphRef.current.cameraPosition();
+        // this.graphRef.current.cameraPosition(cameraPosition, null, 1000);
+
+        // TODO: Keep this on double escape?
+        // this.graphRef.current.zoomToFit(1250, 100);
+
+        this.setState({ activeNode: null });
+    }
+
     //
     // TOGGLE
     //
@@ -909,6 +919,11 @@ export default class App extends React.Component {
             if (this.state.showConsole) {
                 this.toggleConsole();
             }
+
+            console.log(this.graphRef.current.cameraPosition());
+            if (this.state.activeNode) {
+                this.resetActiveNode();
+            }
         }
 
         if (e.key === "1" && e.metaKey) {
@@ -1171,7 +1186,7 @@ export default class App extends React.Component {
         direction.z /= mag;
 
         // Determine the new camera position offset by 100 units away from the node
-        let offsetDistance = 75; // Distance to offset from the node
+        let offsetDistance = 90; // Distance to offset from the node
         let newPosition = {
             x: node.x + direction.x * offsetDistance,
             y: node.y + direction.y * offsetDistance,
@@ -1195,7 +1210,7 @@ export default class App extends React.Component {
         this.graphRef.current.cameraPosition(
             newPosition, // new camera position
             { x: node.x, y: node.y, z: node.z }, // camera looks at the node
-            1000 // transition duration in milliseconds
+            1250 // transition duration in milliseconds
         );
 
         // this.graphRef.current.cameraPosition(
