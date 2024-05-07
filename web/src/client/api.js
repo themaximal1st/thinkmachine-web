@@ -177,6 +177,11 @@ export default class ThinkMachineAPI {
         return response;
     }
 
+    async mediaSearch(input) {
+        if (!this.isValid) return;
+        return await this.send("media/search", { input });
+    }
+
     setupBridge() {
         if (window.api && !window.api.preloaded) { return }
 
@@ -208,6 +213,9 @@ export default class ThinkMachineAPI {
                     return this.uuid;
                 },
                 isValid: async () => this.isValid,
+            },
+            media: {
+                search: this.mediaSearch.bind(this),
             },
             convert: {
                 webmToMp4: this.webmToMp4.bind(this),

@@ -31,7 +31,7 @@ import RecordingUI from "@components/RecordingUI.jsx";
 export default class App extends React.Component {
     constructor(props) {
         super(props);
-        this.inputRef = React.createRef();
+        (this.imageCache = new Map()), (this.inputRef = React.createRef());
         this.chatInputRef = React.createRef();
         this.consoleRef = React.createRef();
         this.graphRef = React.createRef();
@@ -588,6 +588,26 @@ export default class App extends React.Component {
         Tutorial(this);
     }
 
+    getCachedImage(url) {
+        let image = this.imageCache.get(url);
+        if (image) {
+            return image;
+        }
+
+        console.log("CACHE MISS");
+        image = new Image();
+        image.src = url;
+        this.imageCache.set(url, image);
+
+        if (this.imageCache.size >= 8) {
+            // console.log("DELETE");
+            // const firstKey = this.imageCache.keys().next().value;
+            // this.imageCache.delete(firstKey);
+        }
+
+        return image;
+    }
+
     // Function to check for collisions between the camera and nodes when wormhole is enabled
     checkForCollisions() {
         if (this.state.wormholeMode === -1) return;
@@ -937,6 +957,8 @@ export default class App extends React.Component {
     handleKeyDown(e) {
         this.animation.interact();
 
+        return;
+
         if (e.key === "Shift") {
             this.setState({ isShiftDown: true });
         }
@@ -1051,9 +1073,9 @@ export default class App extends React.Component {
     handleKeyUp(e) {
         this.animation.stopInteracting();
 
-        if (e.key === "Shift") {
-            this.setState({ isShiftDown: false });
-        }
+        // if (e.key === "Shift") {
+        //     this.setState({ isShiftDown: false });
+        // }
     }
 
     async handleEmptyHypergraph() {
@@ -1264,20 +1286,34 @@ export default class App extends React.Component {
             return;
         }
 
-        let response;
-        if (!node.content) {
-            response = window.api.hypergraph.explain(node.name, {
-                llm: this.llmSettings,
-            });
+        let content_response;
+        // if (!node.content) {
+        content_response = window.api.hypergraph.explain(node.name, {
+            llm: this.llmSettings,
+        });
+        // }
+
+        let image_response;
+        if (!node.images) {
+            image_response = window.api.media.search(node.name);
         }
 
         await this.asyncSetState({ activeNode: node.id });
 
         this.focusCameraOnNode(node);
 
-        if (response) {
+        if (image_response) {
+            console.log("IMAGE", image_response);
+            image_response.then((images) => {
+                console.log("IMAGES", images);
+                node.images = images;
+                this.setState({ data: this.state.data });
+            });
+        }
+
+        if (content_response) {
             let content = "";
-            for await (const message of response) {
+            for await (const message of content_response) {
                 switch (message.event) {
                     case "hyperedges.error":
                         toast.error(message.message || "Error generating results");
@@ -1403,6 +1439,8 @@ export default class App extends React.Component {
                     showLabels={!this.state.hideLabels}
                     cooldownTicks={this.state.cooldownTicks}
                     activeNode={this.state.activeNode}
+                    imageCache={this.imageCache}
+                    getCachedImage={this.getCachedImage.bind(this)}
                 />
                 <LLMSettings
                     llm={this.state.llm}

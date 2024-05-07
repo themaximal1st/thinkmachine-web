@@ -62,6 +62,11 @@ export default class WebBridge {
             return bridge.exportHypergraph();
         });
 
+        this.post("/api/media/search", ({ bridge, body }) => {
+            const { input } = body;
+            return bridge.mediaSearch(input);
+        });
+
         this.stream("/api/hyperedges/generate", async ({ bridge, body, res }) => {
             let { input, llm } = body;
             return await bridge.generateHyperedges(input, { llm });

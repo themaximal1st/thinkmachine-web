@@ -7,6 +7,8 @@ import { isUUID, isEmptyUUID, generate as generateUUID } from "./uuid.js";
 import extractor from "./extractor.js";
 import { webmToMp4, base64ToBuffer } from "./ffmpeg.js";
 
+import * as GoogleSearch from "./GoogleSearch.js";
+
 export default class Bridge {
     constructor(thinkabletype = null, guid = null, uuid = null) {
         this.thinkabletype = thinkabletype || new ThinkableType({ colors });
@@ -167,6 +169,7 @@ export default class Bridge {
             throw e;
         }
     }
+
     async explain(input, options) {
         this.trackAnalytics("hyperedges.explain");
 
@@ -194,6 +197,22 @@ export default class Bridge {
         } finally {
             this.send({ event: "hyperedges.explain.stop" });
         }
+    }
+
+    async mediaSearch(input) {
+        this.trackAnalytics("media.search");
+
+        const searchId = process.env.GOOGLE_SEARCH_ENGINE_ID;
+        if (!searchId) {
+            throw new Error("Missing GOOGLE_SEARCH_ENGINE_ID");
+        }
+
+        const apiKey = process.env.GOOGLE_SEARCH_API_KEY;
+        if (!apiKey) {
+            throw new Error("Missing GOOGLE_SEARCH_API_KEY");
+        }
+
+        return await GoogleSearch.getTopImages(input, searchId, apiKey);
     }
 
 

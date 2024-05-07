@@ -17,8 +17,6 @@ import * as Three from "three";
 import * as utils from "@lib/utils";
 import * as Icons from "@assets/Icons";
 
-let mesh = null;
-
 export default function ForceGraph(params) {
     const props = {
         ref: params.graphRef,
@@ -83,7 +81,7 @@ export default function ForceGraph(params) {
             if (params.hideLabels) {
                 return null;
             }
-            return nodeThreeObject(node, params.activeNode, params.data);
+            return nodeThreeObject(node, params.activeNode, params);
         };
     } else if (params.graphType === "vr") {
         Graph = ForceGraphVR;
@@ -159,49 +157,9 @@ function linkContent(node, data) {
     const color = hexToRGBA(node.color, 1);
     const css = `#${randomId} a { color: ${color}; } `;
     return `<style>${css}</style><div id="${randomId}">${markdown}</div>`;
-
-    let words = node.content.split(" ");
-    for (const n of data.nodes) {
-        words = words.map((word) => {
-            if (
-                word &&
-                n.name &&
-                word.toLowerCase() === n.name.toLowerCase() &&
-                word.indexOf("<") === -1
-            ) {
-                return `<a href="javascript:window.api.node.activateId('${n.id}')" style="color: ${color}">${word}</a>`;
-            }
-            return word;
-        });
-        /*
-        if (!added.has(n.name)) {
-            node.content = node.content.replace(
-                n.name,
-                `<a href="javascript:window.api.node.activateId('${n.id}')" style="color: ${color}">${n.name}</a>`
-            );
-            added.add(n.name);
-        }
-        */
-    }
-
-    /*
-    node.content = node.content.replace(
-        "civilization",
-        `<a href="javascript:window.api.node.activateId('${node.id}')" style="color: ${color}">Civilization</a>`
-    );
-
-    node.content = node.content.replace(
-        "Enkidu",
-        `<a href="javascript:handleClick()" style="color: ${color}">Enkidu</a>`
-    );
-    */
-
-    return words.join(" ");
-    // console.log(node.content);
-    // return node.content;
 }
 
-function nodeThreeObject(node, activeNode = null, data) {
+function nodeThreeObject(node, activeNode = null, params) {
     if (node.bridge) {
         const mesh = new Three.Mesh(
             new Three.SphereGeometry(1),
@@ -248,38 +206,97 @@ function nodeThreeObject(node, activeNode = null, data) {
 
     const titleSize = calculateTextSize(title);
 
-    /*
-    const content = new SpriteText(utils.wordWrap(node.content, 80));
-    content.color = node.color;
-    content.backgroundColor = "black";
-    content.padding = 1;
-    content.fontSize = 100;
-    content.borderRadius = 5;
-    content.textHeight = 2;
-    content.fontFace = "Helvetica";
+    // TODO: These flash...ideas. put them on a canvas? put them on another div? will that still flash?
+    // TODO: Image search needs a little more context — include the hyperedges?
 
-    const contentSize = calculateTextSize(content);
+    // const contentColor = hexToRGBA("#000000", 0.5);
+    // const contentDiv = document.createElement("div");
+    // contentDiv.className = "label";
+    // contentDiv.style.pointerEvents = "auto";
+    // contentDiv.style.userSelect = "all";
+    // // if (node.content) {
 
-    const contentY = -titleSize.y - contentSize.y / 2 + 2;
+    // contentDiv.innerHTML = renderToString(<div className="text-white">BOOM TOWN</div>);
 
-    // Calculate the position of the content text relative to the title text
-    const contentPosition = new THREE.Vector3(0, contentY, -1); // Adjust the offset as needed
-    content.position.copy(contentPosition);
+    // contentDiv.appendChild(image);
 
-    group.add(content);
-    */
+    // const contentContainer = new CSS2DObject(contentDiv);
+    // const contentSize = calculateTextSize(contentContainer);
+
+    // const contentY = -titleSize.y - contentSize.y / 2 + 2;
+
+    // // Calculate the position of the content text relative to the title text
+    // const contentPosition = new THREE.Vector3(0, contentY, -1); // Adjust the offset as needed
+    // contentContainer.position.copy(contentPosition);
+    // group.add(contentContainer);
+
+    // return group;
 
     const contentColor = hexToRGBA("#000000", 0.5);
     const contentDiv = document.createElement("div");
     contentDiv.className = "label";
     contentDiv.style.pointerEvents = "auto";
     contentDiv.style.userSelect = "all";
-    console.log("CONTENT", node.content);
-    if (node.content) {
-        contentDiv.innerHTML = `<div class="select-text absolute top-0 -ml-[250px] w-[500px] text-white bg-gray-1000/50 p-4">
-    ${linkContent(node, data)}
-        </div>`;
+    // if (node.content) {
+    contentDiv.innerHTML = `
+<div class="select-text absolute top-0 -ml-[250px] w-[500px] text-white bg-gray-1000 rounded-lg flex flex-col gap-3 pt-1">
+    <div class="text-white flex gap-6 items-center transition-all bg-gray-1000 rounded-full p-3 pb-0">
+        <button class="flex gap-[6px] uppercase font-medium tracking-wider text-xs items-center" onClick='alert("Clicked ${name}")'>
+            ${renderToString(Icons.ChatIcon(3))}
+            Edit
+        </button>
+        <button class="flex gap-[6px] uppercase font-medium tracking-wider text-xs items-center" onClick='alert("Clicked ${name}")'>
+            ${renderToString(Icons.AddIcon(3))}
+            Add
+        </button>
+        <button class="flex gap-[6px] uppercase font-medium tracking-wider text-xs items-center" onClick='alert("Clicked ${name}")'>
+            ${renderToString(Icons.GenerateIcon(3))}
+            Generate
+        </button>
+        <div class="grow"></div>
+        <button class="flex gap-[6px] uppercase font-medium tracking-wider text-xs items-center" onClick='alert("Clicked ${name}")'>
+            ${renderToString(Icons.SearchIcon(3))}
+            Search
+        </button>
+    </div>
+
+
+    <div class="px-3 overflow-y-hidden">
+    ${linkContent(node, params.data)}
+    </div>
+
+    <div class="flex gap-3 px-3 overflow-x-scroll images h-16">
+    </div>
+
+    <input type="text" class="w-full h-full bg-gray-1000 focus:bg-gray-800 focus:outline-none p-3 py-2 rounded-b-lg text-sm" placeholder="What do you want to know?" />
+</div>`;
+
+    /*
+    let images;
+    if (node.images) {
+        images = node.images
+            .map((image) => {
+                return `<img key=${image.thumbnail} src="${image.thumbnail}" class="h-8 object-contain" />`;
+            })
+            .join("");
     }
+    */
+
+    if (node.images) {
+        for (const { thumbnail } of node.images) {
+            const image = params.getCachedImage(thumbnail);
+            contentDiv.querySelector(".images").appendChild(image);
+        }
+    }
+
+    // if (node.images) {
+    //     for (const { thumbnail } of node.images) {
+    //         const image = params.getCachedImage(thumbnail);
+    //         console.log(image);
+    //     }
+    // }
+
+    // contentDiv.querySelector(".images").appendChild(image1);
 
     const contentContainer = new CSS2DObject(contentDiv);
     const contentSize = calculateTextSize(contentContainer);
@@ -290,39 +307,6 @@ function nodeThreeObject(node, activeNode = null, data) {
     const contentPosition = new THREE.Vector3(0, contentY, -1); // Adjust the offset as needed
     contentContainer.position.copy(contentPosition);
     group.add(contentContainer);
-
-    // buttonsa
-
-    const backgroundColor = hexToRGBA(node.color, 0.5);
-    const buttonsDiv = document.createElement("div");
-    buttonsDiv.className = "label";
-    buttonsDiv.style.pointerEvents = "auto";
-    buttonsDiv.style.userSelect = "all";
-    buttonsDiv.innerHTML = `<div 
-        style="background-color: ${backgroundColor}"
-        class="text-white flex gap-4 items-center justify-between transition-all bg-gray-50 px-3 py-2 rounded-full">
-            <button class="flex gap-1 uppercase font-medium tracking-wider text-xs items-center" onClick='alert("Clicked ${name}")'>
-                ${renderToString(Icons.AddIcon(3))}
-                Add
-            </button>
-            <button class="flex gap-1 uppercase font-medium tracking-wider text-xs items-center" onClick='alert("Clicked ${name}")'>
-                ${renderToString(Icons.GenerateIcon(3))}
-                Generate
-            </button>
-            <button class="flex gap-1 uppercase font-medium tracking-wider text-xs items-center" onClick='alert("Clicked ${name}")'>
-                ${renderToString(Icons.SearchIcon(3))}
-                Search
-            </button>
-            <button class="flex gap-1 uppercase font-medium tracking-wider text-xs items-center" onClick='alert("Clicked ${name}")'>
-                ${renderToString(Icons.ChatIcon(3))}
-                Chat
-            </button>
-        </div>`;
-
-    const buttonsPosition = new THREE.Vector3(0, titleSize.y - 2, -1);
-    const buttonsContainer = new CSS2DObject(buttonsDiv);
-    buttonsContainer.position.copy(buttonsPosition);
-    group.add(buttonsContainer);
 
     return group;
 }
@@ -383,4 +367,33 @@ function calculateTextSize(obj) {
     const size = new THREE.Vector3();
     bounds.getSize(size);
     return size;
+}
+
+import React, { useEffect, useRef } from "react";
+
+function ImageCache({ imageUrls }) {
+    const imageCacheRef = useRef(null);
+
+    useEffect(() => {
+        // Ensure the cache container exists
+        if (imageCacheRef.current) {
+            // Clear existing images
+            imageCacheRef.current.innerHTML = "";
+
+            // Cache new images
+            imageUrls.forEach((url) => {
+                const img = document.createElement("img");
+                img.src = url;
+                img.style.display = "none"; // Make sure it's hidden
+                imageCacheRef.current.appendChild(img);
+            });
+        }
+    }, [imageUrls]); // Dependency on imageUrls to update cache when URLs change
+
+    // The image elements are stored in a hidden div and can be accessed by their src
+    return (
+        <div ref={imageCacheRef} style={{ display: "none" }}>
+            {/* This div will hold cached images, not visible to users */}
+        </div>
+    );
 }
