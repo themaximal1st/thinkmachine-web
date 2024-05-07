@@ -271,32 +271,12 @@ function nodeThreeObject(node, activeNode = null, params) {
     <input type="text" class="w-full h-full bg-gray-1000 focus:bg-gray-800 focus:outline-none p-3 py-2 rounded-b-lg text-sm" placeholder="What do you want to know?" />
 </div>`;
 
-    /*
-    let images;
-    if (node.images) {
-        images = node.images
-            .map((image) => {
-                return `<img key=${image.thumbnail} src="${image.thumbnail}" class="h-8 object-contain" />`;
-            })
-            .join("");
-    }
-    */
-
     if (node.images) {
         for (const { thumbnail } of node.images) {
             const image = params.getCachedImage(thumbnail);
             contentDiv.querySelector(".images").appendChild(image);
         }
     }
-
-    // if (node.images) {
-    //     for (const { thumbnail } of node.images) {
-    //         const image = params.getCachedImage(thumbnail);
-    //         console.log(image);
-    //     }
-    // }
-
-    // contentDiv.querySelector(".images").appendChild(image1);
 
     const contentContainer = new CSS2DObject(contentDiv);
     const contentSize = calculateTextSize(contentContainer);
