@@ -253,10 +253,14 @@ function nodeThreeObject(node, activeNode = null, params) {
             ${renderToString(Icons.GenerateIcon(3))}
             Generate
         </button>
+        <button class="flex gap-[6px] uppercase font-medium tracking-wider text-xs items-center" onClick='window.api.node.toggleActiveNodeImages()'>
+            ${renderToString(Icons.ScreenshotIcon(3))}
+            Images
+        </button>
         <div class="grow"></div>
         <button class="flex gap-[6px] uppercase font-medium tracking-wider text-xs items-center" onClick='alert("Clicked ${name}")'>
             ${renderToString(Icons.SearchIcon(3))}
-            Search
+            Filter
         </button>
     </div>
 
@@ -265,13 +269,16 @@ function nodeThreeObject(node, activeNode = null, params) {
     ${linkContent(node, params.data)}
     </div>
 
-    <div class="flex gap-3 px-3 overflow-x-scroll images h-16">
-    </div>
+    ${
+        params.showActiveNodeImages
+            ? `<div class="flex gap-3 px-3 overflow-x-scroll images h-16"></div>`
+            : ""
+    }
 
     <input type="text" class="w-full h-full bg-gray-1000 focus:bg-gray-800 focus:outline-none p-3 py-2 rounded-b-lg text-sm" placeholder="What do you want to know?" />
 </div>`;
 
-    if (node.images) {
+    if (params.showActiveNodeImages && node.images) {
         for (const { thumbnail } of node.images) {
             const image = params.getCachedImage(thumbnail);
             contentDiv.querySelector(".images").appendChild(image);

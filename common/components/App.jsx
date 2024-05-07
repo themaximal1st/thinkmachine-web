@@ -73,6 +73,7 @@ export default class App extends React.Component {
             hideLabels: true,
             wormholeMode: parseInt(window.localStorage.getItem("wormholeMode") || -1),
             activeNode: null,
+            showActiveNodeImages: false,
             isAnimating: false,
             isShiftDown: false,
             isGenerating: false,
@@ -200,8 +201,8 @@ export default class App extends React.Component {
 
         return this.state.data.nodes.find((node) => {
             if (!node.name) return false;
-            if (slugify(node.name) === slug) return true;
-            if (slugify(node.name, "_") === slug) return true;
+            if (slugify(node.name.toLowerCase()) === slug.toLowerCase()) return true;
+            if (slugify(node.name.toLowerCase(), "_") === slug.toLowerCase()) return true;
             return false;
         });
     }
@@ -228,6 +229,8 @@ export default class App extends React.Component {
             window.api.analytics.track("app.load");
             window.api.node = {};
             window.api.node.activateSlug = this.activateSlug.bind(this);
+            window.api.node.toggleActiveNodeImages =
+                this.toggleActiveNodeImages.bind(this);
 
             await this.fetchLicenseInfo();
 
@@ -666,6 +669,12 @@ export default class App extends React.Component {
     //
     // TOGGLE
     //
+
+    toggleActiveNodeImages(val) {
+        const showActiveNodeImages =
+            val === undefined ? !this.state.showActiveNodeImages : val;
+        this.setState({ showActiveNodeImages });
+    }
 
     toggleVideoType(val) {
         const videoType =
@@ -1273,7 +1282,9 @@ export default class App extends React.Component {
     }
 
     async activateSlug(symbol, add = false) {
+        console.log("SYMBOL", symbol);
         const node = this.nodeBySlug(symbol);
+        console.log("NODE", node);
         if (!node) return;
         return this.activateNode(node, add);
     }
@@ -1287,15 +1298,20 @@ export default class App extends React.Component {
         }
 
         let content_response;
-        // if (!node.content) {
-        content_response = window.api.hypergraph.explain(node.name, {
-            llm: this.llmSettings,
-        });
-        // }
+        if (!node.content) {
+            content_response = window.api.hypergraph.explain(node.name, {
+                llm: this.llmSettings,
+            });
+        }
 
         let image_response;
         if (!node.images) {
-            image_response = window.api.media.search(node.name);
+            console.log("NODE", node);
+            const search_term = node._meta.hyperedgeIDs
+                .map((id) => id.split("->").join(" "))
+                .join(" ");
+            console.log(search_term);
+            image_response = window.api.media.search(search_term);
         }
 
         await this.asyncSetState({ activeNode: node.id });
@@ -1441,6 +1457,8 @@ export default class App extends React.Component {
                     activeNode={this.state.activeNode}
                     imageCache={this.imageCache}
                     getCachedImage={this.getCachedImage.bind(this)}
+                    showActiveNodeImages={this.state.showActiveNodeImages}
+                    toggleShowActiveNodeImages={this.toggleActiveNodeImages.bind(this)}
                 />
                 <LLMSettings
                     llm={this.state.llm}
