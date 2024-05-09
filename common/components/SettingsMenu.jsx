@@ -80,12 +80,10 @@ export default function SettingsMenu(props) {
                     Advanced Layout
                 </a>
 
-                {!isWeb && (
-                    <a onClick={toggleLicenseWindow} className="menu-item">
-                        <div>{Icons.LicenseIcon(6)}</div>
-                        License
-                    </a>
-                )}
+                <a onClick={toggleLicenseWindow} className="menu-item">
+                    <div>{Icons.LicenseIcon(6)}</div>
+                    License
+                </a>
             </div>
         </ModalBackground>
     );

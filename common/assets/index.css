@@ -59,6 +59,10 @@ body {
     @apply ml-[80.9px];
 }
 
+.fan-left a:nth-child(7) {
+    @apply ml-[99.9px];
+}
+
 .fan-left .menu-item {
     @apply pointer-events-auto text-gray-200 hover:text-gray-50  bg-gray-800/80 hover:bg-gray-500/80 transition-all p-2 opacity-0 inline-flex items-center gap-2 hover:cursor-pointer flex-none self-start rounded-lg text-sm pr-4;
 }
@@ -85,6 +89,10 @@ body {
 
 .fan-left .menu-item:nth-child(6) {
     animation: itemPopUp 0.11s ease-out 0.11s forwards;
+}
+
+.fan-left .menu-item:nth-child(7) {
+    animation: itemPopUp 0.13s ease-out 0.13s forwards;
 }
 
 #layout-settings input {

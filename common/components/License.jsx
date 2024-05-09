@@ -39,10 +39,19 @@ export default function License(params) {
                 )}
                 {!params.trialExpired && !params.licenseValid && (
                     <>
-                        <p>
-                            Think Machine has {Math.ceil(params.trialRemaining / 86400)}{" "}
-                            days left on the trial.
-                        </p>
+                        {window.api.isElectron && (
+                            <p>
+                                Think Machine has{" "}
+                                {Math.ceil(params.trialRemaining / 86400)} days left on
+                                the trial.
+                            </p>
+                        )}
+                        {window.api.isWeb && (
+                            <p>
+                                Think Machine is running in trial mode, with some features
+                                limited and rate limits.
+                            </p>
+                        )}
                         <p>
                             <a
                                 target="_blank"
