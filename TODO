@@ -1,5 +1,6 @@
 - it should be more generative. when a link doesn't exist, generate it
 - remove markdown linking...do it dynamically based on embeddings? or switch to symbols and generate from there
+- business: integrate 3rd party data easily
 
 new UX
  - embed external media / search google / youtube for references?
