@@ -3,6 +3,7 @@ import ThinkableType from "@themaximalist/thinkabletype";
 
 import colors from "./colors.js";
 import { isUUID, isEmptyUUID, generate as generateUUID } from "./uuid.js";
+import License from "./License.js";
 // import Analytics from "./Analytics.js";
 import extractor from "./extractor.js";
 import { webmToMp4, base64ToBuffer } from "./ffmpeg.js";
@@ -233,5 +234,9 @@ export default class Bridge {
             this.log(`Error in webToMp4: ${message}`);
             return null;
         }
+    }
+
+    async validateLicense(license) {
+        return await License.check(license);
     }
 }

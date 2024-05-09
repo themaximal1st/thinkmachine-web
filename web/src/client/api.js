@@ -182,6 +182,10 @@ export default class ThinkMachineAPI {
         return await this.send("media/search", { input });
     }
 
+    async validateLicense(license) {
+        return await this.send("license/validate", { license });
+    }
+
     setupBridge() {
         if (window.api && !window.api.preloaded) { return }
 
@@ -219,6 +223,9 @@ export default class ThinkMachineAPI {
             },
             convert: {
                 webmToMp4: this.webmToMp4.bind(this),
+            },
+            license: {
+                validate: this.validateLicense.bind(this),
             }
         };
     }

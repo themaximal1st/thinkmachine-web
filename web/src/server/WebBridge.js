@@ -99,6 +99,11 @@ export default class WebBridge {
         this.post("/api/convert/webmToMp4", async ({ bridge, body }) => {
             return await bridge.webmToMp4(body.buffer);
         }, { save: false });
+
+        this.post("/api/license/validate", async ({ bridge, body }) => {
+            const { license } = body;
+            return await bridge.validateLicense(license);
+        }, { save: false });
     }
 
     async createHypergraph(req) {

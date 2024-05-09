@@ -53,8 +53,8 @@ export default class App extends React.Component {
             showChat: false,
             showRecordingModal: false,
 
-            licenseKey: "",
-            licenseValid: undefined,
+            licenseKey: window.localStorage.getItem("license") || "",
+            licenseValid: window.localStorage.getItem("licenseValid") || undefined,
             trialExpired: false,
             trialRemaining: Infinity,
             llm: {
@@ -530,23 +530,37 @@ export default class App extends React.Component {
     }
 
     async validateAccess() {
-        const state = {
-            licenseValid: false,
-            trialExpired: this.state.trialRemaining <= 0,
-        };
-
-        if (this.state.licenseKey) {
-            console.log("validating license");
-            state.licenseValid = await window.api.license.validate(this.state.licenseKey);
-            if (state.licenseValid) {
-                console.log("validated license");
-                await window.api.settings.set("license", this.state.licenseKey);
-                state.error = null;
+        // TODO: Clean this up
+        if (window.api.isWeb) {
+            const licenseValid = await window.api.license.validate(this.state.licenseKey);
+            if (licenseValid) {
+                window.localStorage.setItem("license", this.state.licenseKey);
+                window.localStorage.setItem("licenseValid", true);
+                this.setState({ licenseValid });
             } else {
-                state.error = "License is not valid";
+                toast.error("License is not valid");
             }
+        } else {
+            const state = {
+                licenseValid: false,
+                trialExpired: this.state.trialRemaining <= 0,
+            };
+
+            if (this.state.licenseKey) {
+                console.log("validating license");
+                state.licenseValid = await window.api.license.validate(
+                    this.state.licenseKey
+                );
+                if (state.licenseValid) {
+                    console.log("validated license");
+                    await window.api.settings.set("license", this.state.licenseKey);
+                    state.error = null;
+                } else {
+                    state.error = "License is not valid";
+                }
+            }
+            this.setState(state);
         }
-        this.setState(state);
     }
 
     async activateLicense(e) {
@@ -555,8 +569,14 @@ export default class App extends React.Component {
     }
 
     async deactivateLicense() {
-        await window.api.settings.set("license", null);
-        await window.api.settings.set("lastValidated", null);
+        // TODO: cleanup
+        if (window.api.isWeb) {
+            window.localStorage.removeItem("license");
+            window.localStorage.removeItem("licenseValid");
+        } else {
+            await window.api.settings.set("license", null);
+            await window.api.settings.set("lastValidated", null);
+        }
 
         this.setState({ licenseKey: "", licenseValid: false });
     }
