@@ -186,7 +186,7 @@ export default class ThinkMachineAPI {
         return await this.send("license/validate", { license });
     }
 
-    setupBridge() {
+    setupBridge(app) {
         if (window.api && !window.api.preloaded) { return }
 
         window.api = {
@@ -217,20 +217,27 @@ export default class ThinkMachineAPI {
                     return this.uuid;
                 },
                 isValid: async () => this.isValid,
+                search: app.searchText.bind(app),
             },
             media: {
                 search: this.mediaSearch.bind(this),
+                screenshot: app.takeScreenshot.bind(app),
+                recordVideo: app.recordVideo.bind(app),
             },
             convert: {
                 webmToMp4: this.webmToMp4.bind(this),
             },
             license: {
                 validate: this.validateLicense.bind(this),
-            }
-        };
+            },
+            node: {
+                activateSlug: app.activateSlug.bind(app),
+                toggleActiveNodeImages: app.toggleActiveNodeImages.bind(app),
+            },
+        }
     }
 
-    static async load() {
+    static async load(app) {
         console.log("LOADING");
         let uuid = ThinkMachineAPI.UUID();
         if (!uuid) {
@@ -240,7 +247,8 @@ export default class ThinkMachineAPI {
 
         const api = new ThinkMachineAPI(uuid);
         await api.getOrCreateUser();
-        api.setupBridge();
+        api.setupBridge(app);
+
 
         return api;
     }

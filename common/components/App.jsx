@@ -221,23 +221,16 @@ export default class App extends React.Component {
         document.addEventListener("wheel", this.handleZoom.bind(this));
         window.addEventListener("resize", this.handleResize.bind(this));
 
-        ThinkMachineAPI.load().then(async () => {
+        ThinkMachineAPI.load(this).then(async () => {
             this.loadSettings();
 
             await this.reloadData({ zoom: true });
 
             window.api.analytics.track("app.load");
-            window.api.node = {};
-            window.api.node.activateSlug = this.activateSlug.bind(this);
-            window.api.node.toggleActiveNodeImages =
-                this.toggleActiveNodeImages.bind(this);
 
             await this.fetchLicenseInfo();
 
             await this.handleAutoSearch();
-
-            window.takeScreenshot = this.takeScreenshot.bind(this);
-            window.recordVideo = this.recordVideo.bind(this);
 
             this.recorder = new Recorder();
             this.recorder.onstart = this.handleRecorderStart.bind(this);
@@ -1326,7 +1319,6 @@ export default class App extends React.Component {
 
         let image_response;
         if (!node.images) {
-            console.log("NODE", node);
             const search_term = node._meta.hyperedgeIDs
                 .map((id) => id.split("->").join(" "))
                 .join(" ");
@@ -1339,9 +1331,7 @@ export default class App extends React.Component {
         this.focusCameraOnNode(node);
 
         if (image_response) {
-            console.log("IMAGE", image_response);
             image_response.then((images) => {
-                console.log("IMAGES", images);
                 node.images = images;
                 this.setState({ data: this.state.data });
             });
@@ -1350,14 +1340,16 @@ export default class App extends React.Component {
         if (content_response) {
             let content = "";
             for await (const message of content_response) {
+                let n = this.nodeById(node.id); // re-grab node incase refresh happened
                 switch (message.event) {
                     case "hyperedges.error":
                         toast.error(message.message || "Error generating results");
                         break;
                     case "hyperedges.explain.chunk":
+                        console.log(message);
                         if (message.chunk && message.chunk.length > 0) {
                             content += message.chunk;
-                            node.content = content;
+                            n.content = content;
                             this.setState({ data: this.state.data });
                         }
                         break;

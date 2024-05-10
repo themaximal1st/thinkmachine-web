@@ -47,6 +47,7 @@ export function restoreNodePositions(oldData, newData) {
         if (typeof old.vx === 'number') node.vx = old.vx;
         if (typeof old.vy === 'number') node.vy = old.vy;
         if (typeof old.vz === 'number') node.vz = old.vz;
+        if (!node.content && old.content) node.content = old.content;
     }
 
     return newData;

@@ -206,38 +206,11 @@ function nodeThreeObject(node, activeNode = null, params) {
 
     const titleSize = calculateTextSize(title);
 
-    // TODO: These flash...ideas. put them on a canvas? put them on another div? will that still flash?
-    // TODO: Image search needs a little more context — include the hyperedges?
-
-    // const contentColor = hexToRGBA("#000000", 0.5);
-    // const contentDiv = document.createElement("div");
-    // contentDiv.className = "label";
-    // contentDiv.style.pointerEvents = "auto";
-    // contentDiv.style.userSelect = "all";
-    // // if (node.content) {
-
-    // contentDiv.innerHTML = renderToString(<div className="text-white">BOOM TOWN</div>);
-
-    // contentDiv.appendChild(image);
-
-    // const contentContainer = new CSS2DObject(contentDiv);
-    // const contentSize = calculateTextSize(contentContainer);
-
-    // const contentY = -titleSize.y - contentSize.y / 2 + 2;
-
-    // // Calculate the position of the content text relative to the title text
-    // const contentPosition = new THREE.Vector3(0, contentY, -1); // Adjust the offset as needed
-    // contentContainer.position.copy(contentPosition);
-    // group.add(contentContainer);
-
-    // return group;
-
     const contentColor = hexToRGBA("#000000", 0.5);
     const contentDiv = document.createElement("div");
     contentDiv.className = "label";
     contentDiv.style.pointerEvents = "auto";
     contentDiv.style.userSelect = "all";
-    // if (node.content) {
     contentDiv.innerHTML = `
 <div class="select-text absolute top-0 -ml-[250px] w-[500px] text-white bg-gray-1000 rounded-lg flex flex-col gap-3 pt-1">
     <div class="text-white flex gap-6 items-center transition-all bg-gray-1000 rounded-full p-3 pb-0">
@@ -258,7 +231,7 @@ function nodeThreeObject(node, activeNode = null, params) {
             Images
         </button>
         <div class="grow"></div>
-        <button class="flex gap-[6px] uppercase font-medium tracking-wider text-xs items-center" onClick='alert("Clicked ${name}")'>
+        <button class="flex gap-[6px] uppercase font-medium tracking-wider text-xs items-center" onClick='window.api.hypergraph.search("${name}")'>
             ${renderToString(Icons.SearchIcon(3))}
             Filter
         </button>

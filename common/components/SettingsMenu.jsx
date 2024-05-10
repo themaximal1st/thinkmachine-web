@@ -57,7 +57,7 @@ export default function SettingsMenu(props) {
                 )}
 
                 {props.edited && (
-                    <a onClick={takeScreenshot} className="menu-item">
+                    <a onClick={window.api.media.takeScreenshot} className="menu-item">
                         <div>{Icons.ScreenshotIcon()}</div>
                         Screenshot
                     </a>
