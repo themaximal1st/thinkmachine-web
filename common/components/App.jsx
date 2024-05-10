@@ -116,6 +116,14 @@ export default class App extends React.Component {
         }
     }
 
+    get title() {
+        if (this.state.hyperedges.length === 0) {
+            return `Think Machine — Multidimensional Mind Mapping`;
+        } else {
+            return `${this.state.hyperedges[0].join(" ")} — Think Machine`;
+        }
+    }
+
     get slug() {
         return slugify(`${this.name.toLowerCase()} ${Date.now()}`);
     }
@@ -297,6 +305,8 @@ export default class App extends React.Component {
         console.log(`reloaded data in ${elapsed}ms`);
 
         await this.asyncSetState(state);
+
+        document.title = this.title;
 
         GraphUtils.emitParticlesOnLinkChanges(this, oldData);
 

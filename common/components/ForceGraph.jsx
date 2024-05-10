@@ -206,7 +206,6 @@ function nodeThreeObject(node, activeNode = null, params) {
 
     const titleSize = calculateTextSize(title);
 
-    const contentColor = hexToRGBA("#000000", 0.5);
     const contentDiv = document.createElement("div");
     contentDiv.className = "label";
     contentDiv.style.pointerEvents = "auto";
@@ -327,33 +326,4 @@ function calculateTextSize(obj) {
     const size = new THREE.Vector3();
     bounds.getSize(size);
     return size;
-}
-
-import React, { useEffect, useRef } from "react";
-
-function ImageCache({ imageUrls }) {
-    const imageCacheRef = useRef(null);
-
-    useEffect(() => {
-        // Ensure the cache container exists
-        if (imageCacheRef.current) {
-            // Clear existing images
-            imageCacheRef.current.innerHTML = "";
-
-            // Cache new images
-            imageUrls.forEach((url) => {
-                const img = document.createElement("img");
-                img.src = url;
-                img.style.display = "none"; // Make sure it's hidden
-                imageCacheRef.current.appendChild(img);
-            });
-        }
-    }, [imageUrls]); // Dependency on imageUrls to update cache when URLs change
-
-    // The image elements are stored in a hidden div and can be accessed by their src
-    return (
-        <div ref={imageCacheRef} style={{ display: "none" }}>
-            {/* This div will hold cached images, not visible to users */}
-        </div>
-    );
 }
