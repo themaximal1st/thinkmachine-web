@@ -255,7 +255,7 @@ export default class App extends React.Component {
     // RELOAD
     //
 
-    async reloadData({ controlType, zoom = false } = {}) {
+    async reloadData({ controlType, zoom = false, delay = 100 } = {}) {
         const start = Date.now();
 
         const oldData = this.state.data;
@@ -305,9 +305,11 @@ export default class App extends React.Component {
             await utils.delay(300);
         }
 
-        console.log("A4");
         if (this.state.activeNode) {
-            // ??
+            utils.delay(delay).then(() => {
+                const activeNode = this.nodeById(this.state.activeNode);
+                this.focusCameraOnNode(activeNode);
+            });
         } else {
             const cameraPosition = await GraphUtils.smartZoom(this, oldData, zoom);
             if (cameraPosition) {
@@ -504,7 +506,9 @@ export default class App extends React.Component {
             filters[indexOf] = filter;
         }
         this.setState({ filters }, () => {
-            this.reloadData();
+            this.reloadData({
+                delay: 1250,
+            });
         });
     }
 
@@ -610,15 +614,13 @@ export default class App extends React.Component {
             return image;
         }
 
-        console.log("CACHE MISS");
         image = new Image();
         image.src = url;
         this.imageCache.set(url, image);
 
-        if (this.imageCache.size >= 8) {
-            // console.log("DELETE");
-            // const firstKey = this.imageCache.keys().next().value;
-            // this.imageCache.delete(firstKey);
+        if (this.imageCache.size >= 30) {
+            const firstKey = this.imageCache.keys().next().value;
+            this.imageCache.delete(firstKey);
         }
 
         return image;
@@ -675,7 +677,6 @@ export default class App extends React.Component {
         // TODO: Keep this on double escape?
         // this.graphRef.current.zoomToFit(1250, 100);
 
-        console.log("RESET ACTIVE NODE");
         this.setState({ activeNode: null });
     }
 
@@ -978,6 +979,16 @@ export default class App extends React.Component {
 
     handleKeyDown(e) {
         this.animation.interact();
+
+        if (e.key === "Escape" && this.state.activeNode) {
+            console.log("CANCEL");
+            this.resetActiveNode();
+            return;
+        }
+
+        if (e.key === "Escape" && !this.state.activeNode) {
+            this.reloadData({ zoom: true });
+        }
 
         return;
 
@@ -1295,9 +1306,7 @@ export default class App extends React.Component {
     }
 
     async activateSlug(symbol, add = false) {
-        console.log("SYMBOL", symbol);
         const node = this.nodeBySlug(symbol);
-        console.log("NODE", node);
         if (!node) return;
         return this.activateNode(node, add);
     }
@@ -1322,7 +1331,6 @@ export default class App extends React.Component {
             const search_term = node._meta.hyperedgeIDs
                 .map((id) => id.split("->").join(" "))
                 .join(" ");
-            console.log(search_term);
             image_response = window.api.media.search(search_term);
         }
 
@@ -1346,7 +1354,6 @@ export default class App extends React.Component {
                         toast.error(message.message || "Error generating results");
                         break;
                     case "hyperedges.explain.chunk":
-                        console.log(message);
                         if (message.chunk && message.chunk.length > 0) {
                             content += message.chunk;
                             n.content = content;

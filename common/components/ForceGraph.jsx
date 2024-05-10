@@ -231,7 +231,7 @@ function nodeThreeObject(node, activeNode = null, params) {
             Images
         </button>
         <div class="grow"></div>
-        <button class="flex gap-[6px] uppercase font-medium tracking-wider text-xs items-center" onClick='window.api.hypergraph.search("${name}")'>
+        <button class="flex gap-[6px] uppercase font-medium tracking-wider text-xs items-center" onClick='window.api.hypergraph.search("${name}", event.shiftKey)'>
             ${renderToString(Icons.SearchIcon(3))}
             Filter
         </button>
