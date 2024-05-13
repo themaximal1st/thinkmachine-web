@@ -219,30 +219,10 @@ function nodeThreeObject(node, activeNode = null, params) {
     const titleSize = calculateTextSize(title);
 
     const contentDiv = document.createElement("div");
-    contentDiv.className =
-        "select-text absolute top-16 w-[500px] text-white bg-gray-1000 rounded-lg flex flex-col gap-3 pt-1 pointer-events-auto";
-    // "absolute inset-0 bg-red-500 flex p-1 h-96 m-0 w-96 z-50 pointer-events-auto";
-    contentDiv.style.userSelect = "all";
-
-    if (params.isEditing) {
-        contentDiv.innerHTML = `
-    <div class="text-white flex gap-6 items-center transition-all bg-gray-1000 rounded-full p-3 pb-0">
-    <input type="text" class="w-full h-full bg-gray-1000 focus:bg-gray-800 focus:outline-none p-3 py-2 text-sm" placeholder="What do you want to know?" value="${name}" />
-    </div>
-
-    <textarea class="px-3 bg-gray-1000 min-h-32 focus:outline-none">${
-        node.content
-    }</textarea>
-
-        <div>
-        <button class="flex w-full justify-center py-2 gap-[6px] uppercase font-medium tracking-wider text-xs items-center" onClick='window.api.node.toggleEdit()'>
-            ${renderToString(Icons.ChatIcon(3))}
-            Edit
-        </button>
-</div>`;
-    } else {
-        contentDiv.innerHTML = `
-    <div class="text-white flex gap-6 items-center transition-all bg-gray-1000 rounded-full p-3 pb-0">
+    contentDiv.className = "pointer-events-auto mt-8 w-[700px]";
+    contentDiv.innerHTML = `
+<div class="bg-gray-1000 absolute top-0 w-[700px] rounded-lg text-white gap-3">
+    <div class="flex gap-6 items-center transition-all rounded-full p-3 pb-0">
         <button class="flex gap-[6px] uppercase font-medium tracking-wider text-xs items-center" onClick='window.api.node.toggleEdit()'>
             ${renderToString(Icons.ChatIcon(3))}
             Edit
@@ -265,12 +245,9 @@ function nodeThreeObject(node, activeNode = null, params) {
             Filter
         </button>
     </div>
-
-
-    <div class="px-3 overflow-y-hidden">
+    <div class="max-h-44 overflow-y-scroll flex gap-1 flex-col-reverse px-3 p-2">
     ${linkContent(node, params.data)}
     </div>
-
     ${
         params.showActiveNodeImages
             ? `<div class="flex gap-3 px-3 overflow-x-scroll images h-16"></div>`
@@ -278,11 +255,10 @@ function nodeThreeObject(node, activeNode = null, params) {
     }
 
     <input type="text" class="w-full h-full bg-gray-1000 focus:bg-gray-800 focus:outline-none p-3 py-2 rounded-b-lg text-sm" placeholder="What do you want to know?" />
-`;
-    }
+</div>
+    `;
 
     contentDiv.addEventListener("pointerenter", (e) => {
-        console.log(e.buttons);
         if (e.buttons !== 1) {
             window.api.node.hover();
         }
@@ -293,9 +269,15 @@ function nodeThreeObject(node, activeNode = null, params) {
     });
 
     if (params.showActiveNodeImages && node.images) {
-        for (const { thumbnail } of node.images) {
-            const image = params.getCachedImage(thumbnail);
-            contentDiv.querySelector(".images").appendChild(image);
+        for (const img of node.images) {
+            const image = params.getCachedImage(img.thumbnail);
+            const a = document.createElement("a");
+            a.href = img.link;
+            a.target = "_blank";
+            a.rel = "noopener noreferrer";
+            a.title = img.title;
+            a.appendChild(image);
+            contentDiv.querySelector(".images").appendChild(a);
         }
     }
 
