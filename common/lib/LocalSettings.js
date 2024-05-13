@@ -71,6 +71,12 @@ export default class LocalSettings {
                 description: "Fastest smart LLM",
             },
             {
+                name: "GPT-4o",
+                service: "openai",
+                model: "gpt-4o",
+                description: "Fastest and smartest LLM",
+            },
+            {
                 name: "GPT-4 Turbo",
                 service: "openai",
                 model: "gpt-4-turbo-preview",

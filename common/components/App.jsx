@@ -73,7 +73,9 @@ export default class App extends React.Component {
             hideLabels: true,
             wormholeMode: parseInt(window.localStorage.getItem("wormholeMode") || -1),
             activeNode: null,
+            activeNodeLock: false,
             showActiveNodeImages: false,
+            isEditing: false,
             isAnimating: false,
             isShiftDown: false,
             isGenerating: false,
@@ -499,6 +501,30 @@ export default class App extends React.Component {
         });
     }
 
+    toggleActiveNodeLock(val) {
+        const activeNodeLock = val === undefined ? !this.state.activeNodeLock : val;
+        if (activeNodeLock === this.state.activeNodeLock) return;
+
+        const canvas = document.querySelector("canvas");
+        if (activeNodeLock) {
+            canvas.classList.add("locked");
+        } else {
+            canvas.classList.remove("locked");
+        }
+
+        this.setState({ activeNodeLock });
+    }
+
+    hoverNode() {
+        if (this.state.activeNodeLock) return;
+        this.toggleActiveNodeLock(true);
+    }
+
+    leaveNode() {
+        if (!this.state.activeNodeLock) return;
+        this.toggleActiveNodeLock(false);
+    }
+
     removeIndexFromHyperedge(index) {
         const hyperedge = this.state.hyperedge;
         hyperedge.splice(index, 1);
@@ -636,57 +662,7 @@ export default class App extends React.Component {
         return image;
     }
 
-    // Function to check for collisions between the camera and nodes when wormhole is enabled
-    checkForCollisions() {
-        if (this.state.wormholeMode === -1) return;
-        if (this.state.wormholeMode === 2) return; // generating wormhole already
-
-        const collisionThreshold = 40; // Distance at which we consider a collision to occur
-
-        const camera = this.graphRef.current.camera();
-        const cameraPosition = new THREE.Vector3();
-        cameraPosition.setFromMatrixPosition(camera.matrixWorld); // Get the camera's position
-
-        for (let node of this.state.data.nodes) {
-            const nodePosition = new THREE.Vector3(node.x, node.y, node.z); // Assuming nodes have x, y, z properties
-            const distance = cameraPosition.distanceTo(nodePosition); // Calculate distance from camera to node
-
-            if (distance < collisionThreshold) {
-                const hyperedges = node._meta.hyperedgeIDs;
-                this.generateWormhole(hyperedges);
-            }
-        }
-    }
-
-    // generate a new wormholoe. create a new hypergraph, and generate a wormhole from the collided hyperedges of the old graph
-    async generateWormhole(hyperedges) {
-        this.startWormhole();
-
-        window.api.analytics.track("app.generateWormhole");
-
-        const from_uuid = await window.api.uuid.get();
-        await this.createNewHypergraph();
-
-        try {
-            await window.api.hyperedges.wormhole(hyperedges, {
-                llm: this.llmSettings,
-                from_uuid,
-            });
-        } catch (e) {
-            console.log("ERROR", e);
-        } finally {
-            await this.reloadData({ zoom: true });
-            this.stopWormhole();
-        }
-    }
-
     resetActiveNode() {
-        // const cameraPosition = this.graphRef.current.cameraPosition();
-        // this.graphRef.current.cameraPosition(cameraPosition, null, 1000);
-
-        // TODO: Keep this on double escape?
-        // this.graphRef.current.zoomToFit(1250, 100);
-
         this.setState({ activeNode: null });
     }
 
@@ -710,8 +686,6 @@ export default class App extends React.Component {
     toggleRecord(val) {
         const isRecording = val === undefined ? !this.state.isRecording : val;
 
-        console.log("TOGGLE RECORD", val);
-
         this.setState({ isRecording }, () => {
             if (this.state.isRecording) {
                 this.recordVideo();
@@ -720,6 +694,7 @@ export default class App extends React.Component {
             }
         });
     }
+
     toggleIsChatting(val) {
         const isChatting = val === undefined ? !this.state.isChatting : val;
         this.setState({ isChatting });
@@ -926,10 +901,6 @@ export default class App extends React.Component {
         this.setState({ isRecording: false, isProcessing: false });
 
         this.recorder.reset();
-    }
-
-    handleTick() {
-        this.checkForCollisions();
     }
 
     handleEngineStop() {
@@ -1302,11 +1273,25 @@ export default class App extends React.Component {
             { x: node.x, y: node.y, z: node.z }, // camera looks at the node
             1250 // transition duration in milliseconds
         );
+
+        this.toggleActiveNodeLock(false);
+
+        utils.delay(1250).then(() => {
+            this.toggleActiveNodeLock(false);
+        });
     }
 
     async handleClickNode(node, e) {
         if (e && e.target && e.target.tagName === "INPUT") {
             // also make it active..add an edge..change mode to connect mode
+            e.preventDefault();
+            return;
+        }
+
+        console.log("ACTIVE NODE", this.state.activeNode);
+        console.log("ACTIVE NODE LOCK", this.state.activeNodeLock);
+        if (this.state.activeNode && this.state.activeNodeLock) {
+            console.log("LOCK");
             e.preventDefault();
             return;
         }
@@ -1319,6 +1304,11 @@ export default class App extends React.Component {
         const node = this.nodeBySlug(symbol);
         if (!node) return;
         return this.activateNode(node, add);
+    }
+
+    toggleEditNode(val) {
+        const isEditing = val === undefined ? !this.state.isEditing : val;
+        this.setState({ isEditing });
     }
 
     async activateNode(node, add = false) {
@@ -1344,7 +1334,7 @@ export default class App extends React.Component {
             image_response = window.api.media.search(search_term);
         }
 
-        await this.asyncSetState({ activeNode: node.id });
+        await this.asyncSetState({ activeNode: node.id, isEditing: false });
 
         this.focusCameraOnNode(node);
 
@@ -1473,7 +1463,6 @@ export default class App extends React.Component {
                 <ForceGraph
                     graphType={this.state.graphType}
                     graphRef={this.graphRef}
-                    onTick={this.handleTick.bind(this)}
                     onEngineStop={this.handleEngineStop.bind(this)}
                     data={this.state.data}
                     width={this.state.width}
@@ -1487,7 +1476,9 @@ export default class App extends React.Component {
                     imageCache={this.imageCache}
                     getCachedImage={this.getCachedImage.bind(this)}
                     showActiveNodeImages={this.state.showActiveNodeImages}
+                    toggleActiveNodeLock={this.toggleActiveNodeLock.bind(this)}
                     toggleShowActiveNodeImages={this.toggleActiveNodeImages.bind(this)}
+                    isEditing={this.state.isEditing}
                 />
                 <LLMSettings
                     llm={this.state.llm}

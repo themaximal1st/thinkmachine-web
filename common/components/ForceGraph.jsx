@@ -18,14 +18,27 @@ import * as utils from "@lib/utils";
 import * as Icons from "@assets/Icons";
 
 export default function ForceGraph(params) {
+    function setClickCursor(object) {
+        let canvas = params.graphRef.current.renderer().domElement;
+        if (!object) {
+            canvas.classList.add("clickcursor");
+        } else {
+            canvas.classList.remove("clickcursor");
+        }
+    }
+
     const props = {
         ref: params.graphRef,
         width: params.width,
         height: params.height,
         controlType: params.controlType,
+        onBackgroundClick: (e) => {
+            params.toggleActiveNodeLock(false);
+        },
+        onNodeHover: (node) => {
+            setClickCursor(node);
+        },
         backgroundColor: "#000000",
-        // onBackgroundClick: (e) => {},
-        // onBackgroundRightClick: (e) => {},
         graphData: params.data,
         showNavInfo: false,
         linkColor: (link) => {
@@ -38,7 +51,6 @@ export default function ForceGraph(params) {
         nodePointerAreaPaint: (node, color, ctx) => {
             return nodePointerAreaPaint(node, color, ctx);
         },
-        onEngineTick: params.onTick,
         onEngineStop: params.onEngineStop,
         cooldownTicks: params.cooldownTicks,
         linkDirectionalArrowLength: (link) => {
@@ -207,13 +219,62 @@ function nodeThreeObject(node, activeNode = null, params) {
     const titleSize = calculateTextSize(title);
 
     const contentDiv = document.createElement("div");
-    contentDiv.className = "label";
-    contentDiv.style.pointerEvents = "auto";
+    contentDiv.className =
+        "absolute inset-0 bg-red-500 flex p-1 h-96 m-0 w-96 z-50 pointer-events-auto";
+    // contentDiv.style.pointerEvents = "none";
     contentDiv.style.userSelect = "all";
-    contentDiv.innerHTML = `
+
+    // contentDiv.innerHTML = `
+    // BOOM TOWN
+    // `;
+
+    contentDiv.addEventListener("pointerenter", (e) => {
+        console.log(e.buttons);
+        if (e.buttons !== 1) {
+            window.api.node.hover();
+        }
+    });
+
+    contentDiv.addEventListener("pointerleave", (e) => {
+        // console.log("LEAVE");
+        // console.log(e);
+        window.api.node.leave();
+    });
+
+    // contentDiv.addEventListener("pointerdown", (e) => {
+    //     e.stopImmediatePropagation();
+    //     console.log("DOWN", e);
+    // });
+
+    // contentDiv.addEventListener("pointerup", (e) => {
+    //     e.stopImmediatePropagation();
+    //     console.log("UP", e);
+    // });
+
+    /*
+    if (params.isEditing) {
+        contentDiv.innerHTML = `
 <div class="select-text absolute top-0 -ml-[250px] w-[500px] text-white bg-gray-1000 rounded-lg flex flex-col gap-3 pt-1">
     <div class="text-white flex gap-6 items-center transition-all bg-gray-1000 rounded-full p-3 pb-0">
-        <button class="flex gap-[6px] uppercase font-medium tracking-wider text-xs items-center" onClick='alert("Clicked ${name}")'>
+    <input type="text" class="w-full h-full bg-gray-1000 focus:bg-gray-800 focus:outline-none p-3 py-2 text-sm" placeholder="What do you want to know?" value="${name}" />
+    </div>
+
+    <textarea class="px-3 bg-gray-1000 min-h-32 focus:outline-none">${
+        node.content
+    }</textarea>
+
+        <div>
+        <button class="flex w-full justify-center py-2 gap-[6px] uppercase font-medium tracking-wider text-xs items-center" onClick='window.api.node.toggleEdit()'>
+            ${renderToString(Icons.ChatIcon(3))}
+            Edit
+        </button>
+        </div>
+</div>`;
+    } else {
+        contentDiv.innerHTML = `
+<div class="select-text absolute top-0 -ml-[250px] w-[500px] text-white bg-gray-1000 rounded-lg flex flex-col gap-3 pt-1 border-2">
+    <div class="text-white flex gap-6 items-center transition-all bg-gray-1000 rounded-full p-3 pb-0">
+        <button class="flex gap-[6px] uppercase font-medium tracking-wider text-xs items-center" onClick='window.api.node.toggleEdit()'>
             ${renderToString(Icons.ChatIcon(3))}
             Edit
         </button>
@@ -249,6 +310,8 @@ function nodeThreeObject(node, activeNode = null, params) {
 
     <input type="text" class="w-full h-full bg-gray-1000 focus:bg-gray-800 focus:outline-none p-3 py-2 rounded-b-lg text-sm" placeholder="What do you want to know?" />
 </div>`;
+    }
+    */
 
     if (params.showActiveNodeImages && node.images) {
         for (const { thumbnail } of node.images) {
