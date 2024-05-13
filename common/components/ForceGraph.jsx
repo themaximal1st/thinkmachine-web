@@ -220,41 +220,12 @@ function nodeThreeObject(node, activeNode = null, params) {
 
     const contentDiv = document.createElement("div");
     contentDiv.className =
-        "absolute inset-0 bg-red-500 flex p-1 h-96 m-0 w-96 z-50 pointer-events-auto";
-    // contentDiv.style.pointerEvents = "none";
+        "select-text absolute top-16 w-[500px] text-white bg-gray-1000 rounded-lg flex flex-col gap-3 pt-1 pointer-events-auto";
+    // "absolute inset-0 bg-red-500 flex p-1 h-96 m-0 w-96 z-50 pointer-events-auto";
     contentDiv.style.userSelect = "all";
 
-    // contentDiv.innerHTML = `
-    // BOOM TOWN
-    // `;
-
-    contentDiv.addEventListener("pointerenter", (e) => {
-        console.log(e.buttons);
-        if (e.buttons !== 1) {
-            window.api.node.hover();
-        }
-    });
-
-    contentDiv.addEventListener("pointerleave", (e) => {
-        // console.log("LEAVE");
-        // console.log(e);
-        window.api.node.leave();
-    });
-
-    // contentDiv.addEventListener("pointerdown", (e) => {
-    //     e.stopImmediatePropagation();
-    //     console.log("DOWN", e);
-    // });
-
-    // contentDiv.addEventListener("pointerup", (e) => {
-    //     e.stopImmediatePropagation();
-    //     console.log("UP", e);
-    // });
-
-    /*
     if (params.isEditing) {
         contentDiv.innerHTML = `
-<div class="select-text absolute top-0 -ml-[250px] w-[500px] text-white bg-gray-1000 rounded-lg flex flex-col gap-3 pt-1">
     <div class="text-white flex gap-6 items-center transition-all bg-gray-1000 rounded-full p-3 pb-0">
     <input type="text" class="w-full h-full bg-gray-1000 focus:bg-gray-800 focus:outline-none p-3 py-2 text-sm" placeholder="What do you want to know?" value="${name}" />
     </div>
@@ -268,11 +239,9 @@ function nodeThreeObject(node, activeNode = null, params) {
             ${renderToString(Icons.ChatIcon(3))}
             Edit
         </button>
-        </div>
 </div>`;
     } else {
         contentDiv.innerHTML = `
-<div class="select-text absolute top-0 -ml-[250px] w-[500px] text-white bg-gray-1000 rounded-lg flex flex-col gap-3 pt-1 border-2">
     <div class="text-white flex gap-6 items-center transition-all bg-gray-1000 rounded-full p-3 pb-0">
         <button class="flex gap-[6px] uppercase font-medium tracking-wider text-xs items-center" onClick='window.api.node.toggleEdit()'>
             ${renderToString(Icons.ChatIcon(3))}
@@ -309,9 +278,19 @@ function nodeThreeObject(node, activeNode = null, params) {
     }
 
     <input type="text" class="w-full h-full bg-gray-1000 focus:bg-gray-800 focus:outline-none p-3 py-2 rounded-b-lg text-sm" placeholder="What do you want to know?" />
-</div>`;
+`;
     }
-    */
+
+    contentDiv.addEventListener("pointerenter", (e) => {
+        console.log(e.buttons);
+        if (e.buttons !== 1) {
+            window.api.node.hover();
+        }
+    });
+
+    contentDiv.addEventListener("pointerleave", (e) => {
+        window.api.node.leave();
+    });
 
     if (params.showActiveNodeImages && node.images) {
         for (const { thumbnail } of node.images) {
