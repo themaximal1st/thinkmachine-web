@@ -8,7 +8,7 @@ export default function ChatWindow(params) {
     if (!params.showChat) return;
 
     const sortedMessages = params.chatMessages.sort((a, b) => {
-        return b.timestamp - a.timestamp;
+        return a.timestamp - b.timestamp;
     });
 
     return (

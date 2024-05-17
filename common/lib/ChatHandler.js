@@ -1,25 +1,20 @@
 import toast from "react-hot-toast";
 
-export default async function ChatHandler(app, e = null) {
-    if (e) {
-        e.preventDefault();
-    }
-
+export default async function ChatHandler(app, content) {
     if (app.state.isChatting) return false;
 
-    let chatInput = false;
-    let content = app.state.input.trim();
-    if (content.length === 0) {
-        if (app.isFocusingChatInput) {
-            content = app.chatInputRef.current.value.trim();
-            app.chatInputRef.current.value = "";
-            chatInput = true;
-        }
-    }
+    // let chatInput = false;
+    // if (content.length === 0) {
+    //     if (app.isFocusingChatInput) {
+    //         content = app.chatInputRef.current.value.trim();
+    //         app.chatInputRef.current.value = "";
+    //         chatInput = true;
+    //     }
+    // }
 
     if (content.length === 0) return false;
 
-    await app.toggleChatWindow(true);
+    // await app.toggleChatWindow(true);
 
     const chatMessages = [...app.state.chatMessages];
 
@@ -54,12 +49,6 @@ export default async function ChatHandler(app, e = null) {
     chatMessages.push(assistant);
     await app.asyncSetState({ chatMessages });
 
-    if (chatInput) {
-        app.chatInputRef.current.value = "";
-    } else {
-        await app.asyncSetState({ input: "" });
-    }
-
     try {
         const response = await window.api.chat(sortedChatMessages, {
             llm: app.llmSettings,
@@ -83,7 +72,7 @@ export default async function ChatHandler(app, e = null) {
         await app.asyncSetState({ isChatting: false });
     }
 
-    return false; // we'll handle reset
+    return true; // we'll handle reset
 }
 
 
@@ -93,6 +82,14 @@ function ChatPrompt(app) {
             return hyperedge.join(" -> ");
         })
         .join("\n");
+
+    let activeNode = "";
+    if (app.state.activeNode) {
+        const node = app.nodeById(app.state.activeNode);
+        if (node) {
+            activeNode = `The user is currently focused on the node "${node.name}".`;
+        }
+    }
 
     const prompt = `You are a knowledge graph Chat AI assistant.
 You are helping me chat with my knowledge graph.
@@ -112,7 +109,10 @@ Always be helpful and informative.
 Try to be as accurate as possible, while still completing the users request.
 
 Here is the knowledge graph:
-${hyperedges}`;
+${hyperedges}
+
+${activeNode}
+`.trim();
 
     return prompt;
 }

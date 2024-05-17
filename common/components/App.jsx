@@ -73,7 +73,6 @@ export default class App extends React.Component {
             hideLabels: true,
             wormholeMode: parseInt(window.localStorage.getItem("wormholeMode") || -1),
             activeNode: null,
-            enableNavigationControls: true,
             showActiveNodeImages: false,
             isEditing: false,
             isAnimating: false,
@@ -681,19 +680,6 @@ export default class App extends React.Component {
         this.setState({ showLicense });
     }
 
-    toggleChatWindow(val) {
-        const showChat = val === undefined ? !this.state.showChat : val;
-        const state = { showChat };
-        if (!showChat) {
-            state.chatMessages = [];
-        }
-        this.setState(state, () => {
-            if (showChat) {
-                this.chatInputRef.current.focus();
-            }
-        });
-    }
-
     toggleShowLabsWarning(val) {
         const showLabsWarning = val === undefined ? !this.state.showLabsWarning : val;
         this.setState({ showLabsWarning });
@@ -883,8 +869,8 @@ export default class App extends React.Component {
         console.log("ENGINE STOPPED");
     }
 
-    async handleChatMessage(e = null) {
-        return await ChatHandler(this, e);
+    async handleChatMessage(message) {
+        return await ChatHandler(this, message);
     }
 
     async handleDownload() {
@@ -1269,6 +1255,7 @@ export default class App extends React.Component {
 
     async activateSlug(symbol, add = false) {
         const node = this.nodeBySlug(symbol);
+        console.log("ACTIVATE SLUG", symbol, node);
         if (!node) return;
         return this.activateNode(node, add);
     }
@@ -1301,7 +1288,11 @@ export default class App extends React.Component {
             image_response = window.api.media.search(search_term);
         }
 
-        await this.asyncSetState({ activeNode: node.id, isEditing: false });
+        await this.asyncSetState({
+            activeNode: node.id,
+            isEditing: false,
+            chatMessages: [],
+        });
 
         this.focusCameraOnNode(node);
 
@@ -1413,7 +1404,7 @@ export default class App extends React.Component {
                     isGenerating={this.state.isGenerating}
                     isChatting={this.state.isChatting}
                     loaded={this.state.loaded}
-                    toggleChatWindow={this.toggleChatWindow.bind(this)}
+                    // toggleChatWindow={this.toggleChatWindow.bind(this)}
                     handleCreateTutorial={this.createThinkMachineTutorial.bind(this)}
                     hyperedges={this.state.hyperedges}
                     symbols={this.uniqueSymbols}
@@ -1444,8 +1435,9 @@ export default class App extends React.Component {
                     getCachedImage={this.getCachedImage.bind(this)}
                     showActiveNodeImages={this.state.showActiveNodeImages}
                     toggleShowActiveNodeImages={this.toggleActiveNodeImages.bind(this)}
-                    enableNavigationControls={this.state.enableNavigationControls}
+                    handleChatMessage={this.handleChatMessage.bind(this)}
                     isEditing={this.state.isEditing}
+                    chatMessages={this.state.chatMessages}
                 />
                 <LLMSettings
                     llm={this.state.llm}
@@ -1464,7 +1456,7 @@ export default class App extends React.Component {
                     showChat={this.state.showChat}
                     isChatting={this.state.isChatting}
                     toggleIsChatting={this.toggleIsChatting.bind(this)}
-                    toggleChatWindow={this.toggleChatWindow.bind(this)}
+                    // toggleChatWindow={this.toggleChatWindow.bind(this)}
                     updateChatWindow={this.updateChatWindow.bind(this)}
                 />
 

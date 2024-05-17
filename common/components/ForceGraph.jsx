@@ -230,6 +230,7 @@ function nodeThreeObject(node, activeNode = null, params) {
         </button>
     </div>
     <div class="max-h-44 overflow-y-scroll flex gap-1 flex-col-reverse px-3 p-2">
+    ${chatHistory(params)}
     ${linkContent(node, params.data)}
     </div>
     ${
@@ -238,9 +239,21 @@ function nodeThreeObject(node, activeNode = null, params) {
             : ""
     }
 
+    <form>
     <input type="text" class="w-full h-full bg-gray-1000 focus:bg-gray-800 focus:outline-none p-3 py-2 rounded-b-lg text-sm" placeholder="What do you want to know?" />
+    </form>
 </div>
     `;
+
+    const form = contentDiv.querySelector("form");
+    const input = form.querySelector("input");
+    console.log(form);
+    form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        if (params.handleChatMessage(input.value)) {
+            input.value = "";
+        }
+    });
 
     if (params.showActiveNodeImages && node.images) {
         for (const img of node.images) {
@@ -324,4 +337,46 @@ function calculateTextSize(obj) {
     const size = new THREE.Vector3();
     bounds.getSize(size);
     return size;
+}
+
+function chatHistory(params) {
+    const sortedMessages = params.chatMessages.sort((a, b) => {
+        return b.timestamp - a.timestamp;
+    });
+
+    return renderToString(
+        <div className="grow nodrag cursor-auto flex flex-col-reverse gap-4 py-4">
+            {sortedMessages.map((message, i) => {
+                if (message.role === "system") return;
+                return (
+                    <div key={`message-${i}`}>
+                        <div className="flex items-center gap-1 text-gray-400 text-xs">
+                            <div className="tracking-wider">
+                                {message.role.toUpperCase()}
+                            </div>
+                            {message.model && <div className="">({message.model})</div>}
+                        </div>
+                        <div className="whitespace-pre-wrap">
+                            {i === 0 &&
+                                params.isChatting &&
+                                message.content.length === 0 && (
+                                    <div className="text-white">
+                                        <l-bouncy
+                                            size="15"
+                                            speed="1.75"
+                                            color="white"></l-bouncy>
+                                    </div>
+                                )}
+                            {i === 0 &&
+                                !params.isChatting &&
+                                message.content.length === 0 && (
+                                    <em className="text-sm">(no content)</em>
+                                )}
+                            {message.content}
+                        </div>
+                    </div>
+                );
+            })}
+        </div>
+    );
 }
