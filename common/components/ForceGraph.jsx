@@ -2,7 +2,7 @@ import { renderToString } from "react-dom/server";
 import { marked } from "marked";
 
 import { CSS2DRenderer, CSS2DObject } from "three/addons/renderers/CSS2DRenderer.js";
-import { CSS3DRenderer, CSS3DObject } from "three/addons/renderers/CSS3DRenderer.js";
+import { useState, useEffect } from "react";
 
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
 import {
@@ -14,31 +14,16 @@ import {
 
 import SpriteText from "three-spritetext";
 import * as Three from "three";
-import * as utils from "@lib/utils";
 import * as Icons from "@assets/Icons";
 
 export default function ForceGraph(params) {
-    function setClickCursor(object) {
-        let canvas = params.graphRef.current.renderer().domElement;
-        if (!object) {
-            canvas.classList.add("clickcursor");
-        } else {
-            canvas.classList.remove("clickcursor");
-        }
-    }
-
     const props = {
         ref: params.graphRef,
         width: params.width,
         height: params.height,
         controlType: params.controlType,
-        onBackgroundClick: (e) => {
-            params.toggleActiveNodeLock(false);
-        },
-        onNodeHover: (node) => {
-            setClickCursor(node);
-        },
         backgroundColor: "#000000",
+        enableNavigationControls: params.enableNavigationControls,
         graphData: params.data,
         showNavInfo: false,
         linkColor: (link) => {
@@ -257,16 +242,6 @@ function nodeThreeObject(node, activeNode = null, params) {
     <input type="text" class="w-full h-full bg-gray-1000 focus:bg-gray-800 focus:outline-none p-3 py-2 rounded-b-lg text-sm" placeholder="What do you want to know?" />
 </div>
     `;
-
-    contentDiv.addEventListener("pointerenter", (e) => {
-        if (e.buttons !== 1) {
-            window.api.node.hover();
-        }
-    });
-
-    contentDiv.addEventListener("pointerleave", (e) => {
-        window.api.node.leave();
-    });
 
     if (params.showActiveNodeImages && node.images) {
         for (const img of node.images) {

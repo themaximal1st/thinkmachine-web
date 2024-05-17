@@ -73,7 +73,7 @@ export default class App extends React.Component {
             hideLabels: true,
             wormholeMode: parseInt(window.localStorage.getItem("wormholeMode") || -1),
             activeNode: null,
-            activeNodeLock: false,
+            enableNavigationControls: true,
             showActiveNodeImages: false,
             isEditing: false,
             isAnimating: false,
@@ -499,30 +499,6 @@ export default class App extends React.Component {
             y: 0,
             z: 100,
         });
-    }
-
-    toggleActiveNodeLock(val) {
-        const activeNodeLock = val === undefined ? !this.state.activeNodeLock : val;
-        if (activeNodeLock === this.state.activeNodeLock) return;
-
-        const canvas = document.querySelector("canvas");
-        if (activeNodeLock) {
-            canvas.classList.add("locked");
-        } else {
-            canvas.classList.remove("locked");
-        }
-
-        this.setState({ activeNodeLock });
-    }
-
-    hoverNode() {
-        if (this.state.activeNodeLock) return;
-        this.toggleActiveNodeLock(true);
-    }
-
-    leaveNode() {
-        if (!this.state.activeNodeLock) return;
-        this.toggleActiveNodeLock(false);
     }
 
     removeIndexFromHyperedge(index) {
@@ -1273,25 +1249,16 @@ export default class App extends React.Component {
             { x: node.x, y: node.y, z: node.z }, // camera looks at the node
             1250 // transition duration in milliseconds
         );
-
-        this.toggleActiveNodeLock(false);
-
-        utils.delay(1250).then(() => {
-            this.toggleActiveNodeLock(false);
-        });
     }
 
     async handleClickNode(node, e) {
-        if (e && e.target && e.target.tagName === "INPUT") {
-            // also make it active..add an edge..change mode to connect mode
-            e.preventDefault();
+        // handle clicking with active node
+        if (this.state.activeNode && e.srcElement.tagName !== "CANVAS") {
             return;
         }
 
-        console.log("ACTIVE NODE", this.state.activeNode);
-        console.log("ACTIVE NODE LOCK", this.state.activeNodeLock);
-        if (this.state.activeNode && this.state.activeNodeLock) {
-            console.log("LOCK");
+        if (e && e.target && e.target.tagName === "INPUT") {
+            // also make it active..add an edge..change mode to connect mode
             e.preventDefault();
             return;
         }
@@ -1476,8 +1443,8 @@ export default class App extends React.Component {
                     imageCache={this.imageCache}
                     getCachedImage={this.getCachedImage.bind(this)}
                     showActiveNodeImages={this.state.showActiveNodeImages}
-                    toggleActiveNodeLock={this.toggleActiveNodeLock.bind(this)}
                     toggleShowActiveNodeImages={this.toggleActiveNodeImages.bind(this)}
+                    enableNavigationControls={this.state.enableNavigationControls}
                     isEditing={this.state.isEditing}
                 />
                 <LLMSettings

@@ -137,12 +137,3 @@ body {
 #cac-feedback-form input[type="submit"] {
     @apply block w-full p-2 text-white rounded-b-lg bg-gray-900 hover:bg-gray-800 hover:cursor-pointer;
 }
-
-canvas.locked {
-    @apply pointer-events-none;
-}
-
-/* https://github.com/vasturiano/3d-force-graph/issues/476#issuecomment-863838591 */
-.clickcursor {
-    cursor: default !important;
-}

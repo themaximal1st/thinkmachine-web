@@ -234,8 +234,6 @@ export default class ThinkMachineAPI {
                 activateSlug: app.activateSlug.bind(app),
                 toggleEdit: app.toggleEditNode.bind(app),
                 toggleActiveNodeImages: app.toggleActiveNodeImages.bind(app),
-                hover: app.hoverNode.bind(app),
-                leave: app.leaveNode.bind(app),
             },
         }
     }
