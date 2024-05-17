@@ -141,3 +141,15 @@ body {
 .images img {
     @apply h-full w-auto max-w-max;
 }
+
+.chat .chat-messages p {
+    @apply mb-2;
+}
+
+.chat ul {
+    @apply list-disc pl-6 py-2;
+}
+
+.chat ol {
+    @apply list-decimal pl-6 py-2;
+}

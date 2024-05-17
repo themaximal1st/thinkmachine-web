@@ -26,7 +26,7 @@ export default function ForceGraph(params) {
         graphData: params.data,
         showNavInfo: false,
         linkColor: (link) => {
-            if (params.activeNode) {
+            if (params.activeNodeId) {
                 return "rgba(255, 255, 255, 0.04)";
             }
 
@@ -77,7 +77,7 @@ export default function ForceGraph(params) {
             if (params.hideLabels) {
                 return null;
             }
-            return nodeThreeObject(node, params.activeNode, params);
+            return nodeThreeObject(node, params.activeNodeId, params);
         };
     } else if (params.graphType === "vr") {
         Graph = ForceGraphVR;
@@ -134,12 +134,10 @@ ForceGraph.load = function (graphRef, graphType) {
     }
 };
 
-function linkContent(node, data) {
-    if (!node.content || node.content.length === 0) return "";
+function linkContent(content, hexColor) {
+    if (!content || content.length === 0) return "";
 
-    // return node.content;
-
-    let markdown = marked.parse(node.content);
+    let markdown = marked.parse(content);
     markdown = markdown.replace(/[\[\]]*/g, "");
     markdown = markdown.replace(/\([a-zA-Z0-9\_\-]*\)*/g, "");
 
@@ -150,12 +148,12 @@ function linkContent(node, data) {
     );
 
     const randomId = `id-${String(Math.floor(Math.random() * 1000000))}`;
-    const color = hexToRGBA(node.color, 1);
+    const color = hexToRGBA(hexColor, 1);
     const css = `#${randomId} a { color: ${color}; } `;
     return `<style>${css}</style><div id="${randomId}">${markdown}</div>`;
 }
 
-function nodeThreeObject(node, activeNode = null, params) {
+function nodeThreeObject(node, activeNodeId = null, params) {
     if (node.bridge) {
         const mesh = new Three.Mesh(
             new Three.SphereGeometry(1),
@@ -185,8 +183,8 @@ function nodeThreeObject(node, activeNode = null, params) {
     title.textHeight = node.textHeight || 8;
     title.fontFace = "Helvetica";
 
-    if (activeNode) {
-        if (activeNode === node.id) {
+    if (activeNodeId) {
+        if (activeNodeId === node.id) {
             title.backgroundColor = "black";
         } else {
             title.color = "rgba(255, 255, 255, 0.5)";
@@ -194,7 +192,7 @@ function nodeThreeObject(node, activeNode = null, params) {
         }
     }
 
-    if (!activeNode || activeNode !== node.id) {
+    if (!activeNodeId || activeNodeId !== node.id) {
         return title;
     }
 
@@ -206,7 +204,7 @@ function nodeThreeObject(node, activeNode = null, params) {
     contentDiv.className = "pointer-events-auto mt-8 w-[700px]";
     contentDiv.innerHTML = `
 <div class="bg-gray-1000 absolute top-0 w-[700px] rounded-lg text-white gap-3">
-    <div class="flex gap-6 items-center transition-all rounded-full p-3 pb-0">
+    <div class="flex gap-6 items-center transition-all rounded-full p-3 pb-2">
         <button class="flex gap-[6px] uppercase font-medium tracking-wider text-xs items-center" onClick='window.api.node.toggleEdit()'>
             ${renderToString(Icons.ChatIcon(3))}
             Edit
@@ -230,8 +228,8 @@ function nodeThreeObject(node, activeNode = null, params) {
         </button>
     </div>
     <div class="max-h-44 overflow-y-scroll flex gap-1 flex-col-reverse px-3 p-2">
-    ${chatHistory(params)}
-    ${linkContent(node, params.data)}
+    ${chatHistory(params, node)}
+    ${linkContent(node.content, node.color)}
     </div>
     ${
         params.showActiveNodeImages
@@ -247,7 +245,6 @@ function nodeThreeObject(node, activeNode = null, params) {
 
     const form = contentDiv.querySelector("form");
     const input = form.querySelector("input");
-    console.log(form);
     form.addEventListener("submit", (e) => {
         e.preventDefault();
         if (params.handleChatMessage(input.value)) {
@@ -339,44 +336,28 @@ function calculateTextSize(obj) {
     return size;
 }
 
-function chatHistory(params) {
+function chatHistory(params, activeNode) {
+    if (!params.chatMessages || params.chatMessages.length === 0) return "";
+
     const sortedMessages = params.chatMessages.sort((a, b) => {
         return b.timestamp - a.timestamp;
     });
 
-    return renderToString(
-        <div className="grow nodrag cursor-auto flex flex-col-reverse gap-4 py-4">
-            {sortedMessages.map((message, i) => {
-                if (message.role === "system") return;
-                return (
-                    <div key={`message-${i}`}>
-                        <div className="flex items-center gap-1 text-gray-400 text-xs">
-                            <div className="tracking-wider">
-                                {message.role.toUpperCase()}
+    return `<div class="grow nodrag cursor-auto flex flex-col-reverse gap-4 py-4 chat">
+            ${sortedMessages
+                .map((message, i) => {
+                    if (message.role === "system") return;
+                    return `<div class="">
+                        <div class="flex items-center gap-1 text-gray-400">
+                            <div class="text-xs tracking-wider">
+                                ${message.role.toUpperCase()}
                             </div>
-                            {message.model && <div className="">({message.model})</div>}
                         </div>
-                        <div className="whitespace-pre-wrap">
-                            {i === 0 &&
-                                params.isChatting &&
-                                message.content.length === 0 && (
-                                    <div className="text-white">
-                                        <l-bouncy
-                                            size="15"
-                                            speed="1.75"
-                                            color="white"></l-bouncy>
-                                    </div>
-                                )}
-                            {i === 0 &&
-                                !params.isChatting &&
-                                message.content.length === 0 && (
-                                    <em className="text-sm">(no content)</em>
-                                )}
-                            {message.content}
+                        <div class="chat-messages">
+                        ${linkContent(message.content, activeNode.color)}
                         </div>
-                    </div>
-                );
-            })}
-        </div>
-    );
+                    </div>`;
+                })
+                .join("")}
+        </div>`;
 }

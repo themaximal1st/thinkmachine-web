@@ -83,14 +83,6 @@ function ChatPrompt(app) {
         })
         .join("\n");
 
-    let activeNode = "";
-    if (app.state.activeNode) {
-        const node = app.nodeById(app.state.activeNode);
-        if (node) {
-            activeNode = `The user is currently focused on the node "${node.name}".`;
-        }
-    }
-
     const prompt = `You are a knowledge graph Chat AI assistant.
 You are helping me chat with my knowledge graph.
 
@@ -108,10 +100,14 @@ If the user asks for more information, you can provide additional details from y
 Always be helpful and informative.
 Try to be as accurate as possible, while still completing the users request.
 
+If relevant, use other terms from the knowledge graph.
+Whenever you use a term in the knowledge graph—link it using Markdown.
+For the "URL", create a clean slug from the symbol. Just the symbol, no other URL stuff.
+
 Here is the knowledge graph:
 ${hyperedges}
 
-${activeNode}
+${app.activeNode ? `The user is currently focused on the node "${app.activeNode.name}".` : ""}
 `.trim();
 
     return prompt;

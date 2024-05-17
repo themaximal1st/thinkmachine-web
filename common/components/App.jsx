@@ -72,7 +72,7 @@ export default class App extends React.Component {
             hideLabelsThreshold: 1000,
             hideLabels: true,
             wormholeMode: parseInt(window.localStorage.getItem("wormholeMode") || -1),
-            activeNode: null,
+            activeNodeId: null,
             showActiveNodeImages: false,
             isEditing: false,
             isAnimating: false,
@@ -197,6 +197,13 @@ export default class App extends React.Component {
         return this.state.isAnimating || this.state.isRecording;
     }
 
+    get activeNode() {
+        if (!this.state.activeNodeId) return null;
+        const node = this.nodeById(this.state.activeNodeId);
+        if (!node) return null;
+        return node;
+    }
+
     nodeById(id) {
         return this.state.data.nodes.find((node) => node.id === id);
     }
@@ -316,9 +323,9 @@ export default class App extends React.Component {
             await utils.delay(300);
         }
 
-        if (this.state.activeNode) {
+        const activeNode = this.activeNode;
+        if (activeNode) {
             utils.delay(delay).then(() => {
-                const activeNode = this.nodeById(this.state.activeNode);
                 this.focusCameraOnNode(activeNode);
             });
         } else {
@@ -638,7 +645,7 @@ export default class App extends React.Component {
     }
 
     resetActiveNode() {
-        this.setState({ activeNode: null });
+        this.setState({ activeNodeId: null });
     }
 
     //
@@ -923,13 +930,13 @@ export default class App extends React.Component {
     handleKeyDown(e) {
         this.animation.interact();
 
-        if (e.key === "Escape" && this.state.activeNode) {
+        if (e.key === "Escape" && this.state.activeNodeId) {
             console.log("CANCEL");
             this.resetActiveNode();
             return;
         }
 
-        if (e.key === "Escape" && !this.state.activeNode) {
+        if (e.key === "Escape" && !this.state.activeNodeId) {
             this.reloadData({ zoom: true });
         }
 
@@ -1239,7 +1246,7 @@ export default class App extends React.Component {
 
     async handleClickNode(node, e) {
         // handle clicking with active node
-        if (this.state.activeNode && e.srcElement.tagName !== "CANVAS") {
+        if (this.state.activeNodeId && e.srcElement.tagName !== "CANVAS") {
             return;
         }
 
@@ -1289,7 +1296,7 @@ export default class App extends React.Component {
         }
 
         await this.asyncSetState({
-            activeNode: node.id,
+            activeNodeId: node.id,
             isEditing: false,
             chatMessages: [],
         });
@@ -1430,7 +1437,7 @@ export default class App extends React.Component {
                     onNodeClick={this.handleClickNode.bind(this)}
                     showLabels={!this.state.hideLabels}
                     cooldownTicks={this.state.cooldownTicks}
-                    activeNode={this.state.activeNode}
+                    activeNodeId={this.state.activeNodeId}
                     imageCache={this.imageCache}
                     getCachedImage={this.getCachedImage.bind(this)}
                     showActiveNodeImages={this.state.showActiveNodeImages}
