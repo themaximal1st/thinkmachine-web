@@ -137,3 +137,7 @@ body {
 #cac-feedback-form input[type="submit"] {
     @apply block w-full p-2 text-white rounded-b-lg bg-gray-900 hover:bg-gray-800 hover:cursor-pointer;
 }
+
+.images img {
+    @apply h-full w-auto max-w-max;
+}

@@ -23,7 +23,6 @@ export default function ForceGraph(params) {
         height: params.height,
         controlType: params.controlType,
         backgroundColor: "#000000",
-        enableNavigationControls: params.enableNavigationControls,
         graphData: params.data,
         showNavInfo: false,
         linkColor: (link) => {
