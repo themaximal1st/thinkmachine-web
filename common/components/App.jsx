@@ -756,8 +756,8 @@ export default class App extends React.Component {
         if (interwingle > 3) interwingle = 0;
         if (interwingle < 0) interwingle = 3;
 
-        this.setState({ interwingle }, () => {
-            this.reloadData({ zoom: true });
+        this.setState({ interwingle, activeNodeId: null }, async () => {
+            await this.reloadData({ zoom: true });
         });
     }
 
@@ -1054,7 +1054,6 @@ export default class App extends React.Component {
 
     async handleInput(e) {
         e.preventDefault();
-        return;
 
         if (this.dynamicInputMode === "add") {
             await this.handleAddInput(e);
