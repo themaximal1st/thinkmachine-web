@@ -153,3 +153,8 @@ body {
 .chat ol {
     @apply list-decimal pl-6 py-2;
 }
+
+.noscrollbar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+}

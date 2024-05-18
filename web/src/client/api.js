@@ -99,9 +99,9 @@ export default class ThinkMachineAPI {
         return await this.send("hypergraph/create");
     }
 
-    async addHyperedge(hyperedge, symbol) {
+    async addHyperedge(hyperedge, symbol, interwingle) {
         if (!this.isValid) return;
-        return await this.send("hyperedges/add", { hyperedge, symbol });
+        return await this.send("hyperedges/add", { hyperedge, symbol, interwingle });
     }
 
     async removeHyperedge(hyperedge) {
@@ -238,7 +238,9 @@ export default class ThinkMachineAPI {
             node: {
                 activateSlug: app.activateSlug.bind(app),
                 toggleEdit: app.toggleEditNode.bind(app),
+                toggleAdd: app.toggleAddNode.bind(app),
                 toggleActiveNodeImages: app.toggleActiveNodeImages.bind(app),
+                add: app.addNode.bind(app),
                 renameNode: this.renameNode.bind(this),
                 renameNodeAndReload: app.renameNodeAndReload.bind(app),
             },

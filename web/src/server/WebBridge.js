@@ -47,7 +47,7 @@ export default class WebBridge {
         });
 
         this.post("/api/hyperedges/add", ({ bridge, body }) => {
-            return bridge.addHyperedges(body.hyperedge, body.symbol);
+            return bridge.addHyperedges(body.hyperedge, body.symbol, body.interwingle);
         }, { save: true });
 
         this.post("/api/hyperedges/remove", ({ bridge, body }) => {

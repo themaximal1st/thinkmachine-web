@@ -207,12 +207,7 @@ function nodeThreeObject(node, activeNodeId = null, params) {
         contentDiv.innerHTML = `
 <div class="bg-gray-1000 absolute top-0 w-[700px] rounded-lg text-white gap-3">
     <form class="flex gap-6 items-center transition-all rounded-full p-3 pb-2">
-        <form class="w-full">
-        <input type="text" class="w-full h-full bg-gray-1000 focus:outline-none py-2 text-sm" placeholder="${name}" value="${name}" autofocus />
-        <a class="hover:cursor-pointer flex gap-[6px] uppercase font-medium tracking-wider text-xs items-center" onClick='window.api.node.toggleEdit()'>
-            ${renderToString(Icons.CloseIcon(4))}
-            Cancel
-        </a>
+        <input type="text" class="w-full h-full bg-gray-1000 focus:outline-none py-2 text-base" placeholder="${name}" value="${name}" autofocus />
         <button type="submit" class="flex gap-[6px] uppercase font-medium tracking-wider text-xs items-center" onClick='window.api.node.toggleEdit()'>
             ${renderToString(Icons.CheckmarkIcon(4))}
             Save
@@ -226,9 +221,57 @@ function nodeThreeObject(node, activeNodeId = null, params) {
         setTimeout(() => {
             input.focus();
         }, 100);
+
         form.addEventListener("submit", (e) => {
             e.preventDefault();
+            if (node.name === input.value) return;
             window.api.node.renameNodeAndReload(node.id, input.value);
+            input.value = "";
+        });
+    } else if (params.isAdding) {
+        const hyperedge = params.activeNodeId.replace(/^\d{1,4}:/, "").split(".");
+
+        contentDiv.innerHTML = `
+<div class="bg-gray-1000 absolute top-0 w-[700px] rounded-lg text-white gap-3">
+    <form class="flex gap-6 items-center transition-all rounded-full p-3 pb-2">
+            <div class="flex flex-row-reverse items-center gap-3 whitespace-nowrap min-w-12 max-w-64 overflow-scroll noscrollbar">
+                ${Array.from(hyperedge)
+                    .reverse()
+                    .map((n) => {
+                        return `<a class="hover:cursor-pointer" data-name="${n}">${n} &nbsp;→</a>`;
+                    })
+                    .join("")}
+            </div>
+        <div class="flex items-center gap-3 w-full">
+            <input type="text" class="w-full h-full bg-gray-1000 focus:outline-none py-2 text-base" placeholder="Symbol" value="" autofocus />
+        </div>
+        <button type="submit" class="flex gap-[6px] uppercase font-medium tracking-wider text-xs items-center" onClick='window.api.node.toggleAdd()'>
+            ${renderToString(Icons.CheckmarkIcon(4))}
+            Add
+        </button>
+    </form>
+</div>
+        `;
+
+        const form = contentDiv.querySelector("form");
+        const links = form.querySelectorAll("a");
+        links.forEach((link) => {
+            link.addEventListener("click", (e) => {
+                e.preventDefault();
+                hyperedge.splice(hyperedge.indexOf(link.dataset.name), 1);
+                link.remove();
+            });
+        });
+
+        const input = form.querySelector("input");
+        setTimeout(() => {
+            input.focus();
+        }, 100);
+
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            if (input.value.trim() === "") return;
+            await window.api.node.add(hyperedge, input.value);
             input.value = "";
         });
     } else {
@@ -239,7 +282,7 @@ function nodeThreeObject(node, activeNodeId = null, params) {
             ${renderToString(Icons.ChatIcon(3))}
             Edit
         </button>
-        <button class="flex gap-[6px] uppercase font-medium tracking-wider text-xs items-center" onClick='alert("Clicked ${name}")'>
+        <button class="flex gap-[6px] uppercase font-medium tracking-wider text-xs items-center" onClick='window.api.node.toggleAdd()'>
             ${renderToString(Icons.AddIcon(3))}
             Add
         </button>
@@ -273,13 +316,6 @@ function nodeThreeObject(node, activeNodeId = null, params) {
 </div>
     `;
 
-        const closeButton = document.createElement("a");
-        closeButton.className =
-            "text-white absolute -top-7 -right-7 opacity-50 hover:opacity-100 cursor-pointer";
-        closeButton.onclick = () => params.resetActiveNode(false);
-        closeButton.innerHTML = renderToString(Icons.CloseIcon(7));
-        contentDiv.appendChild(closeButton);
-
         const form = contentDiv.querySelector("form");
         const input = form.querySelector("input");
         form.addEventListener("submit", (e) => {
@@ -302,6 +338,21 @@ function nodeThreeObject(node, activeNodeId = null, params) {
             }
         }
     }
+
+    const closeButton = document.createElement("a");
+    closeButton.className =
+        "text-white absolute -top-7 -right-7 opacity-50 hover:opacity-100 cursor-pointer";
+    closeButton.onclick = () => {
+        if (params.isEditing) {
+            window.api.node.toggleEdit();
+        } else if (params.isAdding) {
+            window.api.node.toggleAdd();
+        } else {
+            params.resetActiveNode(false);
+        }
+    };
+    closeButton.innerHTML = renderToString(Icons.CloseIcon(7));
+    contentDiv.appendChild(closeButton);
 
     const contentContainer = new CSS2DObject(contentDiv);
     const contentSize = calculateTextSize(contentContainer);

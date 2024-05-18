@@ -71,6 +71,7 @@ export default class App extends React.Component {
             wormholeMode: parseInt(window.localStorage.getItem("wormholeMode") || -1),
             activeNodeId: null,
             showActiveNodeImages: false,
+            isAdding: false,
             isEditing: false,
             isAnimating: false,
             isShiftDown: false,
@@ -916,13 +917,18 @@ export default class App extends React.Component {
         this.animation.interact();
 
         if (e.key === "Escape" && this.state.activeNodeId) {
-            console.log("CANCEL");
-            this.resetActiveNode();
+            this.resetActiveNode(false);
             return;
         }
 
         if (e.key === "Escape" && !this.state.activeNodeId) {
             this.resetActiveNode(true);
+            return;
+        }
+
+        if (e.key === "`") {
+            this.setState({ showConsole: !this.state.showConsole });
+            return;
         }
 
         return;
@@ -1169,7 +1175,7 @@ export default class App extends React.Component {
             return;
         }
 
-        await window.api.hyperedges.add(hyperedge, input);
+        await window.api.hyperedges.add(hyperedge, input, this.state.interwingle);
 
         this.setState(
             {
@@ -1247,14 +1253,37 @@ export default class App extends React.Component {
 
     async activateSlug(symbol, add = false) {
         const node = this.nodeBySlug(symbol);
-        console.log("ACTIVATE SLUG", symbol, node);
         if (!node) return;
         return this.activateNode(node, add);
+    }
+
+    async addNode(hyperedge, symbol) {
+        const nodeId = await window.api.hyperedges.add(
+            hyperedge,
+            symbol,
+            this.state.interwingle
+        );
+        console.log("NODE ID", nodeId);
+
+        await this.asyncSetState({ activeNodeId: null });
+        await this.reloadData();
+        await utils.delay(1250);
+        const node = this.nodeById(nodeId);
+        console.log("NODE", node);
+        if (!node) {
+            console.log(this.state.data.nodes);
+        }
+        await this.activateNode(node);
     }
 
     toggleEditNode(val) {
         const isEditing = val === undefined ? !this.state.isEditing : val;
         this.setState({ isEditing });
+    }
+
+    toggleAddNode(val) {
+        const isAdding = val === undefined ? !this.state.isAdding : val;
+        this.setState({ isAdding });
     }
 
     async renameNodeAndReload(nodeId, symbol) {
@@ -1296,6 +1325,7 @@ export default class App extends React.Component {
         await this.asyncSetState({
             activeNodeId: node.id,
             isEditing: false,
+            isAdding: false,
             chatMessages: [],
         });
 
@@ -1442,6 +1472,7 @@ export default class App extends React.Component {
                     toggleShowActiveNodeImages={this.toggleActiveNodeImages.bind(this)}
                     handleChatMessage={this.handleChatMessage.bind(this)}
                     isEditing={this.state.isEditing}
+                    isAdding={this.state.isAdding}
                     chatMessages={this.state.chatMessages}
                 />
                 <LLMSettings

@@ -55,7 +55,10 @@ export default class Bridge {
         return true;
     }
 
-    addHyperedges(hyperedge, symbol) {
+    addHyperedges(hyperedge, symbol, interwingle) {
+        console.log("ADD HYPEREDGE", hyperedge, symbol, interwingle)
+        this.thinkabletype.interwingle = interwingle;
+
         let edge = this.thinkabletype.get(...hyperedge);
         if (edge) {
             edge.add(symbol);
@@ -64,6 +67,9 @@ export default class Bridge {
         }
 
         this.trackAnalytics("hyperedges.add");
+
+        console.log("INTERWINGLE", this.thinkabletype.interwingle);
+        console.log("ADDED EDGE", edge.id);
 
         return edge.id;
     }
