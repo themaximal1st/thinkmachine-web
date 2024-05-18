@@ -1288,7 +1288,7 @@ export default class App extends React.Component {
         let image_response;
         if (!node.images) {
             const search_term = node._meta.hyperedgeIDs
-                .map((id) => id.split("->").join(" "))
+                .map((id) => id.split(".").join(" "))
                 .join(" ");
             image_response = window.api.media.search(search_term);
         }

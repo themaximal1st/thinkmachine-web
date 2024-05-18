@@ -42,7 +42,7 @@ export default function Typer(params) {
 
     let placeholder = "";
     if (params.loaded) {
-        if (params.inputMode === "add" && params.hyperedges.length === 0) {
+        if (params.inputMode === "add") {
             placeholder = "Add anything to knowledge graph";
         } else if (params.inputMode === "generate") {
             placeholder = "Generate AI knowledge graph";
