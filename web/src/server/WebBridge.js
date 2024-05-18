@@ -104,6 +104,11 @@ export default class WebBridge {
             const { license } = body;
             return await bridge.validateLicense(license);
         }, { save: false });
+
+        this.post("/api/node/rename", async ({ bridge, body }) => {
+            const { nodeId, name, interwingle } = body;
+            return await bridge.renameNode(nodeId, name, interwingle);
+        }, { save: true });
     }
 
     async createHypergraph(req) {

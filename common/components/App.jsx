@@ -25,14 +25,12 @@ import Footer from "@components/Footer";
 import ForceGraph from "@components/ForceGraph";
 import Typer from "@components/Typer";
 import Wormhole from "@components/Wormhole.js";
-import ChatWindow from "@components/ChatWindow.jsx";
 import RecordingUI from "@components/RecordingUI.jsx";
 
 export default class App extends React.Component {
     constructor(props) {
         super(props);
         (this.imageCache = new Map()), (this.inputRef = React.createRef());
-        this.chatInputRef = React.createRef();
         this.consoleRef = React.createRef();
         this.graphRef = React.createRef();
         this.depthRef = React.createRef();
@@ -50,7 +48,6 @@ export default class App extends React.Component {
             showLLMSettings: false,
             showLayout: false,
             showLabsWarning: false,
-            showChat: false,
             showRecordingModal: false,
 
             licenseKey: window.localStorage.getItem("license") || "",
@@ -96,12 +93,6 @@ export default class App extends React.Component {
             cooldownTicks: 5000,
             cameraPosition: null,
             chatMessages: [],
-            chatWindow: {
-                x: window.innerWidth - 400 - 10,
-                y: (window.innerHeight - 400) / 2,
-                width: 400,
-                height: 300,
-            },
         };
     }
 
@@ -152,7 +143,6 @@ export default class App extends React.Component {
 
     get isFocusingTextInput() {
         if (this.isFocusingInput) return true;
-        if (this.isFocusingChatInput) return true;
         if (this.isFocusingFeedbackInput) return true;
 
         if (!document.activeElement) return false;
@@ -166,10 +156,6 @@ export default class App extends React.Component {
         return document.activeElement == this.inputReference;
     }
 
-    get isFocusingChatInput() {
-        return document.activeElement == this.chatInputRef.current;
-    }
-
     get isFocusingFeedbackInput() {
         if (!document.activeElement) return false;
         if (document.activeElement.tagName !== "TEXTAREA") return false;
@@ -177,7 +163,6 @@ export default class App extends React.Component {
     }
 
     get canFocusInput() {
-        if (this.isFocusingChatInput) return false;
         if (this.isFocusingFeedbackInput) return false;
         return true;
     }
@@ -375,11 +360,6 @@ export default class App extends React.Component {
         window.api.analytics.track("app.toggleInputMode");
         window.localStorage.setItem("inputMode", inputMode);
         this.setState({ inputMode });
-    }
-
-    updateChatWindow(newChatWindow = {}) {
-        const chatWindow = Object.assign({}, this.state.chatWindow, newChatWindow);
-        this.setState({ chatWindow });
     }
 
     updateAPIKeys(apikeys) {
@@ -1069,6 +1049,7 @@ export default class App extends React.Component {
 
     async handleInput(e) {
         e.preventDefault();
+        return;
 
         if (this.dynamicInputMode === "add") {
             await this.handleAddInput(e);
@@ -1272,6 +1253,14 @@ export default class App extends React.Component {
         this.setState({ isEditing });
     }
 
+    async renameNodeAndReload(nodeId, symbol) {
+        await window.api.node.renameNode(nodeId, symbol, this.state.interwingle);
+        if (this.state.activeNodeId === nodeId) {
+            console.log("NEED TO UPDATE NODE ID");
+        }
+        await this.reloadData();
+    }
+
     async activateNode(node, add = false) {
         // TODO: Switch to connect mode!
         // TODO: Build up connections in UI, let user click to remove—have final add button
@@ -1411,7 +1400,6 @@ export default class App extends React.Component {
                     isGenerating={this.state.isGenerating}
                     isChatting={this.state.isChatting}
                     loaded={this.state.loaded}
-                    // toggleChatWindow={this.toggleChatWindow.bind(this)}
                     handleCreateTutorial={this.createThinkMachineTutorial.bind(this)}
                     hyperedges={this.state.hyperedges}
                     symbols={this.uniqueSymbols}
@@ -1455,18 +1443,6 @@ export default class App extends React.Component {
                     toggleLLMSettings={this.toggleLLMSettings.bind(this)}
                     loaded={this.state.loaded}
                 />
-                <ChatWindow
-                    chatWindow={this.state.chatWindow}
-                    chatMessages={this.state.chatMessages}
-                    handleChatMessage={this.handleChatMessage.bind(this)}
-                    chatInputRef={this.chatInputRef}
-                    showChat={this.state.showChat}
-                    isChatting={this.state.isChatting}
-                    toggleIsChatting={this.toggleIsChatting.bind(this)}
-                    // toggleChatWindow={this.toggleChatWindow.bind(this)}
-                    updateChatWindow={this.updateChatWindow.bind(this)}
-                />
-
                 <Footer
                     loaded={this.state.loaded}
                     edited={this.state.edited}

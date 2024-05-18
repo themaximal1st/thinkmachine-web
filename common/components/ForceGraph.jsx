@@ -202,7 +202,36 @@ function nodeThreeObject(node, activeNodeId = null, params) {
 
     const contentDiv = document.createElement("div");
     contentDiv.className = "pointer-events-auto mt-8 w-[700px]";
-    contentDiv.innerHTML = `
+
+    if (params.isEditing) {
+        contentDiv.innerHTML = `
+<div class="bg-gray-1000 absolute top-0 w-[700px] rounded-lg text-white gap-3">
+    <form class="flex gap-6 items-center transition-all rounded-full p-3 pb-2">
+        <form class="w-full">
+        <input type="text" class="w-full h-full bg-gray-1000 focus:outline-none py-2 text-sm" placeholder="${name}" value="${name}" autofocus />
+        <a class="hover:cursor-pointer flex gap-[6px] uppercase font-medium tracking-wider text-xs items-center" onClick='window.api.node.toggleEdit()'>
+            ${renderToString(Icons.CloseIcon(4))}
+            Cancel
+        </a>
+        <button type="submit" class="flex gap-[6px] uppercase font-medium tracking-wider text-xs items-center" onClick='window.api.node.toggleEdit()'>
+            ${renderToString(Icons.CheckmarkIcon(4))}
+            Save
+        </button>
+    </form>
+</div>
+        `;
+
+        const form = contentDiv.querySelector("form");
+        const input = form.querySelector("input");
+        form.addEventListener("submit", (e) => {
+            e.preventDefault();
+            console.log("SAVE", input.value);
+            console.log(window.api.node.rename);
+            window.api.node.renameNodeAndReload(node.id, input.value);
+            input.value = "";
+        });
+    } else {
+        contentDiv.innerHTML = `
 <div class="bg-gray-1000 absolute top-0 w-[700px] rounded-lg text-white gap-3">
     <div class="flex gap-6 items-center transition-all rounded-full p-3 pb-2">
         <button class="flex gap-[6px] uppercase font-medium tracking-wider text-xs items-center" onClick='window.api.node.toggleEdit()'>
@@ -243,25 +272,26 @@ function nodeThreeObject(node, activeNodeId = null, params) {
 </div>
     `;
 
-    const form = contentDiv.querySelector("form");
-    const input = form.querySelector("input");
-    form.addEventListener("submit", (e) => {
-        e.preventDefault();
-        if (params.handleChatMessage(input.value)) {
-            input.value = "";
-        }
-    });
+        const form = contentDiv.querySelector("form");
+        const input = form.querySelector("input");
+        form.addEventListener("submit", (e) => {
+            e.preventDefault();
+            if (params.handleChatMessage(input.value)) {
+                input.value = "";
+            }
+        });
 
-    if (params.showActiveNodeImages && node.images) {
-        for (const img of node.images) {
-            const image = params.getCachedImage(img.thumbnail);
-            const a = document.createElement("a");
-            a.href = img.link;
-            a.target = "_blank";
-            a.rel = "noopener noreferrer";
-            a.title = img.title;
-            a.appendChild(image);
-            contentDiv.querySelector(".images").appendChild(a);
+        if (params.showActiveNodeImages && node.images) {
+            for (const img of node.images) {
+                const image = params.getCachedImage(img.thumbnail);
+                const a = document.createElement("a");
+                a.href = img.link;
+                a.target = "_blank";
+                a.rel = "noopener noreferrer";
+                a.title = img.title;
+                a.appendChild(image);
+                contentDiv.querySelector(".images").appendChild(a);
+            }
         }
     }
 

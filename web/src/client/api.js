@@ -186,6 +186,11 @@ export default class ThinkMachineAPI {
         return await this.send("license/validate", { license });
     }
 
+    async renameNode(nodeId, name, interwingle) {
+        if (!this.isValid) return;
+        return await this.send("node/rename", { nodeId, name, interwingle });
+    }
+
     setupBridge(app) {
         if (window.api && !window.api.preloaded) { return }
 
@@ -234,6 +239,8 @@ export default class ThinkMachineAPI {
                 activateSlug: app.activateSlug.bind(app),
                 toggleEdit: app.toggleEditNode.bind(app),
                 toggleActiveNodeImages: app.toggleActiveNodeImages.bind(app),
+                renameNode: this.renameNode.bind(this),
+                renameNodeAndReload: app.renameNodeAndReload.bind(app),
             },
         }
     }

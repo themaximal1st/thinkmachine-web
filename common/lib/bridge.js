@@ -239,4 +239,9 @@ export default class Bridge {
     async validateLicense(license) {
         return await License.check(license);
     }
+
+    async renameNode(nodeId, name, interwingle) {
+        this.thinkabletype.interwingle = interwingle;
+        return this.thinkabletype.rename(nodeId, name);
+    }
 }
