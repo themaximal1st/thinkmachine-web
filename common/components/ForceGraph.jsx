@@ -223,10 +223,11 @@ function nodeThreeObject(node, activeNodeId = null, params) {
 
         const form = contentDiv.querySelector("form");
         const input = form.querySelector("input");
+        setTimeout(() => {
+            input.focus();
+        }, 100);
         form.addEventListener("submit", (e) => {
             e.preventDefault();
-            console.log("SAVE", input.value);
-            console.log(window.api.node.rename);
             window.api.node.renameNodeAndReload(node.id, input.value);
             input.value = "";
         });
@@ -271,6 +272,13 @@ function nodeThreeObject(node, activeNodeId = null, params) {
     </form>
 </div>
     `;
+
+        const closeButton = document.createElement("a");
+        closeButton.className =
+            "text-white absolute -top-7 -right-7 opacity-50 hover:opacity-100 cursor-pointer";
+        closeButton.onclick = () => params.resetActiveNode(false);
+        closeButton.innerHTML = renderToString(Icons.CloseIcon(7));
+        contentDiv.appendChild(closeButton);
 
         const form = contentDiv.querySelector("form");
         const input = form.querySelector("input");

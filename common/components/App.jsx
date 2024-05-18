@@ -1,4 +1,4 @@
-import React from "react";
+import React, { act } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import slugify from "slugify";
 import * as THREE from "three";
@@ -314,9 +314,11 @@ export default class App extends React.Component {
                 this.focusCameraOnNode(activeNode);
             });
         } else {
-            const cameraPosition = await GraphUtils.smartZoom(this, oldData, zoom);
-            if (cameraPosition) {
-                this.setState({ cameraPosition });
+            if (zoom) {
+                const cameraPosition = await GraphUtils.smartZoom(this, oldData, zoom);
+                if (cameraPosition) {
+                    this.setState({ cameraPosition });
+                }
             }
         }
     }
@@ -624,8 +626,11 @@ export default class App extends React.Component {
         return image;
     }
 
-    resetActiveNode() {
+    resetActiveNode(resetCameraPosition = false) {
         this.setState({ activeNodeId: null });
+        if (resetCameraPosition) {
+            this.reloadData({ zoom: true });
+        }
     }
 
     //
@@ -917,7 +922,7 @@ export default class App extends React.Component {
         }
 
         if (e.key === "Escape" && !this.state.activeNodeId) {
-            this.reloadData({ zoom: true });
+            this.resetActiveNode(true);
         }
 
         return;
@@ -1254,11 +1259,16 @@ export default class App extends React.Component {
     }
 
     async renameNodeAndReload(nodeId, symbol) {
-        await window.api.node.renameNode(nodeId, symbol, this.state.interwingle);
-        if (this.state.activeNodeId === nodeId) {
-            console.log("NEED TO UPDATE NODE ID");
-        }
+        const activeNodeId = await window.api.node.renameNode(
+            nodeId,
+            symbol,
+            this.state.interwingle
+        );
+        await this.asyncSetState({ activeNodeId: null });
         await this.reloadData();
+        await utils.delay(1250);
+        const node = this.nodeById(activeNodeId);
+        await this.activateNode(node);
     }
 
     async activateNode(node, add = false) {
@@ -1426,6 +1436,7 @@ export default class App extends React.Component {
                     showLabels={!this.state.hideLabels}
                     cooldownTicks={this.state.cooldownTicks}
                     activeNodeId={this.state.activeNodeId}
+                    resetActiveNode={this.resetActiveNode.bind(this)}
                     imageCache={this.imageCache}
                     getCachedImage={this.getCachedImage.bind(this)}
                     showActiveNodeImages={this.state.showActiveNodeImages}

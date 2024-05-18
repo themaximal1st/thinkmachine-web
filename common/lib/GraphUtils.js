@@ -216,6 +216,8 @@ export function smartZoom(app, oldData, shouldZoom = false) {
                     return resolve(null);
                 }
             }, 100);
+        } else {
+            resolve(null);
         }
     });
 
