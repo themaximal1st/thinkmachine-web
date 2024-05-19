@@ -56,7 +56,6 @@ export default class Bridge {
     }
 
     addHyperedges(hyperedge, symbol, interwingle) {
-        console.log("ADD HYPEREDGE", hyperedge, symbol, interwingle)
         this.thinkabletype.interwingle = interwingle;
 
         let edge = this.thinkabletype.get(...hyperedge);
@@ -249,5 +248,13 @@ export default class Bridge {
     async renameNode(nodeId, name, interwingle) {
         this.thinkabletype.interwingle = interwingle;
         return this.thinkabletype.rename(nodeId, name);
+    }
+
+    async removeNode(nodeId, hyperedgeID, interwingle) {
+        this.thinkabletype.interwingle = interwingle;
+        const hyperedge = this.thinkabletype.edgeById(hyperedgeID);
+        console.log("EDGE", hyperedge);
+        // return this.thinkabletype.remove(nodeId, hyperedgeID);
+        return true;
     }
 }

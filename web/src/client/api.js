@@ -109,6 +109,11 @@ export default class ThinkMachineAPI {
         return await this.send("hyperedges/remove", { hyperedge });
     }
 
+    async removeNode(nodeId, hyperedgeId, interwingle) {
+        if (!this.isValid) return;
+        return await this.send("node/remove", { nodeId, hyperedgeId, interwingle });
+    }
+
     async exportHypergraph() {
         return await this.send("hypergraph/export");
     }
@@ -235,12 +240,15 @@ export default class ThinkMachineAPI {
             license: {
                 validate: this.validateLicense.bind(this),
             },
+            // TODO: just a mess
             node: {
                 activateSlug: app.activateSlug.bind(app),
                 toggleEdit: app.toggleEditNode.bind(app),
                 toggleAdd: app.toggleAddNode.bind(app),
                 toggleActiveNodeImages: app.toggleActiveNodeImages.bind(app),
                 add: app.addNode.bind(app),
+                delete: app.deleteNode.bind(app),
+                remove: this.removeNode.bind(this),
                 renameNode: this.renameNode.bind(this),
                 renameNodeAndReload: app.renameNodeAndReload.bind(app),
             },

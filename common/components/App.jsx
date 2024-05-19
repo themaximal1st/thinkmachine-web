@@ -1263,6 +1263,7 @@ export default class App extends React.Component {
             symbol,
             this.state.interwingle
         );
+
         console.log("NODE ID", nodeId);
 
         await this.asyncSetState({ activeNodeId: null });
@@ -1273,7 +1274,20 @@ export default class App extends React.Component {
         if (!node) {
             console.log(this.state.data.nodes);
         }
+
         await this.activateNode(node);
+    }
+
+    async deleteNode() {
+        if (!this.activeNode) return;
+
+        const hyperedgeID = this.activeNode._meta.hyperedgeIDs[0];
+        const resp = await window.api.node.remove(
+            this.activeNode.id,
+            hyperedgeID,
+            this.state.interwingle
+        );
+        console.log("RESPONSE", resp);
     }
 
     toggleEditNode(val) {

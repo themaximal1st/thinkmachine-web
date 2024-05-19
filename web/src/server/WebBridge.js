@@ -109,6 +109,11 @@ export default class WebBridge {
             const { nodeId, name, interwingle } = body;
             return await bridge.renameNode(nodeId, name, interwingle);
         }, { save: true });
+
+        this.post("/api/node/remove", async ({ bridge, body }) => {
+            const { nodeId, hyperedgeID, interwingle } = body;
+            return await bridge.removeNode(nodeId, hyperedgeID, interwingle);
+        }, { save: true });
     }
 
     async createHypergraph(req) {

@@ -213,6 +213,7 @@ function nodeThreeObject(node, activeNodeId = null, params) {
             Save
         </button>
     </form>
+    <div onClick='window.api.node.delete()' class="absolute text-sm text-red-400 hover:text-red-500 mt-2 ml-2 hover:cursor-pointer">Delete</div>
 </div>
         `;
 
