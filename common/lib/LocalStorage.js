@@ -8,9 +8,9 @@ export default class LocalStorage {
     }
 
     namespace(key) { return `${this.ns}:${key}` }
-    get(key, defaultValue) { return Settings.get(this.namespace(key), defaultValue) }
-    set(key, val) { Settings.set(this.namespace(key), val) }
-    remove(key) { Settings.remove(this.namespace(key)) }
+    get(key, defaultValue) { return LocalStorage.get(this.namespace(key), defaultValue) }
+    set(key, val) { LocalStorage.set(this.namespace(key), val) }
+    remove(key) { LocalStorage.remove(this.namespace(key)) }
     resetAll() {
         Object.keys(localStorage).forEach(key => {
             if (key.startsWith(this.ns)) {

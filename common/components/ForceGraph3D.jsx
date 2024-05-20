@@ -1,8 +1,16 @@
 import { ForceGraph3D as ForceGraph3DComponent } from "react-force-graph";
 import Settings from "@lib/Settings";
+import React from "react";
 
-// TODO: Way to generate props from defaultProps based on current graph
-
-export default function ForceGraph3D(props) {
-    return <ForceGraph3DComponent controlType={Settings.controlType} {...props} />;
+export default class ForceGraph3D extends React.Component {
+    render() {
+        console.log(this.props);
+        return (
+            <ForceGraph3DComponent
+                ref={this.props.graphRef} // won't allow in prop?
+                controlType={Settings.controlType}
+                {...this.props}
+            />
+        );
+    }
 }

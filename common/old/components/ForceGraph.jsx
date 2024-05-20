@@ -19,10 +19,6 @@ import * as Icons from "@assets/Icons";
 export default function ForceGraph(params) {
     const props = {
         ref: params.graphRef,
-        width: params.width,
-        height: params.height,
-        controlType: params.controlType,
-        backgroundColor: "#000000",
         graphData: params.data,
         showNavInfo: false,
         linkColor: (link) => {
