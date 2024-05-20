@@ -1,3 +1,60 @@
+import React from "react";
+import ThinkableType from "@themaximalist/thinkabletype";
+
+import { ForceGraph3D } from "react-force-graph";
+
+// TODO: Handle state updates early an often...want to minimize what we can
+
+export default class App extends React.Component {
+    constructor() {
+        super(...arguments);
+        this.thinkabletype = new ThinkableType({
+            interwingle: ThinkableType.INTERWINGLE.CONFLUENCE,
+        });
+        this.thinkabletype.add(["A", "B", "C"]);
+        this.thinkabletype.add(["1", "2", "3"]);
+        this.thinkabletype.add(["A", "1"]);
+
+        this.state = {
+            added: false,
+
+            filter: null,
+            data: { nodes: [], links: [] },
+        };
+    }
+
+    componentDidMount() {
+        this.reloadData();
+    }
+
+    reloadData() {
+        const data = this.thinkabletype.graphData(this.state.filter, this.state.data);
+        console.log(data);
+        this.setState({ data });
+    }
+
+    update() {
+        if (!this.state.added) {
+            this.thinkabletype.add(["X", "y", "Z"]);
+            this.setState({ added: true });
+        }
+        this.reloadData();
+    }
+
+    render() {
+        console.log("RENDER");
+        return (
+            <div className="">
+                {JSON.stringify(this.state.data, null, 4)}
+                <button onClick={this.update.bind(this)}>Update</button>
+                BOOM
+                <ForceGraph3D backgroundColor="#FAFAFA" graphData={this.state.data} />
+            </div>
+        );
+    }
+}
+
+/*
 import React, { act } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import slugify from "slugify";
@@ -1542,3 +1599,5 @@ export default class App extends React.Component {
         );
     }
 }
+
+*/

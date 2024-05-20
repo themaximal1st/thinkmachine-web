@@ -35,23 +35,7 @@ export function linkChanges(newData, oldData) {
     return links;
 }
 
-// restore node position from old node data to new node data
-export function restoreNodePositions(oldData, newData) {
-    const index = createIndex(oldData.nodes);
-    for (const node of newData.nodes) {
-        const old = index.get(node.id);
-        if (!old) continue;
-        if (typeof old.x === 'number') node.x = old.x;
-        if (typeof old.y === 'number') node.y = old.y;
-        if (typeof old.z === 'number') node.z = old.z;
-        if (typeof old.vx === 'number') node.vx = old.vx;
-        if (typeof old.vy === 'number') node.vy = old.vy;
-        if (typeof old.vz === 'number') node.vz = old.vz;
-        if (!node.content && old.content) node.content = old.content;
-    }
 
-    return newData;
-}
 
 // TODO: This could probably be more sophisticated
 export function zoomPadding(numSymbols, graphType = "3d") {

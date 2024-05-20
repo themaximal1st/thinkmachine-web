@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 body {
-    @apply bg-black;
+    /* @apply bg-black; */
 }
 
 .depth-slider {
