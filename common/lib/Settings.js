@@ -2,10 +2,6 @@ import { v4 as uuid } from 'uuid';
 
 export default class Settings {
 
-    // DEFAULTS
-
-    static defaultGraphType = "3d";
-
     // LOCAL SETTINGS
 
     constructor(ns) {
@@ -24,8 +20,10 @@ export default class Settings {
         });
     }
 
-    get graphType() { return this.get("graphType", Settings.defaultGraphType) }
-    set graphType(val) { this.set("graphType", val) }
+    get hypergraph() { return this.get("hypergraph", "") }
+    set hypergraph(val) { this.set("hypergraph", val) }
+    get interwingle() { return this.get("interwingle", 0) }
+    set interwingle(val) { this.set("interwingle", val) }
 
     // GLOBAL SETTINGS
 
@@ -40,7 +38,7 @@ export default class Settings {
     static remove(key) { localStorage.removeItem(key) }
     static resetAll() { localStorage.clear() }
 
-    static get graphType() { return Settings.get("graphType", Settings.defaultGraphType) }
+    static get graphType() { return Settings.get("graphType", "3d") }
     static set graphType(val) { Settings.set("graphType", val) }
 
 }

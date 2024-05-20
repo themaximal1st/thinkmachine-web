@@ -75,11 +75,11 @@ test("local settings same namespace", () => {
 test("local settings short hand", () => {
     const settings = new Settings();
 
-    expect(settings.graphType).toBe("3d");
-    settings.graphType = "2d";
-    expect(settings.graphType).toBe("2d");
-    settings.remove("graphType");
-    expect(settings.graphType).toBe("3d");
+    expect(settings.hypergraph).toEqual("");
+    settings.hypergraph = "1,2,3"
+    expect(settings.hypergraph).toEqual("1,2,3");
+    settings.remove("hypergraph");
+    expect(settings.hypergraph).toEqual("");
 });
 
 test("local reset", () => {

@@ -13,44 +13,50 @@ export default class App extends React.Component {
         super(...arguments);
         const uuid = "current-uuid";
         this.settings = new Settings(uuid);
-        this.thinkabletype = new ThinkableType({
-            interwingle: ThinkableType.INTERWINGLE.CONFLUENCE,
-        });
-        // this.thinkabletype.add(["A", "B", "C"]);
-        // this.thinkabletype.add(["1", "2", "3"]);
-        // this.thinkabletype.add(["A", "1"]);
+        this.thinkabletype = new ThinkableType();
 
         this.state = {
             filter: null,
-            data: this.settings.graphData,
+            data: { nodes: [], links: [] },
             graphType: Settings.graphType,
         };
     }
 
     componentDidMount() {
-        console.log("DATA");
-        console.log(this.settings.graphData);
+        this.thinkabletype.parse(this.settings.hypergraph);
+        this.thinkabletype.interwingle = this.settings.interwingle;
+
         this.reloadData();
     }
 
     reloadData() {
         const data = this.thinkabletype.graphData(this.state.filter, this.state.data);
         this.setState({ data });
-        this.settings.graphData = data;
     }
 
-    update() {
-        this.thinkabletype.add(["X", "y", "Z"]);
+    save() {
+        this.settings.hypergraph = this.thinkabletype.export();
         this.reloadData();
+    }
+
+    addOne() {
+        this.thinkabletype.add([
+            String(Math.random()),
+            String(Math.random()),
+            String(Math.random()),
+        ]);
+        this.save();
     }
 
     render() {
         console.log("RENDER");
         return (
             <div className="">
-                {JSON.stringify(this.state.data, null, 4)}
-                <button onClick={this.update.bind(this)}>Update</button>
-                BOOM
+                <button
+                    className="bg-blue-500 text-white p-2"
+                    onClick={this.addOne.bind(this)}>
+                    Add One
+                </button>
                 <ForceGraph3D backgroundColor="#FAFAFA" graphData={this.state.data} />
             </div>
         );
