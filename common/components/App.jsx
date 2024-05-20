@@ -2,8 +2,14 @@ import React from "react";
 import ThinkableType from "@themaximalist/thinkabletype";
 
 import { ForceGraph3D } from "react-force-graph";
+import Settings from "@lib/Settings";
 
-// TODO: Handle state updates early an often...want to minimize what we can
+// TODO: Settings
+// TODO: Settings Tests
+
+// TODO: GraphType ... dedicated component
+// TODO: Make sure electron is working
+// TODO: Is there a way to merge package.json? Probably not :(
 
 export default class App extends React.Component {
     constructor() {
@@ -16,10 +22,10 @@ export default class App extends React.Component {
         this.thinkabletype.add(["A", "1"]);
 
         this.state = {
-            added: false,
-
             filter: null,
             data: { nodes: [], links: [] },
+
+            graphType: Settings.graphType,
         };
     }
 
@@ -29,15 +35,11 @@ export default class App extends React.Component {
 
     reloadData() {
         const data = this.thinkabletype.graphData(this.state.filter, this.state.data);
-        console.log(data);
         this.setState({ data });
     }
 
     update() {
-        if (!this.state.added) {
-            this.thinkabletype.add(["X", "y", "Z"]);
-            this.setState({ added: true });
-        }
+        this.thinkabletype.add(["X", "y", "Z"]);
         this.reloadData();
     }
 
