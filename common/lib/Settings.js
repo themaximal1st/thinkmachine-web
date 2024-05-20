@@ -5,7 +5,6 @@ export default class Settings {
     // DEFAULTS
 
     static defaultGraphType = "3d";
-    static defaultGraphData = { nodes: [], links: [] };
 
     // LOCAL SETTINGS
 
@@ -27,8 +26,6 @@ export default class Settings {
 
     get graphType() { return this.get("graphType", Settings.defaultGraphType) }
     set graphType(val) { this.set("graphType", val) }
-    get graphData() { return this.get("graphData", Settings.defaultGraphData) }
-    set graphData(val) { this.set("graphData", val) }
 
     // GLOBAL SETTINGS
 

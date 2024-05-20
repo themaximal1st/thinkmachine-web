@@ -16,9 +16,9 @@ export default class App extends React.Component {
         this.thinkabletype = new ThinkableType({
             interwingle: ThinkableType.INTERWINGLE.CONFLUENCE,
         });
-        this.thinkabletype.add(["A", "B", "C"]);
-        this.thinkabletype.add(["1", "2", "3"]);
-        this.thinkabletype.add(["A", "1"]);
+        // this.thinkabletype.add(["A", "B", "C"]);
+        // this.thinkabletype.add(["1", "2", "3"]);
+        // this.thinkabletype.add(["A", "1"]);
 
         this.state = {
             filter: null,
