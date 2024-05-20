@@ -72,16 +72,6 @@ test("local settings same namespace", () => {
     expect(settings2.get("test")).toBe(null);
 });
 
-test("local settings short hand", () => {
-    const settings = new Settings();
-
-    expect(settings.hypergraph).toEqual("");
-    settings.hypergraph = "1,2,3"
-    expect(settings.hypergraph).toEqual("1,2,3");
-    settings.remove("hypergraph");
-    expect(settings.hypergraph).toEqual("");
-});
-
 test("local reset", () => {
     Settings.set("test", "value");
 
@@ -121,4 +111,49 @@ test("corrupted object", () => {
     const settings = new Settings();
     localStorage.setItem(settings.namespace("graphData"), { nodes: [{ id: 1, name: "Node 1" }], links: [] });
     expect(settings.get("graphData", {})).toEqual({});
+});
+
+test("blob storage", async () => {
+    const settings = new Settings();
+
+    let hypergraph;
+    hypergraph = await settings.blob.get("hypergraph", "");
+    expect(hypergraph).toEqual("");
+
+    await settings.blob.set("hypergraph", "1,2,3");
+    hypergraph = await settings.blob.get("hypergraph", "");
+    expect(hypergraph).toEqual("1,2,3");
+
+    await settings.blob.remove("hypergraph");
+    hypergraph = await settings.blob.get("hypergraph", "");
+    expect(hypergraph).toEqual("");
+});
+
+test("blob reset", async () => {
+    const settings = new Settings();
+
+    let hypergraph;
+    hypergraph = await settings.blob.get("hypergraph", "");
+    expect(hypergraph).toEqual("");
+
+    await settings.blob.set("hypergraph", "1,2,3");
+    hypergraph = await settings.blob.get("hypergraph", "");
+    expect(hypergraph).toEqual("1,2,3");
+
+    await settings.blob.resetAll();
+    hypergraph = await settings.blob.get("hypergraph", "");
+    expect(hypergraph).toEqual("");
+});
+
+test("hypergraph blob", async () => {
+
+    const settings = new Settings();
+
+    let hypergraph = await settings.hypergraph();
+    expect(hypergraph).toEqual("");
+
+    await settings.hypergraph("1,2,3");
+
+    hypergraph = await settings.hypergraph();
+    expect(hypergraph).toEqual("1,2,3");
 });

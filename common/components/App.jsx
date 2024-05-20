@@ -19,24 +19,39 @@ export default class App extends React.Component {
             filter: null,
             data: { nodes: [], links: [] },
             graphType: Settings.graphType,
+            interwinge: Settings.interwingle,
         };
     }
 
     componentDidMount() {
-        this.thinkabletype.parse(this.settings.hypergraph);
-        this.thinkabletype.interwingle = this.settings.interwingle;
-
-        this.reloadData();
+        this.load();
     }
 
-    reloadData() {
+    async asyncSetState(state = {}) {
+        return new Promise((resolve, reject) => {
+            this.setState(state, () => {
+                resolve();
+            });
+        });
+    }
+
+    async load() {
+        const hypergraph = await this.settings.hypergraph();
+        this.thinkabletype.parse(hypergraph);
+        this.thinkabletype.interwingle = this.state.interwingle;
+
+        await this.reloadData();
+    }
+
+    async reloadData() {
         const data = this.thinkabletype.graphData(this.state.filter, this.state.data);
-        this.setState({ data });
+        await this.asyncSetState({ data });
     }
 
-    save() {
-        this.settings.hypergraph = this.thinkabletype.export();
-        this.reloadData();
+    async save() {
+        const hypergraph = this.thinkabletype.export();
+        await this.settings.hypergraph(hypergraph);
+        await this.reloadData();
     }
 
     addOne() {
