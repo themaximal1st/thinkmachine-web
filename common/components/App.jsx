@@ -1,7 +1,7 @@
 import React from "react";
 import ThinkableType from "@themaximalist/thinkabletype";
 
-import { ForceGraph3D } from "react-force-graph";
+import ForceGraph from "./ForceGraph";
 import Settings from "@lib/Settings";
 
 // TODO: GraphType ... dedicated component
@@ -17,7 +17,7 @@ export default class App extends React.Component {
 
         this.state = {
             filter: null,
-            data: { nodes: [], links: [] },
+            graphData: { nodes: [], links: [] },
             graphType: Settings.graphType,
             interwinge: Settings.interwingle,
         };
@@ -44,8 +44,11 @@ export default class App extends React.Component {
     }
 
     async reloadData() {
-        const data = this.thinkabletype.graphData(this.state.filter, this.state.data);
-        await this.asyncSetState({ data });
+        const graphData = this.thinkabletype.graphData(
+            this.state.filter,
+            this.state.graphData
+        );
+        await this.asyncSetState({ graphData });
     }
 
     async save() {
@@ -72,7 +75,7 @@ export default class App extends React.Component {
                     onClick={this.addOne.bind(this)}>
                     Add One
                 </button>
-                <ForceGraph3D backgroundColor="#FAFAFA" graphData={this.state.data} />
+                <ForceGraph graphData={this.state.graphData} />
             </div>
         );
     }

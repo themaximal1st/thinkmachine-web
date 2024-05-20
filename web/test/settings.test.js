@@ -146,7 +146,6 @@ test("blob reset", async () => {
 });
 
 test("hypergraph blob", async () => {
-
     const settings = new Settings();
 
     let hypergraph = await settings.hypergraph();
