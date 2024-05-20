@@ -11,6 +11,8 @@ import Settings from "@lib/Settings";
 export default class App extends React.Component {
     constructor() {
         super(...arguments);
+        const uuid = "current-uuid";
+        this.settings = new Settings(uuid);
         this.thinkabletype = new ThinkableType({
             interwingle: ThinkableType.INTERWINGLE.CONFLUENCE,
         });
@@ -20,19 +22,21 @@ export default class App extends React.Component {
 
         this.state = {
             filter: null,
-            data: { nodes: [], links: [] },
-
+            data: this.settings.graphData,
             graphType: Settings.graphType,
         };
     }
 
     componentDidMount() {
+        console.log("DATA");
+        console.log(this.settings.graphData);
         this.reloadData();
     }
 
     reloadData() {
         const data = this.thinkabletype.graphData(this.state.filter, this.state.data);
         this.setState({ data });
+        this.settings.graphData = data;
     }
 
     update() {

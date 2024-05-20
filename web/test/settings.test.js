@@ -103,3 +103,22 @@ test("local reset", () => {
     expect(settings.get("test")).toBe(null);
     expect(Settings.get("test")).toBe(null);
 });
+
+test("storing number", () => {
+    const settings = new Settings();
+    settings.set("number", 42);
+    expect(settings.get("number")).toBe(42);
+});
+
+test("storing object", () => {
+    const settings = new Settings();
+    expect(settings.graphData).toEqual({ nodes: [], links: [] });
+    settings.graphData = { nodes: [{ id: 1, name: "Node 1" }], links: [] };
+    expect(settings.graphData).toEqual({ nodes: [{ id: 1, name: "Node 1" }], links: [] });
+});
+
+test("corrupted object", () => {
+    const settings = new Settings();
+    localStorage.setItem(settings.namespace("graphData"), { nodes: [{ id: 1, name: "Node 1" }], links: [] });
+    expect(settings.graphData).toEqual({ nodes: [], links: [] });
+});
