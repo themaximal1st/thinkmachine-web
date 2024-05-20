@@ -4,7 +4,7 @@ import { fileURLToPath } from "url";
 import { app as electronApp, BrowserWindow, Menu, MenuItem, shell } from "electron";
 import { electronApp as electronAppTools, optimizer, is } from "@electron-toolkit/utils";
 
-import ElectronBridge from "./ElectronBridge";
+// import ElectronBridge from "./ElectronBridge";
 
 import {
     NewMenuItem,
@@ -27,8 +27,8 @@ export default class DesktopApp {
     }
 
     async load() {
-        this.bridge = new ElectronBridge(this);
-        await this.bridge.load();
+        // this.bridge = new ElectronBridge(this);
+        // await this.bridge.load();
 
         const menu = Menu.getApplicationMenu();
         if (!menu) return;

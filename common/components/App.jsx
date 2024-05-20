@@ -4,9 +4,6 @@ import ThinkableType from "@themaximalist/thinkabletype";
 import { ForceGraph3D } from "react-force-graph";
 import Settings from "@lib/Settings";
 
-// TODO: Settings
-// TODO: Settings Tests
-
 // TODO: GraphType ... dedicated component
 // TODO: Make sure electron is working
 // TODO: Is there a way to merge package.json? Probably not :(
