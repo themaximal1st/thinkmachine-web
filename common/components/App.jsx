@@ -11,7 +11,7 @@ import Settings from "@lib/Settings";
 export default class App extends React.Component {
     constructor() {
         super(...arguments);
-        const uuid = "current-uuid2";
+        const uuid = "current-uuid1";
         this.settings = new Settings(uuid);
         this.thinkabletype = new ThinkableType({
             interwingle: Settings.interwingle,
@@ -37,11 +37,12 @@ export default class App extends React.Component {
     }
 
     async reloadData() {
-        const graphData = this.thinkabletype.graphData(
-            this.state.filter,
-            this.state.graphData
-        );
+        const oldGraphData = this.state.graphData;
+
+        const graphData = this.thinkabletype.graphData(this.state.filter, oldGraphData);
         await this.asyncSetState({ graphData });
+
+        // document.title = this.title;
     }
 
     async save() {
@@ -65,6 +66,15 @@ export default class App extends React.Component {
         await this.asyncSetState({ activeNodeUUID: null });
     }
 
+    async addOne() {
+        this.thinkabletype.add([
+            String(Math.random()),
+            String(Math.random()),
+            String(Math.random()),
+        ]);
+        this.save();
+    }
+
     render() {
         return (
             <div className="">
@@ -72,6 +82,11 @@ export default class App extends React.Component {
                     className="absolute top-0 right-0 bg-blue-500 text-white p-2 z-20"
                     onClick={this.reloadData.bind(this)}>
                     UPDATE
+                </button>
+                <button
+                    className="absolute top-10 right-0 bg-purple-500 text-white p-2 z-20"
+                    onClick={this.addOne.bind(this)}>
+                    ADD
                 </button>
                 <ForceGraph
                     activeNodeUUID={this.state.activeNodeUUID}

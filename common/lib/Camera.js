@@ -39,36 +39,23 @@ export default class Camera {
         this.lastPosition = this.position;
     }
 
-    // Think through what we want to do here
-    // Higher level of abstraction
-    // not just zoom
-    // but zoom and fit, and look at node
-    zoom() {
-
+    zoom(oldData = null, timing = 250) {
         console.log("ZOOM");
         const padding = zoomPadding(this.props.graphData.nodes.length, this.props.graphType);
-        this.graph.zoomToFit(250, padding);
-        // this.graph.zoomToFit(200, padding, (node) => {
-        //     return true
-        // });
 
-        // 1. get camera position
-        // 2. see if camera position is stable
-        // 3. always zoom in some cases
-        // 4. zoom
-        // 5. wait for stable camera position
-        // const cameraPosition = this.graph.cameraPosition();
-        // console.log(cameraPosition);
+        const nodes = utils.nodeChanges(this.props.graphData, oldData || this.props.graphData);
+        const nodeIndex = utils.createIndex(nodes);
 
-        // console.log("ZOOM", padding);
+        this.graph.zoomToFit(timing, padding, (node) => {
+            if (nodes.length === 0) return true;
+            if (nodeIndex.has(node.id)) {
+                return true;
+            }
+            return false;
+        });
     }
 
-    async stableZoom(delay = 100, shouldZoom = false) {
-
-        if (!this.lastPosition) {
-            shouldZoom = true;
-        }
-
+    async stableZoom(shouldZoom = false, delay = 100, oldData = null) {
         if (this.isStable) {
             shouldZoom = true;
         }
@@ -77,28 +64,28 @@ export default class Camera {
             shouldZoom = true;
         }
 
-        if (shouldZoom) {
+        if (!this.lastPosition || shouldZoom) {
             await utils.delay(delay);
-            this.zoom();
-        }
+            this.zoom(oldData);
 
-        // await this.waitForStablePosition();
+            await this.waitForStablePosition();
+        } else {
+            console.log("skip zoom");
+        }
     }
 
     async waitForStablePosition(delay = 50, max = 50) {
-        console.log("WAITING FOR STABLE POSITION");
-
         let i = 0;
         return new Promise((resolve, reject) => {
             let interval = setInterval(() => {
                 if (this.isStable) {
-                    console.log("FOUND STABLE POSITION");
+                    console.log("stable camera");
                     clearInterval(interval);
                     resolve(this.position);
                 }
 
                 if (i++ > max) {
-                    console.log("ERROR FINDING STABLE CAMERA");
+                    console.log("couldn't find stable camera");
                     clearInterval(interval);
                     return resolve(null);
                 }

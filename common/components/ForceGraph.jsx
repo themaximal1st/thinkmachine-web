@@ -3,6 +3,7 @@ import ForceGraph3D from "./ForceGraph3D";
 import ForceGraph2D from "./ForceGraph2D";
 import Settings from "@lib/Settings";
 import Camera from "@lib/Camera";
+import * as utils from "@lib/utils";
 
 const defaultProps = {
     backgroundColor: "#000000", // light mode vs dark mode
@@ -71,21 +72,10 @@ export default class ForceGraph extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        console.log("UPDATE", prevProps, prevState);
-        this.camera.props = {
-            ...this.props,
-            ...this.state,
-            graphRef: this.graphRef,
-        };
-        this.camera.stableZoom().then(() => {
-            console.log("ZOOMED");
+        this.updateCamera(false, 100, prevProps.graphData).then(() => {
+            this.emitLinkParticles(prevProps.graphData);
         });
     }
-
-    // const cameraPosition = await GraphUtils.smartZoom(this, oldData, zoom);
-    // if (cameraPosition) {
-    //     this.setState({ cameraPosition });
-    // }
 
     render() {
         const props = {
@@ -162,5 +152,22 @@ export default class ForceGraph extends React.Component {
 
     handleEngineStop() {
         console.log("STOP");
+    }
+
+    emitLinkParticles(oldData) {
+        const links = utils.linkChanges(this.props.graphData, oldData);
+        for (const link of links) {
+            this.graphRef.current.emitParticle(link);
+        }
+    }
+
+    async updateCamera(shouldZoom = false, delay = 100, oldData) {
+        this.camera.props = {
+            ...this.props,
+            ...this.state,
+            graphRef: this.graphRef,
+        };
+
+        await this.camera.stableZoom(shouldZoom, delay, oldData);
     }
 }
