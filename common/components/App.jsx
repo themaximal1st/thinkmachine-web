@@ -11,7 +11,7 @@ import Settings from "@lib/Settings";
 export default class App extends React.Component {
     constructor() {
         super(...arguments);
-        const uuid = "current-uuid";
+        const uuid = "current-uuid2";
         this.settings = new Settings(uuid);
         this.thinkabletype = new ThinkableType({
             interwingle: Settings.interwingle,
@@ -32,8 +32,6 @@ export default class App extends React.Component {
     async load() {
         const hypergraph = await this.settings.hypergraph();
         this.thinkabletype.parse(hypergraph);
-        // this.thinkabletype.add(["A", "B", "C"]);
-        // this.thinkabletype.add(["C", "D", "E"]);
 
         await this.reloadData();
     }
@@ -67,25 +65,13 @@ export default class App extends React.Component {
         await this.asyncSetState({ activeNodeUUID: null });
     }
 
-    //
-
-    addOne() {
-        this.thinkabletype.add([
-            String(Math.random()),
-            String(Math.random()),
-            String(Math.random()),
-        ]);
-        this.save();
-    }
-
     render() {
-        console.log("RENDER");
         return (
             <div className="">
                 <button
-                    className="bg-blue-500 text-white p-2"
-                    onClick={this.addOne.bind(this)}>
-                    Add One
+                    className="absolute top-0 right-0 bg-blue-500 text-white p-2 z-20"
+                    onClick={this.reloadData.bind(this)}>
+                    UPDATE
                 </button>
                 <ForceGraph
                     activeNodeUUID={this.state.activeNodeUUID}

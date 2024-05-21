@@ -2,8 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/*
 body {
-    /* @apply bg-black; */
+    @apply bg-black;
 }
 
 .depth-slider {
@@ -155,6 +156,8 @@ body {
 }
 
 .noscrollbar {
-    -ms-overflow-style: none; /* IE and Edge */
-    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
 }
+
+*/

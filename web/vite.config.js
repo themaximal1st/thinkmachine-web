@@ -14,4 +14,7 @@ export default defineConfig({
     },
   },
   plugins: [react()],
+  optimizeDeps: {
+    include: ['@themaximalist/thinkabletype']
+  }
 });

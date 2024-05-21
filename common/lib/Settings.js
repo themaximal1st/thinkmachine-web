@@ -24,3 +24,5 @@ export default class Settings extends LocalStorage {
     static get controlType() { return Settings.get("controlType", Settings.defaultValues.controlType) }
     static set controlType(val) { Settings.set("controlType", val) }
 }
+
+window.Settings = Settings;

@@ -19,8 +19,6 @@ import * as Icons from "@assets/Icons";
 export default function ForceGraph(params) {
     const props = {
         ref: params.graphRef,
-        graphData: params.data,
-        showNavInfo: false,
         linkColor: (link) => {
             if (params.activeNodeId) {
                 return "rgba(255, 255, 255, 0.04)";
