@@ -38,8 +38,6 @@ export function nodeChanges(newData, oldData) {
 
 // get the links that were added
 export function linkChanges(newData, oldData) {
-    console.log("NEW", newData);
-    console.log("OLD", oldData);
     const index = createIndex(oldData.links);
     const links = [];
 

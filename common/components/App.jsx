@@ -4,9 +4,10 @@ import ThinkableType from "@themaximalist/thinkabletype";
 import ForceGraph from "./ForceGraph";
 import Settings from "@lib/Settings";
 
-// TODO: GraphType ... dedicated component
-// TODO: Colors
-// TODO: Make sure electron is working
+// TODO: interwingle
+// TODO: start on UI — what is typer, what is overlay, what is new UI?
+// TODO: Possible to do UI in react and not innerHTML?
+// TODO: uuid
 
 export default class App extends React.Component {
     constructor() {

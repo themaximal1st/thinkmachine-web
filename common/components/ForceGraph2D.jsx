@@ -30,7 +30,7 @@ export default class ForceGraph2D extends React.Component {
         const bckgDimensions = [textWidth, fontSize].map((n) => n + fontSize * 0.2); // some padding
 
         if (!node.bridge) {
-            ctx.fillStyle = utils.hexToRGBA("#FAFAFA", 1);
+            ctx.fillStyle = utils.hexToRGBA(this.props.backgroundColor, 1);
             ctx.fillRect(
                 node.x - bckgDimensions[0] / 2,
                 node.y - bckgDimensions[1] / 2,

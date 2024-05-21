@@ -27,8 +27,20 @@ export default class Camera {
         return this.props.graphRef.current;
     }
 
+    get is2D() { return this.props.graphType === "2d" }
+    get is3D() { return this.props.graphType === "3d" }
+
     get position() {
-        return new CameraPosition(this.graph.cameraPosition());
+        let cameraPosition;
+        if (this.is2D) {
+            const centerAt = this.graph.centerAt();
+            const zoom = this.graph.zoom();
+            cameraPosition = { x: centerAt.x, y: centerAt.y, z: zoom };
+        } else {
+            cameraPosition = this.graph.cameraPosition();
+        }
+
+        return new CameraPosition(cameraPosition);
     }
 
     get isStable() {
@@ -41,6 +53,15 @@ export default class Camera {
 
     zoom(oldData = null, timing = 250) {
         console.log("ZOOM");
+
+        if (this.is2D) {
+            // 2d is weird..needs a longer delay before zoom to fit
+            utils.delay(500).then(() => {
+                this.graph.zoomToFit(timing, 100);
+            });
+            return;
+        }
+
         const padding = zoomPadding(this.props.graphData.nodes.length, this.props.graphType);
 
         const nodes = utils.nodeChanges(this.props.graphData, oldData || this.props.graphData);
@@ -120,10 +141,3 @@ function zoomPadding(numSymbols, graphType = "3d") {
         return 300;
     }
 }
-
-/*
-function cameraEqual(camera1, camera2) {
-    if (!camera1 || !camera2) return false;
-    return (camera1.x === camera2.x && camera1.y === camera2.y && camera1.z === camera2.z);
-}
-*/
