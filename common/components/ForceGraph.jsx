@@ -72,9 +72,16 @@ export default class ForceGraph extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        this.updateCamera(false, 100, prevProps.graphData).then(() => {
-            this.emitLinkParticles(prevProps.graphData);
-        });
+        if (prevProps.activeNodeUUID !== this.props.activeNodeUUID) {
+            console.log("ACTIVE NODE CHANGED");
+            this.updateCamera(true, 100, prevProps.graphData);
+        }
+
+        if (prevProps.graphData !== this.props.graphData) {
+            this.updateCamera(false, 100, prevProps.graphData).then(() => {
+                this.emitLinkParticles(prevProps.graphData);
+            });
+        }
     }
 
     render() {
@@ -97,7 +104,7 @@ export default class ForceGraph extends React.Component {
     }
 
     linkColor(link) {
-        if (this.props.activeNode) {
+        if (this.props.activeNodeUUID) {
             return "rgba(255, 255, 255, 0.04)";
         }
 
@@ -113,7 +120,7 @@ export default class ForceGraph extends React.Component {
     }
 
     handleNodeClick(node) {
-        console.log("CLICK", node);
+        this.props.setActiveNode(node);
     }
 
     handleResize() {
@@ -121,13 +128,6 @@ export default class ForceGraph extends React.Component {
             width: window.innerWidth,
             height: window.innerHeight,
         });
-    }
-
-    static calculateTextSize(obj) {
-        const bounds = new THREE.Box3().setFromObject(obj);
-        const size = new THREE.Vector3();
-        bounds.getSize(size);
-        return size;
     }
 
     setupForces() {
@@ -168,6 +168,10 @@ export default class ForceGraph extends React.Component {
             graphRef: this.graphRef,
         };
 
-        await this.camera.stableZoom(shouldZoom, delay, oldData);
+        if (this.props.activeNodeUUID) {
+            await this.camera.zoomToNode(this.props.activeNodeUUID);
+        } else {
+            await this.camera.stableZoom(shouldZoom, delay, oldData);
+        }
     }
 }

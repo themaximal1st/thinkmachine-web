@@ -1,7 +1,9 @@
+import { CSS2DRenderer, CSS2DObject } from "three/addons/renderers/CSS2DRenderer.js";
 import SpriteText from "three-spritetext";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
 import * as Three from "three";
 
+import { renderToStaticMarkup, renderToString } from "react-dom/server";
 import { ForceGraph3D as ForceGraph3DComponent } from "react-force-graph";
 import Settings from "@lib/Settings";
 import React from "react";
@@ -15,12 +17,15 @@ export default class ForceGraph3D extends React.Component {
         this.props.graphRef.current.postProcessingComposer().addPass(bloomPass);
     }
 
+    componentDidUpdate(prevProps, prevState) {}
+
     render() {
         return (
             <ForceGraph3DComponent
                 ref={this.props.graphRef} // won't allow in prop?
                 controlType={Settings.controlType}
                 nodeThreeObject={this.nodeThreeObject.bind(this)}
+                extraRenderers={[new CSS2DRenderer()]}
                 {...this.props}
             />
         );
@@ -81,13 +86,68 @@ export default class ForceGraph3D extends React.Component {
         if (!this.props.activeNodeUUID || this.props.activeNodeUUID !== node.uuid) {
             return title;
         }
+
+        return this.activeNodeUI(node, title);
+    }
+
+    activeNodeUI(node, title) {
+        const group = new THREE.Group();
+        group.add(title);
+
+        const content = this.activeNodeUIContent(node);
+        const div = ForceGraph3D.createElement(content);
+        this.addUIEvents(div);
+        const ui = new CSS2DObject(div);
+
+        const uiSize = ForceGraph3D.calculateTextSize(ui);
+        const titleSize = ForceGraph3D.calculateTextSize(title);
+
+        const contentY = -titleSize.y - uiSize.y / 2 + 2;
+
+        ui.position.copy(new THREE.Vector3(0, contentY, -1));
+
+        group.add(ui);
+
+        return group;
+    }
+
+    helloworld() {
+        console.log("Hello World");
+    }
+
+    addUIEvents(div) {
+        console.log("UI", div);
+        const a = div.querySelector("a");
+        a.onclick = () => {
+            console.log("Clicked", this.props);
+        };
+    }
+
+    activeNodeUIContent(node) {
+        return (
+            <div className="bg-red-500 pointer-events-auto">
+                <div className="text-white">Hello</div>
+                <a className="text-white cursor-pointer pointer-events-auto">HEY</a>
+            </div>
+        );
+    }
+
+    static createElement(dom) {
+        const div = document.createElement("div");
+        div.innerHTML = renderToStaticMarkup(dom);
+        return div;
+    }
+
+    static calculateTextSize(obj) {
+        const bounds = new THREE.Box3().setFromObject(obj);
+        const size = new THREE.Vector3();
+        bounds.getSize(size);
+        return size;
     }
 }
 
 /*
 
-        const group = new THREE.Group();
-        group.add(title);
 
         const titleSize = ForceGraph.calculateTextSize(title);
 

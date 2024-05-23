@@ -8,6 +8,7 @@ import Settings from "@lib/Settings";
 // TODO: start on UI — what is typer, what is overlay, what is new UI?
 // TODO: Possible to do UI in react and not innerHTML?
 // TODO: uuid
+// TODO: activeNode
 
 export default class App extends React.Component {
     constructor() {
@@ -35,6 +36,12 @@ export default class App extends React.Component {
         this.thinkabletype.parse(hypergraph);
 
         await this.reloadData();
+
+        setTimeout(async () => {
+            await this.asyncSetState({
+                activeNodeUUID: this.state.graphData.nodes[0].uuid,
+            });
+        }, 1000);
     }
 
     async reloadData() {
@@ -91,6 +98,7 @@ export default class App extends React.Component {
                 </button>
                 <ForceGraph
                     activeNodeUUID={this.state.activeNodeUUID}
+                    setActiveNode={this.setActiveNode.bind(this)}
                     graphData={this.state.graphData}
                 />
             </div>
