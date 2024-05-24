@@ -66,12 +66,9 @@ export default class App extends React.Component {
         return this.thinkabletype.nodeByUUID(this.state.activeNodeUUID);
     }
 
-    async setActiveNode(node) {
-        await this.asyncSetState({ activeNodeUUID: node.uuid });
-    }
-
-    async resetActiveNode() {
-        await this.asyncSetState({ activeNodeUUID: null });
+    async setActiveNode(node = null) {
+        const activeNodeUUID = node ? node.uuid : null;
+        await this.asyncSetState({ activeNodeUUID });
     }
 
     async addOne() {

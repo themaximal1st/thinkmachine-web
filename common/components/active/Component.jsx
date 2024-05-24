@@ -2,7 +2,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { CSS2DObject } from "three/addons/renderers/CSS2DRenderer.js";
 import * as Three from "three";
 
-class Component {
+export default class Component {
     constructor(props = {}) {
         this.props = props;
     }
@@ -48,35 +48,5 @@ class Component {
         const div = document.createElement("div");
         div.innerHTML = renderToStaticMarkup(html);
         return div;
-    }
-}
-
-export default class ActiveNodeUI extends Component {
-    code() {
-        return (
-            <div className="absolute text-white w-full max-w-xl pointer-events-auto">
-                <div className="w-[600px] ml-[-300px] bg-gray-1000">
-                    <a href="#" className="text-white">
-                        CLICKABLE
-                    </a>
-                    BOOM TOWN
-                    <br />
-                    BOOM TOWN
-                    <br />
-                    BOOM TOWN
-                    <br />
-                    BOOM TOWN
-                    <br />
-                </div>
-            </div>
-        );
-    }
-
-    events(div) {
-        console.log("events", div);
-        const a = div.querySelector("a");
-        a.addEventListener("click", (e) => {
-            console.log("CLICKED A");
-        });
     }
 }

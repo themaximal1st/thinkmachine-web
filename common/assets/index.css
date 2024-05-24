@@ -159,5 +159,36 @@ body {
     -ms-overflow-style: none;
     scrollbar-width: none;
 }
-
 */
+
+#active-node-wrapper {
+    @apply absolute text-white w-full max-w-xl pointer-events-auto;
+}
+
+#active-node {
+    @apply w-[600px] ml-[-300px] bg-gray-1000 rounded-xl relative;
+}
+
+#active-node-panel {
+    @apply p-3;
+}
+
+#active-node-toolbar {
+    @apply flex items-center gap-1 p-1;
+}
+
+#active-node-toolbar button {
+    @apply flex gap-[6px] uppercase font-medium tracking-wider text-xs items-center px-3 py-2 rounded-xl transition-all;
+}
+
+#active-node-close {
+    @apply absolute right-0 -mr-8 -mt-5 text-gray-500 hover:text-gray-300 cursor-pointer transition-all p-2;
+}
+
+#chat {
+    @apply -m-3 p-1 px-3 mt-2 bg-gray-1000/50 rounded-b-xl;
+}
+
+#chat input {
+    @apply bg-transparent w-full text-white focus:outline-none;
+}

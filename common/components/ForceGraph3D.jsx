@@ -6,9 +6,16 @@ import * as Three from "three";
 import { ForceGraph3D as ForceGraph3DComponent } from "react-force-graph";
 import Settings from "@lib/Settings";
 import React from "react";
-import ActiveNodeUI from "./ActiveNodeUI";
+import ActiveNode from "./active/ActiveNode";
 
 export default class ForceGraph3D extends React.Component {
+    constructor() {
+        super(...arguments);
+        this.state = {
+            activeMode: "Explain",
+        };
+    }
+
     componentDidMount() {
         const bloomPass = new UnrealBloomPass();
         bloomPass.strength = 1.5;
@@ -18,6 +25,10 @@ export default class ForceGraph3D extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState) {}
+
+    setActiveMode(activeMode) {
+        this.setState({ activeMode });
+    }
 
     render() {
         return (
@@ -87,13 +98,17 @@ export default class ForceGraph3D extends React.Component {
             return title;
         }
 
-        const ui = new ActiveNodeUI({
+        // leaving react here...
+
+        const activeNodeUI = new ActiveNode({
+            ...this.state,
             ...this.props,
             node,
             title,
+            setActiveMode: this.setActiveMode.bind(this),
         });
 
-        return ui.render();
+        return activeNodeUI.render();
     }
 }
 
