@@ -119,7 +119,12 @@ export default class ForceGraph extends React.Component {
         return 1;
     }
 
-    handleNodeClick(node) {
+    handleNodeClick(node, e) {
+        // don't allow clicking through active node UI
+        if (this.props.activeNodeUUID && e.srcElement.tagName !== "CANVAS") {
+            return;
+        }
+
         this.props.setActiveNode(node);
     }
 

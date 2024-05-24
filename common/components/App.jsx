@@ -41,7 +41,7 @@ export default class App extends React.Component {
             await this.asyncSetState({
                 activeNodeUUID: this.state.graphData.nodes[0].uuid,
             });
-        }, 1000);
+        }, 1500);
     }
 
     async reloadData() {
