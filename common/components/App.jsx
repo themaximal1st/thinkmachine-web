@@ -13,8 +13,6 @@ import Interwingle from "./Interwingle";
 // TODO: Thinkable type
 // - generate
 
-// TODO: See if you can minimize camera movement during edit. Why is it moving so much? Mess with force settings.
-// TODO: Escape
 // TODO: More control over prompt generation. Unlocks more creativity and use cases
 
 export default class App extends React.Component {
@@ -36,6 +34,17 @@ export default class App extends React.Component {
 
     componentDidMount() {
         this.load();
+        window.addEventListener("keydown", this.handleKeyDown.bind(this));
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener("keydown", this.handleKeyDown.bind(this));
+    }
+
+    handleKeyDown(event) {
+        if (event.key === "Escape" && this.state.activeNodeUUID) {
+            this.setActiveNode(null);
+        }
     }
 
     async load() {
@@ -52,42 +61,10 @@ export default class App extends React.Component {
     }
 
     async reloadData() {
-        const oldGraphData = this.state.graphData;
-
-        const graphData = this.thinkabletype.graphData(this.state.filter, oldGraphData);
-
-        // delete graphData.nodes[0].vx;
-        // delete graphData.nodes[0].vy;
-        // delete graphData.nodes[0].vz;
-
-        // console.log(
-        //     "ACTIVE NODE",
-        //     graphData.nodes[0].vx,
-        //     graphData.nodes[0].vy,
-        //     graphData.nodes[0].vz
-        // );
-
-        // TODO: What's a good way for shorthand access to active node
-        // TODO: Move to helper
-        for (const node of graphData.nodes) {
-            if (node.uuid === this.state.activeNodeUUID) {
-                console.log("ACTIVE NODE");
-                node.fx = node.x;
-                node.fy = node.y;
-                node.fz = node.z;
-            } else {
-                delete node.fx;
-                delete node.fy;
-                delete node.fz;
-            }
-        }
-        // if (this.state.activeNodeUUID) {
-        //     const activeNode = this.thinkabletype.nodeByUUID(this.state.activeNodeUUID);
-        //     console.log("ACTIVE NODE", activeNode);
-        // }
-
-        console.log("ACTIVE NODE", graphData.nodes[0].uuid);
-
+        const graphData = this.thinkabletype.graphData(
+            this.state.filter,
+            this.state.graphData
+        );
         await this.asyncSetState({ graphData });
 
         // document.title = this.title;

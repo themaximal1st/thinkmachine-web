@@ -52,8 +52,6 @@ export default class Camera {
     }
 
     zoom(oldData = null, timing = 250) {
-        console.log("ZOOM");
-
         if (this.is2D) {
             // 2d is weird..needs a longer delay before zoom to fit
             utils.delay(500).then(() => {
@@ -123,8 +121,6 @@ export default class Camera {
     }
 
     async zoomToNode(nodeUUID, delay = 0) {
-        console.log("ZOOM TO NODE", nodeUUID);
-
         await utils.delay(delay);
 
         const camera = this.position;
@@ -182,7 +178,6 @@ export default class Camera {
     fixNodePosition(node, reset = true) {
         for (const n of this.props.graphData.nodes) {
             if (n.uuid === node.uuid) {
-                console.log("ACTIVE NODE");
                 node.fx = node.x;
                 node.fy = node.y;
                 node.fz = node.z;
