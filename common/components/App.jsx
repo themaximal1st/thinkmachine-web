@@ -6,9 +6,13 @@ import Settings from "@lib/Settings";
 
 // TODO: interwingle
 // TODO: start on UI — what is typer, what is overlay, what is new UI?
-// TODO: Possible to do UI in react and not innerHTML?
-// TODO: uuid
-// TODO: activeNode
+// TODO: load uuid / new
+// TODO: settings? typer where?
+
+// TODO: Thinkable type
+// - generate
+
+// TODO: See if you can minimize camera movement during edit. Why is it moving so much? Mess with force settings.
 
 export default class App extends React.Component {
     constructor() {
@@ -55,7 +59,7 @@ export default class App extends React.Component {
 
     async save() {
         const hypergraph = this.thinkabletype.export();
-        await this.settings.hypergraph(hypergraph);
+        await this.settings.hypergraph(hypergraph); // save hypergraph
         await this.reloadData();
     }
 
@@ -94,9 +98,11 @@ export default class App extends React.Component {
                     ADD
                 </button>
                 <ForceGraph
+                    thinkabletype={this.thinkabletype}
                     activeNodeUUID={this.state.activeNodeUUID}
                     setActiveNode={this.setActiveNode.bind(this)}
                     graphData={this.state.graphData}
+                    save={this.save.bind(this)}
                 />
             </div>
         );

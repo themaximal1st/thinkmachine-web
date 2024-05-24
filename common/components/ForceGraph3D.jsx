@@ -12,7 +12,7 @@ export default class ForceGraph3D extends React.Component {
     constructor() {
         super(...arguments);
         this.state = {
-            activeMode: "Explain",
+            activeMode: "Edit",
         };
     }
 

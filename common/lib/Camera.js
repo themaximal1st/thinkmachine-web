@@ -122,8 +122,10 @@ export default class Camera {
         return this.props.graphData.nodes.find((node) => node.uuid === nodeUUID);
     }
 
-    async zoomToNode(nodeUUID) {
+    async zoomToNode(nodeUUID, delay = 0) {
         console.log("ZOOM TO NODE", nodeUUID);
+
+        await utils.delay(delay);
 
         const camera = this.position;
         const node = this.getNode(nodeUUID);

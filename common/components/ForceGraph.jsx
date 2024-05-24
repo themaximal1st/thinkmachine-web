@@ -72,13 +72,17 @@ export default class ForceGraph extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
+        let delay = 100;
         if (prevProps.activeNodeUUID !== this.props.activeNodeUUID) {
             console.log("ACTIVE NODE CHANGED");
             this.updateCamera(true, 100, prevProps.graphData);
+            delay = 0;
+        } else if (this.props.activeNodeUUID) {
+            delay = 400;
         }
 
         if (prevProps.graphData !== this.props.graphData) {
-            this.updateCamera(false, 100, prevProps.graphData).then(() => {
+            this.updateCamera(false, delay, prevProps.graphData).then(() => {
                 this.emitLinkParticles(prevProps.graphData);
             });
         }
@@ -174,7 +178,7 @@ export default class ForceGraph extends React.Component {
         };
 
         if (this.props.activeNodeUUID) {
-            await this.camera.zoomToNode(this.props.activeNodeUUID);
+            await this.camera.zoomToNode(this.props.activeNodeUUID, delay);
         } else {
             await this.camera.stableZoom(shouldZoom, delay, oldData);
         }
