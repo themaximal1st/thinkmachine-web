@@ -1,8 +1,9 @@
 import React from "react";
-import ThinkableType from "@themaximalist/thinkabletype";
+import ThinkableType from "@lib/thinkabletype";
 
 import ForceGraph from "./ForceGraph";
 import Settings from "@lib/Settings";
+import Interwingle from "./Interwingle";
 
 // TODO: interwingle
 // TODO: start on UI — what is typer, what is overlay, what is new UI?
@@ -13,6 +14,8 @@ import Settings from "@lib/Settings";
 // - generate
 
 // TODO: See if you can minimize camera movement during edit. Why is it moving so much? Mess with force settings.
+// TODO: Escape
+// TODO: More control over prompt generation. Unlocks more creativity and use cases
 
 export default class App extends React.Component {
     constructor() {
@@ -52,6 +55,39 @@ export default class App extends React.Component {
         const oldGraphData = this.state.graphData;
 
         const graphData = this.thinkabletype.graphData(this.state.filter, oldGraphData);
+
+        // delete graphData.nodes[0].vx;
+        // delete graphData.nodes[0].vy;
+        // delete graphData.nodes[0].vz;
+
+        // console.log(
+        //     "ACTIVE NODE",
+        //     graphData.nodes[0].vx,
+        //     graphData.nodes[0].vy,
+        //     graphData.nodes[0].vz
+        // );
+
+        // TODO: What's a good way for shorthand access to active node
+        // TODO: Move to helper
+        for (const node of graphData.nodes) {
+            if (node.uuid === this.state.activeNodeUUID) {
+                console.log("ACTIVE NODE");
+                node.fx = node.x;
+                node.fy = node.y;
+                node.fz = node.z;
+            } else {
+                delete node.fx;
+                delete node.fy;
+                delete node.fz;
+            }
+        }
+        // if (this.state.activeNodeUUID) {
+        //     const activeNode = this.thinkabletype.nodeByUUID(this.state.activeNodeUUID);
+        //     console.log("ACTIVE NODE", activeNode);
+        // }
+
+        console.log("ACTIVE NODE", graphData.nodes[0].uuid);
+
         await this.asyncSetState({ graphData });
 
         // document.title = this.title;
@@ -73,6 +109,12 @@ export default class App extends React.Component {
     async setActiveNode(node = null) {
         const activeNodeUUID = node ? node.uuid : null;
         await this.asyncSetState({ activeNodeUUID });
+    }
+
+    async setInterwingle(interwingle) {
+        await this.asyncSetState({ interwingle });
+        this.thinkabletype.interwingle = interwingle;
+        this.save();
     }
 
     async addOne() {
@@ -104,6 +146,7 @@ export default class App extends React.Component {
                     graphData={this.state.graphData}
                     save={this.save.bind(this)}
                 />
+                <Interwingle interwingle={this.state.interwingle} />
             </div>
         );
     }

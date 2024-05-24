@@ -134,6 +134,8 @@ export default class Camera {
             return;
         }
 
+        this.fixNodePosition(node);
+
         // Define a fixed "up" vector (world up)
         const worldUp = { x: 0, y: 1, z: 0 };
 
@@ -175,6 +177,24 @@ export default class Camera {
             { x: node.x, y: node.y, z: node.z }, // camera looks at the node
             1250 // transition duration in milliseconds
         );
+    }
+
+    fixNodePosition(node, reset = true) {
+        for (const n of this.props.graphData.nodes) {
+            if (n.uuid === node.uuid) {
+                console.log("ACTIVE NODE");
+                node.fx = node.x;
+                node.fy = node.y;
+                node.fz = node.z;
+            } else {
+                if (reset) {
+                    delete n.fx;
+                    delete n.fy;
+                    delete n.fz;
+                }
+            }
+        }
+
     }
 
 }

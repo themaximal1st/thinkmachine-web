@@ -8,7 +8,7 @@ import * as utils from "@lib/utils";
 const defaultProps = {
     backgroundColor: "#000000", // light mode vs dark mode
     showNavInfo: false,
-    cooldownTicks: 5000,
+    cooldownTicks: 100,
     linkDirectionalArrowRelPos: 1,
     linkCurvature: 0.05,
     linkCurveRotation: 0.5,
