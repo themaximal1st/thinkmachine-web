@@ -1,11 +1,26 @@
 import React from "react";
 
+import Interwingle0 from "@assets/interwingle-0.png";
+import Interwingle1 from "@assets/interwingle-1.png";
+import Interwingle2 from "@assets/interwingle-2.png";
+import Interwingle3 from "@assets/interwingle-3.png";
+
 export default class Interwingle extends React.Component {
+    get interwingles() {
+        return [Interwingle0, Interwingle1, Interwingle2, Interwingle3];
+    }
+
     render() {
-        return;
         return (
-            <div className="absolute left-0 top-0 bg-red-500 z-10 bottom-0">
-                BOOM TOWN NOW
+            <div className="" id="interwingle">
+                {this.interwingles.map((interwingle, index) => (
+                    <button
+                        key={`interwingle-${index}`}
+                        className={this.props.interwingle === index ? "active" : ""}
+                        onClick={() => this.props.setInterwingle(index)}>
+                        <img src={interwingle} />
+                    </button>
+                ))}
             </div>
         );
     }

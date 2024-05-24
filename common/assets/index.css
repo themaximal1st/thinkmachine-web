@@ -200,3 +200,22 @@ body {
 #chat input {
     @apply bg-transparent w-full text-white focus:outline-none;
 }
+
+#interwingle {
+    @apply absolute left-0 top-0 z-10 bottom-0 flex items-center justify-center gap-6 pr-8 flex-col-reverse;
+}
+
+#interwingle button {
+    @apply p-2 opacity-40 bg-black focus:outline-none;
+    &:hover {
+        @apply opacity-100;
+    }
+
+    &.active {
+        @apply opacity-100;
+    }
+}
+
+#interwingle img {
+    @apply w-8 h-8;
+}

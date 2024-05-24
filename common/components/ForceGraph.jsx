@@ -74,7 +74,6 @@ export default class ForceGraph extends React.Component {
     componentDidUpdate(prevProps, prevState) {
         let delay = 100;
         if (prevProps.activeNodeUUID !== this.props.activeNodeUUID) {
-            console.log("ACTIVE NODE CHANGED");
             this.updateCamera(true, 100, prevProps.graphData);
             delay = 0;
         } else if (this.props.activeNodeUUID) {

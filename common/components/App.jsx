@@ -5,7 +5,9 @@ import ForceGraph from "./ForceGraph";
 import Settings from "@lib/Settings";
 import Interwingle from "./Interwingle";
 
-// TODO: interwingle
+// TODO: next prev should work with other hyperedges....keep going!
+// TODO: need new adder interface / generate....
+
 // TODO: start on UI — what is typer, what is overlay, what is new UI?
 // TODO: load uuid / new
 // TODO: settings? typer where?
@@ -28,7 +30,7 @@ export default class App extends React.Component {
             filter: null,
             activeNodeUUID: null,
             graphData: { nodes: [], links: [] },
-            interwinge: Settings.interwingle,
+            interwingle: Settings.interwingle,
         };
     }
 
@@ -53,11 +55,11 @@ export default class App extends React.Component {
 
         await this.reloadData();
 
-        setTimeout(async () => {
-            await this.asyncSetState({
-                activeNodeUUID: this.state.graphData.nodes[0].uuid,
-            });
-        }, 1500);
+        // setTimeout(async () => {
+        //     await this.asyncSetState({
+        //         activeNodeUUID: this.state.graphData.nodes[0].uuid,
+        //     });
+        // }, 1500);
     }
 
     async reloadData() {
@@ -94,28 +96,9 @@ export default class App extends React.Component {
         this.save();
     }
 
-    async addOne() {
-        this.thinkabletype.add([
-            String(Math.random()),
-            String(Math.random()),
-            String(Math.random()),
-        ]);
-        this.save();
-    }
-
     render() {
         return (
             <div className="">
-                <button
-                    className="absolute top-0 right-0 bg-blue-500 text-white p-2 z-20"
-                    onClick={this.reloadData.bind(this)}>
-                    UPDATE
-                </button>
-                <button
-                    className="absolute top-10 right-0 bg-purple-500 text-white p-2 z-20"
-                    onClick={this.addOne.bind(this)}>
-                    ADD
-                </button>
                 <ForceGraph
                     thinkabletype={this.thinkabletype}
                     activeNodeUUID={this.state.activeNodeUUID}
@@ -123,7 +106,10 @@ export default class App extends React.Component {
                     graphData={this.state.graphData}
                     save={this.save.bind(this)}
                 />
-                <Interwingle interwingle={this.state.interwingle} />
+                <Interwingle
+                    interwingle={this.state.interwingle}
+                    setInterwingle={this.setInterwingle.bind(this)}
+                />
             </div>
         );
     }
