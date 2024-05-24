@@ -3,6 +3,7 @@ import ExplainPanel from "./ExplainPanel";
 import EditPanel from "./EditPanel";
 import Toolbar from "./Toolbar";
 import * as Icons from "@assets/Icons";
+import * as utils from "@lib/utils";
 
 export default class ActiveNode extends Component {
     constructor(props) {
@@ -33,6 +34,12 @@ export default class ActiveNode extends Component {
                             {this.panel.code()}
                         </div>
                     )}
+                    <button className="" id="active-node-prev">
+                        {Icons.ChevronLeft(8)}
+                    </button>
+                    <button className="" id="active-node-next">
+                        {Icons.ChevronRight(8)}
+                    </button>
                 </div>
             </div>
         );
@@ -47,5 +54,21 @@ export default class ActiveNode extends Component {
         div.querySelector("#active-node-close").addEventListener("click", () => {
             this.props.setActiveNode(null);
         });
+
+        div.querySelector("#active-node-prev").addEventListener("click", () => {
+            this.moveActiveNode(-1);
+        });
+
+        div.querySelector("#active-node-next").addEventListener("click", () => {
+            this.moveActiveNode(1);
+        });
+    }
+
+    moveActiveNode(direction = 1) {
+        const node = this.props.thinkabletype.nodeByUUID(this.props.node.uuid);
+        const edge = node.hyperedge;
+        const idx = utils.rollingIndex(node.index + direction, edge.nodes.length);
+        const nextNode = edge.nodes[idx];
+        this.props.setActiveNode(nextNode);
     }
 }

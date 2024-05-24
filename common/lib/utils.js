@@ -49,3 +49,7 @@ export function linkChanges(newData, oldData) {
 
     return links;
 }
+
+export function rollingIndex(index, length) {
+    return (index + length) % length;
+}
