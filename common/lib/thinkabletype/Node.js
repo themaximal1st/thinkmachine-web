@@ -20,6 +20,18 @@ export default class Node {
         return this.hypergraph.masqueradeNode(this) !== this;
     }
 
+    get isFirst() {
+        return this.index === 0;
+    }
+
+    get isLast() {
+        return this.index === this.hyperedge.nodes.length - 1;
+    }
+
+    get isMiddle() {
+        return !this.isFirst && !this.isLast;
+    }
+
     equal(node) {
         return this.id === node.id;
     }
@@ -31,6 +43,16 @@ export default class Node {
 
     remove() {
         this.hyperedge.nodes.splice(this.index, 1);
+    }
+
+    next() {
+        if (this.isLast) return null;
+        return this.hyperedge.nodes[this.index + 1];
+    }
+
+    prev() {
+        if (this.isFirst) return null;
+        return this.hyperedge.nodes[this.index - 1];
     }
 
     updateGraphData(nodes, links) {

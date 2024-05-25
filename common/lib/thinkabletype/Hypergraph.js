@@ -216,6 +216,7 @@ export default class Hypergraph {
                 utils.addIndex(this.symbolIndex, node.symbol, node);
             }
 
+            console.log("EDGE", edge.symbols, edge.firstNode.symbol, edge.lastNode.symbol)
             utils.addIndex(this.startSymbolIndex, edge.firstNode.symbol, edge.firstNode);
             utils.addIndex(this.endSymbolIndex, edge.lastNode.symbol, edge.lastNode);
         }

@@ -71,13 +71,12 @@ export default class Hyperedge {
 
     add(symbol) {
         if (Array.isArray(symbol)) {
-            for (const s of symbol) {
-                this.add(s);
-            }
-            return;
+            return symbol.map(s => this.add(s));
         }
 
-        this.nodes.push(new Node(symbol, this));
+        const node = new Node(symbol, this);
+        this.nodes.push(node);
+        return node;
     }
 
     remove() {
@@ -86,6 +85,16 @@ export default class Hyperedge {
 
     removeIndex(idx) {
         this.nodes.splice(idx, 1);
+    }
+
+    prev() {
+        if (this.index === 0) return null;
+        return this.hypergraph.hyperedges[this.index - 1];
+    }
+
+    next() {
+        if (this.index === this.hypergraph.hyperedges.length - 1) return null;
+        return this.hypergraph.hyperedges[this.index + 1];
     }
 
     has(symbol) {

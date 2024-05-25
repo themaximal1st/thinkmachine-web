@@ -6,6 +6,7 @@ import Settings from "@lib/Settings";
 import ForceGraph from "./ForceGraph";
 import Interwingle from "./Interwingle";
 import Typer from "./Typer";
+import Editor from "./Editor";
 
 // TODO: next prev should work with other hyperedges....keep going!
 // TODO: need new adder interface / generate....
@@ -15,6 +16,8 @@ import Typer from "./Typer";
 // TODO: settings? typer where?
 
 // TODO: Thinkable type
+// - update event -> simplifies a lot
+// - is dirty
 // - generate
 
 // TODO: More control over prompt generation. Unlocks more creativity and use cases
@@ -22,7 +25,7 @@ import Typer from "./Typer";
 export default class App extends React.Component {
     constructor() {
         super(...arguments);
-        const uuid = "current-uuid2";
+        const uuid = "current-uuid";
         this.settings = new Settings(uuid);
         this.thinkabletype = new ThinkableType({
             interwingle: Settings.interwingle,
@@ -52,16 +55,19 @@ export default class App extends React.Component {
     }
 
     async load() {
-        const hypergraph = await this.settings.hypergraph();
-        this.thinkabletype.parse(hypergraph);
-
-        await this.reloadData();
-
+        await this.reset();
         // setTimeout(async () => {
         //     await this.asyncSetState({
         //         activeNodeUUID: this.state.graphData.nodes[0].uuid,
         //     });
         // }, 1500);
+    }
+
+    async reset() {
+        const hypergraph = await this.settings.hypergraph();
+        this.thinkabletype.parse(hypergraph);
+
+        await this.reloadData();
     }
 
     async reloadData() {
@@ -80,7 +86,9 @@ export default class App extends React.Component {
         await this.reloadData();
     }
 
-    // active node
+    get numberOfNodes() {
+        return this.state.graphData.nodes.length;
+    }
 
     get activeNode() {
         if (!this.state.activeNodeUUID) return null;
@@ -104,10 +112,18 @@ export default class App extends React.Component {
                 <Typer activeNodeUUID={this.state.activeNodeUUID} />
 
                 <Interwingle
-                    numberOfNodes={this.state.graphData.nodes.length}
                     interwingle={this.state.interwingle}
                     setInterwingle={this.setInterwingle.bind(this)}
+                    numberOfNodes={this.numberOfNodes}
                 />
+
+                <Editor
+                    thinkabletype={this.thinkabletype}
+                    reset={this.reset.bind(this)}
+                    reloadData={this.reloadData.bind(this)}
+                    save={this.save.bind(this)}
+                />
+
                 <ForceGraph
                     thinkabletype={this.thinkabletype}
                     activeNodeUUID={this.state.activeNodeUUID}

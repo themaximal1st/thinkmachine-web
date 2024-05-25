@@ -245,10 +245,66 @@ body {
     @apply bg-transparent text-white outline-none;
 }
 
-#typer-select option {
-    background-color: red !important;
-}
-
 #typer-submit {
     @apply text-white;
+}
+
+#editor {
+    @apply bg-gray-1000/90 absolute inset-0 z-20;
+}
+
+#editor-icon {
+    @apply absolute z-10 left-0 text-white w-10 h-10 ml-1 pl-1 cursor-pointer mt-2;
+
+    @apply opacity-40 bg-black focus:outline-none;
+    &:hover {
+        @apply opacity-100;
+    }
+
+    &.close {
+        @apply bg-transparent;
+    }
+}
+
+#editor-content {
+    @apply w-full h-full flex flex-col gap-2 overflow-scroll items-start p-10 px-20;
+}
+
+#editor-content .hyperedge {
+    @apply flex items-center gap-2;
+}
+
+#editor-content .node {
+    @apply w-48 relative;
+}
+#editor-content .node input {
+    @apply bg-gray-900/50 w-full px-3 py-1 text-white rounded-xl outline-none truncate;
+    &:focus {
+        @apply bg-gray-900/80 pr-8;
+    }
+}
+
+#editor-content .delete-node {
+    @apply absolute right-0 p-1 pr-2 mt-[3px] outline-none;
+}
+
+#editor-toolbar {
+    @apply flex items-center gap-4;
+}
+
+#editor-toolbar button {
+    @apply flex items-center gap-1 text-gray-300 border-gray-300 border py-2 px-4 rounded-full uppercase tracking-widest text-xs mb-4 outline-none;
+
+    &:hover {
+        @apply bg-white text-black border-white;
+    }
+}
+
+#editor-add-symbol,
+#editor-add-hyperedge {
+    @apply bg-gray-900/50 px-3 py-1 text-white rounded-xl outline-none flex items-center gap-1 opacity-50;
+
+    &:hover {
+        @apply opacity-100;
+    }
 }

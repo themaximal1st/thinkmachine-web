@@ -8,6 +8,9 @@
  - get rid of App.jsx monolith, push state to edges
  - consistent id through interwingle levels. push to closest one
 
+editor
+    drag and drop reorder nodes / hyperedges
+
 
 - it should be more generative. when a link doesn't exist, generate it
 - remove markdown linking...do it dynamically based on embeddings? or switch to symbols and generate from there
