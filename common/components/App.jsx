@@ -39,7 +39,6 @@ export default class App extends React.Component {
             filter: null,
             activeNodeUUID: null,
             graphData: { nodes: [], links: [] },
-            interwingle: Settings.interwingle,
         };
     }
 
@@ -55,6 +54,9 @@ export default class App extends React.Component {
     handleKeyDown(event) {
         if (event.key === "Escape" && this.state.activeNodeUUID) {
             this.setActiveNode(null);
+        } else if (event.key === "Tab") {
+            this.toggleInterwingle(undefined, event.shiftKey);
+            event.preventDefault();
         }
     }
     onDataUpdate(event) {
@@ -82,6 +84,7 @@ export default class App extends React.Component {
             this.state.filter,
             this.state.graphData
         );
+
         await this.asyncSetState({ graphData });
 
         // document.title = this.title;
@@ -107,9 +110,15 @@ export default class App extends React.Component {
         await this.asyncSetState({ activeNodeUUID });
     }
 
-    async setInterwingle(interwingle) {
-        await this.asyncSetState({ interwingle });
+    async toggleInterwingle(interwingle = undefined, backwards = false) {
+        if (typeof interwingle === "undefined") {
+            interwingle = this.thinkabletype.interwingle;
+            interwingle = backwards ? interwingle - 1 : interwingle + 1;
+            if (interwingle > 3) interwingle = 0;
+            if (interwingle < 0) interwingle = 3;
+        }
         this.thinkabletype.interwingle = interwingle;
+        Settings.interwingle = interwingle;
         this.save();
     }
 
@@ -119,8 +128,8 @@ export default class App extends React.Component {
                 <Typer activeNodeUUID={this.state.activeNodeUUID} />
 
                 <Interwingle
-                    interwingle={this.state.interwingle}
-                    setInterwingle={this.setInterwingle.bind(this)}
+                    interwingle={this.thinkabletype.interwingle}
+                    toggleInterwingle={this.toggleInterwingle.bind(this)}
                     numberOfNodes={this.numberOfNodes}
                 />
 

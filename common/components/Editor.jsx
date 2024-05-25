@@ -31,7 +31,6 @@ export default class Editor extends React.Component {
     }
 
     removeNode(node) {
-        console.log("REMOVE", node);
         node.remove();
         if (node.hyperedge.length === 0) {
             node.hyperedge.remove();
@@ -174,7 +173,8 @@ export default class Editor extends React.Component {
 
                     <button
                         onClick={() => {
-                            this.props.thinkabletype.add([""]);
+                            const edge = this.props.thinkabletype.add([""]);
+                            this.setState({ activeUUID: edge.firstNode.uuid });
                             this.props.reloadData();
                         }}
                         id="editor-add-hyperedge">

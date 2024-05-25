@@ -19,7 +19,7 @@ export default class Interwingle extends React.Component {
                     <button
                         key={`interwingle-${index}`}
                         className={this.props.interwingle === index ? "active" : ""}
-                        onClick={() => this.props.setInterwingle(index)}>
+                        onClick={() => this.props.toggleInterwingle(index)}>
                         <img src={interwingle} />
                     </button>
                 ))}

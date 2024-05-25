@@ -33,6 +33,8 @@ export default class Typer extends React.Component {
             return;
         }
 
+        return;
+
         return (
             <div id="typer">
                 <select id="typer-select">
