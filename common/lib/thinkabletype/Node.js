@@ -45,6 +45,10 @@ export default class Node {
     remove() {
         this.hyperedge.nodes.splice(this.index, 1);
         this.hypergraph.onUpdate({ event: "node.remove", data: this });
+
+        if (this.hyperedge.nodes.length === 0) {
+            this.hyperedge.remove();
+        }
     }
 
     next() {

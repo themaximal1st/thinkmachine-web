@@ -64,6 +64,9 @@ export default class Hypergraph {
         }
         return Array.from(symbols);
     }
+    get hash() {
+        return utils.hash(this.export());
+    }
 
     add(symbols) {
         if (!Array.isArray(symbols)) throw new Error("Expected an array of symbols");
@@ -133,6 +136,8 @@ export default class Hypergraph {
         this.endSymbolIndex = new Map();
 
         this.fusionIndex = new Map();
+
+        this.onUpdate({ event: "hypergraph.reset" });
     }
 
 

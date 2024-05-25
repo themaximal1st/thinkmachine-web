@@ -1,4 +1,5 @@
 import Colors from "./colors.js";
+import sha256 from "@lib/sha256"
 
 export function addIndex(index, key, val) {
     if (!index.has(key)) {
@@ -99,4 +100,8 @@ export function restoreData(data, old) {
         if (typeof old.fy === 'number') node.fy = old.fy;
         if (typeof old.fz === 'number') node.fz = old.fz;
     }
+}
+
+export function hash(str) {
+    return sha256(str).hex();
 }

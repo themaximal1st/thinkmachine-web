@@ -30,47 +30,18 @@ export default class Editor extends React.Component {
         }
     }
 
-    removeNode(node) {
-        node.remove();
-        if (node.hyperedge.length === 0) {
-            node.hyperedge.remove();
-        }
-
-        this.setState({ update: true });
-        this.props.reloadData();
-    }
-
-    handleRename(node, e) {
-        node.rename(e.target.value);
-        this.props.reloadData();
-    }
-
     handleInputKeyDown(node, e) {
         let nextNode;
 
         if (e.key === "Enter" && e.shiftKey) {
-            const edge = this.props.thinkabletype.add([""]);
-            nextNode = edge.nodes[0];
-            this.props.reloadData();
-        } else if (e.key === "Enter" && !e.shiftKey) {
-            if (node.symbol === "") return;
-
-            if (node.isLast) {
-                nextNode = node.hyperedge.add("");
-            } else {
-                nextNode = node.next();
-            }
-
+            nextNode = this.props.thinkabletype.add([""]).firstNode;
+        } else if (e.key === "Enter" && !e.shiftKey && node.symbol !== "") {
+            nextNode = node.isLast ? node.hyperedge.add("") : node.next();
             e.target.blur();
-            this.props.reloadData();
         } else if (e.key === "Backspace" && e.target.value === "") {
             e.preventDefault();
-            nextNode = node.prev();
-            if (!nextNode) {
-                nextNode = node.hyperedge.prev().lastNode;
-            }
-            this.removeNode(node);
-            this.props.reloadData();
+            nextNode = node.prev() || node.hyperedge.prev().lastNode;
+            node.remove();
         } else if (e.key === "ArrowRight" && e.shiftKey) {
             nextNode = node.next();
             e.preventDefault();
@@ -80,18 +51,12 @@ export default class Editor extends React.Component {
         } else if (e.key === "ArrowUp" && e.shiftKey) {
             const prevEdge = node.hyperedge.prev();
             if (prevEdge) {
-                nextNode = prevEdge.nodes[node.index];
-                if (!nextNode) {
-                    nextNode = prevEdge.lastNode;
-                }
+                nextNode = prevEdge.nodes[node.index] || prevEdge.lastNode;
             }
         } else if (e.key === "ArrowDown" && e.shiftKey) {
             const nextEdge = node.hyperedge.next();
             if (nextEdge) {
-                nextNode = nextEdge.nodes[node.index];
-                if (!nextNode) {
-                    nextNode = nextEdge.lastNode;
-                }
+                nextNode = nextEdge.nodes[node.index] || nextEdge.lastNode;
             }
         }
 
@@ -149,10 +114,10 @@ export default class Editor extends React.Component {
                                         onKeyDown={(e) =>
                                             this.handleInputKeyDown(node, e)
                                         }
-                                        onChange={(e) => this.handleRename(node, e)}
+                                        onChange={(e) => node.rename(e.target.value)}
                                     />
                                     <button
-                                        onClick={() => this.removeNode(node)}
+                                        onClick={() => node.remove()}
                                         className="delete-node invisible group-hover/node:visible peer-focus:visible">
                                         {Icons.CloseIcon(5)}
                                     </button>
@@ -160,8 +125,7 @@ export default class Editor extends React.Component {
                             ))}
                             <button
                                 onClick={() => {
-                                    hyperedge.add("");
-                                    this.props.reloadData();
+                                    this.setState({ activeUUID: hyperedge.add("").uuid });
                                 }}
                                 className="invisible group-hover/edge:visible"
                                 id="editor-add-symbol">
@@ -173,9 +137,10 @@ export default class Editor extends React.Component {
 
                     <button
                         onClick={() => {
-                            const edge = this.props.thinkabletype.add([""]);
-                            this.setState({ activeUUID: edge.firstNode.uuid });
-                            this.props.reloadData();
+                            this.setState({
+                                activeUUID: this.props.thinkabletype.add([""]).firstNode
+                                    .uuid,
+                            });
                         }}
                         id="editor-add-hyperedge">
                         {Icons.AddIcon(4)}

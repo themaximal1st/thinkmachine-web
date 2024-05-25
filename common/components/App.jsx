@@ -36,6 +36,8 @@ export default class App extends React.Component {
         });
 
         this.state = {
+            isLoading: false,
+            dataHash: null,
             filter: null,
             activeNodeUUID: null,
             graphData: { nodes: [], links: [] },
@@ -55,12 +57,24 @@ export default class App extends React.Component {
         if (event.key === "Escape" && this.state.activeNodeUUID) {
             this.setActiveNode(null);
         } else if (event.key === "Tab") {
+            if (event.target.tagName === "INPUT" || event.target.tagName === "button") {
+                return;
+            }
+
             this.toggleInterwingle(undefined, event.shiftKey);
             event.preventDefault();
         }
     }
-    onDataUpdate(event) {
-        console.log("DATA UPDATE", event);
+
+    async onDataUpdate(event) {
+        if (this.state.isLoading) {
+            return;
+        }
+
+        if (this.thinkabletype.hash !== this.state.dataHash) {
+            console.log("DATA UPDATE", event);
+            await this.save();
+        }
     }
 
     async load() {
@@ -73,13 +87,16 @@ export default class App extends React.Component {
     }
 
     async reset() {
+        await this.asyncSetState({ isLoading: true });
         const hypergraph = await this.settings.hypergraph();
         this.thinkabletype.parse(hypergraph);
+        await this.asyncSetState({ isLoading: false });
 
         await this.reloadData();
     }
 
     async reloadData() {
+        console.log("RELOAD");
         const graphData = this.thinkabletype.graphData(
             this.state.filter,
             this.state.graphData
@@ -91,8 +108,8 @@ export default class App extends React.Component {
     }
 
     async save() {
-        const hypergraph = this.thinkabletype.export();
-        await this.settings.hypergraph(hypergraph); // save hypergraph
+        await this.settings.hypergraph(this.thinkabletype.export()); // save hypergraph
+        await this.asyncSetState({ dataHash: this.thinkabletype.hash });
         await this.reloadData();
     }
 
@@ -119,7 +136,7 @@ export default class App extends React.Component {
         }
         this.thinkabletype.interwingle = interwingle;
         Settings.interwingle = interwingle;
-        this.save();
+        this.reloadData();
     }
 
     render() {
