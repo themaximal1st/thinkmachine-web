@@ -352,7 +352,6 @@ test("restore node position", () => {
     expect(newData.nodes[0].vz).toBe(100);
 });
 
-
 /*
 test.skip("huge", async () => {
     const fs = require("fs");

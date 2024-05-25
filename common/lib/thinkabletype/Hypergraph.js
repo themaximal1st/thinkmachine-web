@@ -53,6 +53,8 @@ export default class Hypergraph {
     get isConfluence() { return this.interwingle >= Hypergraph.INTERWINGLE.CONFLUENCE }
     get isFusion() { return this.interwingle >= Hypergraph.INTERWINGLE.FUSION }
     get isBridge() { return this.interwingle >= Hypergraph.INTERWINGLE.BRIDGE }
+    get onUpdate() { return this.options.onUpdate || function () { } }
+    set onUpdate(value) { this.options.onUpdate = value }
     get symbols() {
         const symbols = new Set();
         for (const hyperedge of this.hyperedges) {
@@ -72,6 +74,7 @@ export default class Hypergraph {
 
         const hyperedge = new Hyperedge(symbols, this);
         this.hyperedges.push(hyperedge);
+        this.onUpdate({ event: "hyperedge.add", data: hyperedge });
         return hyperedge;
     }
 
@@ -217,7 +220,6 @@ export default class Hypergraph {
                 utils.addIndex(this.symbolIndex, node.symbol, node);
             }
 
-            console.log("EDGE", edge.symbols, edge.firstNode.symbol, edge.lastNode.symbol)
             utils.addIndex(this.startSymbolIndex, edge.firstNode.symbol, edge.firstNode);
             utils.addIndex(this.endSymbolIndex, edge.lastNode.symbol, edge.lastNode);
         }

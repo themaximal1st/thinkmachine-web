@@ -8,7 +8,10 @@ import Interwingle from "./Interwingle";
 import Typer from "./Typer";
 import Editor from "./Editor";
 
-// TODO: next prev should work with other hyperedges....keep going!
+// TODO: Figure out if reloading data here is a good idea, or if it's too heavy...some actions get hammered by events
+//        ...and we don't want to reloadData every single time...that'd be wasteful
+
+// TODO: next prev should work with other hyperedges....keep going! this probably means they need to jump into (and out of?) graphData
 // TODO: need new adder interface / generate....
 
 // TODO: start on UI — what is typer, what is overlay, what is new UI?
@@ -29,6 +32,7 @@ export default class App extends React.Component {
         this.settings = new Settings(uuid);
         this.thinkabletype = new ThinkableType({
             interwingle: Settings.interwingle,
+            onUpdate: this.onDataUpdate.bind(this),
         });
 
         this.state = {
@@ -52,6 +56,9 @@ export default class App extends React.Component {
         if (event.key === "Escape" && this.state.activeNodeUUID) {
             this.setActiveNode(null);
         }
+    }
+    onDataUpdate(event) {
+        console.log("DATA UPDATE", event);
     }
 
     async load() {

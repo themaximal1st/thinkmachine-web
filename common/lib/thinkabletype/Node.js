@@ -38,11 +38,13 @@ export default class Node {
 
     rename(symbol) {
         this.symbol = symbol;
+        this.hypergraph.onUpdate({ event: "node.rename", data: this });
         return this.id;
     }
 
     remove() {
         this.hyperedge.nodes.splice(this.index, 1);
+        this.hypergraph.onUpdate({ event: "node.remove", data: this });
     }
 
     next() {

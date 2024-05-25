@@ -47,3 +47,4 @@ test("node confluence id", () => {
     expect(edge.nodes[1].id).toBe("A.B");
     expect(edge.nodes[2].id).toBe("A.B.C");
 });
+

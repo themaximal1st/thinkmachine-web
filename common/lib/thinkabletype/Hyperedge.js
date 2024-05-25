@@ -76,11 +76,13 @@ export default class Hyperedge {
 
         const node = new Node(symbol, this);
         this.nodes.push(node);
+        this.hypergraph.onUpdate({ event: "node.add", data: node });
         return node;
     }
 
     remove() {
         this.hypergraph.hyperedges.splice(this.index, 1);
+        this.hypergraph.onUpdate({ event: "hyperedge.remove", data: this });
     }
 
     removeIndex(idx) {
