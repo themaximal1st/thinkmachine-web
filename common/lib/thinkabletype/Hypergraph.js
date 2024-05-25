@@ -1,6 +1,7 @@
 import csv from "papaparse"
 
 import Hyperedge from './Hyperedge.js';
+import Node from './Node.js';
 import BridgeNode from './BridgeNode.js';
 import Colors from "./colors.js";
 import * as utils from "./utils.js";
@@ -308,3 +309,7 @@ export default class Hypergraph {
         return csv.unparse(hyperedges, { header: false });
     }
 }
+
+Hypergraph.Hyperedge = Hyperedge;
+Hypergraph.Node = Node;
+Hypergraph.BridgeNode = BridgeNode;

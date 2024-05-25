@@ -5,6 +5,7 @@
         "dev": "nodemon --preserve-symlinks src/server/server.js -w src/server",
         "start": "NODE_ENV=production node --preserve-symlinks src/server/server.js",
         "test": "vitest --browser.name=chrome --browser.headless",
+        "test:browser": "vitest --browser.name=chrome --browser.headless",
         "build": "vite build"
     },
     "type": "module",

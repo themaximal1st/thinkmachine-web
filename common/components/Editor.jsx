@@ -20,7 +20,6 @@ export default class Editor extends React.Component {
 
     componentDidUpdate(prevProps, prevState) {
         if (prevState.activeUUID !== this.state.activeUUID) {
-            console.log("UPDATE ACTIVE UUID", this.state.activeUUID);
             document.getElementById(this.state.activeUUID).focus();
         }
     }
