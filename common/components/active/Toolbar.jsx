@@ -19,13 +19,11 @@ export default class Toolbar extends Component {
 
     code() {
         return (
-            <div className="" id="active-node-toolbar">
+            <div className="toolbar" id="active-node-toolbar">
                 {this.buttons.map(([label, icon]) => (
                     <button
                         key={label}
-                        className={
-                            this.isMode(label) ? "bg-gray-800/50" : "hover:bg-gray-800/30"
-                        }
+                        className={this.isMode(label) ? "active" : ""}
                         data-mode={label}>
                         {icon}
                         {label}

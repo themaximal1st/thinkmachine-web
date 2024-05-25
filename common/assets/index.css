@@ -161,6 +161,10 @@ body {
 }
 */
 
+#body {
+    @apply bg-black;
+}
+
 #active-node-wrapper {
     @apply absolute text-white w-full max-w-xl pointer-events-auto;
 }
@@ -173,14 +177,6 @@ body {
     @apply p-3;
 }
 
-#active-node-toolbar {
-    @apply flex items-center gap-1 p-1;
-}
-
-#active-node-toolbar button {
-    @apply flex gap-[6px] uppercase font-medium tracking-wider text-xs items-center px-3 py-2 rounded-xl transition-all;
-}
-
 #active-node-close {
     @apply absolute right-0 -mr-8 -mt-5 text-gray-500 hover:text-gray-300 cursor-pointer transition-all p-2 hidden;
 }
@@ -191,6 +187,19 @@ body {
 
 #active-node-next {
     @apply h-full absolute w-10 -mr-10 pl-2 top-0 right-0 text-gray-700 hover:text-gray-300 cursor-pointer transition-all;
+}
+
+#active-node-toolbar {
+    @apply flex items-center gap-1 p-1;
+}
+
+#active-node-toolbar button {
+    @apply flex gap-[6px] uppercase font-medium tracking-wider text-xs items-center px-3 py-2 rounded-xl transition-all;
+    @apply hover:bg-gray-800/30 text-gray-300 hover:text-gray-100;
+
+    &.active {
+        @apply bg-gray-800/50 text-white;
+    }
 }
 
 #chat {
@@ -218,4 +227,28 @@ body {
 
 #interwingle img {
     @apply w-8 h-8;
+}
+
+#typer {
+    @apply absolute top-0 z-10 left-0 right-0 flex items-center justify-center mt-4;
+}
+
+#typer-input {
+    @apply py-2 bg-gray-1000 text-sm rounded-l-full outline-none text-white px-3;
+}
+
+#typer-toolbar button {
+    @apply flex gap-[6px] uppercase font-medium tracking-widest text-xs h-9 items-center px-4 py-2 transition-all text-white outline-none;
+}
+
+#typer-select {
+    @apply bg-transparent text-white outline-none;
+}
+
+#typer-select option {
+    background-color: red !important;
+}
+
+#typer-submit {
+    @apply text-white;
 }

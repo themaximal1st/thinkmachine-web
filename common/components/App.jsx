@@ -1,9 +1,11 @@
 import React from "react";
 import ThinkableType from "@lib/thinkabletype";
 
-import ForceGraph from "./ForceGraph";
 import Settings from "@lib/Settings";
+
+import ForceGraph from "./ForceGraph";
 import Interwingle from "./Interwingle";
+import Typer from "./Typer";
 
 // TODO: next prev should work with other hyperedges....keep going!
 // TODO: need new adder interface / generate....
@@ -20,7 +22,7 @@ import Interwingle from "./Interwingle";
 export default class App extends React.Component {
     constructor() {
         super(...arguments);
-        const uuid = "current-uuid1";
+        const uuid = "current-uuid2";
         this.settings = new Settings(uuid);
         this.thinkabletype = new ThinkableType({
             interwingle: Settings.interwingle,
@@ -99,16 +101,19 @@ export default class App extends React.Component {
     render() {
         return (
             <div className="">
+                <Typer activeNodeUUID={this.state.activeNodeUUID} />
+
+                <Interwingle
+                    numberOfNodes={this.state.graphData.nodes.length}
+                    interwingle={this.state.interwingle}
+                    setInterwingle={this.setInterwingle.bind(this)}
+                />
                 <ForceGraph
                     thinkabletype={this.thinkabletype}
                     activeNodeUUID={this.state.activeNodeUUID}
                     setActiveNode={this.setActiveNode.bind(this)}
                     graphData={this.state.graphData}
                     save={this.save.bind(this)}
-                />
-                <Interwingle
-                    interwingle={this.state.interwingle}
-                    setInterwingle={this.setInterwingle.bind(this)}
                 />
             </div>
         );
