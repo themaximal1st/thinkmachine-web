@@ -124,7 +124,8 @@ export default class Camera {
         await utils.delay(delay);
 
         const camera = this.position;
-        const node = this.getNode(nodeUUID);
+        let node = this.getNode(nodeUUID);
+
         if (!node) {
             console.log("node not found");
             return;

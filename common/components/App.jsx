@@ -8,23 +8,15 @@ import Interwingle from "./Interwingle";
 import Typer from "./Typer";
 import Editor from "./Editor";
 
-// TODO: implement next/prev with context
-// TODO: stable id update
 // TODO: depth with activeNode
 
-// TODO: Figure out if reloading data here is a good idea, or if it's too heavy...some actions get hammered by events
-//        ...and we don't want to reloadData every single time...that'd be wasteful
-
-// TODO: next prev should work with other hyperedges....keep going! this probably means they need to jump into (and out of?) graphData
 // TODO: need new adder interface / generate....
-
 // TODO: start on UI — what is typer, what is overlay, what is new UI?
 // TODO: load uuid / new
 // TODO: settings? typer where?
 
 // TODO: Thinkable type
-// - update event -> simplifies a lot
-// - is dirty
+// - is dirty / stable save especially during editor
 // - generate
 
 // TODO: More control over prompt generation. Unlocks more creativity and use cases
@@ -59,7 +51,7 @@ export default class App extends React.Component {
 
     handleKeyDown(event) {
         if (event.key === "Escape" && this.state.activeNodeUUID) {
-            this.setActiveNode(null);
+            this.setActiveNodeUUID(null);
         } else if (event.key === "Tab") {
             if (event.target.tagName === "INPUT" || event.target.tagName === "button") {
                 return;
@@ -86,7 +78,7 @@ export default class App extends React.Component {
 
         setTimeout(async () => {
             await this.asyncSetState({
-                activeNodeUUID: this.state.graphData.nodes[1].uuid,
+                activeNodeUUID: this.state.graphData.nodes[3].uuid,
             });
         }, 1500);
     }
@@ -106,11 +98,37 @@ export default class App extends React.Component {
             this.state.graphData
         );
 
-        await this.asyncSetState({ graphData });
+        const state = { graphData };
+        const activeNodeUUID = this.trackUUID(this.state.activeNodeUUID, graphData);
+        if (activeNodeUUID !== this.state.activeNodeUUID) {
+            state.activeNodeUUID = activeNodeUUID;
+        }
+
+        await this.asyncSetState(state);
 
         console.log("GRAPH DATA", graphData.nodes);
 
         // document.title = this.title;
+    }
+
+    trackUUID(uuid, graphData) {
+        if (!uuid) {
+            return null;
+        }
+
+        for (let node of graphData.nodes) {
+            if (node.uuid === uuid) {
+                return node.uuid;
+            }
+        }
+
+        const node = ThinkableType.findReferenceUUID(graphData, uuid);
+
+        if (!node) {
+            return null;
+        }
+
+        return node.uuid;
     }
 
     async save() {
@@ -128,8 +146,8 @@ export default class App extends React.Component {
         return this.thinkabletype.nodeByUUID(this.state.activeNodeUUID);
     }
 
-    async setActiveNode(node = null) {
-        const activeNodeUUID = node ? node.uuid : null;
+    async setActiveNodeUUID(activeNodeUUID = null) {
+        activeNodeUUID = this.trackUUID(activeNodeUUID, this.state.graphData);
         await this.asyncSetState({ activeNodeUUID });
     }
 
@@ -166,7 +184,7 @@ export default class App extends React.Component {
                 <ForceGraph
                     thinkabletype={this.thinkabletype}
                     activeNodeUUID={this.state.activeNodeUUID}
-                    setActiveNode={this.setActiveNode.bind(this)}
+                    setActiveNodeUUID={this.setActiveNodeUUID.bind(this)}
                     graphData={this.state.graphData}
                     save={this.save.bind(this)}
                 />

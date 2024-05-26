@@ -128,7 +128,7 @@ export default class ForceGraph extends React.Component {
             return;
         }
 
-        this.props.setActiveNode(node);
+        this.props.setActiveNodeUUID(node.uuid);
     }
 
     handleResize() {

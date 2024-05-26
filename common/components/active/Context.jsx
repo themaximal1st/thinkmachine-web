@@ -5,6 +5,7 @@ export default class Context extends Component {
     code() {
         const node = this.props.thinkabletype.nodeByUUID(this.props.activeNodeUUID);
         const context = node.context(this.props.graphData);
+        console.log(context);
 
         return (
             <div id="context" className="group">
@@ -33,8 +34,6 @@ export default class Context extends Component {
     }
 
     events(div) {
-        console.log("ActiveNode.events", div);
-
         const context = div.querySelector("#context");
 
         const buttons = context.querySelectorAll("button");
@@ -42,7 +41,7 @@ export default class Context extends Component {
             button.addEventListener("click", (e) => {
                 const uuid = e.target.dataset.uuid;
                 const node = this.props.thinkabletype.nodeByUUID(uuid);
-                this.props.setActiveNode(node);
+                this.props.setActiveNodeUUID(node.uuid);
                 e.preventDefault();
             });
         }

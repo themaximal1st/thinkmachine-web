@@ -50,7 +50,7 @@ export default class ActiveNode extends Component {
         this.context.events(div);
 
         div.querySelector("#active-node-close").addEventListener("click", () => {
-            this.props.setActiveNode(null);
+            this.props.setActiveNodeUUID(null);
         });
     }
 }
