@@ -62,8 +62,8 @@ test("remove node", () => {
     edge.nodes[1].remove();
     expect(thinkabletype.hyperedges[0].symbols).toEqual(["B"]);
 
-    edge.nodes[0].remove();
-    expect(thinkabletype.hyperedges[0].symbols).toEqual([]);
+    edge.nodes[0].remove(); // removes hyperedge too
+    expect(thinkabletype.hyperedges.length).toBe(0);
 });
 
 test("node uuid", () => {
