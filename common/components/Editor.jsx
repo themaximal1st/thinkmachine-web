@@ -68,9 +68,18 @@ export default class Editor extends React.Component {
     render() {
         if (!this.state.show) {
             return (
-                <button onClick={() => this.setState({ show: true })} id="editor-icon">
-                    {Icons.EditorIcon(8)}
-                </button>
+                <div className="relative group">
+                    <button
+                        onClick={() => this.setState({ show: true })}
+                        id="editor-icon">
+                        {Icons.EditorIcon(8)}
+                    </button>
+                    <div
+                        className="tooltip invisible group-hover:visible"
+                        id="editor-tooltip">
+                        Editor
+                    </div>
+                </div>
             );
         }
 

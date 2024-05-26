@@ -42,20 +42,43 @@ export default class Interwingle extends React.Component {
         this.props.reloadData();
     }
 
+    interwingleDescription(idx) {
+        switch (idx) {
+            case 0:
+                return "Don't connect";
+            case 1:
+                return "Connect start";
+            case 2:
+                return "Connect start & end";
+            case 3:
+                return "Connect all";
+            default:
+                return "Interwingle";
+        }
+    }
+
     render() {
         if (this.props.graphData.nodes.length === 0) return null;
 
         return (
             <div className="" id="interwingle">
                 {this.interwingles.map((interwingle, index) => (
-                    <button
-                        key={`interwingle-${index}`}
-                        className={
-                            this.props.thinkabletype.interwingle === index ? "active" : ""
-                        }
-                        onClick={() => this.toggleInterwingle(index)}>
-                        <img src={interwingle} />
-                    </button>
+                    <div key={`interwingle-${index}`} className="group relative">
+                        <div
+                            className="tooltip invisible group-hover:visible"
+                            id="interwingle-tooltip">
+                            {this.interwingleDescription(index)}
+                        </div>
+                        <button
+                            className={
+                                this.props.thinkabletype.interwingle === index
+                                    ? "active"
+                                    : ""
+                            }
+                            onClick={() => this.toggleInterwingle(index)}>
+                            <img src={interwingle} />
+                        </button>
+                    </div>
                 ))}
             </div>
         );

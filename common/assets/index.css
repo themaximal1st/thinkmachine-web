@@ -220,7 +220,7 @@ body {
 }
 
 #interwingle button {
-    @apply p-2 opacity-40 bg-black focus:outline-none;
+    @apply p-2 opacity-40 bg-black focus:outline-none -ml-1;
     &:hover {
         @apply opacity-100;
     }
@@ -231,7 +231,11 @@ body {
 }
 
 #interwingle img {
-    @apply w-8 h-8;
+    @apply w-12 h-12;
+}
+
+#interwingle-tooltip {
+    @apply absolute top-6 w-32 left-[58px];
 }
 
 #typer {
@@ -259,7 +263,7 @@ body {
 }
 
 #editor-icon {
-    @apply absolute z-10 left-0 text-white w-10 h-10 ml-1 pl-1 cursor-pointer mt-2;
+    @apply absolute z-10 text-white w-10 h-10 ml-2 pl-1 cursor-pointer mt-2;
 
     @apply opacity-40 bg-black focus:outline-none;
     &:hover {
@@ -269,6 +273,10 @@ body {
     &.close {
         @apply bg-transparent;
     }
+}
+
+#editor-tooltip {
+    @apply absolute top-5 w-32 left-[58px];
 }
 
 #editor-content {
@@ -328,9 +336,9 @@ body {
 }
 
 .tooltip {
-    @apply absolute z-30 text-white shadow-sm text-xs uppercase tracking-wider;
+    @apply absolute z-30 text-white shadow-sm text-xs uppercase tracking-wider whitespace-nowrap;
 }
 
 #depth-label {
-    @apply absolute top-0 -mt-8 whitespace-nowrap;
+    @apply absolute top-0 -mt-8;
 }

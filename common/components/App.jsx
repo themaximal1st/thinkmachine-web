@@ -10,6 +10,7 @@ import Editor from "./Editor";
 import Depth from "./Depth";
 
 // TODO: get filter working
+// TODO: Where do we show current filters?
 // TODO: depth with activeNode
 // TODO:    change filter to accept explicit nodeUUIDs
 
