@@ -57,7 +57,6 @@ test("reference confluence fusion", () => {
     ], { interwingle: ThinkableType.INTERWINGLE.CONFLUENCE });
 
     const activeNodeUUID = thinkabletype.hyperedges[1].firstNode.uuid;
-    console.log(activeNodeUUID);
 
     let data;
 
@@ -80,7 +79,6 @@ test("confluence bridge", () => {
     ], { interwingle: ThinkableType.INTERWINGLE.FUSION });
 
     const activeNodeUUID = thinkabletype.hyperedges[1].secondNode.uuid;
-    console.log(activeNodeUUID);
 
     let data;
 
@@ -92,10 +90,35 @@ test("confluence bridge", () => {
     data = thinkabletype.graphData();
     expect(data.nodes.length).toBe(7);
     expect(data.links.length).toBe(6);
-    console.log(data.links);
     expect(data.links[5].nodeUUIDs.has(activeNodeUUID)).toBe(true);
+    expect(data.nodes[6].nodeUUIDs.has(activeNodeUUID)).toBe(true);
 });
 
+test("fusion find reference UUID", () => {
+    const thinkabletype = new ThinkableType([
+        ["A", "B", "C"],
+        ["C", "D", "E"],
+    ], { interwingle: ThinkableType.INTERWINGLE.FUSION });
 
-// confluence -> fusion
-// fusion -> bridge
+    const activeNodeUUID = thinkabletype.hyperedges[1].firstNode.uuid;
+    const newNodeUUID = thinkabletype.hyperedges[0].lastNode.uuid;
+
+    const data = thinkabletype.graphData();
+    const node = ThinkableType.findReferenceUUID(data, activeNodeUUID);
+    expect(node.uuid).toBe(newNodeUUID);
+});
+
+test("confluence bridge", () => {
+    const thinkabletype = new ThinkableType([
+        ["A", "vs", "B"],
+        ["1", "vs", "2"],
+    ], { interwingle: ThinkableType.INTERWINGLE.BRIDGE });
+
+    const activeNodeUUID = thinkabletype.hyperedges[1].secondNode.uuid;
+
+    const data = thinkabletype.graphData();
+    const node = ThinkableType.findReferenceUUID(data, activeNodeUUID);
+    expect(node).toBeDefined();
+    expect(node.bridge).toBe(true);
+    expect(node.nodeUUIDs.has(activeNodeUUID)).toBe(true);
+});

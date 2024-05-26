@@ -105,3 +105,20 @@ export function restoreData(data, old) {
 export function hash(str) {
     return sha256(str).hex();
 }
+
+export function findReferenceUUID(data, uuid) {
+    // prefer bridges if they exist
+    for (const node of data.nodes) {
+        if (node.bridge && node.nodeUUIDs.has(uuid)) {
+            return node;
+        }
+    }
+
+    for (const node of data.nodes) {
+        if (node.nodeUUIDs.has(uuid)) {
+            return node;
+        }
+    }
+
+    return null;
+}

@@ -328,3 +328,4 @@ export default class Hypergraph {
 Hypergraph.Hyperedge = Hyperedge;
 Hypergraph.Node = Node;
 Hypergraph.BridgeNode = BridgeNode;
+Hypergraph.findReferenceUUID = utils.findReferenceUUID;
