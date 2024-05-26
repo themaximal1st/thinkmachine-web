@@ -7,8 +7,11 @@ import ForceGraph from "./ForceGraph";
 import Interwingle from "./Interwingle";
 import Typer from "./Typer";
 import Editor from "./Editor";
+import Depth from "./Depth";
 
+// TODO: get filter working
 // TODO: depth with activeNode
+// TODO:    change filter to accept explicit nodeUUIDs
 
 // TODO: need new adder interface / generate....
 // TODO: start on UI — what is typer, what is overlay, what is new UI?
@@ -34,7 +37,7 @@ export default class App extends React.Component {
         this.state = {
             isLoading: false,
             dataHash: null,
-            filter: null,
+            filter: [["b"]],
             activeNodeUUID: null,
             graphData: { nodes: [], links: [] },
         };
@@ -52,13 +55,6 @@ export default class App extends React.Component {
     handleKeyDown(event) {
         if (event.key === "Escape" && this.state.activeNodeUUID) {
             this.setActiveNodeUUID(null);
-        } else if (event.key === "Tab") {
-            if (event.target.tagName === "INPUT" || event.target.tagName === "button") {
-                return;
-            }
-
-            this.toggleInterwingle(undefined, event.shiftKey);
-            event.preventDefault();
         }
     }
 
@@ -76,11 +72,11 @@ export default class App extends React.Component {
     async load() {
         await this.reset();
 
-        setTimeout(async () => {
-            await this.asyncSetState({
-                activeNodeUUID: this.state.graphData.nodes[3].uuid,
-            });
-        }, 1500);
+        // setTimeout(async () => {
+        //     await this.asyncSetState({
+        //         activeNodeUUID: this.state.graphData.nodes[3].uuid,
+        //     });
+        // }, 1500);
     }
 
     async reset() {
@@ -98,6 +94,8 @@ export default class App extends React.Component {
             this.state.graphData
         );
 
+        // console.log("GRAPH DATA", graphData);
+
         const state = { graphData };
         const activeNodeUUID = this.trackUUID(this.state.activeNodeUUID, graphData);
         if (activeNodeUUID !== this.state.activeNodeUUID) {
@@ -106,7 +104,7 @@ export default class App extends React.Component {
 
         await this.asyncSetState(state);
 
-        console.log("GRAPH DATA", graphData.nodes);
+        // console.log("GRAPH DATA", graphData.nodes);
 
         // document.title = this.title;
     }
@@ -151,27 +149,21 @@ export default class App extends React.Component {
         await this.asyncSetState({ activeNodeUUID });
     }
 
-    async toggleInterwingle(interwingle = undefined, backwards = false) {
-        if (typeof interwingle === "undefined") {
-            interwingle = this.thinkabletype.interwingle;
-            interwingle = backwards ? interwingle - 1 : interwingle + 1;
-            if (interwingle > 3) interwingle = 0;
-            if (interwingle < 0) interwingle = 3;
-        }
-        this.thinkabletype.interwingle = interwingle;
-        Settings.interwingle = interwingle;
-        this.reloadData();
-    }
-
     render() {
         return (
             <div className="">
                 <Typer activeNodeUUID={this.state.activeNodeUUID} />
 
                 <Interwingle
-                    interwingle={this.thinkabletype.interwingle}
-                    toggleInterwingle={this.toggleInterwingle.bind(this)}
-                    numberOfNodes={this.numberOfNodes}
+                    thinkabletype={this.thinkabletype}
+                    graphData={this.state.graphData}
+                    reloadData={this.reloadData.bind(this)}
+                />
+
+                <Depth
+                    thinkabletype={this.thinkabletype}
+                    graphData={this.state.graphData}
+                    reloadData={this.reloadData.bind(this)}
                 />
 
                 <Editor

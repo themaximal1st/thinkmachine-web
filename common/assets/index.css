@@ -7,18 +7,6 @@ body {
     @apply bg-black;
 }
 
-.depth-slider {
-    @apply rotate-[270deg] bg-gray-800 w-96 absolute appearance-none mr-2 opacity-40 hover:opacity-100 transition-all rounded-full;
-}
-
-.depth-slider:focus {
-    @apply appearance-none outline-0;
-}
-
-.depth-slider::-webkit-slider-thumb {
-    @apply border-2 appearance-none my-[-7px] bg-gray-500 h-8 w-2;
-}
-
 #titlebar {
     -webkit-app-region: drag;
     @apply absolute z-10 top-0 left-0 right-0 h-8 text-center text-xs;
@@ -216,7 +204,7 @@ body {
 }
 
 #active-node-toolbar button .tooltip {
-    @apply absolute -mt-[72px] w-48 -ml-[88px] flex justify-center items-start shadow-sm;
+    @apply absolute -mt-[72px] w-48 -ml-[88px] flex justify-center items-start;
 }
 
 #chat {
@@ -324,4 +312,25 @@ body {
     &:hover {
         @apply opacity-100;
     }
+}
+
+#depth-slider {
+    @apply bg-gray-400 rotate-180 h-96 w-3 appearance-none opacity-60 hover:opacity-100 transition-all rounded-full pointer-events-auto;
+    writing-mode: vertical-lr;
+}
+
+#depth-slider:focus {
+    @apply appearance-none outline-0;
+}
+
+#depth-slider::-webkit-slider-thumb {
+    @apply appearance-none h-5 w-5 bg-white/80 rounded-full;
+}
+
+.tooltip {
+    @apply absolute z-30 text-white shadow-sm text-xs uppercase tracking-wider;
+}
+
+#depth-label {
+    @apply absolute top-0 -mt-8 whitespace-nowrap;
 }
