@@ -38,7 +38,8 @@ export default class App extends React.Component {
         this.state = {
             isLoading: false,
             dataHash: null,
-            filter: [["b"]],
+            // filter: [["b"]],
+            filter: null,
             activeNodeUUID: null,
             graphData: { nodes: [], links: [] },
         };

@@ -216,7 +216,7 @@ body {
 }
 
 #interwingle {
-    @apply absolute left-0 top-0 z-10 bottom-0 flex items-center justify-center gap-6 pr-8 flex-col-reverse;
+    @apply absolute left-0 top-0 z-10 bottom-0 flex items-center justify-center gap-5 pr-8 flex-col-reverse;
 }
 
 #interwingle button {
