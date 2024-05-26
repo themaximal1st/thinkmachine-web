@@ -9,8 +9,8 @@ import React from "react";
 import ActiveNode from "./active/ActiveNode";
 
 export default class ForceGraph3D extends React.Component {
-    constructor() {
-        super(...arguments);
+    constructor(props) {
+        super(props);
         this.state = {
             activeMode: "Edit",
         };
@@ -24,10 +24,12 @@ export default class ForceGraph3D extends React.Component {
         this.props.graphRef.current.postProcessingComposer().addPass(bloomPass);
     }
 
-    componentDidUpdate(prevProps, prevState) {}
-
     setActiveMode(activeMode) {
         this.setState({ activeMode });
+    }
+
+    get clonedGraphData() {
+        return JSON.parse(JSON.stringify(this.props.graphData));
     }
 
     render() {

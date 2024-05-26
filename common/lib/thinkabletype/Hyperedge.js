@@ -40,6 +40,10 @@ export default class Hyperedge {
         return this.nodes[0];
     }
 
+    get secondNode() {
+        return this.nodes[1];
+    }
+
     get lastNode() {
         return this.nodes[this.nodes.length - 1];
     }
@@ -150,7 +154,7 @@ export default class Hyperedge {
         updateIDs(parent);
         updateIDs(child);
 
-        return {
+        const link = {
             id: `${parent.id}->${child.id}`,
             source: parent.id,
             target: child.id,
@@ -158,5 +162,11 @@ export default class Hyperedge {
             uuids,
             color: this.color,
         };
+
+        if (parent.bridge || child.bridge) {
+            link.bridge = true;
+        }
+
+        return link;
     }
 }

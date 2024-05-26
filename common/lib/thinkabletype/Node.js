@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
+import * as utils from "@lib/utils"
 
 export default class Node {
     constructor(symbol, hyperedge) {
@@ -65,9 +66,12 @@ export default class Node {
         const node = this.hypergraph.masqueradeNode(this);
 
         const existing = nodes.get(node.id);
-        const ids = existing ? existing.ids : new Set();
 
+        const ids = existing ? existing.ids : new Set();
         ids.add(this.hyperedge.id);
+
+        const uuids = existing ? existing.uuids : new Set();
+        uuids.add(node.uuid);
 
         nodes.set(node.id, {
             id: node.id,
@@ -75,7 +79,50 @@ export default class Node {
             name: node.symbol,
             color: this.hyperedge.color,
             ids,
+            uuids,
         });
+    }
+
+    context(graphData) {
+        const context = {
+            prev: [],
+            next: [],
+        };
+
+        const next = (id) => {
+            context.next.push(this.hypergraph.nodeByID(id));
+        }
+
+        const prev = (id) => {
+            context.prev.push(this.hypergraph.nodeByID(id));
+        }
+
+        for (const link of graphData.links) {
+            // force 3d graph modifies graphData...kinda crummy, would be better to store graphData internally rather than passing it around
+            let source = link.source.id || link.source;
+            let target = link.target.id || link.target;
+
+            if (source === this.id) {
+                if (link.bridge) {
+                    for (const nodeId of link.nodeIDs) {
+                        if (nodeId !== this.id) { next(nodeId) }
+                    }
+                } else {
+                    next(target);
+                }
+            } else if (target === this.id) {
+                if (link.bridge) {
+                    for (const nodeId of link.nodeIDs) {
+                        if (nodeId !== this.id) { prev(nodeId) }
+                    }
+                } else {
+                    prev(source);
+                }
+            }
+        }
+
+
+        return context;
     }
 }
 

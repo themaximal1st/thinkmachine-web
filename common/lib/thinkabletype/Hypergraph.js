@@ -149,6 +149,14 @@ export default class Hypergraph {
         }
     }
 
+    nodeByID(id) {
+        for (const hyperedge of this.hyperedges) {
+            for (const node of hyperedge.nodes) {
+                if (node.id === id) return node;
+            }
+        }
+    }
+
     edgeByUUID(uuid) {
         for (const hyperedge of this.hyperedges) {
             if (hyperedge.uuid === uuid) return hyperedge;

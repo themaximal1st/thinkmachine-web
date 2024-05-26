@@ -8,6 +8,9 @@ import Interwingle from "./Interwingle";
 import Typer from "./Typer";
 import Editor from "./Editor";
 
+// TODO: implement next/prev with context
+// TODO: depth with activeNode
+
 // TODO: Figure out if reloading data here is a good idea, or if it's too heavy...some actions get hammered by events
 //        ...and we don't want to reloadData every single time...that'd be wasteful
 
@@ -79,9 +82,10 @@ export default class App extends React.Component {
 
     async load() {
         await this.reset();
+
         setTimeout(async () => {
             await this.asyncSetState({
-                activeNodeUUID: this.state.graphData.nodes[0].uuid,
+                activeNodeUUID: this.state.graphData.nodes[1].uuid,
             });
         }, 1500);
     }
@@ -96,13 +100,14 @@ export default class App extends React.Component {
     }
 
     async reloadData() {
-        console.log("RELOAD");
         const graphData = this.thinkabletype.graphData(
             this.state.filter,
             this.state.graphData
         );
 
         await this.asyncSetState({ graphData });
+
+        console.log("GRAPH DATA", graphData.nodes);
 
         // document.title = this.title;
     }

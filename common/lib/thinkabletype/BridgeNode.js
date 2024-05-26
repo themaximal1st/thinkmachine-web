@@ -24,6 +24,14 @@ export default class BridgeNode {
         return this.hyperedges.map(edge => edge.id);
     }
 
+    get nodeIDs() {
+        return this.nodes.map(node => node.id);
+    }
+
+    get nodeUUIDs() {
+        return this.nodes.map(node => node.uuid);
+    }
+
     get hyperedges() {
         return Array.from(new Set(this.nodes.map(node => node.hyperedge)));
     }
@@ -43,12 +51,16 @@ export default class BridgeNode {
             name: this.symbol,
             bridge: true,
             ids: this.ids,
+            nodeIDs: this.nodeIDs,
+            nodeUUIDs: this.nodeUUIDs,
         });
 
         for (const node of this.nodes) {
             const n = nodes.get(node.id);
             n.ids.add(this.id);
             const link = node.hyperedge.linkData(this, node);
+            link.nodeIDs = this.nodeIDs;
+            link.nodeUUIDs = this.nodeUUIDs;
             links.set(link.id, link);
         }
     }

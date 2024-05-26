@@ -181,16 +181,29 @@ body {
     @apply absolute right-0 -mr-8 -mt-5 text-gray-500 hover:text-gray-300 cursor-pointer transition-all p-2 hidden;
 }
 
-#active-node-prev {
+/* #active-node-prev {
     @apply h-full absolute w-10 -ml-10 top-0 text-gray-700 hover:text-gray-300 cursor-pointer transition-all;
 }
 
 #active-node-next {
     @apply h-full absolute w-10 -mr-10 pl-2 top-0 right-0 text-gray-700 hover:text-gray-300 cursor-pointer transition-all;
+} */
+
+#context-prev {
+    @apply absolute w-10 -ml-10 top-0 bottom-0 flex flex-col justify-between py-2 overflow-y-scroll;
+}
+
+#context-next {
+    @apply absolute w-10 -mr-10 pl-2 right-0 top-0 bottom-0 flex flex-col justify-between py-2 overflow-y-scroll;
+}
+
+#context-prev button,
+#context-next button {
+    @apply py-1 text-gray-700 hover:text-white cursor-pointer transition-all flex items-center;
 }
 
 #active-node-toolbar {
-    @apply flex items-center gap-1 p-1;
+    @apply flex items-center gap-1 p-2;
 }
 
 #active-node-toolbar button {
@@ -207,7 +220,7 @@ body {
 }
 
 #chat {
-    @apply -m-3 p-1 px-3 mt-2 bg-gray-1000/50 rounded-b-xl;
+    @apply -m-3 p-3 mt-2 bg-gray-1000/50 rounded-b-xl;
 }
 
 #chat input {

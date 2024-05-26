@@ -8,8 +8,16 @@
  - get rid of App.jsx monolith, push state to edges
  - consistent id through interwingle levels. push to closest one
 
+beta
+    beta.thinkmachine.com
+
+after beta
+    2D
+
 editor
     drag and drop reorder nodes / hyperedges
+
+
 
 
 - it should be more generative. when a link doesn't exist, generate it
