@@ -202,6 +202,10 @@ body {
     }
 }
 
+#active-node-toolbar button .tooltip {
+    @apply absolute -mt-[72px] w-48 -ml-[88px] flex justify-center items-start shadow-sm;
+}
+
 #chat {
     @apply -m-3 p-1 px-3 mt-2 bg-gray-1000/50 rounded-b-xl;
 }

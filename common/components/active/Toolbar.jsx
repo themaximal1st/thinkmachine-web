@@ -1,5 +1,6 @@
 import * as Icons from "@assets/Icons";
 import Component from "./Component";
+import { Tooltip } from "react-tooltip";
 
 export default class Toolbar extends Component {
     isMode(mode) {
@@ -8,12 +9,12 @@ export default class Toolbar extends Component {
 
     get buttons() {
         return [
-            ["Explain", Icons.ChatIcon(3)],
-            ["Generate", Icons.GenerateIcon(3)],
-            ["Add", Icons.AddIcon(3)],
-            ["Edit", Icons.EditIcon(3)],
-            ["Images", Icons.ScreenshotIcon(3)],
-            ["Filter", Icons.SearchIcon(3)],
+            ["Explain", Icons.ChatIcon(5)],
+            ["Generate", Icons.GenerateIcon(5)],
+            ["Add", Icons.AddIcon(5)],
+            ["Edit", Icons.EditIcon(5)],
+            ["Images", Icons.ScreenshotIcon(5)],
+            ["Filter", Icons.SearchIcon(5)],
         ];
     }
 
@@ -23,10 +24,12 @@ export default class Toolbar extends Component {
                 {this.buttons.map(([label, icon]) => (
                     <button
                         key={label}
-                        className={this.isMode(label) ? "active" : ""}
+                        className={this.isMode(label) ? "active group" : "group"}
                         data-mode={label}>
                         {icon}
-                        {label}
+                        <div className="tooltip invisible group-hover:visible">
+                            {label}
+                        </div>
                     </button>
                 ))}
             </div>
