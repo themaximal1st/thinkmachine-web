@@ -132,18 +132,24 @@ export default class Hyperedge {
 
 
     linkData(parent, child) {
-        const ids = new Set();
-        const uuids = new Set();
+        const edgeIDs = new Set();
+        const edgeUUIDs = new Set();
+
+        const nodeIDs = new Set();
+        const nodeUUIDs = new Set();
 
         function updateIDs(node) {
+            nodeIDs.add(node.id);
+            nodeUUIDs.add(node.uuid);
+
             if (node.bridge) {
                 for (const edge of node.hyperedges) {
-                    ids.add(edge.id);
-                    uuids.add(edge.uuid);
+                    edgeIDs.add(edge.id);
+                    edgeUUIDs.add(edge.uuid);
                 }
             } else {
-                ids.add(node.hyperedge.id);
-                uuids.add(node.hyperedge.uuid);
+                edgeIDs.add(node.hyperedge.id);
+                edgeUUIDs.add(node.hyperedge.uuid);
             }
         }
 
@@ -158,8 +164,10 @@ export default class Hyperedge {
             id: `${parent.id}->${child.id}`,
             source: parent.id,
             target: child.id,
-            ids,
-            uuids,
+            edgeIDs,
+            edgeUUIDs,
+            nodeIDs,
+            nodeUUIDs,
             color: this.color,
         };
 

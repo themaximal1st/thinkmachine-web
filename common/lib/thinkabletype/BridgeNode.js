@@ -20,16 +20,20 @@ export default class BridgeNode {
         return `${this.node.symbol}#bridge`;
     }
 
-    get ids() {
-        return this.hyperedges.map(edge => edge.id);
+    get edgeIDs() {
+        return new Set(this.hyperedges.map(edge => edge.id));
+    }
+
+    get edgeUUIDs() {
+        return new Set(this.hyperedges.map(edge => edge.uuid));
     }
 
     get nodeIDs() {
-        return this.nodes.map(node => node.id);
+        return new Set(this.nodes.map(node => node.id));
     }
 
     get nodeUUIDs() {
-        return this.nodes.map(node => node.uuid);
+        return new Set(this.nodes.map(node => node.uuid));
     }
 
     get hyperedges() {
@@ -50,17 +54,20 @@ export default class BridgeNode {
             uuid: this.uuid,
             name: this.symbol,
             bridge: true,
-            ids: this.ids,
+            edgeIDs: this.edgeIDs,
+            edgeUUIDs: this.edgeUUIDs,
             nodeIDs: this.nodeIDs,
             nodeUUIDs: this.nodeUUIDs,
         });
 
         for (const node of this.nodes) {
             const n = nodes.get(node.id);
-            n.ids.add(this.id);
+            n.nodeIDs.add(this.id);
             const link = node.hyperedge.linkData(this, node);
             link.nodeIDs = this.nodeIDs;
             link.nodeUUIDs = this.nodeUUIDs;
+            link.edgeIDs = this.edgeIDs;
+            link.edgeUUIDs = this.edgeUUIDs;
             links.set(link.id, link);
         }
     }

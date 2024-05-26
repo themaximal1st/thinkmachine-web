@@ -9,7 +9,7 @@ export default function filterGraphData({ filter, hyperedges, graphData, depth }
 
     const updateNodesAndLinks = () => {
         for (const node of graphData.nodes.values()) {
-            if (Array.from(node.ids).some(id => hyperedgeIDs.has(id))) {
+            if (Array.from(node.edgeIDs).some(id => hyperedgeIDs.has(id))) {
                 nodes.set(node.id, node);
                 nodeIDs.add(node.id);
             }
@@ -24,13 +24,13 @@ export default function filterGraphData({ filter, hyperedges, graphData, depth }
 
     function updateHyperedges() {
         for (const node of nodes.values()) {
-            for (const id of node.ids) {
+            for (const id of node.edgeIDs) {
                 hyperedgeIDs.add(id);
             }
         }
 
         for (const link of links.values()) {
-            for (const id of link.ids) {
+            for (const id of link.edgeIDs) {
                 hyperedgeIDs.add(id);
             }
         }

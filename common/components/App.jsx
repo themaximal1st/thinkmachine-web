@@ -9,6 +9,7 @@ import Typer from "./Typer";
 import Editor from "./Editor";
 
 // TODO: implement next/prev with context
+// TODO: stable id update
 // TODO: depth with activeNode
 
 // TODO: Figure out if reloading data here is a good idea, or if it's too heavy...some actions get hammered by events

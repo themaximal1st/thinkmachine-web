@@ -2,8 +2,6 @@ import ThinkableType from "@lib/thinkabletype";
 
 import { expect, test } from "vitest";
 
-// TODO: Disappearing ID...fusion id..where does it go?
-
 // ISOLATED
 
 test("graph data (interwingle)", () => {
@@ -37,12 +35,12 @@ test("single hyperedge (isolate)", () => {
     expect(data.links[0].id).toBe("0:A->0:A.B");
     expect(data.links[0].source).toBe("0:A");
     expect(data.links[0].target).toBe("0:A.B");
-    expect(data.links[0].ids).toContain("0:A.B.C");
+    expect(data.links[0].edgeIDs).toContain("0:A.B.C");
 
     expect(data.links[1].id).toBe("0:A.B->0:A.B.C");
     expect(data.links[1].source).toBe("0:A.B");
     expect(data.links[1].target).toBe("0:A.B.C");
-    expect(data.links[1].ids).toContain("0:A.B.C");
+    expect(data.links[1].edgeIDs).toContain("0:A.B.C");
 });
 
 
@@ -80,12 +78,12 @@ test("single hyperedge (confluence)", () => {
     expect(data.links[0].id).toBe("A->A.B");
     expect(data.links[0].source).toBe("A");
     expect(data.links[0].target).toBe("A.B");
-    expect(data.links[0].ids).toContain("A.B.C");
+    expect(data.links[0].edgeIDs).toContain("A.B.C");
 
     expect(data.links[1].id).toBe("A.B->A.B.C");
     expect(data.links[1].source).toBe("A.B");
     expect(data.links[1].target).toBe("A.B.C");
-    expect(data.links[1].ids).toContain("A.B.C");
+    expect(data.links[1].edgeIDs).toContain("A.B.C");
 });
 
 test("multiple hyperedge (confluence)", () => {
@@ -108,10 +106,10 @@ test("multiple hyperedge (confluence)", () => {
     expect(data.links[2].id).toBe("A->A.1");
     expect(data.links[3].id).toBe("A.1->A.1.2");
 
-    expect(data.links[0].ids).toContain("A.B.C");
-    expect(data.links[1].ids).toContain("A.B.C");
-    expect(data.links[2].ids).toContain("A.1.2");
-    expect(data.links[3].ids).toContain("A.1.2");
+    expect(data.links[0].edgeIDs).toContain("A.B.C");
+    expect(data.links[1].edgeIDs).toContain("A.B.C");
+    expect(data.links[2].edgeIDs).toContain("A.1.2");
+    expect(data.links[3].edgeIDs).toContain("A.1.2");
 });
 
 // FUSION

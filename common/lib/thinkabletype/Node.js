@@ -67,19 +67,31 @@ export default class Node {
 
         const existing = nodes.get(node.id);
 
-        const ids = existing ? existing.ids : new Set();
-        ids.add(this.hyperedge.id);
+        const edgeIDs = existing ? existing.edgeIDs : new Set();
+        edgeIDs.add(this.hyperedge.id);
+        edgeIDs.add(node.hyperedge.id);
 
-        const uuids = existing ? existing.uuids : new Set();
-        uuids.add(node.uuid);
+        const edgeUUIDs = existing ? existing.edgeUUIDs : new Set();
+        edgeUUIDs.add(this.hyperedge.uuid);
+        edgeUUIDs.add(node.hyperedge.uuid);
+
+        const nodeIDs = existing ? existing.nodeIDs : new Set();
+        nodeIDs.add(this.id);
+        nodeIDs.add(node.id);
+
+        const nodeUUIDs = existing ? existing.nodeUUIDs : new Set();
+        nodeUUIDs.add(this.uuid);
+        nodeUUIDs.add(node.uuid);
 
         nodes.set(node.id, {
             id: node.id,
             uuid: node.uuid,
             name: node.symbol,
             color: this.hyperedge.color,
-            ids,
-            uuids,
+            edgeIDs,
+            edgeUUIDs,
+            nodeIDs,
+            nodeUUIDs,
         });
     }
 
