@@ -1,14 +1,24 @@
 import { contextBridge, ipcRenderer } from "electron";
-import { stream } from "./stream.js";
+import Client from "@lib/Client";
+// import { stream } from "./stream.js";
 
-ipcRenderer.stream = stream;
+// ipcRenderer.stream = stream;
 
-const api = {
-    "edition": "electron",
-    "media": (query) => {
-        return ipcRenderer.invoke("media", query);
-    }
+const client = new Client();
+console.log("CLIENT", client);
+
+try {
+    contextBridge.exposeInMainWorld("api", client.api);
+} catch (error) {
+    console.error(error);
 }
+
+// const api = {
+//     "edition": "electron",
+//     "media": (query) => {
+//         return ipcRenderer.invoke("media", query);
+//     }
+// }
 
 /*
 const api = {
@@ -96,9 +106,3 @@ const api = {
     },
 };
 */
-
-try {
-    contextBridge.exposeInMainWorld("api", api);
-} catch (error) {
-    console.error(error);
-}
