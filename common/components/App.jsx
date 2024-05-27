@@ -96,6 +96,12 @@ export default class App extends React.Component {
 
     async load() {
         await this.reset();
+
+        setTimeout(async () => {
+            await this.asyncSetState({
+                activeNodeUUID: this.state.graphData.nodes[0].uuid,
+            });
+        }, 1000);
     }
 
     async reset() {

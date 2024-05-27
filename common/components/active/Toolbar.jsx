@@ -20,28 +20,34 @@ export default class Toolbar extends Component {
     get buttons() {
         return [
             ["Explain", Icons.ChatIcon(5)],
-            ["Edit", Icons.EditIcon(5)],
-            ["Add", Icons.AddIcon(5)],
             ["Images", Icons.ScreenshotIcon(5)],
-            ["Generate", Icons.GenerateIcon(5)],
+            ["Edit", Icons.EditIcon(5)],
             ["Filter", Icons.SearchIcon(5)],
+            ["-"],
+            ["Add", Icons.AddIcon(5)],
+            ["Generate", Icons.GenerateIcon(5)],
         ];
     }
 
     code() {
         return (
             <div className="toolbar" id="active-node-toolbar">
-                {this.buttons.map(([label, icon]) => (
-                    <button
-                        key={label}
-                        className={this.isMode(label) ? "active group" : "group"}
-                        data-mode={label}>
-                        {icon}
-                        <div className="tooltip invisible group-hover:visible">
-                            {label}
-                        </div>
-                    </button>
-                ))}
+                {this.buttons.map(([label, icon], idx) => {
+                    if (label === "-") {
+                        return <div key={`divider-${idx}`} className="grow"></div>;
+                    }
+                    return (
+                        <button
+                            key={label}
+                            className={this.isMode(label) ? "active group" : "group"}
+                            data-mode={label}>
+                            {icon}
+                            <div className="tooltip invisible group-hover:visible">
+                                {label}
+                            </div>
+                        </button>
+                    );
+                })}
             </div>
         );
     }
