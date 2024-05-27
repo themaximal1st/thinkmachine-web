@@ -1,8 +1,8 @@
+import API from "./API.js"
 
 export default class Client {
 
     async handler(name, ...args) {
-        console.log("HANDLING", name, args);
         return await this.send(name, { args });
     }
 
@@ -10,25 +10,33 @@ export default class Client {
         if (typeof process !== 'undefined' && process.versions && process.versions.hasOwnProperty('electron')) {
             return "electron";
         }
+
         return "web"
     }
 
     get api() {
-        return {
+        const api = {
             edition: this.edition,
-            media: async (query) => {
-                return await this.handler("media", query);
-            }
+        };
+
+        for (const method of new API().methods) {
+            api[method] = async (...args) => {
+                return await this.handler(method, ...args);
+            };
         }
+
+        return api;
     }
 
-    async send(path, options = {}) {
+    async send(path, data = {}, timeout = 5000) {
+        const controller = new AbortController()
+        setTimeout(() => controller.abort(), timeout)
         const response = await fetch(`/api/${path}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            // signal: controller.signal,
+            signal: controller.signal,
             credentials: "include",
-            body: JSON.stringify(options),
+            body: JSON.stringify(data),
         });
 
         if (!response.ok) {

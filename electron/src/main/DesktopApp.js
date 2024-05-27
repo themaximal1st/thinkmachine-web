@@ -6,8 +6,6 @@ import { electronApp as electronAppTools, optimizer, is } from "@electron-toolki
 import { ipcMain } from "electron";
 import API from "@lib/API";
 
-// import ElectronBridge from "./ElectronBridge";
-
 import {
     NewMenuItem,
     LoadMenuItem,
@@ -20,33 +18,16 @@ export default class DesktopApp {
     constructor(browserWindow) {
         this.electronApp = electronApp;
         this.browserWindow = browserWindow;
-        this.bridge = null;
         this.api = new API();
     }
 
-    get thinkabletype() {
-        if (!this.bridge) return null;
-        return this.bridge.thinkabletype;
-    }
-
     async load() {
-        // this.bridge = new ElectronBridge(this);
-        // await this.bridge.load();
-
+        // setup api bridge
         for (const method of this.api.methods) {
             ipcMain.handle(method, (...args) => {
                 return this.api[method](...args.slice(1));
             });
         }
-        // const proto = Object.getPrototypeOf(this.api);
-        // for (const method of Object.getOwnPropertyNames(proto)) {
-        //     if (method === "constructor") continue;
-        //     if (typeof this.api[method] !== "function") continue;
-        //     ipcMain.handle(method, (...args) => {
-        //         return this.api[method](...args.slice(1));
-        //     });
-
-        // }
 
         const menu = Menu.getApplicationMenu();
         if (!menu) return;

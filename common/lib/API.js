@@ -3,6 +3,16 @@ export default class API {
         return ["meta", "data", "api", query];
     }
 
+    funky(name, here, and, more) {
+        return {
+            "funky": "funky",
+            name,
+            here,
+            and,
+            more
+        }
+    }
+
     get methods() {
         const proto = Object.getPrototypeOf(this);
         return Object.getOwnPropertyNames(proto).filter((method) => {

@@ -96,12 +96,11 @@ export default class App extends React.Component {
     }
 
     async load() {
+        Client.setup();
         await this.reset();
 
-        Client.setup();
-
-        const media = await window.api.media("my query");
-        console.log("MEDIA", media);
+        // console.log("MEDIA", await window.api.media("my query"));
+        // console.log("FUNKY", await window.api.funky("name", "here", "and", "more"));
 
         setTimeout(async () => {
             await this.asyncSetState({

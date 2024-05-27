@@ -20,7 +20,7 @@ export default class WebBridge {
         }
     }
 
-    post(route, handler, options = {}) {
+    post(route, handler) {
         this.app.post(route, async (req, res) => {
             try {
                 // const event = route;
@@ -34,6 +34,7 @@ export default class WebBridge {
         });
     }
 }
+
 /*
 import { v4 as uuid } from "uuid";
 

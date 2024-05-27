@@ -14,13 +14,6 @@ try {
     console.error(error);
 }
 
-// const api = {
-//     "edition": "electron",
-//     "media": (query) => {
-//         return ipcRenderer.invoke("media", query);
-//     }
-// }
-
 /*
 const api = {
     "edition": "electron",
