@@ -11,6 +11,15 @@ import Depth from "./Depth";
 import Filter from "./Filter";
 
 // TODO: custom camera position with activeNode
+// TODO: typer
+//          - add / adder context
+//          - generate many
+//          - chat
+
+// TODO: toolbar
+//          - explain / chat
+//          - generate one
+//          - filter toggle
 
 // TODO: need new adder interface / generate....
 // TODO: start on UI — what is typer, what is overlay, what is new UI?
@@ -86,17 +95,6 @@ export default class App extends React.Component {
 
     async load() {
         await this.reset();
-
-        setTimeout(async () => {
-            const uuid = this.state.graphData.nodes[3].uuid;
-
-            await this.asyncSetState({
-                activeNodeUUID: uuid,
-                filter: [{ node: this.state.graphData.nodes[3].uuid }],
-            });
-
-            this.reloadData();
-        }, 1500);
     }
 
     async reset() {
@@ -109,10 +107,7 @@ export default class App extends React.Component {
     }
 
     async reloadData() {
-        const graphData = this.thinkabletype.graphData(
-            this.state.filter,
-            this.state.graphData
-        );
+        const graphData = this.thinkabletype.graphData(this.filter, this.state.graphData);
 
         await this.asyncSetState({ graphData });
 
