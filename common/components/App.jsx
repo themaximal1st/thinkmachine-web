@@ -3,7 +3,7 @@ import ThinkableType from "@lib/thinkabletype";
 
 import Settings from "@lib/Settings";
 
-import API from "@lib/API";
+// import API from "@lib/API";
 import ForceGraph from "./ForceGraph";
 import Interwingle from "./Interwingle";
 import Typer from "./Typer";
@@ -97,6 +97,9 @@ export default class App extends React.Component {
 
     async load() {
         await this.reset();
+
+        const media = await window.api.media("my query");
+        console.log("MEDIA", media);
 
         setTimeout(async () => {
             await this.asyncSetState({

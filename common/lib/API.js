@@ -1,3 +1,5 @@
-export default class ThinkableTypeAPI {
-
+export default class API {
+    media(query) {
+        return ["meta", "data", "api", query];
+    }
 }

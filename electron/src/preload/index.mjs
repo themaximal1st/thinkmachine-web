@@ -5,6 +5,14 @@ ipcRenderer.stream = stream;
 
 const api = {
     "edition": "electron",
+    "media": (query) => {
+        return ipcRenderer.invoke("media", query);
+    }
+}
+
+/*
+const api = {
+    "edition": "electron",
     "isWeb": false,
     "isElectron": true,
     "uuid": {
@@ -87,6 +95,7 @@ const api = {
         }
     },
 };
+*/
 
 try {
     contextBridge.exposeInMainWorld("api", api);

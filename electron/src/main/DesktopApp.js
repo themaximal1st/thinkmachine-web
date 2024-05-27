@@ -3,6 +3,8 @@ import { fileURLToPath } from "url";
 
 import { app as electronApp, BrowserWindow, Menu, MenuItem, shell } from "electron";
 import { electronApp as electronAppTools, optimizer, is } from "@electron-toolkit/utils";
+import { ipcMain } from "electron";
+import API from "@lib/API";
 
 // import ElectronBridge from "./ElectronBridge";
 
@@ -19,6 +21,7 @@ export default class DesktopApp {
         this.electronApp = electronApp;
         this.browserWindow = browserWindow;
         this.bridge = null;
+        this.api = new API();
     }
 
     get thinkabletype() {
@@ -29,6 +32,16 @@ export default class DesktopApp {
     async load() {
         // this.bridge = new ElectronBridge(this);
         // await this.bridge.load();
+
+        const proto = Object.getPrototypeOf(this.api);
+        for (const method of Object.getOwnPropertyNames(proto)) {
+            if (method === "constructor") continue;
+            if (typeof this.api[method] !== "function") continue;
+            ipcMain.handle(method, (...args) => {
+                return this.api[method](...args.slice(1));
+            });
+
+        }
 
         const menu = Menu.getApplicationMenu();
         if (!menu) return;
