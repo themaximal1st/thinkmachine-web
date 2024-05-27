@@ -21,11 +21,10 @@ export default class Toolbar extends Component {
         return [
             ["Explain", Icons.ChatIcon(5)],
             ["Images", Icons.ScreenshotIcon(5)],
-            ["Edit", Icons.EditIcon(5)],
             ["Filter", Icons.SearchIcon(5)],
-            ["-"],
-            ["Add", Icons.AddIcon(5)],
             ["Generate", Icons.GenerateIcon(5)],
+            ["-"],
+            ["Edit", Icons.EditIcon(5)],
         ];
     }
 
@@ -70,8 +69,6 @@ export default class Toolbar extends Component {
                 break;
             case "Filter":
                 return this.handleClickFilter();
-            case "Add":
-                return this.handleClickAdd();
             default:
                 break;
         }
@@ -90,11 +87,12 @@ export default class Toolbar extends Component {
         this.props.setFilters(filters);
     }
 
-    async handleClickAdd() {
-        const node = this.props.thinkabletype.nodeByUUID(this.props.node.uuid);
-        const addedNode = node.hyperedge.add("");
-        this.props.setActiveMode("Edit");
-        await this.props.setActiveNodeUUID(addedNode.uuid);
-        await this.props.reloadData();
-    }
+    // TODO: insert
+    // TODO: fork?
 }
+
+// General edit mode?
+// Rename
+// Add
+// Fork
+// Insert

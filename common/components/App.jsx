@@ -99,7 +99,7 @@ export default class App extends React.Component {
 
         setTimeout(async () => {
             await this.asyncSetState({
-                activeNodeUUID: this.state.graphData.nodes[4].uuid,
+                activeNodeUUID: this.state.graphData.nodes[2].uuid,
             });
         }, 1000);
     }
