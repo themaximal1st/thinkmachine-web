@@ -5,6 +5,12 @@ export default class Depth extends React.Component {
         super(props);
     }
 
+    componentWillUnmount() {
+        console.log("RESET DEPTH");
+        this.props.thinkabletype.depth = 0;
+        this.props.thinkabletype.maxDepth = 0;
+    }
+
     get depth() {
         return this.props.graphData.depth || 0;
     }
@@ -23,10 +29,8 @@ export default class Depth extends React.Component {
     render() {
         if (this.maxDepth <= 0) return;
 
-        console.log("RENDER", this.props.depth);
-
         return (
-            <div className="absolute z-20 right-0 top-0 bottom-0 w-16 flex justify-center items-center">
+            <div className="absolute z-20 right-0 top-0 bottom-0 w-16 flex justify-center items-center pointer-events-none">
                 <div className="flex items-center justify-center relative group">
                     <div
                         id="depth-label"

@@ -196,7 +196,7 @@ body {
 
 #active-node-toolbar button {
     @apply flex gap-[6px] uppercase font-medium tracking-wider text-xs items-center px-3 py-2 rounded-xl transition-all;
-    @apply hover:bg-gray-800/30 text-gray-300 hover:text-gray-100;
+    @apply active:bg-gray-800/30 text-gray-300 active:text-gray-100;
 
     &.active {
         @apply bg-gray-800/50 text-white;
@@ -341,4 +341,16 @@ body {
 
 #depth-label {
     @apply absolute top-0 -mt-8;
+}
+
+#filters {
+    @apply absolute top-0 right-0 z-20 p-2 mr-2 mt-2 pointer-events-none;
+}
+
+#filters-content {
+    @apply flex flex-col gap-2 w-64 text-right items-end;
+}
+
+#filters-content button {
+    @apply pointer-events-auto cursor-pointer text-white inline-block w-auto max-w-max px-2 -mr-2;
 }

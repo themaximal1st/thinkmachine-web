@@ -58,8 +58,6 @@ export default class Interwingle extends React.Component {
     }
 
     render() {
-        if (this.props.graphData.nodes.length === 0) return null;
-
         return (
             <div className="" id="interwingle">
                 {this.interwingles.map((interwingle, index) => (

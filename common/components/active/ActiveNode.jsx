@@ -4,7 +4,6 @@ import EditPanel from "./EditPanel";
 import Toolbar from "./Toolbar";
 import Context from "./Context";
 import * as Icons from "@assets/Icons";
-import * as utils from "@lib/utils";
 
 export default class ActiveNode extends Component {
     constructor(props) {

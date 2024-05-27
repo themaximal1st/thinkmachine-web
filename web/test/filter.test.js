@@ -690,3 +690,51 @@ test("filter on multiple edges", () => {
     expect(thinkabletype.filter(["A", "B", "1"]).length).toBe(1);
     expect(thinkabletype.filter([["A", "B", "1"], ["A", "B", "2"]]).length).toBe(2);
 });
+
+test("filter on explicit node", () => {
+    const thinkabletype = new ThinkableType({
+        interwingling: ThinkableType.INTERWINGLE.ISOLATED,
+        hyperedges: [
+            ["A", "B", "C"],
+            ["1", "2", "C"],
+        ]
+    });
+
+    const filter = [{ node: thinkabletype.hyperedges[0].firstNode.uuid }];
+    const graphData = thinkabletype.graphData(filter);
+    expect(graphData.nodes.length).toBe(3);
+    expect(graphData.links.length).toBe(2);
+});
+
+test("filter on explicit multiple nodes", () => {
+    const thinkabletype = new ThinkableType({
+        interwingling: ThinkableType.INTERWINGLE.ISOLATED,
+        hyperedges: [
+            ["A", "B", "C"],
+            ["1", "2", "C"],
+        ]
+    });
+
+    const filter = [
+        { node: thinkabletype.hyperedges[0].firstNode.uuid },
+        { node: thinkabletype.hyperedges[1].firstNode.uuid },
+    ];
+    const graphData = thinkabletype.graphData(filter);
+    expect(graphData.nodes.length).toBe(6);
+    expect(graphData.links.length).toBe(4);
+});
+
+test("filter on explicit hyperedge", () => {
+    const thinkabletype = new ThinkableType({
+        interwingling: ThinkableType.INTERWINGLE.ISOLATED,
+        hyperedges: [
+            ["A", "B", "C"],
+            ["1", "2", "C"],
+        ]
+    });
+
+    const filter = [{ edge: thinkabletype.hyperedges[0].uuid }];
+    const graphData = thinkabletype.graphData(filter);
+    expect(graphData.nodes.length).toBe(3);
+    expect(graphData.links.length).toBe(2);
+});

@@ -206,7 +206,7 @@ export default class Hypergraph {
 
         utils.verifyGraphData(nodes, links);
 
-        if (Array.isArray(filter)) {
+        if (Array.isArray(filter) && filter.length > 0) {
             return FilterGraph({
                 filter,
                 hyperedges: this.hyperedges,
@@ -328,4 +328,4 @@ export default class Hypergraph {
 Hypergraph.Hyperedge = Hyperedge;
 Hypergraph.Node = Node;
 Hypergraph.BridgeNode = BridgeNode;
-Hypergraph.findReferenceUUID = utils.findReferenceUUID;
+Hypergraph.trackUUID = utils.trackUUID;

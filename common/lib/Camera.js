@@ -75,6 +75,7 @@ export default class Camera {
     }
 
     async stableZoom(shouldZoom = false, delay = 100, oldData = null) {
+
         if (this.isStable) {
             shouldZoom = true;
         }
@@ -120,7 +121,7 @@ export default class Camera {
         return this.props.graphData.nodes.find((node) => node.uuid === nodeUUID);
     }
 
-    async zoomToNode(nodeUUID, delay = 0) {
+    async zoomToNode(nodeUUID, delay = 0, timing = 800) {
         await utils.delay(delay);
 
         const camera = this.position;
@@ -172,7 +173,7 @@ export default class Camera {
         this.graph.cameraPosition(
             newPosition, // new camera position
             { x: node.x, y: node.y, z: node.z }, // camera looks at the node
-            1250 // transition duration in milliseconds
+            timing // transition duration in milliseconds
         );
     }
 

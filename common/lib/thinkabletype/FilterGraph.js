@@ -1,6 +1,12 @@
 import * as utils from "./utils.js";
 
 export default function filterGraphData({ filter, hyperedges, graphData, depth }) {
+    console.log("FILTER GRAPH DATA");
+    console.log("   FILTER", filter);
+    console.log("   DEPTH", depth);
+    console.log("   HYPEREDGES", hyperedges);
+    console.log("   GRAPH DATA", graphData);
+
     const hyperedgeIDs = hyperedgeIDsForFilter(filter, hyperedges);
     const nodeIDs = new Set();
 
@@ -66,6 +72,9 @@ export default function filterGraphData({ filter, hyperedges, graphData, depth }
     if (maxDepth < 0) { maxDepth = 0 }
     if (depth > maxDepth) { depth = maxDepth }
 
+    console.log("   FINAL DEPTH", depth);
+    console.log("   FINAL MAX DEPTH", maxDepth);
+
     return {
         nodes: Array.from(finalNodes.values()),
         links: Array.from(finalLinks.values()),
@@ -77,7 +86,15 @@ export default function filterGraphData({ filter, hyperedges, graphData, depth }
 function hyperedgeIDsForFilter(filter, hyperedges) {
     return new Set(hyperedges.filter(hyperedge => {
         for (const f of filter) {
-            if (utils.arrayContains(hyperedge.symbols, f)) return true;
+            if (Array.isArray(f)) {
+                if (utils.arrayContains(hyperedge.symbols, f)) return true;
+            } else if (f.node) {
+                for (const node of hyperedge.nodes) {
+                    if (node.uuid === f.node) return true;
+                }
+            } else if (f.edge) {
+                if (hyperedge.uuid === f.edge) return true;
+            }
         }
         return false;
     }).map(hyperedge => hyperedge.id));

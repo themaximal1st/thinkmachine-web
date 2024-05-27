@@ -5,7 +5,6 @@ export default class Context extends Component {
     code() {
         const node = this.props.thinkabletype.nodeByUUID(this.props.activeNodeUUID);
         const context = node.context(this.props.graphData);
-        console.log(context);
 
         return (
             <div id="context" className="group">

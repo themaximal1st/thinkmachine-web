@@ -75,7 +75,7 @@ export default class ForceGraph extends React.Component {
         let delay = 100;
         if (prevProps.activeNodeUUID !== this.props.activeNodeUUID) {
             this.updateCamera(true, 100, prevProps.graphData);
-            delay = 0;
+            delay = 400;
         } else if (this.props.activeNodeUUID) {
             delay = 400;
         }
@@ -98,6 +98,8 @@ export default class ForceGraph extends React.Component {
             onNodeClick: this.handleNodeClick.bind(this),
             onEngineStop: this.handleEngineStop.bind(this),
         };
+
+        // console.log("RENDER FORCE GRAPH", this.props.graphData);
 
         if (this.is2D) {
             return <ForceGraph2D {...props} />;
@@ -159,7 +161,7 @@ export default class ForceGraph extends React.Component {
     }
 
     handleEngineStop() {
-        console.log("STOP");
+        // console.log("STOP");
     }
 
     emitLinkParticles(oldData) {

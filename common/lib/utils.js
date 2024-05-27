@@ -53,3 +53,4 @@ export function linkChanges(newData, oldData) {
 export function rollingIndex(index, length) {
     return (index + length) % length;
 }
+

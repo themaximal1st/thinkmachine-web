@@ -122,3 +122,23 @@ export function findReferenceUUID(data, uuid) {
 
     return null;
 }
+
+export function trackUUID(uuid, graphData) {
+    if (!uuid) {
+        return null;
+    }
+
+    for (let node of graphData.nodes) {
+        if (node.uuid === uuid) {
+            return node.uuid;
+        }
+    }
+
+    const node = findReferenceUUID(graphData, uuid);
+
+    if (!node) {
+        return null;
+    }
+
+    return node.uuid;
+}

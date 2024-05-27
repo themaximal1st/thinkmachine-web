@@ -8,11 +8,9 @@ import Interwingle from "./Interwingle";
 import Typer from "./Typer";
 import Editor from "./Editor";
 import Depth from "./Depth";
+import Filter from "./Filter";
 
-// TODO: get filter working
-// TODO: Where do we show current filters?
-// TODO: depth with activeNode
-// TODO:    change filter to accept explicit nodeUUIDs
+// TODO: custom camera position with activeNode
 
 // TODO: need new adder interface / generate....
 // TODO: start on UI — what is typer, what is overlay, what is new UI?
@@ -38,8 +36,7 @@ export default class App extends React.Component {
         this.state = {
             isLoading: false,
             dataHash: null,
-            // filter: [["b"]],
-            filter: null,
+            filter: [],
             activeNodeUUID: null,
             graphData: { nodes: [], links: [] },
         };
@@ -60,6 +57,22 @@ export default class App extends React.Component {
         }
     }
 
+    get filter() {
+        return this.state.filter.map((f) => {
+            if (f.node) {
+                return {
+                    node: ThinkableType.trackUUID(f.node, this.state.graphData),
+                };
+            } else {
+                return f;
+            }
+        });
+    }
+
+    get activeNodeUUID() {
+        return ThinkableType.trackUUID(this.state.activeNodeUUID, this.state.graphData);
+    }
+
     async onDataUpdate(event) {
         if (this.state.isLoading) {
             return;
@@ -74,11 +87,16 @@ export default class App extends React.Component {
     async load() {
         await this.reset();
 
-        // setTimeout(async () => {
-        //     await this.asyncSetState({
-        //         activeNodeUUID: this.state.graphData.nodes[3].uuid,
-        //     });
-        // }, 1500);
+        setTimeout(async () => {
+            const uuid = this.state.graphData.nodes[3].uuid;
+
+            await this.asyncSetState({
+                activeNodeUUID: uuid,
+                filter: [{ node: this.state.graphData.nodes[3].uuid }],
+            });
+
+            this.reloadData();
+        }, 1500);
     }
 
     async reset() {
@@ -96,39 +114,9 @@ export default class App extends React.Component {
             this.state.graphData
         );
 
-        // console.log("GRAPH DATA", graphData);
-
-        const state = { graphData };
-        const activeNodeUUID = this.trackUUID(this.state.activeNodeUUID, graphData);
-        if (activeNodeUUID !== this.state.activeNodeUUID) {
-            state.activeNodeUUID = activeNodeUUID;
-        }
-
-        await this.asyncSetState(state);
-
-        // console.log("GRAPH DATA", graphData.nodes);
+        await this.asyncSetState({ graphData });
 
         // document.title = this.title;
-    }
-
-    trackUUID(uuid, graphData) {
-        if (!uuid) {
-            return null;
-        }
-
-        for (let node of graphData.nodes) {
-            if (node.uuid === uuid) {
-                return node.uuid;
-            }
-        }
-
-        const node = ThinkableType.findReferenceUUID(graphData, uuid);
-
-        if (!node) {
-            return null;
-        }
-
-        return node.uuid;
     }
 
     async save() {
@@ -137,29 +125,30 @@ export default class App extends React.Component {
         await this.reloadData();
     }
 
-    get numberOfNodes() {
-        return this.state.graphData.nodes.length;
-    }
-
-    get activeNode() {
-        if (!this.state.activeNodeUUID) return null;
-        return this.thinkabletype.nodeByUUID(this.state.activeNodeUUID);
-    }
-
     async setActiveNodeUUID(activeNodeUUID = null) {
-        activeNodeUUID = this.trackUUID(activeNodeUUID, this.state.graphData);
         await this.asyncSetState({ activeNodeUUID });
+    }
+
+    async setFilter(filter = null) {
+        await this.asyncSetState({ filter });
+        await this.reloadData();
     }
 
     render() {
         return (
             <div className="">
-                <Typer activeNodeUUID={this.state.activeNodeUUID} />
+                {/* <Typer activeNodeUUID={this.trackedActiveNodeUUID} /> */}
 
                 <Interwingle
                     thinkabletype={this.thinkabletype}
                     graphData={this.state.graphData}
                     reloadData={this.reloadData.bind(this)}
+                />
+
+                <Filter
+                    thinkabletype={this.thinkabletype}
+                    setFilter={this.setFilter.bind(this)}
+                    filter={this.state.filter}
                 />
 
                 <Depth
@@ -177,8 +166,10 @@ export default class App extends React.Component {
 
                 <ForceGraph
                     thinkabletype={this.thinkabletype}
-                    activeNodeUUID={this.state.activeNodeUUID}
+                    activeNodeUUID={this.activeNodeUUID}
                     setActiveNodeUUID={this.setActiveNodeUUID.bind(this)}
+                    filter={this.state.filter}
+                    setFilter={this.setFilter.bind(this)}
                     graphData={this.state.graphData}
                     save={this.save.bind(this)}
                 />
