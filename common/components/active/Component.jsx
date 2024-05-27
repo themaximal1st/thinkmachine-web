@@ -25,7 +25,9 @@ export default class Component {
     wrap(div) {
         const obj = new CSS2DObject(div);
         const group = new Three.Group();
-        group.add(this.props.title);
+        if (this.props.title) {
+            group.add(this.props.title);
+        }
         group.add(obj);
 
         const titleSize = Component.calculateTextSize(this.props.title);
@@ -37,7 +39,8 @@ export default class Component {
         return group;
     }
 
-    static calculateTextSize(obj) {
+    static calculateTextSize(obj = null) {
+        if (!obj) return new THREE.Vector3(0, 0, 0);
         const bounds = new THREE.Box3().setFromObject(obj);
         const size = new THREE.Vector3();
         bounds.getSize(size);

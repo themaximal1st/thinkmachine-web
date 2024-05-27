@@ -99,7 +99,7 @@ export default class App extends React.Component {
 
         setTimeout(async () => {
             await this.asyncSetState({
-                activeNodeUUID: this.state.graphData.nodes[0].uuid,
+                activeNodeUUID: this.state.graphData.nodes[4].uuid,
             });
         }, 1000);
     }
@@ -176,6 +176,7 @@ export default class App extends React.Component {
                     filters={this.state.filters}
                     setFilters={this.setFilters.bind(this)}
                     graphData={this.state.graphData}
+                    reloadData={this.reloadData.bind(this)}
                     save={this.save.bind(this)}
                 />
             </div>

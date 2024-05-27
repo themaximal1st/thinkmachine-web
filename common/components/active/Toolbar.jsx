@@ -61,7 +61,6 @@ export default class Toolbar extends Component {
 
     handleButtonClick(e) {
         const mode = e.target.dataset.mode;
-        console.log("CLICK", mode);
         switch (mode) {
             case "Explain":
                 this.props.setActiveMode(mode);
@@ -71,6 +70,8 @@ export default class Toolbar extends Component {
                 break;
             case "Filter":
                 return this.handleClickFilter();
+            case "Add":
+                return this.handleClickAdd();
             default:
                 break;
         }
@@ -87,5 +88,13 @@ export default class Toolbar extends Component {
         }
 
         this.props.setFilters(filters);
+    }
+
+    async handleClickAdd() {
+        const node = this.props.thinkabletype.nodeByUUID(this.props.node.uuid);
+        const addedNode = node.hyperedge.add("");
+        this.props.setActiveMode("Edit");
+        await this.props.setActiveNodeUUID(addedNode.uuid);
+        await this.props.reloadData();
     }
 }

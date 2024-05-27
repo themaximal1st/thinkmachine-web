@@ -94,7 +94,7 @@ export default class ForceGraph3D extends React.Component {
         }
 
         const title = this.nodeThreeTitleObject(node);
-        if (!title) return null;
+        // if (!title) return null;
 
         if (!this.props.activeNodeUUID || this.props.activeNodeUUID !== node.uuid) {
             return title;

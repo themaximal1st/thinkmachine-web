@@ -1,5 +1,4 @@
 import { v4 as uuidv4 } from 'uuid';
-import * as utils from "@lib/utils"
 
 export default class Node {
     constructor(symbol, hyperedge) {
@@ -60,6 +59,14 @@ export default class Node {
     prev() {
         if (this.isFirst) return null;
         return this.hyperedge.nodes[this.index - 1];
+    }
+
+    add(symbol) {
+        return this.hyperedge.addAtIndex(symbol, this.index + 1);
+    }
+
+    insert(symbol) {
+        return this.hyperedge.addAtIndex(symbol, this.index);
     }
 
     updateGraphData(nodes, links) {

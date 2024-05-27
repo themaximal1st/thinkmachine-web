@@ -352,6 +352,62 @@ test("restore node position", () => {
     expect(newData.nodes[0].vz).toBe(100);
 });
 
+test("insert node at index", () => {
+    const thinkabletype = new ThinkableType();
+    const edge = thinkabletype.add(["A", "B", "C"]);
+    expect(edge.symbols).toEqual(["A", "B", "C"]);
+
+    edge.addAtIndex("1", 0);
+    expect(edge.symbols).toEqual(["1", "A", "B", "C"]);
+
+    edge.addAtIndex("2", 2);
+    expect(edge.symbols).toEqual(["1", "A", "2", "B", "C"]);
+
+    edge.addAtIndex("3", 4);
+    expect(edge.symbols).toEqual(["1", "A", "2", "B", "3", "C"]);
+
+    edge.addAtIndex("4", 6);
+    expect(edge.symbols).toEqual(["1", "A", "2", "B", "3", "C", "4"]);
+
+    edge.addAtIndex("5", 10);
+    expect(edge.symbols).toEqual(["1", "A", "2", "B", "3", "C", "4", "5"]);
+});
+
+test("add to node", () => {
+    const thinkabletype = new ThinkableType();
+    const edge = thinkabletype.add(["A", "B", "C"]);
+    const [A, B, C] = edge.nodes;
+    expect(edge.symbols).toEqual(["A", "B", "C"]);
+
+    A.add("1");
+    expect(edge.symbols).toEqual(["A", "1", "B", "C"]);
+
+    B.add("2");
+    expect(edge.symbols).toEqual(["A", "1", "B", "2", "C"]);
+
+    C.add("3");
+    expect(edge.symbols).toEqual(["A", "1", "B", "2", "C", "3"]);
+});
+
+test("insert to node", () => {
+    const thinkabletype = new ThinkableType();
+    const edge = thinkabletype.add(["A", "B", "C"]);
+    const [A, B, C] = edge.nodes;
+    expect(edge.symbols).toEqual(["A", "B", "C"]);
+
+    A.insert("1");
+    expect(edge.symbols).toEqual(["1", "A", "B", "C"]);
+
+    B.insert("2");
+    expect(edge.symbols).toEqual(["1", "A", "2", "B", "C"]);
+
+    C.insert("3");
+    expect(edge.symbols).toEqual(["1", "A", "2", "B", "3", "C"]);
+
+    edge.add("4");
+    expect(edge.symbols).toEqual(["1", "A", "2", "B", "3", "C", "4"]);
+});
+
 /*
 test.skip("huge", async () => {
     const fs = require("fs");
