@@ -8,9 +8,10 @@ import Interwingle from "./Interwingle";
 import Typer from "./Typer";
 import Editor from "./Editor";
 import Depth from "./Depth";
-import Filter from "./Filter";
+import Filters from "./Filters";
 
-// TODO: custom camera position with activeNode
+// TODO: custom camera position with activeNode..if they zoom out it should keep that zoom
+
 // TODO: typer
 //          - add / adder context
 //          - generate many
@@ -45,7 +46,7 @@ export default class App extends React.Component {
         this.state = {
             isLoading: false,
             dataHash: null,
-            filter: [],
+            filters: [],
             activeNodeUUID: null,
             graphData: { nodes: [], links: [] },
         };
@@ -66,8 +67,8 @@ export default class App extends React.Component {
         }
     }
 
-    get filter() {
-        return this.state.filter.map((f) => {
+    get filters() {
+        return this.state.filters.map((f) => {
             if (f.node) {
                 return {
                     node: ThinkableType.trackUUID(f.node, this.state.graphData),
@@ -107,7 +108,10 @@ export default class App extends React.Component {
     }
 
     async reloadData() {
-        const graphData = this.thinkabletype.graphData(this.filter, this.state.graphData);
+        const graphData = this.thinkabletype.graphData(
+            this.filters,
+            this.state.graphData
+        );
 
         await this.asyncSetState({ graphData });
 
@@ -124,8 +128,8 @@ export default class App extends React.Component {
         await this.asyncSetState({ activeNodeUUID });
     }
 
-    async setFilter(filter = null) {
-        await this.asyncSetState({ filter });
+    async setFilters(filters = null) {
+        await this.asyncSetState({ filters });
         await this.reloadData();
     }
 
@@ -140,10 +144,10 @@ export default class App extends React.Component {
                     reloadData={this.reloadData.bind(this)}
                 />
 
-                <Filter
+                <Filters
                     thinkabletype={this.thinkabletype}
-                    setFilter={this.setFilter.bind(this)}
-                    filter={this.state.filter}
+                    setFilters={this.setFilters.bind(this)}
+                    filters={this.state.filters}
                 />
 
                 <Depth
@@ -163,8 +167,8 @@ export default class App extends React.Component {
                     thinkabletype={this.thinkabletype}
                     activeNodeUUID={this.activeNodeUUID}
                     setActiveNodeUUID={this.setActiveNodeUUID.bind(this)}
-                    filter={this.state.filter}
-                    setFilter={this.setFilter.bind(this)}
+                    filters={this.state.filters}
+                    setFilters={this.setFilters.bind(this)}
                     graphData={this.state.graphData}
                     save={this.save.bind(this)}
                 />

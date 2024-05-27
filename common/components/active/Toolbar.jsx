@@ -1,9 +1,20 @@
 import * as Icons from "@assets/Icons";
 import Component from "./Component";
+import * as utils from "@lib/utils";
 
 export default class Toolbar extends Component {
     isMode(mode) {
+        if (mode === "Filter" && this.isBeingFiltered) {
+            return true;
+        }
         return this.props.activeMode === mode;
+    }
+
+    get isBeingFiltered() {
+        const filter = { node: this.props.node.uuid };
+        const filters = this.props.filters || [];
+        const idx = utils.filterIndex(filter, filters);
+        return idx !== -1;
     }
 
     get buttons() {
@@ -44,6 +55,7 @@ export default class Toolbar extends Component {
 
     handleButtonClick(e) {
         const mode = e.target.dataset.mode;
+        console.log("CLICK", mode);
         switch (mode) {
             case "Explain":
                 this.props.setActiveMode(mode);
@@ -59,22 +71,15 @@ export default class Toolbar extends Component {
     }
 
     handleClickFilter() {
-        const f = { node: this.props.node.uuid };
-
-        const filter = this.props.filter || [];
-
-        // cheap and easy avoid duplicates
-        for (const fx of filter) {
-            if (f.node && fx.node === f.node) {
-                return;
-            } else if (f.edge && fx.edge === f.edge) {
-                return;
-            } else if (JSON.stringify(fx) === JSON.stringify(f)) {
-                return;
-            }
+        const filter = { node: this.props.node.uuid };
+        const filters = this.props.filters || [];
+        const idx = utils.filterIndex(filter, filters);
+        if (idx === -1) {
+            filters.push(filter);
+        } else {
+            filters.splice(idx, 1);
         }
 
-        filter.push(f);
-        this.props.setFilter(filter);
+        this.props.setFilters(filters);
     }
 }

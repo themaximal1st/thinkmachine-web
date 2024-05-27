@@ -54,3 +54,18 @@ export function rollingIndex(index, length) {
     return (index + length) % length;
 }
 
+// cheap and easy way to find filter index for dupe check / remove
+export function filterIndex(filter, filters = []) {
+    for (let i = 0; i < filters.length; i++) {
+        const f = filters[i];
+        if (filter.node && filter.node === f.node) {
+            return i;
+        } else if (filter.edge && filter.edge === f.edge) {
+            return i;
+        } else if (JSON.stringify(filter) === JSON.stringify(f)) {
+            return i;
+        }
+    }
+
+    return -1;
+}

@@ -64,6 +64,19 @@ export default class Node {
 
     updateGraphData(nodes, links) {
         const node = this.hypergraph.masqueradeNode(this);
+        const indexes = this.updateIndexes(nodes, links);
+
+        nodes.set(node.id, {
+            id: node.id,
+            uuid: node.uuid,
+            name: node.symbol,
+            color: this.hyperedge.color,
+            ...indexes
+        });
+    }
+
+    updateIndexes(nodes, links) {
+        const node = this.hypergraph.masqueradeNode(this);
 
         const existing = nodes.get(node.id);
 
@@ -83,16 +96,12 @@ export default class Node {
         nodeUUIDs.add(this.uuid);
         nodeUUIDs.add(node.uuid);
 
-        nodes.set(node.id, {
-            id: node.id,
-            uuid: node.uuid,
-            name: node.symbol,
-            color: this.hyperedge.color,
+        return {
             edgeIDs,
             edgeUUIDs,
             nodeIDs,
             nodeUUIDs,
-        });
+        }
     }
 
     context(graphData) {

@@ -16,21 +16,21 @@ export default class Filter extends React.Component {
     }
 
     removeFilter(idx) {
-        const filter = this.props.filter;
-        filter.splice(idx, 1);
-        this.props.setFilter(filter);
+        const filters = this.props.filters;
+        filters.splice(idx, 1);
+        this.props.setFilters(filters);
     }
 
     render() {
-        if (!this.props.filter || this.props.filter.length === 0) return;
+        if (!this.props.filters || this.props.filters.length === 0) return;
 
         return (
             <div id="filters">
                 <div id="filters-content">
                     <div className="text-white shadow-sm text-xs uppercase tracking-wider whitespace-nowrap">
-                        {this.props.filter.length > 1 ? "Filters" : "Filter"}
+                        {this.props.filters.length > 1 ? "Filters" : "Filter"}
                     </div>
-                    {this.props.filter.map((f, i) => {
+                    {this.props.filters.map((f, i) => {
                         return (
                             <button
                                 onClick={() => this.removeFilter(i)}

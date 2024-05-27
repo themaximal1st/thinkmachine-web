@@ -180,6 +180,7 @@ test("two-edge start bridge", () => {
     thinkabletype.add(["B", "C"]);
 
     const data = thinkabletype.graphData();
+
     expect(data.nodes.length).toBe(4);
     expect(data.nodes[0].name).toBe("1");
     expect(data.nodes[1].name).toBe("B");

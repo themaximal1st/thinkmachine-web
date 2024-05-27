@@ -130,6 +130,13 @@ export default class Hyperedge {
         }
     }
 
+    updateIndexes(nodes, links) {
+        if (!this.isFusionBridge) return;
+
+        for (const node of this.nodes) {
+            node.updateIndexes(nodes, links)
+        }
+    }
 
     linkData(parent, child) {
         const edgeIDs = new Set();

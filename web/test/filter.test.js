@@ -693,7 +693,6 @@ test("filter on multiple edges", () => {
 
 test("filter on explicit node", () => {
     const thinkabletype = new ThinkableType({
-        interwingling: ThinkableType.INTERWINGLE.ISOLATED,
         hyperedges: [
             ["A", "B", "C"],
             ["1", "2", "C"],
@@ -708,7 +707,6 @@ test("filter on explicit node", () => {
 
 test("filter on explicit multiple nodes", () => {
     const thinkabletype = new ThinkableType({
-        interwingling: ThinkableType.INTERWINGLE.ISOLATED,
         hyperedges: [
             ["A", "B", "C"],
             ["1", "2", "C"],
@@ -726,7 +724,6 @@ test("filter on explicit multiple nodes", () => {
 
 test("filter on explicit hyperedge", () => {
     const thinkabletype = new ThinkableType({
-        interwingling: ThinkableType.INTERWINGLE.ISOLATED,
         hyperedges: [
             ["A", "B", "C"],
             ["1", "2", "C"],
@@ -737,4 +734,30 @@ test("filter on explicit hyperedge", () => {
     const graphData = thinkabletype.graphData(filter);
     expect(graphData.nodes.length).toBe(3);
     expect(graphData.links.length).toBe(2);
+});
+
+test("filter on 2-node hyperedge", () => {
+    const thinkabletype = new ThinkableType({
+        interwingle: ThinkableType.INTERWINGLE.FUSION,
+        depth: ThinkableType.DEPTH.SHALLOW,
+        hyperedges: [
+            ["A", "B", "C", "D"],
+            ["A", "Z"],
+        ]
+    });
+
+    const filter = [{ node: thinkabletype.hyperedges[0].firstNode.uuid }];
+
+    // has reference but not expanded out yet
+    let graphData = thinkabletype.graphData(filter);
+    expect(graphData.nodes[0].nodeUUIDs.has(thinkabletype.hyperedges[1].firstNode.uuid)).toBeTruthy();
+    expect(graphData.nodes.length).toBe(4);
+    expect(graphData.links.length).toBe(3);
+
+    // now it's expanded out
+    thinkabletype.depth = ThinkableType.DEPTH.DEEP;
+    graphData = thinkabletype.graphData(filter);
+    expect(graphData.nodes[0].nodeUUIDs.has(thinkabletype.hyperedges[1].firstNode.uuid)).toBeTruthy();
+    expect(graphData.nodes.length).toBe(5);
+    expect(graphData.links.length).toBe(4);
 });

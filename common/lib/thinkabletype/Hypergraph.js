@@ -188,8 +188,11 @@ export default class Hypergraph {
         this.updateIndexes();
 
         for (const hyperedge of this.hyperedges) {
-            if (this.isFusion && hyperedge.isFusionBridge) continue;
-            hyperedge.updateGraphData(nodes, links);
+            if (this.isFusion && hyperedge.isFusionBridge) {
+                hyperedge.updateIndexes(nodes, links);
+            } else {
+                hyperedge.updateGraphData(nodes, links);
+            }
         }
 
         if (lastData) {

@@ -1,12 +1,6 @@
 import * as utils from "./utils.js";
 
 export default function filterGraphData({ filter, hyperedges, graphData, depth }) {
-    console.log("FILTER GRAPH DATA");
-    console.log("   FILTER", filter);
-    console.log("   DEPTH", depth);
-    console.log("   HYPEREDGES", hyperedges);
-    console.log("   GRAPH DATA", graphData);
-
     const hyperedgeIDs = hyperedgeIDsForFilter(filter, hyperedges);
     const nodeIDs = new Set();
 
@@ -71,9 +65,6 @@ export default function filterGraphData({ filter, hyperedges, graphData, depth }
 
     if (maxDepth < 0) { maxDepth = 0 }
     if (depth > maxDepth) { depth = maxDepth }
-
-    console.log("   FINAL DEPTH", depth);
-    console.log("   FINAL MAX DEPTH", maxDepth);
 
     return {
         nodes: Array.from(finalNodes.values()),
