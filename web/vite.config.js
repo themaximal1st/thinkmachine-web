@@ -11,6 +11,7 @@ export default defineConfig({
       "@components": path.resolve(__dirname, "src/common/components"),
       "@assets": path.resolve(__dirname, "src/common/assets"),
       "@lib": path.resolve(__dirname, "src/common/lib"),
+      "electron": path.resolve(__dirname, "src/common/lib/shim.js"),
     },
   },
   plugins: [react()],

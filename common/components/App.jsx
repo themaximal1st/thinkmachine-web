@@ -3,7 +3,7 @@ import ThinkableType from "@lib/thinkabletype";
 
 import Settings from "@lib/Settings";
 
-// import API from "@lib/API";
+import Client from "@lib/Client";
 import ForceGraph from "./ForceGraph";
 import Interwingle from "./Interwingle";
 import Typer from "./Typer";

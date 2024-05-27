@@ -1,5 +1,10 @@
-const isElectron = process.versions.hasOwnProperty('electron');
+let isElectron = false;
+if (typeof process !== 'undefined' && process.versions) {
+    isElectron = process.versions.hasOwnProperty('electron');
+}
+
 let handler;
+
 if (isElectron) {
     const electron = await import("electron");
     handler = electron.ipcRenderer.invoke;
@@ -19,6 +24,7 @@ export default class Client {
         return handler(name, ...args);
     }
 }
+
 
 // const api = {
 //     "edition": "electron",
