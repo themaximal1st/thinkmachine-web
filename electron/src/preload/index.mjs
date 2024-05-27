@@ -1,10 +1,12 @@
-import { contextBridge } from "electron";
+import { contextBridge, ipcRenderer } from "electron";
 import Client from "@lib/Client";
-// import { stream } from "./stream.js";
 
+// import { stream } from "./stream.js";
 // ipcRenderer.stream = stream;
 
+
 const client = new Client();
+client.handler = ipcRenderer.invoke;
 
 try {
     contextBridge.exposeInMainWorld("api", client.api);

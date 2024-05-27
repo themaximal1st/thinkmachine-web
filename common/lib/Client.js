@@ -1,34 +1,23 @@
-let isElectron = false;
-if (typeof process !== 'undefined' && process.versions) {
-    isElectron = process.versions.hasOwnProperty('electron');
-}
-
-let handler;
-
-if (isElectron) {
-    const electron = await import("electron");
-    handler = electron.ipcRenderer.invoke;
-}
 
 export default class Client {
 
+    handler(name, ...args) {
+        throw new Error("Not implemented");
+    }
+
+    get edition() {
+        if (typeof process !== 'undefined' && process.versions && process.versions.hasOwnProperty('electron')) {
+            return "electron";
+        }
+        return "web"
+    }
+
     get api() {
         return {
+            edition: this.edition,
             media: (query) => {
-                return handler("media", query);
+                return this.handler("media", query);
             }
         }
     }
-
-    handle(name, ...args) {
-        return handler(name, ...args);
-    }
 }
-
-
-// const api = {
-//     "edition": "electron",
-//     "media": (query) => {
-//         return ipcRenderer.invoke("media", query);
-//     }
-// }
