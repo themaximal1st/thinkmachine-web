@@ -1,3 +1,40 @@
+import API from "../common/lib/API.js"
+
+export default class WebBridge {
+    constructor(app) {
+        this.app = app;
+        this.api = new API();
+    }
+
+    static async initialize(app) {
+        const bridge = new WebBridge(app);
+        await bridge.load();
+        return bridge;
+    }
+
+    async load() {
+        for (const method of this.api.methods) {
+            this.post(`/api/${method}`, async ({ req, res }) => {
+                return this.api[method](...req.body.args);
+            });
+        }
+    }
+
+    post(route, handler, options = {}) {
+        this.app.post(route, async (req, res) => {
+            try {
+                // const event = route;
+                const data = await handler({ req, res });
+
+                if (data && data.send) { return data }
+                return res.json({ ok: true, data });
+            } catch (e) {
+                return res.json({ ok: false, error: e.message });
+            }
+        });
+    }
+}
+/*
 import { v4 as uuid } from "uuid";
 
 import * as middleware from "./middleware.js"
@@ -232,3 +269,4 @@ export default class WebBridge {
         });
     }
 }
+*/

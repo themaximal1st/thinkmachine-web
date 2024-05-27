@@ -1,8 +1,9 @@
 
 export default class Client {
 
-    handler(name, ...args) {
-        throw new Error("Not implemented");
+    async handler(name, ...args) {
+        console.log("HANDLING", name, args);
+        return await this.send(name, { args });
     }
 
     get edition() {
@@ -15,9 +16,39 @@ export default class Client {
     get api() {
         return {
             edition: this.edition,
-            media: (query) => {
-                return this.handler("media", query);
+            media: async (query) => {
+                return await this.handler("media", query);
             }
         }
+    }
+
+    async send(path, options = {}) {
+        const response = await fetch(`/api/${path}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            // signal: controller.signal,
+            credentials: "include",
+            body: JSON.stringify(options),
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        try {
+            const data = await response.json();
+            if (!data.ok) throw new Error(`invalid response`);
+            if (data.error) throw new Error(data.error);
+            return data.data;
+        } catch (e) {
+            console.log(e);
+            throw new Error(`JSON error! ${e.message}`)
+        }
+    }
+
+    static setup() {
+        if (window.api) return;
+        const client = new Client();
+        window.api = client.api;
     }
 }

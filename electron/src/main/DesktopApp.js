@@ -33,15 +33,20 @@ export default class DesktopApp {
         // this.bridge = new ElectronBridge(this);
         // await this.bridge.load();
 
-        const proto = Object.getPrototypeOf(this.api);
-        for (const method of Object.getOwnPropertyNames(proto)) {
-            if (method === "constructor") continue;
-            if (typeof this.api[method] !== "function") continue;
+        for (const method of this.api.methods) {
             ipcMain.handle(method, (...args) => {
                 return this.api[method](...args.slice(1));
             });
-
         }
+        // const proto = Object.getPrototypeOf(this.api);
+        // for (const method of Object.getOwnPropertyNames(proto)) {
+        //     if (method === "constructor") continue;
+        //     if (typeof this.api[method] !== "function") continue;
+        //     ipcMain.handle(method, (...args) => {
+        //         return this.api[method](...args.slice(1));
+        //     });
+
+        // }
 
         const menu = Menu.getApplicationMenu();
         if (!menu) return;
