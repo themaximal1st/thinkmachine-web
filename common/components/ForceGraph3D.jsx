@@ -15,6 +15,7 @@ export default class ForceGraph3D extends React.Component {
             activeMode: "Explain",
             media: new Map(),
             explains: new Map(),
+            chats: new Map(),
         };
     }
 
@@ -40,6 +41,12 @@ export default class ForceGraph3D extends React.Component {
         const explains = this.state.explains;
         explains.set(id, explain);
         this.setState({ explains });
+    }
+
+    setChat(id, chat = "") {
+        const chats = this.state.chats;
+        chats.set(id, chat);
+        this.setState({ chats });
     }
 
     get clonedGraphData() {
@@ -123,6 +130,7 @@ export default class ForceGraph3D extends React.Component {
             setActiveMode: this.setActiveMode.bind(this),
             setMedia: this.setMedia.bind(this),
             setExplain: this.setExplain.bind(this),
+            setChat: this.setChat.bind(this),
         });
 
         return activeNodeUI.render();

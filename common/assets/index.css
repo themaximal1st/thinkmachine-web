@@ -170,16 +170,16 @@ body {
 }
 
 #context-prev {
-    @apply w-48 absolute -left-48 top-0 bottom-0 flex flex-col justify-between items-end py-2 text-sm;
+    @apply w-48 absolute -left-48 top-0 bottom-0 flex flex-col justify-between items-end py-2 text-sm pointer-events-none;
 }
 
 #context-next {
-    @apply w-48 absolute -right-48 top-0 bottom-0 flex flex-col justify-between items-start text-sm py-2;
+    @apply w-48 absolute -right-48 top-0 bottom-0 flex flex-col justify-between items-start text-sm py-2 pointer-events-none;
 }
 
 #context-prev button,
 #context-next button {
-    @apply flex items-center gap-1 text-gray-700 hover:text-white cursor-pointer py-1;
+    @apply flex items-center gap-1 text-gray-700 hover:text-white cursor-pointer py-1 pointer-events-auto;
 }
 
 #active-node-toolbar {
@@ -200,11 +200,11 @@ body {
 }
 
 #chat {
-    @apply -m-3 p-3 mt-2 bg-gray-1000/50 rounded-b-xl;
+    @apply -m-3 p-3 mt-[2px] bg-gray-1000/50 rounded-b-xl;
 }
 
 #chat input {
-    @apply bg-transparent w-full text-white focus:outline-none;
+    @apply bg-transparent w-full text-white focus:outline-none text-sm;
 }
 
 #interwingle {

@@ -3,6 +3,7 @@ dotenv.load();
 
 import Media from "./Media.js";
 import Explain from "./Explain.js"
+import Chat from "./Chat.js"
 
 export default class API {
     async media(query) {
@@ -11,6 +12,12 @@ export default class API {
 
     async *explain(name, hyperedges, options) {
         for await (const msg of Explain(name, hyperedges, options)) {
+            yield msg;
+        }
+    }
+
+    async *chat(messages, hyperedges, activeSymbol = null, options = {}) {
+        for await (const msg of Chat(messages, hyperedges, activeSymbol, options)) {
             yield msg;
         }
     }

@@ -12,6 +12,7 @@ import Depth from "./Depth";
 import Filters from "./Filters";
 
 // TODO: custom camera position with activeNode..if they zoom out it should keep that zoom
+// TODO: just 2 nodes doesn't show up for some reason (fusion bridge)
 
 // TODO: typer
 //          - add / adder context
@@ -19,9 +20,7 @@ import Filters from "./Filters";
 //          - chat
 
 // TODO: toolbar
-//          - explain / chat
 //          - generate one
-//          - filter toggle
 
 // TODO: need new adder interface / generate....
 // TODO: start on UI — what is typer, what is overlay, what is new UI?
