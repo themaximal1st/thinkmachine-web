@@ -46,7 +46,7 @@ export default class EditPanel extends Component {
         );
     }
 
-    events(div) {
+    load(div) {
         div.querySelector("#edit form").addEventListener("submit", (e) => {
             e.preventDefault();
             const input = e.target.querySelector("input");

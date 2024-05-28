@@ -31,7 +31,7 @@ export default class ExplainPanel extends Component {
         );
     }
 
-    events(div) {
+    load(div) {
         console.log("RUNNING EXPLAIN");
     }
 }

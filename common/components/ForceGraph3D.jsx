@@ -29,7 +29,9 @@ export default class ForceGraph3D extends React.Component {
         this.setState({ activeMode });
     }
 
-    setMedia(media) {
+    setMedia(id, m = []) {
+        const media = this.state.media;
+        media.set(id, m);
         this.setState({ media });
     }
 

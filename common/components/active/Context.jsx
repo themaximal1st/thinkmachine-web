@@ -32,7 +32,7 @@ export default class Context extends Component {
         );
     }
 
-    events(div) {
+    load(div) {
         const context = div.querySelector("#context");
 
         const buttons = context.querySelectorAll("button");

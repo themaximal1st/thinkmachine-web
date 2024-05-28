@@ -43,12 +43,12 @@ export default class ActiveNode extends Component {
         );
     }
 
-    events(div) {
-        this.toolbar.events(div);
+    load(div) {
+        this.toolbar.load(div);
         if (this.panel) {
-            this.panel.events(div);
+            this.panel.load(div);
         }
-        this.context.events(div);
+        this.context.load(div);
 
         div.querySelector("#active-node-close").addEventListener("click", () => {
             this.props.setActiveNodeUUID(null);

@@ -10,7 +10,7 @@ export default class Component {
     render() {
         const html = this.code();
         const div = Component.createElement(html);
-        this.events(div);
+        this.load(div);
         return this.wrap(div);
     }
 
@@ -18,7 +18,7 @@ export default class Component {
         throw new Error("code() not implemented");
     }
 
-    events() {
+    load() {
         return;
     }
 

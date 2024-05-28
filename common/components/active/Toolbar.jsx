@@ -51,7 +51,7 @@ export default class Toolbar extends Component {
         );
     }
 
-    events(div) {
+    load(div) {
         const buttons = div.querySelectorAll("#active-node-toolbar button");
         for (let button of buttons) {
             button.addEventListener("click", this.handleButtonClick.bind(this));

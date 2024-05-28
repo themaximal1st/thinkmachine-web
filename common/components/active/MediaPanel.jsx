@@ -2,8 +2,9 @@ import Component from "./Component";
 
 export default class MediaPanel extends Component {
     code() {
-        console.log(this.props.media);
         const media = this.props.media.get(this.props.node.uuid) || [];
+        if (media.length === 0) return;
+
         return (
             <div>
                 <div className="max-h-36 overflow-x-scroll">
@@ -29,17 +30,16 @@ export default class MediaPanel extends Component {
         );
     }
 
-    events(div) {
-        let media = this.props.media.get(this.props.node.uuid);
-        if (media === undefined) {
-            const node = this.props.thinkabletype.nodeByUUID(this.props.node.uuid);
-            console.log("MEDIA FETCH", node.symbol);
+    load(div) {
+        const node = this.props.thinkabletype.nodeByUUID(this.props.node.uuid);
+        let m = this.props.media.get(node.uuid);
+
+        if (m === undefined) {
+            this.props.setMedia(node.uuid, []); // prevent stampeded
+            console.log("FETCH MEDIA");
             window.api.media(node.symbol).then((m) => {
-                this.props.media.set(node.uuid, m);
-                this.props.setMedia(this.props.media);
+                this.props.setMedia(node.uuid, m);
             });
         }
-        // if (this.props.media.size === 0) {
-        // }
     }
 }
