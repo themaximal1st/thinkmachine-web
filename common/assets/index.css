@@ -170,16 +170,16 @@ body {
 }
 
 #context-prev {
-    @apply absolute w-10 -ml-10 top-0 bottom-0 flex flex-col justify-between py-2 overflow-y-scroll;
+    @apply w-48 absolute -left-48 top-0 bottom-0 flex flex-col justify-between items-end py-2 text-sm;
 }
 
 #context-next {
-    @apply absolute w-10 -mr-10 pl-2 right-0 top-0 bottom-0 flex flex-col justify-between py-2 overflow-y-scroll;
+    @apply w-48 absolute -right-48 top-0 bottom-0 flex flex-col justify-between items-start text-sm py-2;
 }
 
 #context-prev button,
 #context-next button {
-    @apply py-1 text-gray-700 hover:text-white cursor-pointer transition-all flex items-center;
+    @apply flex items-center gap-1 text-gray-700 hover:text-white cursor-pointer py-1;
 }
 
 #active-node-toolbar {
@@ -352,4 +352,16 @@ body {
 }
 #edit input {
     @apply text-white w-full py-1 rounded-xl outline-none;
+}
+
+.markdown {
+    @apply flex flex-col gap-2 text-sm;
+
+    ol {
+        @apply list-decimal pl-4 flex flex-col gap-1;
+    }
+
+    ul {
+        @apply list-disc pl-4 flex flex-col gap-1;
+    }
 }

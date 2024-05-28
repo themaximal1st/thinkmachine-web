@@ -2,18 +2,17 @@ import dotenv from "dotenv-extended";
 dotenv.load();
 
 import Media from "./Media.js";
+import Explain from "./Explain.js"
 
 export default class API {
     async media(query) {
         return await Media(query, process.env.GOOGLE_SEARCH_ENGINE_ID, process.env.GOOGLE_SEARCH_API_KEY)
     }
 
-    async *explain(name) {
-        console.log("EXPLAINING", name);
-        yield "BLAMO1"
-        yield "BLAMO2"
-        yield "BLAMO3"
-        yield "BLAMO4"
+    async *explain(name, hyperedges, options) {
+        for await (const msg of Explain(name, hyperedges, options)) {
+            yield msg;
+        }
     }
 
     get methods() {
