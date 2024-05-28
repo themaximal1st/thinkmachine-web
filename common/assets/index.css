@@ -364,4 +364,8 @@ body {
     ul {
         @apply list-disc pl-4 flex flex-col gap-1;
     }
+
+    a strong {
+        @apply pointer-events-none;
+    }
 }

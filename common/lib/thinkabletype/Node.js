@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
+import slugify from "slugify";
 
 export default class Node {
     constructor(symbol, hyperedge) {
@@ -67,6 +68,18 @@ export default class Node {
 
     insert(symbol) {
         return this.hyperedge.addAtIndex(symbol, this.index);
+    }
+
+    get slugs() {
+        return [
+            slugify(this.symbol.toLowerCase()),
+            slugify(this.symbol.toLowerCase(), "_"),
+        ];
+    }
+
+    matches(input) {
+        if (!input || !this.symbol) return false;
+        return this.slugs.includes(slugify(input.toLowerCase()));
     }
 
     updateGraphData(nodes, links) {

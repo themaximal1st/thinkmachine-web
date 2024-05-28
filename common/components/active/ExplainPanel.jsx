@@ -23,6 +23,8 @@ export default class ExplainPanel extends Component {
     linkContent(content, color) {
         if (!content || content.length === 0) return "";
 
+        console.log(content);
+
         return (
             <Markdown
                 components={{
@@ -62,19 +64,15 @@ export default class ExplainPanel extends Component {
         if (!node.name) return;
 
         this.props.setExplain(node.uuid, ""); // prevent stampeded
-        console.log("FETCH EXPLAIN");
 
         const hyperedges = this.props.thinkabletype.hyperedges.map(
             (edge) => edge.symbols
         );
 
-        console.log("HYPEREDGES", hyperedges);
-
         const options = {
             model: "gpt-4o",
         };
 
-        console.log("OPTIONS", node);
         const stream = await window.api.explain(node.name, hyperedges, options);
 
         explain = "";
@@ -85,6 +83,12 @@ export default class ExplainPanel extends Component {
     }
 
     handleClickSlug(slug) {
-        console.log("CLICK SLUG", slug);
+        for (const node of this.props.thinkabletype.nodes) {
+            if (node.matches(slug) && node.uuid !== this.props.node.uuid) {
+                this.props.setActiveNodeUUID(node.uuid);
+                this.props.reloadData();
+                return;
+            }
+        }
     }
 }

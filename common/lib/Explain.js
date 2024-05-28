@@ -1,8 +1,6 @@
 import LLM from "@themaximalist/llm.js";
 
 export default async function* Explain(user_prompt, hyperedges, options = {}) {
-    console.log("EXPLAIN", user_prompt, hyperedges, options);
-
     if (typeof options.temperature === "undefined") { options.temperature = 1 }
     options.stream = true;
 
@@ -14,6 +12,8 @@ Your job is to create a short, concise, accurate summary of the term using the k
 If relevant, use other terms from the knowledge graph.
 Whenever you use a term in the knowledge graph—link it using Markdown.
 For the "URL", create a clean slug from the symbol. Just the symbol, no other URL stuff.
+Do not leave spaces in the URL. Use hyphens or underscores.
+Do not bold or italic links.
 
 Here is the knowledge graph. It's based on a hypergraph, that is a graph with hyperedges, which are relationships between terms.
 The hyperedges are represented as CSV rows, where each row is a hyperedge, and each cell is a term in the hyperedge.
@@ -39,26 +39,3 @@ Just label the thing directly.
         yield message;
     }
 }
-
-/*
-import LLM from "@themaximalist/llm.js"
-
-const TEMPERATURE = 1;
-
-// AI generator for ThinkableType
-export default async function explain(user_prompt, hyperedges, options = {}) {
-    if (typeof options.service === "undefined" && typeof options.model === "undefined") {
-        options.service = LLM.LLAMAFILE;
-        options.model = LLM.modelForService(options.service);
-    }
-
-    if (typeof options.temperature === "undefined") { options.temperature = TEMPERATURE }
-
-    const prompt = `
-    `.trim();
-
-    options.stream = true;
-    return await LLM(prompt, options);
-}
-
-*/

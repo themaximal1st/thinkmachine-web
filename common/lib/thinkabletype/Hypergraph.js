@@ -55,14 +55,17 @@ export default class Hypergraph {
     get isBridge() { return this.interwingle >= Hypergraph.INTERWINGLE.BRIDGE }
     get onUpdate() { return this.options.onUpdate || function () { } }
     set onUpdate(value) { this.options.onUpdate = value }
-    get symbols() {
-        const symbols = new Set();
+    get nodes() {
+        const nodes = [];
         for (const hyperedge of this.hyperedges) {
-            for (const symbol of hyperedge.symbols) {
-                symbols.add(symbol);
+            for (const node of hyperedge.nodes) {
+                nodes.push(node);
             }
         }
-        return Array.from(symbols);
+        return nodes;
+    }
+    get symbols() {
+        return Array.from(new Set(this.nodes.map(node => node.symbol)));
     }
     get hash() {
         return utils.hash(this.export());
