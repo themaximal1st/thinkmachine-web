@@ -31,5 +31,7 @@ export default class ExplainPanel extends Component {
         );
     }
 
-    events(div) {}
+    events(div) {
+        console.log("RUNNING EXPLAIN");
+    }
 }

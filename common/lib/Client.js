@@ -1,5 +1,3 @@
-import API from "./API.js"
-
 export default class Client {
 
     async handler(name, ...args) {
@@ -19,7 +17,9 @@ export default class Client {
             edition: this.edition,
         };
 
-        for (const method of new API().methods) {
+        const methods = ["media"];
+
+        for (const method of methods) {
             api[method] = async (...args) => {
                 return await this.handler(method, ...args);
             };
@@ -45,6 +45,7 @@ export default class Client {
 
         try {
             const data = await response.json();
+            console.log(data);
             if (!data.ok) throw new Error(`invalid response`);
             if (data.error) throw new Error(data.error);
             return data.data;

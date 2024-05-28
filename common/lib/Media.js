@@ -1,9 +1,6 @@
 import fetch from "node-fetch"
 
-export async function getTopImages(query, searchEngineId, apiKey, numResults = 8) {
-
-    console.log(process.env);
-
+export default async function Media(query, searchEngineId, apiKey, numResults = 10) {
     const url = `https://www.googleapis.com/customsearch/v1?q=${encodeURIComponent(query)}&cx=${searchEngineId}&key=${apiKey}&searchType=image&num=${numResults}`;
 
     try {

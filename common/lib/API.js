@@ -1,6 +1,11 @@
+import dotenv from "dotenv-extended";
+dotenv.load();
+
+import Media from "./Media.js";
+
 export default class API {
-    media(query) {
-        return ["meta", "data", "api", query];
+    async media(query) {
+        return await Media(query, process.env.GOOGLE_SEARCH_ENGINE_ID, process.env.GOOGLE_SEARCH_API_KEY)
     }
 
     funky(name, here, and, more) {

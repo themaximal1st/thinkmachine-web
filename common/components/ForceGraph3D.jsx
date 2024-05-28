@@ -12,7 +12,8 @@ export default class ForceGraph3D extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            activeMode: "Explain",
+            activeMode: "Media",
+            media: new Map(),
         };
     }
 
@@ -26,6 +27,10 @@ export default class ForceGraph3D extends React.Component {
 
     setActiveMode(activeMode) {
         this.setState({ activeMode });
+    }
+
+    setMedia(media) {
+        this.setState({ media });
     }
 
     get clonedGraphData() {
@@ -108,6 +113,7 @@ export default class ForceGraph3D extends React.Component {
             node,
             title,
             setActiveMode: this.setActiveMode.bind(this),
+            setMedia: this.setMedia.bind(this),
         });
 
         return activeNodeUI.render();

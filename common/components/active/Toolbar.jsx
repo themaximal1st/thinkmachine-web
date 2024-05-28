@@ -20,7 +20,7 @@ export default class Toolbar extends Component {
     get buttons() {
         return [
             ["Explain", Icons.ChatIcon(5)],
-            ["Images", Icons.ScreenshotIcon(5)],
+            ["Media", Icons.ScreenshotIcon(5)],
             ["Filter", Icons.SearchIcon(5)],
             ["Generate", Icons.GenerateIcon(5)],
             ["-"],
@@ -62,9 +62,8 @@ export default class Toolbar extends Component {
         const mode = e.target.dataset.mode;
         switch (mode) {
             case "Explain":
-                this.props.setActiveMode(mode);
-                break;
             case "Edit":
+            case "Media":
                 this.props.setActiveMode(mode);
                 break;
             case "Filter":

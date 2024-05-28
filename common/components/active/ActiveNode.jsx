@@ -1,6 +1,7 @@
 import Component from "./Component";
 import ExplainPanel from "./ExplainPanel";
 import EditPanel from "./EditPanel";
+import MediaPanel from "./MediaPanel";
 import Toolbar from "./Toolbar";
 import Context from "./Context";
 import * as Icons from "@assets/Icons";
@@ -14,6 +15,7 @@ export default class ActiveNode extends Component {
 
         this.panels = {
             Explain: new ExplainPanel(props),
+            Media: new MediaPanel(props),
             Edit: new EditPanel(props),
         };
     }
