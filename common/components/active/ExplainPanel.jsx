@@ -2,24 +2,10 @@ import Component from "./Component";
 
 export default class ExplainPanel extends Component {
     code() {
+        const explain = this.props.explains.get(this.props.node.uuid) || "";
         return (
             <div>
-                <div className="max-h-36 overflow-y-scroll">
-                    Explain goes here and will be a chatbot that will answer questions. It
-                    will be able to explain the current node, the current graph, and the
-                    current thinkabletype.
-                    <br />
-                    And it will be able to answer questions about the current node, the
-                    current graph, and the current thinkabletype.
-                    <br />
-                    Then it will be able to answer questions about the current node, the
-                    current graph, and the current thinkabletype.
-                    <br />
-                    So it will be able to answer questions about the current node, the
-                    current graph, and the current thinkabletype.
-                    <br />
-                    Which is why it is called the Explain Panel.
-                </div>
+                <div className="max-h-36 overflow-y-scroll">{explain}</div>
                 <form id="chat">
                     <input
                         type="text"
@@ -31,7 +17,19 @@ export default class ExplainPanel extends Component {
         );
     }
 
-    load(div) {
-        console.log("RUNNING EXPLAIN");
+    async load(div) {
+        const node = this.props.thinkabletype.nodeByUUID(this.props.node.uuid);
+        let explain = this.props.explains.get(node.uuid);
+
+        if (explain === undefined) {
+            this.props.setExplain(node.uuid, ""); // prevent stampeded
+            console.log("FETCH EXPLAIN");
+            const stream = await window.api.explain(node.symbol);
+            explain = "";
+            for await (const message of stream) {
+                explain += message;
+                this.props.setExplain(node.uuid, explain);
+            }
+        }
     }
 }

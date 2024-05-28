@@ -23,16 +23,30 @@ export default class WebBridge {
     post(route, handler) {
         this.app.post(route, async (req, res) => {
             try {
-                // const event = route;
-                const data = await handler({ req, res });
+                if (req.body.stream) {
+                    res.setHeader('Content-Type', 'text/html; charset=utf-8');
+                    res.setHeader('Transfer-Encoding', 'chunked');
+                    res.setHeader('Cache-Control', 'no-cache');
+                    res.setHeader('X-Accel-Buffering', 'no');
 
-                if (data && data.send) { return data }
-                return res.json({ ok: true, data });
+                    const data = await handler({ req, res });
+                    for await (const message of data) {
+                        res.write("data: " + JSON.stringify(message) + "\n\n");
+                    }
+
+                    res.end();
+                } else {
+                    const data = await handler({ req, res });
+
+                    if (data && data.send) { return data }
+                    return res.json({ ok: true, data });
+                }
             } catch (e) {
                 return res.json({ ok: false, error: e.message });
             }
         });
     }
+
 }
 
 /*

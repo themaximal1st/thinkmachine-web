@@ -8,14 +8,12 @@ export default class API {
         return await Media(query, process.env.GOOGLE_SEARCH_ENGINE_ID, process.env.GOOGLE_SEARCH_API_KEY)
     }
 
-    funky(name, here, and, more) {
-        return {
-            "funky": "funky",
-            name,
-            here,
-            and,
-            more
-        }
+    async *explain(name) {
+        console.log("EXPLAINING", name);
+        yield "BLAMO1"
+        yield "BLAMO2"
+        yield "BLAMO3"
+        yield "BLAMO4"
     }
 
     get methods() {
@@ -23,7 +21,7 @@ export default class API {
         return Object.getOwnPropertyNames(proto).filter((method) => {
             if (method === "constructor") return false;
             if (method === "methods") return false;
-            if (typeof this[method] !== "function") return false;
+            if (typeof this[method] !== "function" && typeof this[method] !== "async function") return false;
             return true;
         });
     }
