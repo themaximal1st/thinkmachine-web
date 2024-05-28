@@ -13,6 +13,8 @@ import Filters from "./Filters";
 
 // TODO: custom camera position with activeNode..if they zoom out it should keep that zoom
 // TODO: just 2 nodes doesn't show up for some reason (fusion bridge)
+// TODO: we could technically highlight links that won't be found, and attempt to generate them..could be cool
+// TODO: delete!
 
 // TODO: typer
 //          - add / adder context
@@ -38,6 +40,7 @@ export default class App extends React.Component {
         super(...arguments);
         const uuid = "current-uuid";
         this.settings = new Settings(uuid);
+        window.settings = this.settings;
         this.thinkabletype = new ThinkableType({
             interwingle: Settings.interwingle,
             onUpdate: this.onDataUpdate.bind(this),
