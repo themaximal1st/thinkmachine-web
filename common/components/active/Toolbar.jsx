@@ -71,6 +71,8 @@ export default class Toolbar extends Component {
             default:
                 break;
         }
+
+        this.props.toggleConnectMode(false);
     }
 
     handleClickFilter() {

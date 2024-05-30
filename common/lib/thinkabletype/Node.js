@@ -165,5 +165,14 @@ export default class Node {
 
         return context;
     }
+
+    connect(node) {
+        const symbols = [
+            ...this.hyperedge.symbols.slice(0, this.index + 1),
+            node.symbol,
+        ]
+
+        return this.hypergraph.add(symbols);
+    }
 }
 

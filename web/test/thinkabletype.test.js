@@ -408,6 +408,75 @@ test("insert to node", () => {
     expect(edge.symbols).toEqual(["1", "A", "2", "B", "3", "C", "4"]);
 });
 
+test("connect nodes start", () => {
+    const thinkabletype = new ThinkableType({
+        interwingle: ThinkableType.INTERWINGLE.FUSION
+    });
+
+    const edge1 = thinkabletype.add(["A", "B", "C"]);
+    const edge2 = thinkabletype.add(["1", "2", "3"]);
+
+    const A = edge1.firstNode;
+    const One = edge2.firstNode;
+
+    expect(thinkabletype.hyperedges.length).toBe(2);
+    A.connect(One);
+    expect(thinkabletype.hyperedges.length).toBe(3);
+    expect(thinkabletype.hyperedges[2].symbols).toEqual(["A", "1"]);
+});
+
+test("connect nodes middle", () => {
+    const thinkabletype = new ThinkableType({
+        interwingle: ThinkableType.INTERWINGLE.FUSION
+    });
+
+    const edge1 = thinkabletype.add(["A", "B", "C"]);
+    const edge2 = thinkabletype.add(["1", "2", "3"]);
+
+    const B = edge1.secondNode
+    const Two = edge2.secondNode
+
+    expect(thinkabletype.hyperedges.length).toBe(2);
+    B.connect(Two);
+    expect(thinkabletype.hyperedges.length).toBe(3);
+    expect(thinkabletype.hyperedges[2].symbols).toEqual(["A", "B", "2"]);
+});
+
+test("connect nodes end", () => {
+    const thinkabletype = new ThinkableType({
+        interwingle: ThinkableType.INTERWINGLE.FUSION
+    });
+
+    const edge1 = thinkabletype.add(["A", "B", "C"]);
+    const edge2 = thinkabletype.add(["1", "2", "3"]);
+
+    const C = edge1.lastNode;
+    const Three = edge2.lastNode;
+
+    expect(thinkabletype.hyperedges.length).toBe(2);
+    C.connect(Three);
+    expect(thinkabletype.hyperedges.length).toBe(3);
+    expect(thinkabletype.hyperedges[2].symbols).toEqual(["A", "B", "C", "3"]);
+});
+
+test("connect nodes partial", () => {
+    const thinkabletype = new ThinkableType({
+        interwingle: ThinkableType.INTERWINGLE.FUSION
+    });
+
+    const edge1 = thinkabletype.add(["A", "B", "C"]);
+    const edge2 = thinkabletype.add(["1", "2", "3"]);
+
+    const B = edge1.secondNode;
+    const One = edge2.firstNode;
+
+    expect(thinkabletype.hyperedges.length).toBe(2);
+    B.connect(One);
+    expect(thinkabletype.hyperedges.length).toBe(3);
+    expect(thinkabletype.hyperedges[2].symbols).toEqual(["A", "B", "1"]);
+});
+
+
 /*
 test.skip("huge", async () => {
     const fs = require("fs");

@@ -5,40 +5,14 @@ import Settings from "@lib/Settings";
 import Camera from "@lib/Camera";
 import * as utils from "@lib/utils";
 
-const defaultProps = {
-    backgroundColor: "#000000", // light mode vs dark mode
-    showNavInfo: false,
-    cooldownTicks: 100,
-    linkDirectionalArrowRelPos: 1,
-    linkCurvature: 0.05,
-    linkCurveRotation: 0.5,
-    linkWidth: 2,
-    linkDirectionalParticleColor: (link) => link.color || "#ffffff",
-    linkDirectionalParticleWidth: 2,
-    linkDirectionalParticleSpeed: 0.0125,
-    nodeLabel: (node) => "",
-};
-
-const defaultForces = {
-    link: {
-        distance: 65,
-    },
-    charge: {
-        strength: -130,
-        distanceMax: 300,
-        distanceMin: 10,
-    },
-    center: {
-        strength: 1,
-    },
-};
-
 export default class ForceGraph extends React.Component {
     constructor() {
         super(...arguments);
         this.graphRef = React.createRef();
         this.camera = new Camera(this.graphRef);
         this.state = {
+            connectMode: false,
+            activeMode: "Edit",
             hideLabels: Settings.get("hideLabels", false),
             graphType: Settings.graphType,
             width: window.innerWidth,
@@ -87,6 +61,15 @@ export default class ForceGraph extends React.Component {
         }
     }
 
+    setActiveMode(activeMode) {
+        this.setState({ activeMode });
+    }
+
+    toggleConnectMode(connectMode = undefined) {
+        connectMode = connectMode === undefined ? !this.state.connectMode : connectMode;
+        this.setState({ connectMode });
+    }
+
     render() {
         const props = {
             ...defaultProps,
@@ -95,17 +78,20 @@ export default class ForceGraph extends React.Component {
             graphRef: this.graphRef,
             linkColor: this.linkColor.bind(this),
             linkDirectionalArrowLength: this.linkDirectionalArrowLength.bind(this),
+            setActiveMode: this.setActiveMode.bind(this),
+            toggleConnectMode: this.toggleConnectMode.bind(this),
             onNodeClick: this.handleNodeClick.bind(this),
             onEngineStop: this.handleEngineStop.bind(this),
         };
 
-        // console.log("RENDER FORCE GRAPH", this.props.graphData);
-
-        if (this.is2D) {
-            return <ForceGraph2D {...props} />;
-        } else if (this.is3D) {
-            return <ForceGraph3D {...props} />;
-        }
+        return (
+            <div
+                id="force-graph"
+                className={this.state.connectMode ? "cursor-crosshair" : ""}>
+                {this.is2D && <ForceGraph2D {...props} />}
+                {this.is3D && <ForceGraph3D {...props} />}
+            </div>
+        );
     }
 
     linkColor(link) {
@@ -127,6 +113,21 @@ export default class ForceGraph extends React.Component {
     handleNodeClick(node, e) {
         // don't allow clicking through active node UI
         if (this.props.activeNodeUUID && e.srcElement.tagName !== "CANVAS") {
+            return;
+        }
+
+        if (this.state.connectMode) {
+            this.setState({ connectMode: false });
+
+            if (this.props.activeNodeUUID === node.uuid) {
+                return;
+            }
+
+            const fromNode = this.props.thinkabletype.nodeByUUID(
+                this.props.activeNodeUUID
+            );
+            const toNode = this.props.thinkabletype.nodeByUUID(node.uuid);
+            fromNode.connect(toNode);
             return;
         }
 
@@ -185,3 +186,31 @@ export default class ForceGraph extends React.Component {
         }
     }
 }
+
+const defaultProps = {
+    backgroundColor: "#000000", // light mode vs dark mode
+    showNavInfo: false,
+    cooldownTicks: 100,
+    linkDirectionalArrowRelPos: 1,
+    linkCurvature: 0.05,
+    linkCurveRotation: 0.5,
+    linkWidth: 2,
+    linkDirectionalParticleColor: (link) => link.color || "#ffffff",
+    linkDirectionalParticleWidth: 2,
+    linkDirectionalParticleSpeed: 0.0125,
+    nodeLabel: (node) => "",
+};
+
+const defaultForces = {
+    link: {
+        distance: 65,
+    },
+    charge: {
+        strength: -130,
+        distanceMax: 300,
+        distanceMin: 10,
+    },
+    center: {
+        strength: 1,
+    },
+};

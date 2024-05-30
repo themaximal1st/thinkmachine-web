@@ -189,6 +189,7 @@ body {
 #active-node-toolbar button {
     @apply flex gap-[6px] uppercase font-medium tracking-wider text-xs items-center px-2 py-2 rounded-xl transition-all outline-none;
     @apply active:bg-gray-800/30 text-gray-300 active:text-gray-100;
+    @apply hover:text-white;
 
     &.active {
         @apply bg-gray-800/50 text-white;
@@ -368,4 +369,8 @@ body {
     a strong {
         @apply pointer-events-none;
     }
+}
+
+#connect-node.active {
+    @apply bg-gray-800/50 text-white rounded-xl;
 }

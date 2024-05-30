@@ -12,7 +12,6 @@ export default class ForceGraph3D extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            activeMode: "Explain",
             media: new Map(),
             explains: new Map(),
             chats: new Map(),
@@ -25,10 +24,6 @@ export default class ForceGraph3D extends React.Component {
         bloomPass.radius = 1;
         bloomPass.threshold = 0;
         this.props.graphRef.current.postProcessingComposer().addPass(bloomPass);
-    }
-
-    setActiveMode(activeMode) {
-        this.setState({ activeMode });
     }
 
     setMedia(id, m = []) {
@@ -127,7 +122,6 @@ export default class ForceGraph3D extends React.Component {
             ...this.props,
             node,
             title,
-            setActiveMode: this.setActiveMode.bind(this),
             setMedia: this.setMedia.bind(this),
             setExplain: this.setExplain.bind(this),
             setChat: this.setChat.bind(this),

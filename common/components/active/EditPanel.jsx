@@ -18,7 +18,7 @@ export default class EditPanel extends Component {
                     />
                     <button
                         type="submit"
-                        className="invisible peer-focus:visible group-hover:visible text-gray-300 hover:text-white transition-all p-2 outline-none flex items-center gap-1 uppercase tracking-wider text-xs">
+                        className="text-gray-300 hover:text-white transition-all p-2 outline-none flex items-center gap-1 uppercase tracking-wider text-xs">
                         {Icons.CheckmarkIcon(4)}
                         {this.props.node.name ? "Rename" : "Save"}
                     </button>
@@ -42,6 +42,14 @@ export default class EditPanel extends Component {
                     {Icons.ForkIcon(4)}
                     Fork
                 </button>
+                <button
+                    id="connect-node"
+                    className={`${
+                        this.props.connectMode ? "active" : ""
+                    } text-gray-300 hover:text-white transition-all p-2 outline-none flex items-center gap-1 uppercase tracking-wider text-xs`}>
+                    {Icons.ConnectIcon(4)}
+                    Connect
+                </button>
             </div>
         );
     }
@@ -63,6 +71,10 @@ export default class EditPanel extends Component {
 
         div.querySelector("#fork-node").addEventListener("click", () => {
             this.forkNode();
+        });
+
+        div.querySelector("#connect-node").addEventListener("click", () => {
+            this.connectNode();
         });
 
         // auto focus input
@@ -99,5 +111,9 @@ export default class EditPanel extends Component {
         symbols.push("");
         const edge = this.props.thinkabletype.add(symbols);
         await this.activateAndEditNode(edge.lastNode);
+    }
+
+    async connectNode() {
+        this.props.toggleConnectMode();
     }
 }
