@@ -65,7 +65,10 @@ export default class Hypergraph {
         return nodes;
     }
     get symbols() {
-        return Array.from(new Set(this.nodes.map(node => node.symbol)));
+        return this.hyperedges.map(hyperedge => hyperedge.symbols);
+    }
+    get uniqueSymbols() {
+        return Array.from(new Set(this.symbols));
     }
     get hash() {
         return utils.hash(this.export());

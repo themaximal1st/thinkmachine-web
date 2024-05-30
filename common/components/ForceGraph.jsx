@@ -12,7 +12,7 @@ export default class ForceGraph extends React.Component {
         this.camera = new Camera(this.graphRef);
         this.state = {
             connectMode: false,
-            activeMode: "Edit",
+            activeMode: "Explain",
             hideLabels: Settings.get("hideLabels", false),
             graphType: Settings.graphType,
             width: window.innerWidth,

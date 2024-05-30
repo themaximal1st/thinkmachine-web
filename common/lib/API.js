@@ -4,6 +4,7 @@ dotenv.load();
 import Media from "./Media.js";
 import Explain from "./Explain.js"
 import Chat from "./Chat.js"
+import GenerateOne from "./GenerateOne.js";
 
 export default class API {
     async media(query) {
@@ -20,6 +21,10 @@ export default class API {
         for await (const msg of Chat(messages, hyperedges, activeSymbol, options)) {
             yield msg;
         }
+    }
+
+    async generateOne(activeSymbol, hyperedge, hyperedges, options = {}) {
+        return await GenerateOne(activeSymbol, hyperedge, hyperedges, options);
     }
 
     get methods() {

@@ -5,6 +5,8 @@ export default class Settings extends LocalStorage {
         interwingle: 0,
         graphType: "3d",
         controlType: "orbit",
+        typerMode: "Add",
+        llmModel: "gpt-4o",
     }
 
     hypergraph(value) {
@@ -24,8 +26,11 @@ export default class Settings extends LocalStorage {
     static get controlType() { return Settings.get("controlType", Settings.defaultValues.controlType) }
     static set controlType(val) { Settings.set("controlType", val) }
 
-    static get typerMode() { return Settings.get("typerMode", "Add") }
+    static get typerMode() { return Settings.get("typerMode", Settings.defaultValues.typerMode) }
     static set typerMode(val) { Settings.set("typerMode", val) }
+
+    static get llmModel() { return Settings.get("llmModel", Settings.defaultValues.llmModel) }
+    static set llmModel(val) { Settings.set("llmModel", val) }
 }
 
 window.Settings = Settings;

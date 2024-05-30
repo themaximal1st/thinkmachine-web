@@ -111,12 +111,12 @@ test("build edge (isolated)", () => {
     expect(edge).instanceOf(Hyperedge);
     expect(edge.symbols).toEqual(["A", "B"]);
     expect(edge.id).toEqual("0:A.B");
-    expect(thinkabletype.symbols).toEqual(["A", "B"]);
+    expect(thinkabletype.uniqueSymbols).toEqual(["A", "B"]);
 
     edge.add("C");
     expect(edge.symbols).toEqual(["A", "B", "C"]);
     expect(edge.id).toEqual("0:A.B.C");
-    expect(thinkabletype.symbols).toEqual(["A", "B", "C"]);
+    expect(thinkabletype.uniqueSymbols).toEqual(["A", "B", "C"]);
 
     const edge2 = thinkabletype.get(["A", "B", "C"]);
     expect(edge2).instanceOf(Hyperedge);
@@ -124,12 +124,12 @@ test("build edge (isolated)", () => {
     edge2.nodes[2].remove();
     expect(edge.symbols).toEqual(["A", "B"]);
     expect(edge.id).toEqual("0:A.B");
-    expect(thinkabletype.symbols).toEqual(["A", "B"]);
+    expect(thinkabletype.uniqueSymbols).toEqual(["A", "B"]);
 
     edge2.removeIndex(0)
     expect(edge.symbols).toEqual(["B"]);
     expect(edge.id).toEqual("0:B");
-    expect(thinkabletype.symbols).toEqual(["B"]);
+    expect(thinkabletype.uniqueSymbols).toEqual(["B"]);
 });
 
 
@@ -139,12 +139,12 @@ test("build edge (confluence)", () => {
     expect(edge).instanceOf(Hyperedge);
     expect(edge.symbols).toEqual(["A", "B"]);
     expect(edge.id).toEqual("A.B");
-    expect(thinkabletype.symbols).toEqual(["A", "B"]);
+    expect(thinkabletype.uniqueSymbols).toEqual(["A", "B"]);
 
     edge.add("C");
     expect(edge.symbols).toEqual(["A", "B", "C"]);
     expect(edge.id).toEqual("A.B.C");
-    expect(thinkabletype.symbols).toEqual(["A", "B", "C"]);
+    expect(thinkabletype.uniqueSymbols).toEqual(["A", "B", "C"]);
 
     const edge2 = thinkabletype.get(["A", "B", "C"]);
     expect(edge2).instanceOf(Hyperedge);
@@ -152,12 +152,12 @@ test("build edge (confluence)", () => {
     edge2.removeIndex(2);
     expect(edge.symbols).toEqual(["A", "B"]);
     expect(edge.id).toEqual("A.B");
-    expect(thinkabletype.symbols).toEqual(["A", "B"]);
+    expect(thinkabletype.uniqueSymbols).toEqual(["A", "B"]);
 
     edge2.removeIndex(0)
     expect(edge.symbols).toEqual(["B"]);
     expect(edge.id).toEqual("B");
-    expect(thinkabletype.symbols).toEqual(["B"]);
+    expect(thinkabletype.uniqueSymbols).toEqual(["B"]);
 });
 
 
@@ -241,7 +241,7 @@ test("parses thinkabletype", async function () {
     const thinkabletype = ThinkableType.parse(`A,B,C
 A,B,D`);
     expect(thinkabletype).toBeInstanceOf(ThinkableType);
-    expect(thinkabletype.symbols.length == 4).toBeTruthy();
+    expect(thinkabletype.uniqueSymbols.length == 4).toBeTruthy();
     expect(thinkabletype.hyperedges.length == 2).toBeTruthy();
     expect(thinkabletype.has(["A", "B", "C"])).toBeTruthy();
     expect(thinkabletype.has(["A", "B", "D"])).toBeTruthy();
@@ -250,7 +250,7 @@ A,B,D`);
 test("parses comma in thinkabletype", async function () {
     const thinkabletype = ThinkableType.parse(`thinkabletype,tagline,"Turning C,S,V,s into Hypergraphs."`);
     expect(thinkabletype).toBeInstanceOf(ThinkableType);
-    expect(thinkabletype.symbols.length == 3).toBeTruthy();
+    expect(thinkabletype.uniqueSymbols.length == 3).toBeTruthy();
     expect(thinkabletype.hyperedges.length == 1).toBeTruthy();
     expect(thinkabletype.has("thinkabletype")).toBeTruthy();
     expect(thinkabletype.has("tagline")).toBeTruthy();
@@ -261,7 +261,7 @@ test("reset", async function () {
     const thinkabletype = ThinkableType.parse(`thinkabletype,tagline,"Turning C,S,V,s into Hypergraphs."`);
     expect(thinkabletype).toBeInstanceOf(ThinkableType);
     thinkabletype.reset();
-    expect(thinkabletype.symbols.length).toBe(0);
+    expect(thinkabletype.uniqueSymbols.length).toBe(0);
     expect(thinkabletype.hyperedges.length).toBe(0);
     expect(thinkabletype.has("thinkabletype")).toBeFalsy();
     expect(thinkabletype.has("tagline")).toBeFalsy();
@@ -271,12 +271,12 @@ test("reset", async function () {
 test("remove hyperedge", async function () {
     const thinkabletype = ThinkableType.parse(`A,B,C\r\n1,2,3`);
     expect(thinkabletype);
-    expect(thinkabletype.symbols.length).toBe(6);
+    expect(thinkabletype.uniqueSymbols.length).toBe(6);
     expect(thinkabletype.hyperedges.length).toBe(2);
     expect(thinkabletype.has(["A", "B", "C"])).toBeTruthy();
     thinkabletype.get(["A", "B", "C"]).remove();
     expect(thinkabletype.has(["A", "B", "C"])).toBeFalsy();
-    expect(thinkabletype.symbols.length).toBe(3);
+    expect(thinkabletype.uniqueSymbols.length).toBe(3);
     expect(thinkabletype.hyperedges.length).toBe(1);
 });
 
@@ -293,14 +293,14 @@ test("parse on existing hypergraph", async function () {
     const thinkabletype = new ThinkableType();
     thinkabletype.parse(input);
 
-    expect(thinkabletype.symbols.length).toBe(10);
+    expect(thinkabletype.uniqueSymbols.length).toBe(10);
     expect(thinkabletype.hyperedges.length).toBe(2);
     expect(thinkabletype.has("thinkabletype")).toBeTruthy();
     expect(thinkabletype.has("tagline")).toBeTruthy();
     expect(thinkabletype.has("Turning C,S,V,s into Hypergraphs.")).toBeTruthy();
 
     thinkabletype.parse(`A,B,C\r\n1,2,3`);
-    expect(thinkabletype.symbols.length).toBe(6);
+    expect(thinkabletype.uniqueSymbols.length).toBe(6);
     expect(thinkabletype.hyperedges.length).toBe(2);
     expect(thinkabletype.has("thinkabletype")).toBeFalsy();
     expect(thinkabletype.has("1")).toBeTruthy();

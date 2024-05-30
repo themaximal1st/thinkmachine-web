@@ -92,13 +92,9 @@ export default class ExplainPanel extends Component {
 
         this.props.setExplain(node.uuid, ""); // prevent stampeded
 
-        const hyperedges = this.props.thinkabletype.hyperedges.map(
-            (edge) => edge.symbols
-        );
+        const hyperedges = this.props.thinkabletype.symbols;
 
-        const options = {
-            model: "gpt-4o",
-        };
+        const options = { model: Settings.llmModel };
 
         const stream = await window.api.explain(node.name, hyperedges, options);
 
@@ -127,9 +123,7 @@ export default class ExplainPanel extends Component {
         });
         this.props.setChat(this.props.node.uuid, messages);
 
-        const hyperedges = this.props.thinkabletype.hyperedges.map(
-            (edge) => edge.symbols
-        );
+        const hyperedges = this.props.thinkabletype.symbols;
 
         const options = {
             model: "gpt-4o",

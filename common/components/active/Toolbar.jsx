@@ -1,6 +1,7 @@
 import * as Icons from "@assets/Icons";
 import Component from "./Component";
 import * as utils from "@lib/utils";
+import toast from "react-hot-toast";
 
 export default class Toolbar extends Component {
     isMode(mode) {
@@ -68,6 +69,8 @@ export default class Toolbar extends Component {
                 break;
             case "Filter":
                 return this.handleClickFilter();
+            case "Generate":
+                return this.handleGenerate();
             default:
                 break;
         }
@@ -88,12 +91,24 @@ export default class Toolbar extends Component {
         this.props.setFilters(filters);
     }
 
-    // TODO: insert
-    // TODO: fork?
-}
+    async handleGenerate() {
+        try {
+            const node = this.props.thinkabletype.nodeByUUID(this.props.node.uuid);
+            const options = { model: Settings.llmModel };
+            const symbols = await window.api.generateOne(
+                node.symbol,
+                node.hyperedge.symbols,
+                node.hypergraph.symbols,
+                options
+            );
 
-// General edit mode?
-// Rename
-// Add
-// Fork
-// Insert
+            console.log(symbols);
+
+            const edge = this.props.thinkabletype.add(symbols);
+            await this.props.setActiveNodeUUID(edge.lastNode.uuid);
+        } catch (e) {
+            console.log(e);
+            toast.error("Error while generating");
+        }
+    }
+}

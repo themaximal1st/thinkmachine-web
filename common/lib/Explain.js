@@ -4,6 +4,8 @@ export default async function* Explain(user_prompt, hyperedges, options = {}) {
     if (typeof options.temperature === "undefined") { options.temperature = 1 }
     options.stream = true;
 
+    console.log("HYPEREDGES", hyperedges);
+
     const prompt = `
 You are a knowledge graph AI summarizer.
 You are given two pieces of information: a knowledge graph and a term related to it.

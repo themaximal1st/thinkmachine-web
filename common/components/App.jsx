@@ -1,5 +1,6 @@
 import React from "react";
 import ThinkableType from "@lib/thinkabletype";
+import { Toaster } from "react-hot-toast";
 
 import Settings from "@lib/Settings";
 
@@ -178,6 +179,19 @@ export default class App extends React.Component {
                     reloadData={this.reloadData.bind(this)}
                     save={this.save.bind(this)}
                 />
+
+                <div className="absolute inset-0 z-[999] pointer-events-none">
+                    <Toaster
+                        position="bottom-center"
+                        containerStyle={{ zIndex: 999 }}
+                        toastOptions={{
+                            style: {
+                                background: "#000",
+                                color: "#fff",
+                            },
+                        }}
+                    />
+                </div>
             </div>
         );
     }

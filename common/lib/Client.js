@@ -21,7 +21,7 @@ export default class Client {
             edition: this.edition,
         };
 
-        const methods = ["media"];
+        const methods = ["media", "generateOne"];
 
         for (const method of methods) {
             api[method] = async (...args) => {
