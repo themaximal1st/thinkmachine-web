@@ -15,31 +15,23 @@ import Filters from "./Filters";
 // TODO: custom camera position with activeNode..if they zoom out it should keep that zoom
 
 // TODO: we could technically highlight links that won't be found, and attempt to generate them..could be cool
-// TODO: delete!
 
 // TODO: typer
 //          - add / adder context
 //          - generate many
 //          - chat
 
-// TODO: toolbar
-//          - generate one
-
 // TODO: need new adder interface / generate....
 // TODO: start on UI — what is typer, what is overlay, what is new UI?
 // TODO: load uuid / new
 // TODO: settings? typer where?
-
-// TODO: Thinkable type
-// - is dirty / stable save especially during editor
-// - generate
 
 // TODO: More control over prompt generation. Unlocks more creativity and use cases
 
 export default class App extends React.Component {
     constructor() {
         super(...arguments);
-        const uuid = "current-uuid3";
+        const uuid = "current-uuid2";
         this.settings = new Settings(uuid);
         window.settings = this.settings;
         this.thinkabletype = new ThinkableType({
