@@ -20,6 +20,10 @@ export default class Hyperedge {
         return id;
     }
 
+    get nodeIds() {
+        return new Set(this.nodes.map(node => node.id));
+    }
+
     get length() {
         return this.nodes.length;
     }
@@ -141,7 +145,7 @@ export default class Hyperedge {
         if (!this.isFusionBridge) return;
 
         for (const node of this.nodes) {
-            node.updateIndexes(nodes, links)
+            node.updateIndexes(nodes, links);
         }
     }
 

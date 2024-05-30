@@ -39,7 +39,7 @@ import Filters from "./Filters";
 export default class App extends React.Component {
     constructor() {
         super(...arguments);
-        const uuid = "current-uuid2";
+        const uuid = "current-uuid3";
         this.settings = new Settings(uuid);
         window.settings = this.settings;
         this.thinkabletype = new ThinkableType({

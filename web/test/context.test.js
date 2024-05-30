@@ -123,3 +123,20 @@ test("simple confluence hyperedge", () => {
     expect(context.prev).toEqual([vs2]);
     expect(context.next).toEqual([]);
 });
+
+
+test("fusion bridge context regression", () => {
+    const thinkabletype = new ThinkableType({
+        interwingle: ThinkableType.INTERWINGLE.FUSION
+    });
+
+    const edge1 = thinkabletype.add(["A", "B"]);
+    const [A1, B] = edge1.nodes;
+    const edge2 = thinkabletype.add(["A", "1"]);
+    const [A2, One] = edge2.nodes;
+
+    const data = thinkabletype.graphData();
+
+    expect(data.nodes[1].nodeUUIDs.has(A2.uuid)).toBe(true);
+    expect(data.nodes[1].nodeUUIDs.has(A1.uuid)).toBe(true);
+});

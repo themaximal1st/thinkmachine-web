@@ -195,7 +195,7 @@ export default class Hypergraph {
 
         for (const hyperedge of this.hyperedges) {
             if (this.isFusion && hyperedge.isFusionBridge) {
-                hyperedge.updateIndexes(nodes, links);
+                // hyperedge.updateIndexes(nodes, links);
             } else {
                 hyperedge.updateGraphData(nodes, links);
             }
@@ -281,6 +281,7 @@ export default class Hypergraph {
             // no connections...but ensure the edge exists
             if (fromNodes.length === 0 && toNodes.length === 0) {
                 hyperedge.updateGraphData(nodes, links);
+                hyperedge.updateIndexes(nodes, links);
                 continue;
             }
 
@@ -308,6 +309,8 @@ export default class Hypergraph {
                     links.set(linkData.id, linkData);
                 }
             }
+
+            hyperedge.updateIndexes(nodes, links);
         }
     }
 

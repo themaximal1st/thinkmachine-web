@@ -42,7 +42,6 @@ export default class ExplainPanel extends Component {
 
     linkContent(content, color) {
         if (!content || content.length === 0) return "";
-        console.log(content);
 
         return (
             <Markdown

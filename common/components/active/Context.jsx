@@ -40,6 +40,7 @@ export default class Context extends Component {
             button.addEventListener("click", (e) => {
                 const uuid = e.target.dataset.uuid;
                 const node = this.props.thinkabletype.nodeByUUID(uuid);
+                console.log("Context button clicked", node.symbol, node.uuid);
                 this.props.setActiveNodeUUID(node.uuid);
                 e.preventDefault();
             });
