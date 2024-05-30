@@ -2,6 +2,13 @@ import Component from "./Component";
 import * as Icons from "@assets/Icons";
 
 export default class EditPanel extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            shiftKey: false,
+        };
+    }
+
     code() {
         return (
             <div className="flex items-center gap-1 w-full" id="edit">
@@ -9,7 +16,7 @@ export default class EditPanel extends Component {
                     <input
                         type="text"
                         className="bg-transparent w-full text-white focus:outline-none px-2 peer"
-                        placeholder="What is the symbol called?"
+                        placeholder="Symbol"
                         autoComplete="off"
                         data-1p-ignore
                         onChange={() => ""}
@@ -61,6 +68,20 @@ export default class EditPanel extends Component {
     }
 
     load(div) {
+        const input = div.querySelector("#edit form input");
+
+        input.addEventListener("keydown", (event) => {
+            if (event.key === "Shift") {
+                this.state.shiftKey = true;
+            }
+        });
+
+        input.addEventListener("keyup", (event) => {
+            if (event.key === "Shift") {
+                this.state.shiftKey = false;
+            }
+        });
+
         div.querySelector("#edit form").addEventListener("submit", (e) => {
             e.preventDefault();
             const input = e.target.querySelector("input");
@@ -93,10 +114,14 @@ export default class EditPanel extends Component {
         }, 100);
     }
 
-    renameNode(name) {
+    async renameNode(name) {
         const node = this.props.thinkabletype.nodeByUUID(this.props.node.uuid);
         node.rename(name);
         this.props.save();
+
+        if (this.state.shiftKey) {
+            await this.activateAndEditNode(node.add(""));
+        }
     }
 
     async activateAndEditNode(node) {
