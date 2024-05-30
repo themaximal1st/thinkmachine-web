@@ -50,6 +50,12 @@ export default class EditPanel extends Component {
                     {Icons.ConnectIcon(4)}
                     Connect
                 </button>
+                <button
+                    id="remove-node"
+                    className="absolute -bottom-8 right-4 opacity-50 hover:opacity-100 text-red-300 hover:text-red-400 transition-all p-2 outline-none flex items-center gap-1 uppercase tracking-wider text-xs">
+                    {Icons.CloseIcon(4)}
+                    Remove
+                </button>
             </div>
         );
     }
@@ -75,6 +81,10 @@ export default class EditPanel extends Component {
 
         div.querySelector("#connect-node").addEventListener("click", () => {
             this.connectNode();
+        });
+
+        div.querySelector("#remove-node").addEventListener("click", () => {
+            this.removeNode();
         });
 
         // auto focus input
@@ -115,5 +125,17 @@ export default class EditPanel extends Component {
 
     async connectNode() {
         this.props.toggleConnectMode();
+    }
+
+    async removeNode() {
+        const node = this.props.thinkabletype.nodeByUUID(this.props.node.uuid);
+        const nextNode = node.prev() || node.next();
+
+        node.remove();
+        await this.props.save();
+
+        if (nextNode) {
+            await this.activateAndEditNode(nextNode);
+        }
     }
 }

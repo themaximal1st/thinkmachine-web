@@ -275,7 +275,9 @@ export default class Hypergraph {
             const fromNodes = this.fusionBridgeNodes(hyperedge.firstNode);
             const toNodes = this.fusionBridgeNodes(hyperedge.lastNode);
 
+            // no connections...but ensure the edge exists
             if (fromNodes.length === 0 && toNodes.length === 0) {
+                hyperedge.updateGraphData(nodes, links);
                 continue;
             }
 

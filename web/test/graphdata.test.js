@@ -445,3 +445,17 @@ test("two-edge fusion bridge", () => {
     expect(data.nodes.length).toBe(10);
     expect(data.links.length).toBe(12);
 });
+
+test("two-edge fusion bridge regression", () => {
+    const thinkabletype = new ThinkableType({
+        hyperedges: [
+            ["A", "B"],
+        ],
+        interwingle: ThinkableType.INTERWINGLE.FUSION
+    });
+
+    const graphData = thinkabletype.graphData();
+    expect(graphData.nodes.length).toBe(2);
+    expect(graphData.links.length).toBe(1);
+});
+
