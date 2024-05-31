@@ -67,6 +67,14 @@ export default class Editor extends React.Component {
         }
     }
 
+    removeAll() {
+        if (window.confirm("Are you sure you want to remove everything?")) {
+            while (this.props.thinkabletype.hyperedges.length > 0) {
+                this.props.thinkabletype.hyperedges[0].remove();
+            }
+        }
+    }
+
     render() {
         if (!this.state.show) {
             return (
@@ -95,19 +103,15 @@ export default class Editor extends React.Component {
                 </button>
                 <div id="editor-content">
                     <div id="editor-toolbar">
-                        <button onClick={() => this.props.save()} id="editor-reset-icon">
-                            {Icons.SaveIcon(5)}
-                            Save
-                        </button>
-                        <button onClick={() => this.props.reset()} id="editor-save-icon">
+                        <button onClick={() => this.removeAll()} id="editor-remove-icon">
                             {Icons.CloseIcon(5)}
-                            Reset
+                            Remove All
                         </button>
                         <button
-                            onClick={() => this.props.reset()}
-                            id="editor-export-icon">
+                            onClick={() => this.props.saveFile()}
+                            id="editor-save-icon">
                             {Icons.SaveIcon(5)}
-                            Export
+                            Save File
                         </button>
                     </div>
                     {this.props.thinkabletype.hyperedges.map((hyperedge, idx) => (

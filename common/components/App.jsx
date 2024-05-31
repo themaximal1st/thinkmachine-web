@@ -1,8 +1,10 @@
 import React from "react";
 import ThinkableType from "@lib/thinkabletype";
 import { Toaster } from "react-hot-toast";
+import slugify from "slugify";
 
 import Settings from "@lib/Settings";
+import * as utils from "@lib/utils";
 
 import Client from "@lib/Client";
 import ForceGraph from "./ForceGraph";
@@ -74,6 +76,16 @@ export default class App extends React.Component {
         return ThinkableType.trackUUID(this.state.activeNodeUUID, this.state.graphData);
     }
 
+    get title() {
+        if (this.thinkabletype.hyperedges.length === 0) {
+            return `Think Machine — Multidimensional Mind Mapping`;
+        } else {
+            return `${this.thinkabletype.hyperedges[0].symbols.join(
+                " "
+            )} — Think Machine`;
+        }
+    }
+
     async onDataUpdate(event) {
         if (this.state.isLoading) {
             return;
@@ -113,7 +125,7 @@ export default class App extends React.Component {
 
         await this.asyncSetState({ graphData });
 
-        // document.title = this.title;
+        document.title = this.title;
     }
 
     async save() {
@@ -129,6 +141,11 @@ export default class App extends React.Component {
     async setFilters(filters = null) {
         await this.asyncSetState({ filters });
         await this.reloadData();
+    }
+
+    async saveFile() {
+        const name = `thinkmachine ${this.title} ${new Date().toISOString()}`;
+        utils.saveFile(this.thinkabletype.export(), `${slugify(name)}.csv`);
     }
 
     render() {
@@ -162,7 +179,7 @@ export default class App extends React.Component {
                     thinkabletype={this.thinkabletype}
                     reset={this.reset.bind(this)}
                     reloadData={this.reloadData.bind(this)}
-                    save={this.save.bind(this)}
+                    saveFile={this.saveFile.bind(this)}
                 />
 
                 <ForceGraph

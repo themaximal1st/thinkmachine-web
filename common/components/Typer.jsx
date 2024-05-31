@@ -86,9 +86,26 @@ export default class Typer extends React.Component {
             return;
         }
 
+        const lastHyperedge =
+            this.props.thinkabletype.hyperedges[
+                this.props.thinkabletype.hyperedges.length - 1
+            ];
+        let isMatch = false;
+        if (lastHyperedge) {
+            isMatch =
+                JSON.stringify(lastHyperedge.symbols) ==
+                JSON.stringify(this.state.hyperedge);
+        }
+
         const hyperedge = this.state.hyperedge;
+
         hyperedge.push(input);
         const edge = this.props.thinkabletype.add(hyperedge);
+        if (isMatch) {
+            console.log("IS MATCH", lastHyperedge);
+            lastHyperedge.remove();
+        }
+
         this.props.setActiveNodeUUID(edge.lastNode.uuid);
 
         this.setState({ hyperedge });

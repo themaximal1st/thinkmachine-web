@@ -69,3 +69,12 @@ export function filterIndex(filter, filters = []) {
 
     return -1;
 }
+
+export function saveFile(data, filename, type = "text/csv") {
+    const blob = new Blob([data], { type });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    a.click();
+}

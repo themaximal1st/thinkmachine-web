@@ -115,7 +115,6 @@ export function findReferenceUUID(data, uuid) {
     }
 
     for (const node of data.nodes) {
-        console.log("NODE", node);
         if (node.nodeUUIDs.has(uuid)) {
             return node;
         }
@@ -129,16 +128,13 @@ export function trackUUID(uuid, graphData) {
         return null;
     }
 
-    console.log("TRACKING UUID");
     for (let node of graphData.nodes) {
         if (node.uuid === uuid) {
-            console.log("   FOUND");
             return node.uuid;
         }
     }
 
     const node = findReferenceUUID(graphData, uuid);
-    console.log("   NODE", node);
 
     if (!node) {
         return null;
