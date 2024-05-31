@@ -1,8 +1,9 @@
+import csv from "papaparse"
 import LLM from "@themaximalist/llm.js"
 
 const TEMPERATURE = 1;
 
-export default async function* GenerateOne(user_prompt, activeSymbol = null, hyperedge = [], hyperedges = [[]], options = {}) {
+export default async function* GenerateMany(user_prompt, activeSymbol = null, hyperedge = [], hyperedges = [[]], options = {}) {
     if (typeof options.temperature === "undefined") { options.temperature = TEMPERATURE }
 
     const prompt = `
@@ -30,17 +31,35 @@ Be creative—really try to understand the context and generate a new hyperedge 
 
 You don't need to return a greeting or any other text.
 
-Just return the hyperedges as a CSV file, strings separated by commas.
+Just return the hyperedges as symbols separated commas, separated by newlines.
+
+No other text or formatting.
+
+Use proper capitalization and spaces, and avoid special characters.
+
+Use correct spacing between commas (no spaces). Hyperedges should usually be 3 to 5 symbols long.
+
+Hyperedges that are 2 symbols long are treated uniquely as direct connections anywhere they appear—use them sparingly but where a strong connection should exist that doesn't already.
 
 Please return the hyperedges now—use your discrection to generate as many as you see fit.
     `.trim();
 
     options.stream = true;
 
+    console.log(prompt);
+
     const response = await LLM(prompt, options);
-    console.log("RESPONSE", response);
-    for await (const chunk of response) {
-        console.log("CHUNK", chunk);
-        yield chunk;
+
+    let buffer = "";
+    for await (const message of response) {
+        buffer += message;
+        if (buffer.indexOf("\n") !== -1) {
+            const lines = buffer.split("\n");
+            buffer = lines.pop();
+            for (const line of lines) {
+                console.log("LINE", line);
+                yield csv.parse(line.trim()).data;
+            }
+        }
     }
 }

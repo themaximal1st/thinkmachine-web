@@ -358,7 +358,7 @@ body {
 }
 
 #filters-content button {
-    @apply pointer-events-auto cursor-pointer text-white inline-block w-auto max-w-max px-2 -mr-2;
+    @apply pointer-events-auto cursor-pointer text-white inline-block w-auto max-w-max px-2 -mr-2 outline-none;
 }
 
 #edit form {

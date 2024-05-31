@@ -5,6 +5,7 @@ import Media from "./Media.js";
 import Explain from "./Explain.js"
 import Chat from "./Chat.js"
 import GenerateOne from "./GenerateOne.js";
+import GenerateMany from "./GenerateMany.js";
 
 export default class API {
     async media(query) {

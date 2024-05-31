@@ -38,7 +38,7 @@ export function arrayContains(x, y) {
         let match = true;
 
         for (let j = 0; j < y.length; j++) {
-            if (x[i + j] !== y[j]) {
+            if (x[i + j].toLowerCase() !== y[j].toLowerCase()) {
                 match = false;
                 break;
             }
@@ -58,7 +58,7 @@ export function arraysEqual(a, b) {
     if (a.length !== b.length) return false;
 
     for (var i = 0; i < a.length; ++i) {
-        if (a[i] !== b[i]) return false;
+        if (a[i].toLowerCase() !== b[i].toLowerCase()) return false;
     }
     return true;
 }

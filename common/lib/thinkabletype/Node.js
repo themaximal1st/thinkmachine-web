@@ -37,6 +37,10 @@ export default class Node {
         return this.id === node.id;
     }
 
+    equals(symbol) {
+        return this.symbol.toLowerCase() === symbol.toLowerCase();
+    }
+
     rename(symbol) {
         this.symbol = symbol;
         this.hypergraph.onUpdate({ event: "node.rename", data: this });

@@ -45,14 +45,12 @@ export default class Typer extends React.Component {
     }
 
     deleteHyperedgeIndex(index) {
-        console.log("DELETE", index);
         const hyperedge = this.state.hyperedge;
         hyperedge.splice(index, 1);
         this.setState({ hyperedge });
     }
 
     handleDeleteHyperedgeIndex(event, index) {
-        console.log("HANDLE DELETE", event);
         event.preventDefault();
         this.deleteHyperedgeIndex(index);
     }
@@ -70,7 +68,6 @@ export default class Typer extends React.Component {
 
     handleSubmit(event) {
         event.preventDefault();
-        console.log("SUBMIT", event);
 
         const input = this.ref.current.value;
 
@@ -91,9 +88,7 @@ export default class Typer extends React.Component {
     }
 
     addSymbol(input) {
-        console.log("ADDER", input, this.state.hyperedge);
         if (input.trim().length === 0) {
-            console.log("CLEAR");
             this.ref.current.value = "";
             this.setState({ hyperedge: [] });
             return;
@@ -115,7 +110,6 @@ export default class Typer extends React.Component {
         hyperedge.push(input);
         const edge = this.props.thinkabletype.add(hyperedge);
         if (isMatch) {
-            console.log("IS MATCH", lastHyperedge);
             lastHyperedge.remove();
         }
 
@@ -126,6 +120,12 @@ export default class Typer extends React.Component {
     }
 
     async generateGraph(input) {
+        if (!input || input.trim().length === 0) {
+            return;
+        }
+
+        this.ref.current.value = "";
+
         console.log("Generate graph", input);
         let activeSymbol = this.props.activeNodeUUID
             ? this.props.thinkabletype.nodeByUUID(this.props.activeNodeUUID).symbol
@@ -133,27 +133,31 @@ export default class Typer extends React.Component {
 
         const options = { model: Settings.llmModel };
 
-        const stream = await window.api.generateMany(
+        const hyperedges = await window.api.generateMany(
             input,
             activeSymbol,
             this.state.hyperedge,
-            this.props.thinkabletype.hyperedges,
+            this.props.thinkabletype.symbols,
             options
         );
 
-        console.log("STREAM", stream);
-        for await (const chunk of stream) {
-            console.log("CHUNK", chunk);
+        for await (const hyperedge of hyperedges) {
+            console.log("HYPEREDGE", hyperedge);
+            this.props.thinkabletype.add(hyperedge);
         }
     }
 
     searchGraph(input) {
+        if (!input || input.trim().length === 0) {
+            return;
+        }
+
         const filters = this.props.filters;
         filters.push([input]);
         this.props.setFilters(filters);
 
         for (const node of this.props.thinkabletype.nodes) {
-            if (node.symbol === input) {
+            if (node.equals(input)) {
                 this.props.setActiveNodeUUID(node.uuid);
                 break;
             }
@@ -167,12 +171,6 @@ export default class Typer extends React.Component {
     }
 
     render() {
-        // if (this.props.activeNodeUUID) {
-        //     return;
-        // }
-
-        console.log("HYPEREDGE", this.state.hyperedge);
-
         return (
             <div id="typer">
                 <form
