@@ -30,15 +30,27 @@ export default class MediaPanel extends Component {
         );
     }
 
+    mediaQuery() {
+        const words = [];
+        for (const edgeUUID of this.props.node.edgeUUIDs) {
+            const edge = this.props.thinkabletype.edgeByUUID(edgeUUID);
+            for (const symbol of Array.from(edge.symbols)) {
+                words.push(symbol);
+            }
+        }
+
+        return words.join(" or "); // for some reason this works best..need better image search in the future
+    }
+
     load(div) {
-        const node = this.props.thinkabletype.nodeByUUID(this.props.node.uuid);
-        let m = this.props.media.get(node.uuid);
+        const uuid = this.props.node.uuid;
+        let m = this.props.media.get(uuid);
 
         if (m === undefined) {
-            this.props.setMedia(node.uuid, []); // prevent stampeded
-            console.log("FETCH MEDIA");
-            window.api.media(node.symbol).then((m) => {
-                this.props.setMedia(node.uuid, m);
+            this.props.setMedia(uuid, []); // prevent stampeded
+            console.log("FETCH MEDIA", this.mediaQuery());
+            window.api.media(this.mediaQuery()).then((m) => {
+                this.props.setMedia(uuid, m);
             });
         }
     }
