@@ -45,13 +45,24 @@ export default class Typer extends React.Component {
     }
 
     deleteHyperedgeIndex(index) {
+        console.log("DELETE", index);
         const hyperedge = this.state.hyperedge;
         hyperedge.splice(index, 1);
         this.setState({ hyperedge });
     }
 
+    handleDeleteHyperedgeIndex(event, index) {
+        console.log("HANDLE DELETE", event);
+        event.preventDefault();
+        this.deleteHyperedgeIndex(index);
+    }
+
     handleKeyDown(event) {
-        if (event.key === "Backspace" && this.state.hyperedge.length > 0) {
+        if (
+            event.key === "Backspace" &&
+            this.ref.current.value.length === 0 &&
+            this.state.hyperedge.length > 0
+        ) {
             this.deleteHyperedgeIndex(this.state.hyperedge.length - 1);
             return;
         }
@@ -80,7 +91,9 @@ export default class Typer extends React.Component {
     }
 
     addSymbol(input) {
+        console.log("ADDER", input, this.state.hyperedge);
         if (input.trim().length === 0) {
+            console.log("CLEAR");
             this.ref.current.value = "";
             this.setState({ hyperedge: [] });
             return;
@@ -112,8 +125,26 @@ export default class Typer extends React.Component {
         this.ref.current.value = "";
     }
 
-    generateGraph(input) {
+    async generateGraph(input) {
         console.log("Generate graph", input);
+        let activeSymbol = this.props.activeNodeUUID
+            ? this.props.thinkabletype.nodeByUUID(this.props.activeNodeUUID).symbol
+            : null;
+
+        const options = { model: Settings.llmModel };
+
+        const stream = await window.api.generateMany(
+            input,
+            activeSymbol,
+            this.state.hyperedge,
+            this.props.thinkabletype.hyperedges,
+            options
+        );
+
+        console.log("STREAM", stream);
+        for await (const chunk of stream) {
+            console.log("CHUNK", chunk);
+        }
     }
 
     searchGraph(input) {
@@ -139,6 +170,8 @@ export default class Typer extends React.Component {
         // if (this.props.activeNodeUUID) {
         //     return;
         // }
+
+        console.log("HYPEREDGE", this.state.hyperedge);
 
         return (
             <div id="typer">
@@ -170,7 +203,10 @@ export default class Typer extends React.Component {
                             {this.state.hyperedge
                                 .map((symbol, index) => (
                                     <button
-                                        onClick={() => this.deleteHyperedgeIndex(index)}
+                                        type="button"
+                                        onClick={(e) =>
+                                            this.handleDeleteHyperedgeIndex(e, index)
+                                        }
                                         key={index}>
                                         {symbol}
                                     </button>

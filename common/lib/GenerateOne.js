@@ -1,15 +1,7 @@
-import csv from "papaparse"
 import LLM from "@themaximalist/llm.js"
 
 const TEMPERATURE = 1;
 
-// ADD
-// INSERT?
-// FORK
-// CONNECT
-
-// AI generator for ThinkableType
-// return await GenerateOne(activeSymbol, hyperedge, hyperedges, options);
 export default async function GenerateOne(activeSymbol, hyperedge = [], hyperedges = [[]], options = {}) {
     if (typeof options.temperature === "undefined") { options.temperature = TEMPERATURE }
 

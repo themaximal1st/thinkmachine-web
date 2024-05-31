@@ -29,7 +29,7 @@ export default class Client {
             };
         }
 
-        const stream_methods = ["explain", "chat"];
+        const stream_methods = ["explain", "chat", "generateMany"];
 
         for (const method of stream_methods) {
             api[method] = async (...args) => {

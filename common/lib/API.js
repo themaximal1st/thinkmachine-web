@@ -23,6 +23,10 @@ export default class API {
         }
     }
 
+    async generateMany(user_prompt, activeSymbol, hyperedge, hyperedges, options = {}) {
+        return await GenerateMany(user_prompt, activeSymbol, hyperedge, hyperedges, options);
+    }
+
     async generateOne(activeSymbol, hyperedge, hyperedges, options = {}) {
         return await GenerateOne(activeSymbol, hyperedge, hyperedges, options);
     }
