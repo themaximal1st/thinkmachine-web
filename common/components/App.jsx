@@ -137,6 +137,7 @@ export default class App extends React.Component {
                 <Typer
                     thinkabletype={this.thinkabletype}
                     activeNodeUUID={this.activeNodeUUID}
+                    setActiveNodeUUID={this.setActiveNodeUUID.bind(this)}
                 />
 
                 <Interwingle

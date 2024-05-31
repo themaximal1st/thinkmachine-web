@@ -251,6 +251,10 @@ body {
     @apply text-gray-300 flex gap-2 px-2;
 }
 
+#typer-hyperedge button {
+    @apply outline-none text-gray-300 hover:text-white;
+}
+
 #typer-toolbar button {
     @apply flex gap-[6px] uppercase font-medium tracking-widest text-xs h-9 items-center px-4 py-2 transition-all text-white outline-none rounded-xl;
     @apply text-gray-300 hover:text-white;

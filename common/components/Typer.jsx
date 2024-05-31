@@ -10,7 +10,6 @@ export default class Typer extends React.Component {
         this.state = {
             mode: Settings.typerMode,
             hyperedge: [],
-            nodes: [],
         };
     }
 
@@ -47,10 +46,8 @@ export default class Typer extends React.Component {
 
     deleteHyperedgeIndex(index) {
         const hyperedge = this.state.hyperedge;
-        const nodes = this.state.nodes;
         hyperedge.splice(index, 1);
-        nodes.splice(index, 1);
-        this.setState({ hyperedge, nodes });
+        this.setState({ hyperedge });
     }
 
     handleKeyDown(event) {
@@ -85,24 +82,16 @@ export default class Typer extends React.Component {
     addSymbol(input) {
         if (input.trim().length === 0) {
             this.ref.current.value = "";
-            this.setState({ hyperedge: [], nodes: [] });
+            this.setState({ hyperedge: [] });
             return;
         }
 
         const hyperedge = this.state.hyperedge;
-        const nodes = this.state.nodes;
         hyperedge.push(input);
+        const edge = this.props.thinkabletype.add(hyperedge);
+        this.props.setActiveNodeUUID(edge.lastNode.uuid);
 
-        const lastNode = nodes[nodes.length - 1];
-        let node = null;
-        if (lastNode) {
-            node = lastNode.add(input);
-        } else {
-            node = this.props.thinkabletype.add([input]).firstNode;
-        }
-
-        nodes.push(node);
-        this.setState({ hyperedge, nodes });
+        this.setState({ hyperedge });
         this.ref.current.value = "";
     }
 
@@ -119,9 +108,9 @@ export default class Typer extends React.Component {
     }
 
     render() {
-        if (this.props.activeNodeUUID) {
-            return;
-        }
+        // if (this.props.activeNodeUUID) {
+        //     return;
+        // }
 
         return (
             <div id="typer">
