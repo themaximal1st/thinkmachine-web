@@ -155,6 +155,8 @@ export default class App extends React.Component {
                     thinkabletype={this.thinkabletype}
                     activeNodeUUID={this.activeNodeUUID}
                     setActiveNodeUUID={this.setActiveNodeUUID.bind(this)}
+                    filters={this.state.filters}
+                    setFilters={this.setFilters.bind(this)}
                 />
 
                 <Interwingle

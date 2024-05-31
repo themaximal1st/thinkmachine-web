@@ -117,7 +117,18 @@ export default class Typer extends React.Component {
     }
 
     searchGraph(input) {
-        console.log("Search graph", input);
+        const filters = this.props.filters;
+        filters.push([input]);
+        this.props.setFilters(filters);
+
+        for (const node of this.props.thinkabletype.nodes) {
+            if (node.symbol === input) {
+                this.props.setActiveNodeUUID(node.uuid);
+                break;
+            }
+        }
+
+        this.ref.current.value = "";
     }
 
     chatGraph(input) {
@@ -139,6 +150,7 @@ export default class Typer extends React.Component {
                             <button
                                 className={this.state.mode === label ? "active" : ""}
                                 onClick={() => this.setMode(label)}
+                                type="button"
                                 key={`${idx}-${label}`}
                                 value={label}>
                                 {icon}

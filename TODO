@@ -37,6 +37,10 @@ eventually
     obsidian plugin
 
 
+bug
+    chat doesn't know what interwingle mode we're in...we should teach it out think machine works so it can integrate better
+
+
 
 
 - it should be more generative. when a link doesn't exist, generate it
