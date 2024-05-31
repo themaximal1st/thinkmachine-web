@@ -95,7 +95,7 @@ test("multiple hyperedge (confluence)", () => {
     });
 
     expect(thinkabletype).toBeInstanceOf(ThinkableType);
-    expect(thinkabletype.uniqueSymbols).toEqual(["A", "B", "C", "1", "2"]);
+    expect(thinkabletype.uniqueSymbols).toEqual(new Set(["A", "B", "C", "1", "2"]));
 
     const data = thinkabletype.graphData();
     expect(data.nodes.length).toBe(5);

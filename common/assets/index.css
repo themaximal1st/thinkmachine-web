@@ -232,23 +232,32 @@ body {
 }
 
 #typer {
-    @apply absolute top-0 z-10 left-0 right-0 flex items-center justify-center mt-4;
+    @apply absolute top-0 z-10 left-0 right-0 flex flex-col items-center justify-center mt-2 gap-3;
+}
+
+#typer-toolbar {
+    @apply flex items-center gap-2;
 }
 
 #typer-input {
-    @apply py-2 bg-gray-1000 text-sm rounded-l-full outline-none text-white px-3;
+    @apply py-2 bg-gray-1000 text-base text-center rounded-xl w-full outline-none text-white px-3 opacity-60 transition-all;
+
+    &:focus {
+        @apply opacity-100;
+    }
+}
+
+#typer-hyperedge {
+    @apply text-gray-300 flex gap-2 px-2;
 }
 
 #typer-toolbar button {
-    @apply flex gap-[6px] uppercase font-medium tracking-widest text-xs h-9 items-center px-4 py-2 transition-all text-white outline-none;
-}
+    @apply flex gap-[6px] uppercase font-medium tracking-widest text-xs h-9 items-center px-4 py-2 transition-all text-white outline-none rounded-xl;
+    @apply text-gray-300 hover:text-white;
 
-#typer-select {
-    @apply bg-transparent text-white outline-none;
-}
-
-#typer-submit {
-    @apply text-white;
+    &.active {
+        @apply bg-gray-800/50 text-white;
+    }
 }
 
 #editor {

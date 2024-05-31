@@ -68,7 +68,7 @@ export default class Hypergraph {
         return this.hyperedges.map(hyperedge => hyperedge.symbols);
     }
     get uniqueSymbols() {
-        return Array.from(new Set(this.symbols));
+        return new Set(this.symbols.flat());
     }
     get hash() {
         return utils.hash(this.export());
@@ -101,7 +101,7 @@ export default class Hypergraph {
         if (Array.isArray(symbol)) {
             return !!this.get(symbol);
         } else {
-            return this.symbols.includes(symbol);
+            return this.uniqueSymbols.has(symbol);
         }
     }
 

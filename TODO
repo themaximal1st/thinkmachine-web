@@ -1,3 +1,10 @@
+- feature complete
+    settings
+        new
+        save
+    typer
+    recordings
+
 - thinking about a rewrite
  - more tests
  - more done client side and not through API..actually have access to ThinkableType on client side
@@ -10,12 +17,17 @@
 
 beta
     beta.thinkmachine.com
+    auto complete
 
 after beta
     2D
+    VR
+    animations
+    fly mode
     rate limit
     web licenses
     content content content
+    cached default queries
 
 editor
     drag and drop reorder nodes / hyperedges

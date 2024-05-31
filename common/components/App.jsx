@@ -31,7 +31,7 @@ import Filters from "./Filters";
 export default class App extends React.Component {
     constructor() {
         super(...arguments);
-        const uuid = "current-uuid2";
+        const uuid = "current-uuid0";
         this.settings = new Settings(uuid);
         window.settings = this.settings;
         this.thinkabletype = new ThinkableType({
@@ -89,11 +89,11 @@ export default class App extends React.Component {
         Client.setup();
         await this.reset();
 
-        setTimeout(async () => {
-            await this.asyncSetState({
-                activeNodeUUID: this.state.graphData.nodes[1].uuid,
-            });
-        }, 1000);
+        // setTimeout(async () => {
+        //     await this.asyncSetState({
+        //         activeNodeUUID: this.state.graphData.nodes[1].uuid,
+        //     });
+        // }, 1000);
     }
 
     async reset() {
@@ -134,7 +134,10 @@ export default class App extends React.Component {
     render() {
         return (
             <div className="">
-                {/* <Typer activeNodeUUID={this.trackedActiveNodeUUID} /> */}
+                <Typer
+                    thinkabletype={this.thinkabletype}
+                    activeNodeUUID={this.activeNodeUUID}
+                />
 
                 <Interwingle
                     thinkabletype={this.thinkabletype}
