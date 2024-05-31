@@ -28,6 +28,7 @@ after beta
     web licenses
     content content content
     cached default queries
+    copy & paste
 
 editor
     drag and drop reorder nodes / hyperedges
@@ -39,6 +40,14 @@ eventually
 
 bug
     chat doesn't know what interwingle mode we're in...we should teach it out think machine works so it can integrate better
+
+business
+    API integration
+    tutorial walkthrough layover
+
+good ideas
+    collapse / expand node
+    forward / back button
 
 
 

@@ -101,11 +101,13 @@ export default class App extends React.Component {
         Client.setup();
         await this.reset();
 
-        // setTimeout(async () => {
-        //     await this.asyncSetState({
-        //         activeNodeUUID: this.state.graphData.nodes[1].uuid,
-        //     });
-        // }, 1000);
+        setTimeout(async () => {
+            await this.asyncSetState({
+                activeNodeUUID: this.state.graphData.nodes[18].uuid,
+            });
+
+            await this.setFilters([{ node: this.state.graphData.nodes[18].uuid }]);
+        }, 1000);
     }
 
     async reset() {
