@@ -16,10 +16,6 @@ import Depth from "./Depth";
 import Filters from "./Filters";
 import ChatModal from "./ChatModal";
 
-// TODO: custom camera position with activeNode..if they zoom out it should keep that zoom
-// TODO: we could technically highlight links that won't be found, and attempt to generate them..could be cool
-// TODO: More control over prompt generation. Unlocks more creativity and use cases
-
 export default class App extends React.Component {
     constructor() {
         super(...arguments);
@@ -84,7 +80,7 @@ export default class App extends React.Component {
         }
 
         if (this.thinkabletype.hash !== this.state.dataHash) {
-            console.log("DATA UPDATE", event);
+            // console.log("DATA UPDATE", event);
             await this.save();
         }
     }
@@ -92,18 +88,6 @@ export default class App extends React.Component {
     async load() {
         Client.setup();
         await this.reset();
-
-        setTimeout(async () => {
-            // await this.asyncSetState({
-            //     activeNodeUUID: this.state.graphData.nodes[18].uuid,
-            // });
-            // await this.setFilters([{ node: this.state.graphData.nodes[18].uuid }]);
-            // await this.setFilters([["Nanna"]]);
-            // const nanna = this.thinkabletype.get(["Nanna"]).nodes[1];
-            // await this.asyncSetState({
-            //     activeNodeUUID: nanna.uuid,
-            // });
-        }, 1000);
     }
 
     async reset() {

@@ -1,3 +1,7 @@
+// TODO: custom camera position with activeNode..if they zoom out it should keep that zoom
+// TODO: we could technically highlight links that won't be found, and attempt to generate them..could be cool
+// TODO: More control over prompt generation. Unlocks more creativity and use cases
+
 - feature complete
     recordings
     cache API requests
@@ -16,6 +20,7 @@ after beta
     content content content
     cached default queries
     copy & paste
+    light mode
 
 editor
     drag and drop reorder nodes / hyperedges

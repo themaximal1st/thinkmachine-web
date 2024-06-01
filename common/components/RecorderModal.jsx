@@ -32,6 +32,22 @@ export default class RecorderModal extends React.Component {
         };
     }
 
+    get animation() {
+        return this.props.animation;
+    }
+
+    get toggleAnimation() {
+        return this.props.toggleAnimation;
+    }
+
+    get reloadData() {
+        return this.props.reloadData;
+    }
+
+    get graphRef() {
+        return this.props.graphRef;
+    }
+
     componentDidMount() {
         this.recorder = new Recorder();
         this.recorder.onstart = this.handleRecorderStart.bind(this);
@@ -52,6 +68,12 @@ export default class RecorderModal extends React.Component {
             this.takeScreenshot();
         } else if (e.key === "F2") {
             this.toggleRecord();
+        } else if (e.key === "F3") {
+            RecorderShots.orbit(this);
+            // } else if (e.key === "F4") {
+            //     RecorderShots.flyby(this);
+            // } else if (e.key === "F5") {
+            //     RecorderShots.zoom(this);
         }
     }
 
@@ -159,6 +181,8 @@ export default class RecorderModal extends React.Component {
     }
 
     render() {
+        return;
+
         if (!this.state.show) {
             return (
                 <div id="recorder">

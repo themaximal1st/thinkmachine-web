@@ -50,13 +50,13 @@ export default class RecorderShots {
                 if (cameraPosition.z < initialZ * -1) {
                     clearInterval(interval);
                     app.recorder.stop();
-                    app.asyncSetState({ isAnimating: false });
+                    // app.asyncSetState({ isAnimating: false });
                     return resolve();
                 }
-                await app.zoom(-1);
+                await this.zoom(app.graphRef, -1);
             }, 10);
 
-            await app.asyncSetState({ isAnimating: true });
+            // await app.asyncSetState({ isAnimating: true });
 
             app.recorder.videoType = app.state.videoType;
             app.recorder.start();
@@ -89,36 +89,42 @@ export default class RecorderShots {
                     console.log("DONE!");
                     clearInterval(interval);
                     app.recorder.stop();
-                    app.asyncSetState({ isAnimating: false });
+                    // app.asyncSetState({ isAnimating: false });
 
                     app.graphRef.current.cameraPosition(initialPosition, null, 500);
                     return resolve();
                 }
-                await app.zoom(-1);
+                await this.zoom(app.graphRef, -1);
             }, 10);
 
-            await app.asyncSetState({ isAnimating: true });
+            // await app.asyncSetState({ isAnimating: true });
 
             app.recorder.videoType = app.state.videoType;
             app.recorder.start();
         });
     }
 
+    zoom(graphRef, amount = 0) {
+        const cameraPosition = graphRef.current.cameraPosition();
+        graphRef.current.cameraPosition({ z: cameraPosition.z + amount });
+    }
+
     static needsOrbit(app) {
+        // console.log("NEEDS ORBIT", app.state.graphType);
         if (app.recorder.recording) {
             console.log("already recording");
             return false;
         }
 
-        if (app.state.graphType !== "3d") {
-            console.log("needs 3d mode");
-            return false;
-        }
+        // if (app.state.graphType !== "3d") {
+        //     console.log("needs 3d mode");
+        //     return false;
+        // }
 
-        if (app.state.controlType !== "orbit") {
-            console.log("needs orbit mode");
-            return false;
-        }
+        // if (app.state.controlType !== "orbit") {
+        //     console.log("needs orbit mode");
+        //     return false;
+        // }
 
         return true;
     }

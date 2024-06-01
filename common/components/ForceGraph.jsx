@@ -5,15 +5,18 @@ import Settings from "@lib/Settings";
 import Camera from "@lib/Camera";
 import * as utils from "@lib/utils";
 import RecorderModal from "@components/RecorderModal";
+import Animation from "@lib/Animation";
 
 export default class ForceGraph extends React.Component {
     constructor() {
         super(...arguments);
         this.graphRef = React.createRef();
         this.camera = new Camera(this.graphRef);
+        this.animation = new Animation(this.graphRef);
         this.recorder = null;
         this.state = {
             connectMode: false,
+            isAnimating: false,
             activeMode: "Explain",
             hideLabels: Settings.get("hideLabels", false),
             graphType: Settings.graphType,
@@ -72,6 +75,18 @@ export default class ForceGraph extends React.Component {
         this.setState({ connectMode });
     }
 
+    toggleAnimation(val) {
+        const isAnimating = val === undefined ? !this.state.isAnimating : val;
+
+        if (isAnimating) {
+            this.animation.start();
+        } else {
+            this.animation.stop();
+        }
+
+        this.setState({ isAnimating });
+    }
+
     render() {
         const props = {
             ...defaultProps,
@@ -92,7 +107,13 @@ export default class ForceGraph extends React.Component {
                 className={this.state.connectMode ? "cursor-crosshair" : ""}>
                 {this.is2D && <ForceGraph2D {...props} />}
                 {this.is3D && <ForceGraph3D {...props} />}
-                <RecorderModal thinkabletype={this.props.thinkabletype} />
+                <RecorderModal
+                    thinkabletype={this.props.thinkabletype}
+                    animation={this.animation}
+                    toggleAnimation={this.toggleAnimation.bind(this)}
+                    graphRef={this.graphRef}
+                    reloadData={this.props.reloadData.bind(this)}
+                />
             </div>
         );
     }
