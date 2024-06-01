@@ -22,6 +22,10 @@ export default class Component {
         return;
     }
 
+    unload() {
+        return;
+    }
+
     wrap(div) {
         const obj = new CSS2DObject(div);
         const group = new Three.Group();

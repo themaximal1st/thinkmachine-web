@@ -3,13 +3,10 @@ import * as Icons from "@assets/Icons";
 
 export default class Context extends Component {
     code() {
-        const node = this.props.thinkabletype.nodeByUUID(this.props.activeNodeUUID);
-        const context = node.context(this.props.graphData);
-
         return (
             <div id="context" className="group">
                 <div id="context-prev">
-                    {context.prev.map((node) => (
+                    {this.props.context.prev.map((node) => (
                         <button key={`prev-${node.uuid}`} data-uuid={node.uuid}>
                             <label className="invisible group-hover:visible pointer-events-none">
                                 {node.symbol}
@@ -19,7 +16,7 @@ export default class Context extends Component {
                     ))}
                 </div>
                 <div id="context-next">
-                    {context.next.map((node) => (
+                    {this.props.context.next.map((node) => (
                         <button key={`next-${node.uuid}`} data-uuid={node.uuid}>
                             {Icons.ChevronRight(6)}
                             <label className="invisible group-hover:visible pointer-events-none">

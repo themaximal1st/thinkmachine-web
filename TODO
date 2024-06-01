@@ -1,12 +1,15 @@
-Better mobile web support
-navigate through node-select with arrow keys
-more toast notifications to show what's happening (generate)
-light mode
 keyboard shortcuts
-
+autocomplete
 onboarding
     tutorial
     default queries (cached)
+light mode
+
+
+
+Better mobile web support
+
+
 caching
 admin
 rate limiting
@@ -19,13 +22,13 @@ recordings
 VR
 animations
 fly mode
-autocomplete
 copy & paste
 
 docs
 content
 website
 drag and drop reorder nodes / hyperedges
+translate UI
 
 windows / mac apps
 business

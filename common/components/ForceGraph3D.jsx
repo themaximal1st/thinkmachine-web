@@ -11,6 +11,7 @@ import ActiveNode from "./active/ActiveNode";
 export default class ForceGraph3D extends React.Component {
     constructor(props) {
         super(props);
+        this.activeNodeUI = null;
         this.state = {
             media: new Map(),
             explains: new Map(),
@@ -24,6 +25,26 @@ export default class ForceGraph3D extends React.Component {
         bloomPass.radius = 1;
         bloomPass.threshold = 0;
         this.props.graphRef.current.postProcessingComposer().addPass(bloomPass);
+
+        window.addEventListener("keydown", this.handleKeyDown.bind(this), true);
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener("keydown", this.handleKeyDown.bind(this), true);
+    }
+
+    handleKeyDown(e) {
+        if (!this.props.activeNodeUUID) return;
+        if (e.target.tagName !== "BODY") return;
+
+        const context = this.nodeContext;
+        if (e.key === "ArrowLeft" && context.prev.length > 0) {
+            const node = context.prev[0];
+            this.props.setActiveNodeUUID(node.uuid);
+        } else if (e.key === "ArrowRight" && context.next.length > 0) {
+            const node = context.next[0];
+            this.props.setActiveNodeUUID(node.uuid);
+        }
     }
 
     setMedia(id, m = []) {
@@ -46,6 +67,15 @@ export default class ForceGraph3D extends React.Component {
 
     get clonedGraphData() {
         return JSON.parse(JSON.stringify(this.props.graphData));
+    }
+
+    get nodeContext() {
+        if (!this.props.activeNodeUUID) {
+            return null;
+        }
+
+        const node = this.props.thinkabletype.nodeByUUID(this.props.activeNodeUUID);
+        return node.context(this.props.graphData);
     }
 
     render() {
@@ -101,6 +131,11 @@ export default class ForceGraph3D extends React.Component {
     }
 
     nodeThreeObject(node) {
+        if (this.activeNodeUI && this.activeNodeUI.props.node.uuid === node.uuid) {
+            this.activeNodeUI.unload();
+            this.activeNodeUI = null;
+        }
+
         if (this.props.hideLabels) {
             return null;
         }
@@ -117,16 +152,17 @@ export default class ForceGraph3D extends React.Component {
 
         // leaving react here...
 
-        const activeNodeUI = new ActiveNode({
+        this.activeNodeUI = new ActiveNode({
             ...this.state,
             ...this.props,
             node,
             title,
+            context: this.nodeContext,
             setMedia: this.setMedia.bind(this),
             setExplain: this.setExplain.bind(this),
             setChat: this.setChat.bind(this),
         });
 
-        return activeNodeUI.render();
+        return this.activeNodeUI.render();
     }
 }

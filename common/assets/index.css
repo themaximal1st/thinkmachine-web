@@ -336,3 +336,24 @@
         @apply text-right -ml-[70px];
     }
 }
+
+#cac-feedback-wrapper {
+    display: block !important;
+    @apply text-white;
+}
+
+#cac-feedback-link {
+    @apply fixed bottom-2 right-3 z-50 text-white select-none opacity-40 hover:opacity-100 transition-all cursor-pointer pointer-events-auto;
+}
+
+#cac-feedback-form {
+    @apply fixed bottom-2 right-3;
+}
+
+#cac-feedback-form textarea {
+    @apply block w-full p-2 min-h-[150px] focus:outline-none rounded-t-lg text-black resize-none;
+}
+
+#cac-feedback-form input[type="submit"] {
+    @apply block w-full p-2 text-white rounded-b-lg bg-gray-900 hover:bg-gray-800 hover:cursor-pointer;
+}

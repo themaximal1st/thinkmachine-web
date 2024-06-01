@@ -54,4 +54,12 @@ export default class ActiveNode extends Component {
             this.props.setActiveNodeUUID(null);
         });
     }
+
+    unload() {
+        this.toolbar.unload();
+        if (this.panel) {
+            this.panel.unload();
+        }
+        this.context.unload();
+    }
 }

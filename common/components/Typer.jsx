@@ -1,4 +1,5 @@
 import React from "react";
+import toast from "react-hot-toast";
 
 import * as Icons from "@assets/Icons";
 import Settings from "@lib/Settings";
@@ -10,6 +11,31 @@ export default class Typer extends React.Component {
             mode: Settings.typerMode,
             hyperedge: [],
         };
+    }
+
+    componentDidMount() {
+        window.addEventListener("keydown", this.handleKeyDown.bind(this));
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener("keydown", this.handleKeyDown.bind(this));
+    }
+
+    async handleKeyDown(event) {
+        if (event.target.tagName !== "BODY") return;
+
+        if (!event.metaKey) return;
+        switch (event.key) {
+            case "1":
+            case "2":
+            case "3":
+            case "4":
+                this.setMode(this.buttons[event.key - 1][0]);
+                event.preventDefault();
+                break;
+            default:
+                break;
+        }
     }
 
     get buttons() {
@@ -59,7 +85,7 @@ export default class Typer extends React.Component {
         this.deleteHyperedgeIndex(index);
     }
 
-    handleKeyDown(event) {
+    handleInputKeyDown(event) {
         if (
             event.key === "Backspace" &&
             this.ref.current.value.length === 0 &&
@@ -128,9 +154,10 @@ export default class Typer extends React.Component {
             return;
         }
 
+        toast.success(`Generating ${input}`);
+
         this.ref.current.value = "";
 
-        console.log("Generate graph", input);
         let activeSymbol = this.props.activeNodeUUID
             ? this.props.thinkabletype.nodeByUUID(this.props.activeNodeUUID).symbol
             : null;
@@ -146,7 +173,6 @@ export default class Typer extends React.Component {
         );
 
         for await (const hyperedge of hyperedges) {
-            console.log("HYPEREDGE", hyperedge);
             this.props.thinkabletype.add(hyperedge);
         }
     }
@@ -195,7 +221,7 @@ export default class Typer extends React.Component {
                     </div>
                     <input
                         ref={this.ref}
-                        onKeyDown={this.handleKeyDown.bind(this)}
+                        onKeyDown={this.handleInputKeyDown.bind(this)}
                         placeholder={this.placeholder}
                         type="text"
                         id="typer-input"

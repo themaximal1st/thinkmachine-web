@@ -47,9 +47,11 @@ export default class App extends React.Component {
         window.removeEventListener("keydown", this.handleKeyDown.bind(this));
     }
 
-    handleKeyDown(event) {
+    async handleKeyDown(event) {
         if (event.key === "Escape" && this.state.activeNodeUUID) {
-            this.setActiveNodeUUID(null);
+            await this.setActiveNodeUUID(null);
+            await utils.delay(100);
+            await this.reloadData();
         }
     }
 
@@ -61,6 +63,7 @@ export default class App extends React.Component {
     }
 
     get activeNodeUUID() {
+        if (!this.state.activeNodeUUID) return null;
         return ThinkableType.trackUUID(this.state.activeNodeUUID, this.state.graphData);
     }
 

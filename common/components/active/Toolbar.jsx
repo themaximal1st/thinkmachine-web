@@ -94,6 +94,7 @@ export default class Toolbar extends Component {
     async handleGenerate() {
         try {
             const node = this.props.thinkabletype.nodeByUUID(this.props.node.uuid);
+            toast.success(`Generating from ${node.symbol}...`);
             const options = { model: Settings.llmModel };
             const symbols = await window.api.generateOne(
                 node.symbol,
@@ -101,8 +102,6 @@ export default class Toolbar extends Component {
                 node.hypergraph.symbols,
                 options
             );
-
-            console.log(symbols);
 
             const edge = this.props.thinkabletype.add(symbols);
             await this.props.setActiveNodeUUID(edge.lastNode.uuid);

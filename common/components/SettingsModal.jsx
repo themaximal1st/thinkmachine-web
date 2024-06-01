@@ -29,6 +29,9 @@ export default class SettingsModal extends React.Component {
     handleKeyDown(event) {
         if (event.key === "Escape" && this.state.show) {
             this.setState({ show: false });
+        } else if (event.key === "," && event.metaKey) {
+            this.setState({ show: !this.state.show });
+            event.preventDefault();
         }
     }
 
