@@ -4,9 +4,11 @@ import * as Icons from "@assets/Icons";
 export default class Editor extends React.Component {
     constructor(props) {
         super(props);
+        this.importRef = React.createRef();
         this.state = {
             show: false,
             activeUUID: null,
+            isImporting: false,
         };
     }
 
@@ -75,6 +77,13 @@ export default class Editor extends React.Component {
         }
     }
 
+    handleImport(e) {
+        const data = this.importRef.current.value;
+        this.importRef.current.value = "";
+        this.props.thinkabletype.parse(data);
+        this.setState({ isImporting: false });
+    }
+
     render() {
         if (!this.state.show) {
             return (
@@ -93,6 +102,38 @@ export default class Editor extends React.Component {
             );
         }
 
+        if (this.state.isImporting) {
+            return (
+                <div id="editor">
+                    <button
+                        onClick={() => this.setState({ show: false })}
+                        id="editor-icon"
+                        className="close">
+                        {Icons.CloseIcon(8)}
+                    </button>
+                    <div id="editor-content">
+                        <div id="editor-toolbar">
+                            <button
+                                onClick={() => this.setState({ isImporting: false })}
+                                id="editor-cancel-icon">
+                                {Icons.CloseIcon(5)}
+                                Cancel
+                            </button>
+                            <button
+                                onClick={this.handleImport.bind(this)}
+                                id="editor-import-icon">
+                                <div className="rotate-45">{Icons.CloseIcon(4)}</div>
+                                Import
+                            </button>
+                        </div>
+                        <textarea
+                            ref={this.importRef}
+                            placeholder="symbol1,symbol2,symbol3&#10;symbol4,symbol5,symbol6&#10;..."></textarea>
+                    </div>
+                </div>
+            );
+        }
+
         return (
             <div id="editor">
                 <button
@@ -106,6 +147,12 @@ export default class Editor extends React.Component {
                         <button onClick={() => this.removeAll()} id="editor-remove-icon">
                             {Icons.CloseIcon(5)}
                             Remove All
+                        </button>
+                        <button
+                            onClick={() => this.setState({ isImporting: true })}
+                            id="editor-import-icon">
+                            <div className="rotate-45">{Icons.CloseIcon(4)}</div>
+                            Import
                         </button>
                         <button
                             onClick={() => this.props.saveFile()}

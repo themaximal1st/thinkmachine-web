@@ -18,18 +18,13 @@ import ChatModal from "./ChatModal";
 
 // TODO: custom camera position with activeNode..if they zoom out it should keep that zoom
 // TODO: we could technically highlight links that won't be found, and attempt to generate them..could be cool
-
-// TODO: need new adder interface / generate....
-// TODO: start on UI — what is typer, what is overlay, what is new UI?
-// TODO: AI settings? typer where?
-
 // TODO: More control over prompt generation. Unlocks more creativity and use cases
 
 export default class App extends React.Component {
     constructor() {
         super(...arguments);
         this.typerRef = React.createRef();
-        const uuid = "current-uuid0";
+        const uuid = "thinkmachine";
         this.settings = new Settings(uuid);
         window.settings = this.settings;
         this.thinkabletype = new ThinkableType({

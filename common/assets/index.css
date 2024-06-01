@@ -307,6 +307,10 @@ body {
     @apply absolute right-0 p-1 pr-2 mt-[3px] outline-none;
 }
 
+#editor-content textarea {
+    @apply bg-gray-900/50 max-w-xl h-full max-h-64 w-full px-3 py-1 text-white rounded-xl outline-none;
+}
+
 #editor-toolbar {
     @apply flex items-center gap-4;
 }

@@ -129,7 +129,6 @@ export default class Hypergraph {
     }
 
     parse(input, options = {}) {
-        this.reset();
         const hyperedges = csv.parse(input.trim(), options.parse || {}).data;
         this.add(hyperedges);
     }
