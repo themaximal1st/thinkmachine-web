@@ -13,26 +13,21 @@ import Typer from "./Typer";
 import Editor from "./Editor";
 import Depth from "./Depth";
 import Filters from "./Filters";
+import ChatModal from "./ChatModal";
 
 // TODO: custom camera position with activeNode..if they zoom out it should keep that zoom
-
 // TODO: we could technically highlight links that won't be found, and attempt to generate them..could be cool
-
-// TODO: typer
-//          - add / adder context
-//          - generate many
-//          - chat
 
 // TODO: need new adder interface / generate....
 // TODO: start on UI — what is typer, what is overlay, what is new UI?
-// TODO: load uuid / new
-// TODO: settings? typer where?
+// TODO: AI settings? typer where?
 
 // TODO: More control over prompt generation. Unlocks more creativity and use cases
 
 export default class App extends React.Component {
     constructor() {
         super(...arguments);
+        this.typerRef = React.createRef();
         const uuid = "current-uuid0";
         this.settings = new Settings(uuid);
         window.settings = this.settings;
@@ -43,6 +38,7 @@ export default class App extends React.Component {
 
         this.state = {
             isLoading: false,
+            isChatModalOpen: false,
             dataHash: null,
             filters: [],
             activeNodeUUID: null,
@@ -150,8 +146,14 @@ export default class App extends React.Component {
         await this.reloadData();
     }
 
+    async toggleChatModal(val = undefined) {
+        await this.asyncSetState({
+            isChatModalOpen: val === undefined ? !this.state.isChatModalOpen : val,
+        });
+    }
+
     async saveFile() {
-        const name = `thinkmachine ${this.title} ${new Date().toISOString()}`;
+        const name = `${this.title} ${new Date().toISOString()}`;
         utils.saveFile(this.thinkabletype.export(), `${slugify(name)}.csv`);
     }
 
@@ -159,11 +161,13 @@ export default class App extends React.Component {
         return (
             <div className="">
                 <Typer
+                    typerRef={this.typerRef}
                     thinkabletype={this.thinkabletype}
                     activeNodeUUID={this.activeNodeUUID}
                     setActiveNodeUUID={this.setActiveNodeUUID.bind(this)}
                     filters={this.state.filters}
                     setFilters={this.setFilters.bind(this)}
+                    toggleChatModal={this.toggleChatModal.bind(this)}
                 />
 
                 <Interwingle
@@ -200,6 +204,19 @@ export default class App extends React.Component {
                     graphData={this.state.graphData}
                     reloadData={this.reloadData.bind(this)}
                     save={this.save.bind(this)}
+                />
+
+                <ChatModal
+                    typerRef={this.typerRef}
+                    isChatModalOpen={this.state.isChatModalOpen}
+                    toggleChatModal={this.toggleChatModal.bind(this)}
+                    activeNodeUUID={this.activeNodeUUID}
+                    reloadData={this.reloadData.bind(this)}
+                    setActiveNodeUUID={this.setActiveNodeUUID.bind(this)}
+                    graphData={this.state.graphData}
+                    thinkabletype={this.thinkabletype}
+                    filters={this.filters}
+                    setFilters={this.setFilters.bind(this)}
                 />
 
                 <div className="absolute inset-0 z-[999] pointer-events-none">

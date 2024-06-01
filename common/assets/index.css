@@ -201,7 +201,7 @@ body {
 }
 
 #chat {
-    @apply -m-3 p-3 mt-[2px] bg-gray-1000/50 rounded-b-xl;
+    @apply -m-3 p-3 pb-2 mt-[2px] bg-gray-1000/50 rounded-b-xl;
 }
 
 #chat input {
@@ -379,6 +379,10 @@ body {
         @apply list-disc pl-4 flex flex-col gap-1;
     }
 
+    ol > li {
+        @apply flex flex-col gap-1;
+    }
+
     a strong {
         @apply pointer-events-none;
     }
@@ -386,4 +390,12 @@ body {
 
 #connect-node.active {
     @apply bg-gray-800/50 text-white rounded-xl;
+}
+
+#chat-modal {
+    @apply absolute z-30 top-0 right-0 bg-red-500 w-96 h-96;
+}
+
+.draggable {
+    @apply border-2 border-red-500 z-50;
 }

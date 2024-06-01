@@ -12,7 +12,7 @@ Be concise, and if you need more information, ask for it.
 The knowledge graph is based on a hypergraph.
 The hypergraph is made up of hyperedges.
 Hyperedges are made up of symbols.
-Hyperedges are represented with " -> " arrows.
+Hyperedges connect symbols with a comma ","
 Each new line is a distinct hyperedge.
 
 You don't need to let the user know about the underlying hypergraph structure, they are looking at a visual representation of it.

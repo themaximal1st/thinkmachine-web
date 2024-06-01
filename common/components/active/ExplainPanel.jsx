@@ -1,6 +1,5 @@
 import Component from "./Component";
 import Markdown from "react-markdown";
-import * as utils from "@lib/utils";
 
 export default class ExplainPanel extends Component {
     code() {
@@ -105,11 +104,11 @@ export default class ExplainPanel extends Component {
         }
     }
 
+    // TODO: extract this out with ChatModal dupe
     async handleClickSlug(slug) {
         for (const n of this.props.graphData.nodes) {
             if (n.uuid === this.props.node.uuid) continue;
             const node = this.props.thinkabletype.nodeByUUID(n.uuid);
-            console.log("NODE", n, node);
             if (!node) continue;
             if (node.matches(slug)) {
                 this.props.setActiveNodeUUID(node.uuid);
@@ -125,8 +124,6 @@ export default class ExplainPanel extends Component {
                 const filters = this.props.filters;
                 filters.push({ node: node.uuid });
                 await this.props.setFilters(filters);
-
-                console.log("GRPAH DATA", this.props.graphData);
 
                 for (
                     let interwingle = this.props.thinkabletype.interwingle;
@@ -144,33 +141,8 @@ export default class ExplainPanel extends Component {
                 return;
             }
         }
-        // walk out graph until we find the slug?
 
         console.log("NO MATCH", slug);
-        /*
-        console.log("CLICKED SLUG", slug);
-        console.log("NODES", this.props.graphData.nodes);
-
-        const nodeIndex = utils.createIndex(this.props.graphData.nodes);
-
-        for (const node of this.props.thinkabletype.nodes) {
-            if (node.matches(slug) && node.uuid !== this.props.node.uuid) {
-                if (!nodeIndex.has(node.id)) {
-                    // this is a little hacky. explain will return connections in bridge mode..but we might not be in bridge mode
-                    // so the active node disappears. if we are trying to navigate to a node that doesn't exist, we need to change settings to see it
-                    this.props.thinkabletype.interwingle = 3; // bridge
-                    this.props.thinkabletype.depth += 1;
-                    const filters = this.props.filters;
-                    filters.push({ node: node.uuid });
-                    await this.props.setFilters(filters);
-                }
-
-                this.props.setActiveNodeUUID(node.uuid);
-                this.props.reloadData();
-                return;
-            }
-        }
-        */
     }
 
     async handleChat(content) {

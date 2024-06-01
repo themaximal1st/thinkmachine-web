@@ -6,7 +6,6 @@ import Settings from "@lib/Settings";
 export default class Typer extends React.Component {
     constructor(props) {
         super(props);
-        this.ref = React.createRef();
         this.state = {
             mode: Settings.typerMode,
             hyperedge: [],
@@ -22,6 +21,10 @@ export default class Typer extends React.Component {
         ];
     }
 
+    get ref() {
+        return this.props.typerRef;
+    }
+
     isMode(mode) {
         return this.state.mode === mode;
     }
@@ -29,6 +32,7 @@ export default class Typer extends React.Component {
     setMode(mode) {
         this.setState({ mode });
         Settings.typerMode = mode;
+        this.ref.current.value = "";
     }
 
     get placeholder() {
@@ -167,7 +171,7 @@ export default class Typer extends React.Component {
     }
 
     chatGraph(input) {
-        console.log("Chat graph", input);
+        this.props.toggleChatModal(true);
     }
 
     render() {
