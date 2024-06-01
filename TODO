@@ -2,8 +2,8 @@
     settings
         new
         save
-    typer
     recordings
+    cache API requests
 
 - thinking about a rewrite
  - more tests

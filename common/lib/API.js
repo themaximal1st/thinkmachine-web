@@ -6,6 +6,7 @@ import Explain from "./Explain.js"
 import Chat from "./Chat.js"
 import GenerateOne from "./GenerateOne.js";
 import GenerateMany from "./GenerateMany.js";
+import License from "./License.js";
 
 export default class API {
     async media(query) {
@@ -30,6 +31,10 @@ export default class API {
 
     async generateOne(activeSymbol, hyperedge, hyperedges, options = {}) {
         return await GenerateOne(activeSymbol, hyperedge, hyperedges, options);
+    }
+
+    async license(license) {
+        return await License.check(license);
     }
 
     get methods() {

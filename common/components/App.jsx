@@ -11,6 +11,7 @@ import ForceGraph from "./ForceGraph";
 import Interwingle from "./Interwingle";
 import Typer from "./Typer";
 import Editor from "./Editor";
+import SettingsModal from "./SettingsModal";
 import Depth from "./Depth";
 import Filters from "./Filters";
 import ChatModal from "./ChatModal";
@@ -101,13 +102,12 @@ export default class App extends React.Component {
             // await this.asyncSetState({
             //     activeNodeUUID: this.state.graphData.nodes[18].uuid,
             // });
-
             // await this.setFilters([{ node: this.state.graphData.nodes[18].uuid }]);
-            await this.setFilters([["Nanna"]]);
-            const nanna = this.thinkabletype.get(["Nanna"]).nodes[1];
-            await this.asyncSetState({
-                activeNodeUUID: nanna.uuid,
-            });
+            // await this.setFilters([["Nanna"]]);
+            // const nanna = this.thinkabletype.get(["Nanna"]).nodes[1];
+            // await this.asyncSetState({
+            //     activeNodeUUID: nanna.uuid,
+            // });
         }, 1000);
     }
 
@@ -194,6 +194,8 @@ export default class App extends React.Component {
                     reloadData={this.reloadData.bind(this)}
                     saveFile={this.saveFile.bind(this)}
                 />
+
+                <SettingsModal />
 
                 <ForceGraph
                     thinkabletype={this.thinkabletype}

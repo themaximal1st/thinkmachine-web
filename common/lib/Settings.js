@@ -31,6 +31,9 @@ export default class Settings extends LocalStorage {
 
     static get llmModel() { return Settings.get("llmModel", Settings.defaultValues.llmModel) }
     static set llmModel(val) { Settings.set("llmModel", val) }
+
+    static get license() { return Settings.get("license", "") }
+    static set license(val) { Settings.set("license", val) }
 }
 
 window.Settings = Settings;
