@@ -1,19 +1,6 @@
 - feature complete
-    settings
-        new
-        save
     recordings
     cache API requests
-
-- thinking about a rewrite
- - more tests
- - more done client side and not through API..actually have access to ThinkableType on client side
- - "." in symbol names is very cumbersome
- - translating between thinkabletype nodes and forcegraph nodes adds complexity
- - find way to get rid of bridge entirely
- - sane simple API, everything done locally, calls to remote server for settings and certain actions
- - get rid of App.jsx monolith, push state to edges
- - consistent id through interwingle levels. push to closest one
 
 beta
     beta.thinkmachine.com
@@ -33,13 +20,12 @@ after beta
 editor
     drag and drop reorder nodes / hyperedges
 
-
 eventually
     obsidian plugin
 
-
 bug
     chat doesn't know what interwingle mode we're in...we should teach it out think machine works so it can integrate better
+    every once and a while drag and drop gets weird with CSSObject
 
 business
     API integration
@@ -50,14 +36,9 @@ good ideas
     forward / back button
 
 
-
-
 - it should be more generative. when a link doesn't exist, generate it
 - remove markdown linking...do it dynamically based on embeddings? or switch to symbols and generate from there
-- business: integrate 3rd party data easily
 
-new UX
- - embed external media / search google / youtube for references?
 
 - how to recenter camera? is node-select a mode?
 - navigate through node-select with arrow keys
