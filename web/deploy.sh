@@ -1,6 +1,6 @@
 #!/bin/bash
 
-APP_NAME="app.thinkmachine.com"
+APP_NAME="beta.thinkmachine.com"
 
 # Check if the first argument is "--deploy"
 if [[ $1 == "--deploy" ]]; then
