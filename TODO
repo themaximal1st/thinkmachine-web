@@ -1,29 +1,46 @@
+Better mobile web support
+navigate through node-select with arrow keys
+more toast notifications to show what's happening (generate)
+light mode
+keyboard shortcuts
+
+onboarding
+    tutorial
+    default queries (cached)
+caching
+admin
+rate limiting
+electron
+    multiple tabs
+    custom LLM
+
+recordings
+2D
+VR
+animations
+fly mode
+autocomplete
+copy & paste
+
+docs
+content
+website
+drag and drop reorder nodes / hyperedges
+
+windows / mac apps
+business
+    API integration -> update business plan
+    tutorial walkthrough layover
+    embed
+
+
+
+
 // TODO: custom camera position with activeNode..if they zoom out it should keep that zoom
 // TODO: we could technically highlight links that won't be found, and attempt to generate them..could be cool
 // TODO: More control over prompt generation. Unlocks more creativity and use cases
 
-- feature complete
-    recordings
-    cache API requests
 
-beta
-    beta.thinkmachine.com
-    auto complete
-
-after beta
-    2D
-    VR
-    animations
-    fly mode
-    rate limit
-    web licenses
-    content content content
-    cached default queries
-    copy & paste
-    light mode
-
-editor
-    drag and drop reorder nodes / hyperedges
 
 eventually
     obsidian plugin
@@ -32,9 +49,6 @@ bug
     chat doesn't know what interwingle mode we're in...we should teach it out think machine works so it can integrate better
     every once and a while drag and drop gets weird with CSSObject
 
-business
-    API integration
-    tutorial walkthrough layover
 
 good ideas
     collapse / expand node
@@ -46,7 +60,6 @@ good ideas
 
 
 - how to recenter camera? is node-select a mode?
-- navigate through node-select with arrow keys
 - partial-text view—click to expand and see full text. click something and zoom around
 - bold/hyperlink symbols and go directly to them
 - buttons to manage stuff...add/edit/remove/link/generate/chat
@@ -60,18 +73,7 @@ good ideas
 - eventually embeddings can be used to highlight what's related at a distance
 - New content suggestion! A new node appears that suggests new content could be generated
 - image generation (automatically)
-- rethink whole UI
- - drop top "input modes"
- - clicking on canvas should bring up menu natively
- - keep interwingle
- - keep depth
- - rethink settings menu / icons at bottom
- - rethink context / search
- - weird idea: when you build context it builds multi-node selector. text from both. images from both. too granular?
- - weird idea: build a tutorial on the fly from the knowledge graph
- - weird idea: create a game / puzzle that can only be solved by exploring
- - function calling built in to chat..makes good suggestions (clippy)
-- click to generate just generates one, quickly. press multiple times to generate
+function calling built in to chat..makes good suggestions
  - generate automatically goes to next one? down the rabbit hole....
 - typer mode...for brainstorming and fast input..default is mouse
 
@@ -87,17 +89,7 @@ good ideas
 - linking think machine documents together --- creating a bigger web
 - sharing / publishing / letting other people edit your work
 
-- Right click a link & delete it (optionally delete a node)
-- Double click seems to duplicate. Add should be inline adder which adds both so it doesn't seem duplicated
 - The Help menu is empty (Windows / Mac)
-- Make ` key be more refined to allow links and nodes to be selected / edited / deleted
-
-Think Machine needs console UX refresh
-Simple UX
-People are confused about clicking and getting duplicates
-
-- click mode selects a node by defualt, brings up menu?
- - inline hyperedge adder/editor/delete/chat/generate
 
 website
 * Simplify purchase page (desktop -> custom models)
@@ -132,26 +124,19 @@ videos
 0.0.7
 * pro: private knowledge graphs
 * ui/ux refresh. make simple. context menu?
-* console refresh. delete a node. edit node. button for tilde key. button to clear current context
 * help: link video
 * help: keyboard shortcut menu
 * help: cac.app widget, enter email placeholder, more UI improvement, link to docs
 * fix zoom and rotate axis bugs
-* Better mobile web support
 
 0.0.8
 * obsidian / json canvas
-* notes, add text to a node
 * label a hyperedge
-* Depth without filter?
-* Right click to focus on a node (more info, popup, chat, edit, etc...) (next, next, next keyboard)
 * inline browser
 
 
 0.0.9
-* Simplify bridge sync/async concept between electron + web. should have same interface on both
 * Scraping Web (any url / pdf) very accurate generation
-* Make updates even smoother. Give nodes unique ID that never changes.
 * Integration tests
 * Multiple tabs/windows
 
