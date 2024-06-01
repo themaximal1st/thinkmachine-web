@@ -58,7 +58,6 @@ export default class SettingsModal extends React.Component {
 
     handleLicenseChange(event) {
         Settings.license = event.target.value;
-        console.log("VALIDATE LICENSE");
         this.validateLicense();
     }
 
@@ -77,8 +76,6 @@ export default class SettingsModal extends React.Component {
                 </div>
             );
         }
-
-        console.log("IS VALID", this.state.isValid);
 
         return (
             <Modal onClose={() => this.setState({ show: false })}>

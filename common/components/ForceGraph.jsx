@@ -4,12 +4,14 @@ import ForceGraph2D from "./ForceGraph2D";
 import Settings from "@lib/Settings";
 import Camera from "@lib/Camera";
 import * as utils from "@lib/utils";
+import RecorderModal from "@components/RecorderModal";
 
 export default class ForceGraph extends React.Component {
     constructor() {
         super(...arguments);
         this.graphRef = React.createRef();
         this.camera = new Camera(this.graphRef);
+        this.recorder = null;
         this.state = {
             connectMode: false,
             activeMode: "Explain",
@@ -90,6 +92,7 @@ export default class ForceGraph extends React.Component {
                 className={this.state.connectMode ? "cursor-crosshair" : ""}>
                 {this.is2D && <ForceGraph2D {...props} />}
                 {this.is3D && <ForceGraph3D {...props} />}
+                <RecorderModal thinkabletype={this.props.thinkabletype} />
             </div>
         );
     }
