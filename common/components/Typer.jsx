@@ -12,18 +12,47 @@ export default class Typer extends React.Component {
             mode: Settings.typerMode,
             showAutocomplete: false,
             hyperedge: [],
+            index: -1,
         };
     }
 
     componentDidMount() {
-        window.addEventListener("keydown", this.handleKeyDown.bind(this));
+        window.addEventListener("keydown", this.handleKeyDown.bind(this), true);
     }
 
     componentWillUnmount() {
-        window.removeEventListener("keydown", this.handleKeyDown.bind(this));
+        window.removeEventListener("keydown", this.handleKeyDown.bind(this), true);
     }
 
     async handleKeyDown(event) {
+        if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+            let index = this.state.index;
+            if (event.key === "ArrowDown") {
+                console.log("ARROW DOWN");
+                index += 1;
+            } else if (event.key === "ArrowUp") {
+                console.log("ARROW UP");
+                index -= 1;
+            }
+
+            if (index < -1) {
+                index = this.autocomplete.length - 1;
+            }
+
+            if (index >= this.autocomplete.length) {
+                index = -1;
+            }
+
+            this.setState({ index });
+        }
+
+        if (event.key === "Enter" && this.showAutoComplete) {
+            if (this.state.index !== -1) {
+                const symbol = this.autocomplete[this.state.index];
+                this.handleAutoComplete(symbol);
+            }
+        }
+
         if (!event.metaKey) return;
 
         switch (event.key) {
@@ -99,12 +128,10 @@ export default class Typer extends React.Component {
     }
 
     handleInputChange(event) {
-        if (this.state.mode === "Search") {
-            if (event.target.value.length === 0) {
-                this.setState({ showAutocomplete: false });
-            } else {
-                this.setState({ showAutocomplete: true });
-            }
+        this.setState({ index: -1 });
+
+        if (this.showAutoComplete) {
+            this.setState({ showAutocomplete: true });
         }
     }
 
@@ -214,7 +241,11 @@ export default class Typer extends React.Component {
 
     handleAutoComplete(symbol, adder = false) {
         this.ref.current.value = "";
-        this.searchGraph(symbol);
+        if (this.state.mode === "Add") {
+            this.addSymbol(symbol);
+        } else if (this.state.mode === "Search") {
+            this.searchGraph(symbol);
+        }
     }
 
     get autocomplete() {
@@ -228,7 +259,8 @@ export default class Typer extends React.Component {
     }
 
     get showAutoComplete() {
-        return this.state.mode === "Search" && this.state.showAutocomplete;
+        if (!this.state.showAutocomplete) return false;
+        return this.state.mode === "Search" || this.state.mode === "Add";
     }
 
     render() {
@@ -304,6 +336,7 @@ export default class Typer extends React.Component {
                                 onClick={(e) =>
                                     this.handleAutoComplete(symbol, e.shiftKey)
                                 }
+                                className={this.state.index === index ? "active" : ""}
                                 key={index}>
                                 {symbol}
                             </button>

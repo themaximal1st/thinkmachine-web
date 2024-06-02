@@ -369,6 +369,11 @@
 
     button {
         @apply bg-gray-1000/80 text-white p-3 w-auto min-w-60 max-w-96 cursor-pointer pointer-events-auto rounded-xl transition-all outline-none;
+
+        &.active {
+            @apply bg-red-500;
+        }
+
         &:hover {
             @apply bg-gray-900/80;
         }
