@@ -27,6 +27,7 @@
         "@themaximalist/keygen.js": "^0.0.4",
         "@themaximalist/llm.js": "^0.6.5",
         "@themaximalist/thinkabletype": "^0.2.0",
+        "classnames": "^2.5.1",
         "debug": "^4.3.4",
         "electron-log": "^5.1.2",
         "electron-updater": "^6.1.8",

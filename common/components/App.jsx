@@ -2,6 +2,7 @@ import React from "react";
 import ThinkableType from "@lib/thinkabletype";
 import { Toaster } from "react-hot-toast";
 import slugify from "slugify";
+import classNames from "classnames";
 
 import Settings from "@lib/Settings";
 import * as utils from "@lib/utils";
@@ -77,6 +78,10 @@ export default class App extends React.Component {
         }
     }
 
+    get isEmpty() {
+        return this.thinkabletype.hyperedges.length === 0;
+    }
+
     async onDataUpdate(event) {
         if (this.state.isLoading) {
             return;
@@ -141,8 +146,14 @@ export default class App extends React.Component {
 
     render() {
         return (
-            <div className="">
+            <div
+                className={classNames({
+                    empty: this.isEmpty,
+                    desktop: utils.isDesktop(),
+                    web: utils.isWeb(),
+                })}>
                 <Typer
+                    isEmpty={this.isEmpty}
                     typerRef={this.typerRef}
                     thinkabletype={this.thinkabletype}
                     activeNodeUUID={this.activeNodeUUID}

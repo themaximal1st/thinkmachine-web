@@ -89,11 +89,11 @@
 }
 
 #typer-toolbar {
-    @apply flex items-center gap-2;
+    @apply flex items-center gap-2 justify-center;
 }
 
 #typer-input {
-    @apply py-2 bg-gray-1000 text-base text-center rounded-xl w-full outline-none text-white px-3 opacity-60 transition-all;
+    @apply py-2 bg-gray-1000 text-base text-center rounded-xl w-full outline-none text-white px-3 opacity-60 transition-all min-w-96;
 
     &:focus {
         @apply opacity-100;
@@ -377,5 +377,32 @@
         &:hover {
             @apply bg-gray-900/80;
         }
+    }
+}
+
+.empty #typer {
+    @apply bottom-0;
+}
+
+.empty #interwingle {
+    @apply hidden;
+}
+
+#logo {
+    @apply hidden;
+}
+
+.empty #logo {
+    @apply block;
+}
+
+#examples {
+    @apply hidden;
+}
+
+.empty #examples {
+    @apply flex flex-wrap text-white items-center gap-1 w-full max-w-lg justify-center text-xs mt-2;
+    a {
+        @apply px-1 opacity-50 hover:opacity-100 cursor-pointer transition-all;
     }
 }

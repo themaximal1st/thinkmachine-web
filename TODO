@@ -1,7 +1,14 @@
+light mode
+recordings
+
+proper backend
+users
+rate limiting
+caching
+
 onboarding
     tutorial
     default queries (cached)
-light mode
 
 
 
@@ -15,7 +22,6 @@ electron
     multiple tabs
     custom LLM
 
-recordings
 2D
 VR
 animations

@@ -12,6 +12,7 @@
     "dependencies": {
         "@themaximalist/keygen.js": "^0.0.4",
         "@themaximalist/llm.js": "^0.6.5",
+        "classnames": "^2.5.1",
         "cookie-parser": "^1.4.6",
         "debug": "^4.3.4",
         "dotenv-extended": "^2.9.0",

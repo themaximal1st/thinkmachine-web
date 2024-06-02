@@ -110,3 +110,20 @@ export function downloadImage(data, filename = "untitled.png") {
     a.click();
 }
 
+
+
+export function edition() {
+    if (typeof process !== 'undefined' && process.versions && process.versions.hasOwnProperty('electron')) {
+        return "electron";
+    }
+
+    return "web"
+}
+
+export function isWeb() {
+    return edition() === "web";
+}
+
+export function isDesktop() {
+    return edition() === "electron";
+}

@@ -1,8 +1,10 @@
 import React from "react";
 import toast from "react-hot-toast";
 import { matchSorter } from "match-sorter";
+import * as utils from "@lib/utils";
 
 import * as Icons from "@assets/Icons";
+import Logo from "@assets/logo.png";
 import Settings from "@lib/Settings";
 
 export default class Typer extends React.Component {
@@ -22,6 +24,37 @@ export default class Typer extends React.Component {
 
     componentWillUnmount() {
         window.removeEventListener("keydown", this.handleKeyDown.bind(this), true);
+    }
+
+    get examples() {
+        return [
+            "Machine Learning",
+            "Ancient Sumerians",
+            "Quantum Physics",
+            "Artificial Intelligence",
+            "Neuroscience",
+            "Philosophy",
+            "Mathematics",
+            "History",
+            "Biology",
+            "Chemistry",
+            "Physics",
+            "Astronomy",
+            "Astrology",
+            "Psychology",
+        ];
+    }
+
+    get mode() {
+        if (this.props.isEmpty) {
+            if (this.state.mode === "Add" || this.state.mode === "Generate") {
+                return this.state.mode;
+            }
+
+            return "Generate";
+        }
+
+        return this.state.mode;
     }
 
     async handleKeyDown(event) {
@@ -69,6 +102,13 @@ export default class Typer extends React.Component {
     }
 
     get buttons() {
+        if (this.props.isEmpty) {
+            return [
+                ["Add", Icons.AddIcon(4)],
+                ["Generate", Icons.GenerateIcon(4)],
+            ];
+        }
+
         return [
             ["Add", Icons.AddIcon(4)],
             ["Generate", Icons.GenerateIcon(4)],
@@ -82,7 +122,7 @@ export default class Typer extends React.Component {
     }
 
     isMode(mode) {
-        return this.state.mode === mode;
+        return this.mode === mode;
     }
 
     setMode(mode) {
@@ -92,7 +132,7 @@ export default class Typer extends React.Component {
     }
 
     get placeholder() {
-        switch (this.state.mode) {
+        switch (this.mode) {
             case "Add":
                 return "Add a new symbol";
             case "Generate":
@@ -117,7 +157,7 @@ export default class Typer extends React.Component {
 
     handleInputKeyDown(event) {
         if (
-            this.state.mode === "Add" &&
+            this.mode === "Add" &&
             event.key === "Backspace" &&
             this.ref.current.value.length === 0 &&
             this.state.hyperedge.length > 0
@@ -140,7 +180,7 @@ export default class Typer extends React.Component {
 
         const input = this.ref.current.value;
 
-        switch (this.state.mode) {
+        switch (this.mode) {
             case "Add":
                 this.addSymbol(input);
                 break;
@@ -241,9 +281,9 @@ export default class Typer extends React.Component {
 
     handleAutoComplete(symbol, adder = false) {
         this.ref.current.value = "";
-        if (this.state.mode === "Add") {
+        if (this.mode === "Add") {
             this.addSymbol(symbol);
-        } else if (this.state.mode === "Search") {
+        } else if (this.mode === "Search") {
             this.searchGraph(symbol);
         }
     }
@@ -260,7 +300,7 @@ export default class Typer extends React.Component {
 
     get showAutoComplete() {
         if (!this.state.showAutocomplete) return false;
-        return this.state.mode === "Search" || this.state.mode === "Add";
+        return this.mode === "Search" || this.mode === "Add";
     }
 
     render() {
@@ -269,13 +309,23 @@ export default class Typer extends React.Component {
         return (
             <>
                 <div id="typer">
+                    <a
+                        id="logo"
+                        target={utils.isDesktop() ? "_blank" : "_self"}
+                        href="https://thinkmachine.com">
+                        <img
+                            src={Logo}
+                            className="max-w-lg w-full pointer-events-auto px-8"
+                            title="Think Machine — Multidimensional Mind Mapper"
+                        />
+                    </a>
                     <form
                         onSubmit={this.handleSubmit.bind(this)}
                         className="flex flex-col gap-2">
                         <div id="typer-toolbar">
                             {this.buttons.map(([label, icon], idx) => (
                                 <button
-                                    className={this.state.mode === label ? "active" : ""}
+                                    className={this.mode === label ? "active" : ""}
                                     onClick={() => this.setMode(label)}
                                     type="button"
                                     key={`${idx}-${label}`}
@@ -325,6 +375,13 @@ export default class Typer extends React.Component {
                             Submit
                         </button>
                     </form>
+                    <div id="examples">
+                        {this.examples.map((symbol, index) => (
+                            <a onClick={() => this.generateGraph(symbol)} key={index}>
+                                {symbol}
+                            </a>
+                        ))}
+                    </div>
                 </div>
 
                 <div
