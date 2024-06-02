@@ -46,8 +46,6 @@ Please return the hyperedges now—use your discrection to generate as many as y
 
     options.stream = true;
 
-    console.log(prompt);
-
     const response = await LLM(prompt, options);
 
     let buffer = "";
@@ -57,8 +55,11 @@ Please return the hyperedges now—use your discrection to generate as many as y
             const lines = buffer.split("\n");
             buffer = lines.pop();
             for (const line of lines) {
-                console.log("LINE", line);
-                yield csv.parse(line.trim()).data;
+                const hyperedges = csv.parse(line.trim()).data.map(hyperedge => {
+                    return hyperedge.map(symbol => symbol.trim());
+                });
+
+                yield hyperedges;
             }
         }
     }

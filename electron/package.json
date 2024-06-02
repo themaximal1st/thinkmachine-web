@@ -34,6 +34,7 @@
         "jsdom": "^24.0.0",
         "ldrs": "^1.0.1",
         "localforage": "^1.10.0",
+        "match-sorter": "^6.3.4",
         "public-ip": "^6.0.1",
         "react-force-graph": "^1.44.3",
         "react-hot-toast": "^2.4.1",

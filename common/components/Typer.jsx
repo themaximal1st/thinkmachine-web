@@ -1,5 +1,6 @@
 import React from "react";
 import toast from "react-hot-toast";
+import { matchSorter } from "match-sorter";
 
 import * as Icons from "@assets/Icons";
 import Settings from "@lib/Settings";
@@ -9,6 +10,7 @@ export default class Typer extends React.Component {
         super(props);
         this.state = {
             mode: Settings.typerMode,
+            showAutocomplete: false,
             hyperedge: [],
         };
     }
@@ -22,9 +24,8 @@ export default class Typer extends React.Component {
     }
 
     async handleKeyDown(event) {
-        if (event.target.tagName !== "BODY") return;
-
         if (!event.metaKey) return;
+
         switch (event.key) {
             case "1":
             case "2":
@@ -87,12 +88,23 @@ export default class Typer extends React.Component {
 
     handleInputKeyDown(event) {
         if (
+            this.state.mode === "Add" &&
             event.key === "Backspace" &&
             this.ref.current.value.length === 0 &&
             this.state.hyperedge.length > 0
         ) {
             this.deleteHyperedgeIndex(this.state.hyperedge.length - 1);
             return;
+        }
+    }
+
+    handleInputChange(event) {
+        if (this.state.mode === "Search") {
+            if (event.target.value.length === 0) {
+                this.setState({ showAutocomplete: false });
+            } else {
+                this.setState({ showAutocomplete: true });
+            }
         }
     }
 
@@ -200,58 +212,105 @@ export default class Typer extends React.Component {
         this.props.toggleChatModal(true);
     }
 
+    handleAutoComplete(symbol, adder = false) {
+        this.ref.current.value = "";
+        this.searchGraph(symbol);
+    }
+
+    get autocomplete() {
+        if (!this.showAutoComplete) return [];
+
+        const haystack = Array.from(this.props.thinkabletype.uniqueSymbols);
+        const needle = this.ref.current.value;
+        if (!needle) return haystack; // limit?
+
+        return matchSorter(haystack, needle);
+    }
+
+    get showAutoComplete() {
+        return this.state.mode === "Search" && this.state.showAutocomplete;
+    }
+
     render() {
+        const autocomplete = this.autocomplete;
+
         return (
-            <div id="typer">
-                <form
-                    onSubmit={this.handleSubmit.bind(this)}
-                    className="flex flex-col gap-2">
-                    <div id="typer-toolbar">
-                        {this.buttons.map(([label, icon], idx) => (
+            <>
+                <div id="typer">
+                    <form
+                        onSubmit={this.handleSubmit.bind(this)}
+                        className="flex flex-col gap-2">
+                        <div id="typer-toolbar">
+                            {this.buttons.map(([label, icon], idx) => (
+                                <button
+                                    className={this.state.mode === label ? "active" : ""}
+                                    onClick={() => this.setMode(label)}
+                                    type="button"
+                                    key={`${idx}-${label}`}
+                                    value={label}>
+                                    {icon}
+                                    {label}
+                                </button>
+                            ))}
+                        </div>
+                        <input
+                            ref={this.ref}
+                            onKeyDown={this.handleInputKeyDown.bind(this)}
+                            onChange={this.handleInputChange.bind(this)}
+                            onFocus={() => this.setState({ showAutocomplete: true })}
+                            onBlur={() => {
+                                // hack because blurring steals click event from button
+                                setTimeout(() => {
+                                    this.setState({ showAutocomplete: false });
+                                }, 200);
+                            }}
+                            placeholder={this.placeholder}
+                            type="text"
+                            id="typer-input"
+                        />
+                        {this.state.hyperedge.length > 0 && (
+                            <div id="typer-hyperedge">
+                                {this.state.hyperedge
+                                    .map((symbol, index) => (
+                                        <button
+                                            type="button"
+                                            onClick={(e) =>
+                                                this.handleDeleteHyperedgeIndex(e, index)
+                                            }
+                                            key={index}>
+                                            {symbol}
+                                        </button>
+                                    ))
+                                    .reduce((prev, curr) => [
+                                        prev,
+                                        <div key={`${Math.random()}-sep`}>→</div>,
+                                        curr,
+                                    ])}
+                                <div key={`${Math.random()}-sep`}>→</div>
+                            </div>
+                        )}
+                        <button type="submit" className="hidden" id="typer-submit">
+                            Submit
+                        </button>
+                    </form>
+                </div>
+
+                <div
+                    id="autocomplete"
+                    className={this.showAutoComplete ? "" : "invisible"}>
+                    <div className="scroll">
+                        {autocomplete.map((symbol, index) => (
                             <button
-                                className={this.state.mode === label ? "active" : ""}
-                                onClick={() => this.setMode(label)}
-                                type="button"
-                                key={`${idx}-${label}`}
-                                value={label}>
-                                {icon}
-                                {label}
+                                onClick={(e) =>
+                                    this.handleAutoComplete(symbol, e.shiftKey)
+                                }
+                                key={index}>
+                                {symbol}
                             </button>
                         ))}
                     </div>
-                    <input
-                        ref={this.ref}
-                        onKeyDown={this.handleInputKeyDown.bind(this)}
-                        placeholder={this.placeholder}
-                        type="text"
-                        id="typer-input"
-                    />
-                    {this.state.hyperedge.length > 0 && (
-                        <div id="typer-hyperedge">
-                            {this.state.hyperedge
-                                .map((symbol, index) => (
-                                    <button
-                                        type="button"
-                                        onClick={(e) =>
-                                            this.handleDeleteHyperedgeIndex(e, index)
-                                        }
-                                        key={index}>
-                                        {symbol}
-                                    </button>
-                                ))
-                                .reduce((prev, curr) => [
-                                    prev,
-                                    <div key={`${Math.random()}-sep`}>→</div>,
-                                    curr,
-                                ])}
-                            <div key={`${Math.random()}-sep`}>→</div>
-                        </div>
-                    )}
-                    <button type="submit" className="hidden" id="typer-submit">
-                        Submit
-                    </button>
-                </form>
-            </div>
+                </div>
+            </>
         );
     }
 }
