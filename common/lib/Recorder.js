@@ -48,7 +48,9 @@ export default class Recorder {
 
         this.recorder = new MediaRecorder(this.stream, {
             mimeType: this.mimeType,
-            bitsPerSecond: 50 * 1024 * 1024,
+            // bitsPerSecond: 50 * 1024 * 1024,
+            bitsPerSecond: 40000000 // 4k
+            // 52428800
         });
 
         this.recorder.addEventListener("start", this.handleStart.bind(this), false);

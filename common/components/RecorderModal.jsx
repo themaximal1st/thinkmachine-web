@@ -170,10 +170,40 @@ export default class RecorderModal extends React.Component {
     }
 
     handleSubmit() {
-        console.log("SUBMIT");
+        console.log("SUBMIT", this.state.recordType);
+
+        switch (this.state.recordType) {
+            case "record":
+                this.toggleRecord();
+                break;
+            case "orbit":
+                RecorderShots.orbit(this);
+                break;
+            case "flyby":
+                RecorderShots.flyby(this);
+                break;
+            case "zoom":
+                RecorderShots.zoom(this);
+                break;
+        }
     }
 
     render() {
+        if (this.state.isRecording) {
+            return (
+                <div id="recorder">
+                    <button
+                        onClick={() => this.toggleRecord(false)}
+                        id="recording-icon"
+                        className="group">
+                        <div className="tooltip invisible group-hover:visible">
+                            Stop Recording
+                        </div>
+                    </button>
+                </div>
+            );
+        }
+
         if (!this.state.show) {
             return (
                 <div id="recorder">
