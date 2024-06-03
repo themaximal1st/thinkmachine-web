@@ -150,22 +150,11 @@ export default class RecorderModal extends React.Component {
             return;
         }
 
-        let extension;
-        let mimeType;
-
-        if (this.recorder.videoType === "webm") {
-            extension = "webm";
-            mimeType = "video/webm";
-        } else {
-            extension = "mp4";
-            mimeType = "video/mp4";
-        }
-
         const filename = slugify(
             `${this.title} ${this.state.recordType} ${new Date().toISOString()}`
         );
 
-        await saveFile(blob, `${filename}.${extension}`, mimeType);
+        await saveFile(blob, `${filename}.mp4`, "video/mp4");
         toast.success("Saved!");
         this.setState({ isRecording: false, isProcessing: false });
 

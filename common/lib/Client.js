@@ -21,7 +21,7 @@ export default class Client {
             edition: this.edition,
         };
 
-        const methods = ["media", "generateOne", "license"];
+        const methods = ["media", "generateOne", "license", "webmToMp4"];
 
         for (const method of methods) {
             api[method] = async (...args) => {
