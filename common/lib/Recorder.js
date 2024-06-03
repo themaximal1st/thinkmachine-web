@@ -1,6 +1,7 @@
 // TODO: Max size
 import { blobToBase64, base64ToBlob, downloadImage } from "@lib/utils";
 
+// records webm and converts to mp4
 export default class Recorder {
     constructor(canvas = null, options = {}) {
         this.canvas = canvas || Recorder.canvas;
@@ -92,10 +93,7 @@ export default class Recorder {
         try {
             const webmBuffer = await blobToBase64(webmBlob);
             const mp4Buffer = await window.api.webmToMp4(webmBuffer);
-            console.log("MP4BUFFER", mp4Buffer)
             const mp4Blob = await base64ToBlob(mp4Buffer, "video/mp4");
-            console.log("MP4BLOB", mp4Blob)
-
             await this.onfile(mp4Blob);
         } catch (e) {
             await this.onerror(e);
