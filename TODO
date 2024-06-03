@@ -1,5 +1,3 @@
-recordings
-
 multiple tabs...even on web....grab UUID from URL bar?
 
 proper backend
@@ -25,8 +23,9 @@ electron
 
 2D
 VR
-animations
 fly mode
+    animations
+    more recordings
 copy & paste
 
 docs
@@ -34,6 +33,7 @@ content
 website
 drag and drop reorder nodes / hyperedges
 translate UI
+
 
 windows / mac apps
 business
