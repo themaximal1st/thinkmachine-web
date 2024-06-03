@@ -15,7 +15,7 @@ export default class EditPanel extends Component {
                 <form className="flex items-center gap-1 w-full group">
                     <input
                         type="text"
-                        className="bg-transparent w-full text-white focus:outline-none px-2 peer"
+                        className="bg-transparent w-full text-gray-700 dark:text-white focus:outline-none px-2 peer"
                         placeholder="Symbol"
                         autoComplete="off"
                         data-1p-ignore
@@ -25,7 +25,7 @@ export default class EditPanel extends Component {
                     />
                     <button
                         type="submit"
-                        className="text-gray-300 hover:text-white transition-all p-2 outline-none flex items-center gap-1 uppercase tracking-wider text-xs">
+                        className="text-gray-400 dark:text-gray-300 hover:text-gray-700 dark:hover:text-white transition-all p-2 outline-none flex items-center gap-1 uppercase tracking-wider text-xs">
                         {Icons.CheckmarkIcon(4)}
                         {this.props.node.name ? "Rename" : "Save"}
                     </button>
@@ -33,19 +33,19 @@ export default class EditPanel extends Component {
 
                 <button
                     id="add-node"
-                    className="text-gray-300 hover:text-white transition-all p-2 outline-none flex items-center gap-1 uppercase tracking-wider text-xs">
+                    className="text-gray-400 dark:text-gray-300 hover:text-gray-700 dark:hover:text-white transition-all p-2 outline-none flex items-center gap-1 uppercase tracking-wider text-xs">
                     {Icons.AddNodeIcon(4)}
                     Add
                 </button>
                 <button
                     id="prepend-node"
-                    className="text-gray-300 hover:text-white transition-all p-2 outline-none flex items-center gap-1 uppercase tracking-wider text-xs">
+                    className="text-gray-400 dark:text-gray-300 hover:text-gray-700 dark:hover:text-white transition-all p-2 outline-none flex items-center gap-1 uppercase tracking-wider text-xs">
                     {Icons.PrependNodeIcon(4)}
                     Insert
                 </button>
                 <button
                     id="fork-node"
-                    className="text-gray-300 hover:text-white transition-all p-2 outline-none flex items-center gap-1 uppercase tracking-wider text-xs">
+                    className="text-gray-400 dark:text-gray-300 hover:text-gray-700 dark:hover:text-white transition-all p-2 outline-none flex items-center gap-1 uppercase tracking-wider text-xs">
                     {Icons.ForkIcon(4)}
                     Fork
                 </button>
@@ -53,7 +53,7 @@ export default class EditPanel extends Component {
                     id="connect-node"
                     className={`${
                         this.props.connectMode ? "active" : ""
-                    } text-gray-300 hover:text-white transition-all p-2 outline-none flex items-center gap-1 uppercase tracking-wider text-xs`}>
+                    } text-gray-400 dark:text-gray-300 hover:text-gray-700 dark:hover:text-white transition-all p-2 outline-none flex items-center gap-1 uppercase tracking-wider text-xs`}>
                     {Icons.ConnectIcon(4)}
                     Connect
                 </button>

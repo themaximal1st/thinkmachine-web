@@ -30,7 +30,7 @@ Please return your short summary as a single sentence or a few sentences.
 You don't need to return a greeting or any other text.
 Be direct—the user knows what they're looking at. You're not chatting—you're labeling.
 You don't to say anything like "in the context of" or "in the knowledge graph" or "without further context provided"
-Just label the thing directly.
+Just label the thing directly and trying to be as useful as possible in the shortest amount of words.
     `.trim();
 
     const response = await LLM(prompt, options);

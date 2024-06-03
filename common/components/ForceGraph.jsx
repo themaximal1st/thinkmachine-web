@@ -6,6 +6,7 @@ import Camera from "@lib/Camera";
 import * as utils from "@lib/utils";
 import RecorderModal from "@components/RecorderModal";
 import Animation from "@lib/Animation";
+import Color from "@lib/Color";
 
 export default class ForceGraph extends React.Component {
     constructor() {
@@ -23,6 +24,7 @@ export default class ForceGraph extends React.Component {
             width: window.innerWidth,
             height: window.innerHeight,
         };
+        this.handleResize = this.handleResize.bind(this);
     }
 
     get is2D() {
@@ -42,12 +44,12 @@ export default class ForceGraph extends React.Component {
     }
 
     componentDidMount() {
-        window.addEventListener("resize", this.handleResize.bind(this));
+        window.addEventListener("resize", this.handleResize);
         this.setupForces();
     }
 
     componentWillUnmount() {
-        window.removeEventListener("resize", this.handleResize.bind(this));
+        window.removeEventListener("resize", this.handleResize);
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -120,10 +122,10 @@ export default class ForceGraph extends React.Component {
 
     linkColor(link) {
         if (this.props.activeNodeUUID) {
-            return "rgba(255, 255, 255, 0.04)";
+            return utils.hexToRGBA(Color.textColor, 0.25);
         }
 
-        return link.color || "#333333";
+        return link.color || Color.textColor;
     }
 
     linkDirectionalArrowLength(link) {
@@ -212,14 +214,14 @@ export default class ForceGraph extends React.Component {
 }
 
 const defaultProps = {
-    backgroundColor: "#000000", // light mode vs dark mode
+    backgroundColor: Color.backgroundColor,
     showNavInfo: false,
     cooldownTicks: 100,
     linkDirectionalArrowRelPos: 1,
     linkCurvature: 0.05,
     linkCurveRotation: 0.5,
     linkWidth: 2,
-    linkDirectionalParticleColor: (link) => link.color || "#ffffff",
+    linkDirectionalParticleColor: (link) => link.color || Color.textColor,
     linkDirectionalParticleWidth: 2,
     linkDirectionalParticleSpeed: 0.0125,
     nodeLabel: (node) => "",
@@ -227,12 +229,12 @@ const defaultProps = {
 
 const defaultForces = {
     link: {
-        distance: 65,
+        distance: 100,
     },
     charge: {
-        strength: -130,
-        distanceMax: 300,
-        distanceMin: 10,
+        strength: -250,
+        distanceMax: 400,
+        distanceMin: 100,
     },
     center: {
         strength: 1,

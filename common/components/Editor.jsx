@@ -10,14 +10,15 @@ export default class Editor extends React.Component {
             activeUUID: null,
             isImporting: false,
         };
+        this.handleKeyDown = this.handleKeyDown.bind(this);
     }
 
     componentDidMount() {
-        window.addEventListener("keydown", this.handleKeyDown.bind(this));
+        window.addEventListener("keydown", this.handleKeyDown);
     }
 
     componentWillUnmount() {
-        window.removeEventListener("keydown", this.handleKeyDown.bind(this));
+        window.removeEventListener("keydown", this.handleKeyDown);
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -180,7 +181,7 @@ export default class Editor extends React.Component {
                                     />
                                     <button
                                         onClick={() => node.remove()}
-                                        className="delete-node invisible group-hover/node:visible peer-focus:visible">
+                                        className="delete-node invisible group-hover/node:visible peer-focus:visible text-gray-700 dark:text-white">
                                         {Icons.CloseIcon(5)}
                                     </button>
                                 </div>

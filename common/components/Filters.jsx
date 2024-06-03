@@ -27,7 +27,7 @@ export default class Filter extends React.Component {
         return (
             <div id="filters">
                 <div id="filters-content">
-                    <div className="text-white shadow-sm text-xs uppercase tracking-wider whitespace-nowrap">
+                    <div className="text-gray-600 dark:text-white shadow-sm text-xs uppercase tracking-wider whitespace-nowrap">
                         {this.props.filters.length > 1 ? "Filters" : "Filter"}
                     </div>
                     {this.props.filters.map((f, i) => {

@@ -16,14 +16,16 @@ export default class Typer extends React.Component {
             hyperedge: [],
             index: -1,
         };
+
+        this.handleKeyDown = this.handleKeyDown.bind(this);
     }
 
     componentDidMount() {
-        window.addEventListener("keydown", this.handleKeyDown.bind(this), true);
+        window.addEventListener("keydown", this.handleKeyDown);
     }
 
     componentWillUnmount() {
-        window.removeEventListener("keydown", this.handleKeyDown.bind(this), true);
+        window.removeEventListener("keydown", this.handleKeyDown);
     }
 
     get examples() {

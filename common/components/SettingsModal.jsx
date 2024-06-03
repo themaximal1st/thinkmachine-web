@@ -10,14 +10,16 @@ export default class SettingsModal extends React.Component {
             show: false,
             isValid: undefined,
         };
+
+        this.handleKeyDown = this.handleKeyDown.bind(this);
     }
 
     componentDidMount() {
-        window.addEventListener("keydown", this.handleKeyDown.bind(this));
+        window.addEventListener("keydown", this.handleKeyDown);
     }
 
     componentWillUnmount() {
-        window.removeEventListener("keydown", this.handleKeyDown.bind(this));
+        window.removeEventListener("keydown", this.handleKeyDown);
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -64,6 +66,11 @@ export default class SettingsModal extends React.Component {
         this.validateLicense();
     }
 
+    handleChangeLightMode(event) {
+        Settings.colorScheme = event.target.checked ? "light" : "dark";
+        window.location.reload();
+    }
+
     render() {
         if (!this.state.show) {
             return (
@@ -84,7 +91,7 @@ export default class SettingsModal extends React.Component {
             <Modal onClose={() => this.setState({ show: false })}>
                 <div id="settings-modal">
                     <h2>Settings</h2>
-                    <div className="flex flex-col gap-4">
+                    <div className="flex flex-col gap-6">
                         <label>
                             <span>LLM</span>
                             <select
@@ -97,6 +104,20 @@ export default class SettingsModal extends React.Component {
                                 ))}
                             </select>
                         </label>
+
+                        <label>
+                            <span>Light Mode</span>
+                            <div>
+                                <input
+                                    type="checkbox"
+                                    onChange={this.handleChangeLightMode.bind(this)}
+                                    checked={Settings.colorScheme === "light"}
+                                    className="sr-only peer"
+                                />
+                                <div className="relative w-11 h-6 bg-gray-200 outline-none  rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                            </div>
+                        </label>
+
                         <label className="large">
                             <span>License</span>
                             <input
@@ -125,17 +146,6 @@ export default class SettingsModal extends React.Component {
                     </div>
                 </div>
             </Modal>
-        );
-        return (
-            <div id="settings">
-                <button
-                    onClick={() => this.setState({ show: false })}
-                    id="settings-icon"
-                    className="close">
-                    {Icons.CloseIcon(8)}
-                </button>
-                <div id="settings-content">SETTINGS CONTENT GOES HERE</div>
-            </div>
         );
     }
 }

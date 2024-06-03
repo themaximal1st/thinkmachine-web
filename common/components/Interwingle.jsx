@@ -7,16 +7,21 @@ import Interwingle2 from "@assets/interwingle-2.png";
 import Interwingle3 from "@assets/interwingle-3.png";
 
 export default class Interwingle extends React.Component {
+    constructor(props) {
+        super(props);
+        this.handleKeyDown = this.handleKeyDown.bind(this);
+    }
+
     get interwingles() {
         return [Interwingle0, Interwingle1, Interwingle2, Interwingle3];
     }
 
     componentDidMount() {
-        window.addEventListener("keydown", this.handleKeyDown.bind(this));
+        window.addEventListener("keydown", this.handleKeyDown);
     }
 
     componentWillUnmount() {
-        window.removeEventListener("keydown", this.handleKeyDown.bind(this));
+        window.removeEventListener("keydown", this.handleKeyDown);
     }
 
     handleKeyDown(event) {

@@ -3,17 +3,18 @@ import React from "react";
 export default class Depth extends React.Component {
     constructor(props) {
         super(props);
+        this.handleKeyDown = this.handleKeyDown.bind(this);
     }
 
     componentDidMount() {
-        window.addEventListener("keydown", this.handleKeyDown.bind(this), true);
+        window.addEventListener("keydown", this.handleKeyDown);
     }
 
     componentWillUnmount() {
         console.log("RESET DEPTH");
         this.props.thinkabletype.depth = 0;
         this.props.thinkabletype.maxDepth = 0;
-        window.removeEventListener("keydown", this.handleKeyDown.bind(this), true);
+        window.removeEventListener("keydown", this.handleKeyDown);
     }
 
     async handleKeyDown(event) {

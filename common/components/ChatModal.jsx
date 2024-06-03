@@ -3,6 +3,7 @@ import { Rnd } from "react-rnd";
 import * as Icons from "@assets/Icons.jsx";
 import Markdown from "react-markdown";
 import slugify from "slugify";
+import Color from "@lib/Color";
 
 // TODO: refactor these to common components
 
@@ -119,7 +120,7 @@ export default class ChatModal extends React.Component {
         }
     }
 
-    linkContent(content, color) {
+    linkContent(content) {
         if (!content || content.length === 0) return "";
 
         return (
@@ -130,8 +131,7 @@ export default class ChatModal extends React.Component {
                             <a
                                 href={props.href}
                                 onClick={(e) => this.handleLinkClick(e, props.children)}
-                                className="pointer-events-auto cursor-pointer"
-                                style={{ color }}>
+                                className="pointer-events-auto cursor-pointer">
                                 {props.children}
                             </a>
                         );
@@ -168,10 +168,10 @@ export default class ChatModal extends React.Component {
                         ...position,
                     });
                 }}>
-                <div className="bg-gray-1000 h-full w-full overflow-hidden rounded-lg text-gray-50">
+                <div className="bg-gray-100 dark:bg-gray-1000 h-full w-full overflow-hidden rounded-lg text-gray-600 dark:text-gray-50">
                     <div className="flex flex-col justify-between h-full">
-                        <div className="p-2 bg-gray-1000 flex justify-between items-center">
-                            <div className="uppercase text-sm select-none tracking-widest font-medium text-gray-200 flex gap-2 items-center">
+                        <div className="p-2 bg-gray-100 dark:bg-gray-1000 flex justify-between items-center">
+                            <div className="uppercase text-sm select-none tracking-widest font-medium text-gray-600 dark:text-gray-200 flex gap-2 items-center">
                                 {Icons.ChatIcon(4)}
                                 CHAT
                             </div>
@@ -227,7 +227,7 @@ export default class ChatModal extends React.Component {
                                                         (no content)
                                                     </em>
                                                 )}
-                                            {this.linkContent(message.content, "#3cabf4")}
+                                            {this.linkContent(message.content)}
                                         </div>
                                     </div>
                                 );
@@ -240,13 +240,13 @@ export default class ChatModal extends React.Component {
                                 <input
                                     ref={this.ref}
                                     placeholder="Type your message here..."
-                                    className="w-full p-2 text-gray-50 rounded-b-lg bg-gray-900/30 focus:bg-gray-700/40 focus:outline-none nodrag placeholder:text-gray-400"
+                                    className="w-full p-2 text-gray-600 dark:text-gray-50 rounded-b-lg bg-gray-50/50 dark:bg-gray-900/30 focus:bg-gray-50/80 dark:focus:bg-gray-700/40 focus:outline-none nodrag placeholder:text-gray-400"
                                 />
                                 {!this.state.isChatting && (
                                     <input
                                         type="submit"
                                         value="→"
-                                        className="absolute text-white right-4 hover:cursor-pointer"
+                                        className="absolute text-gray-600 dark:text-white right-4 hover:cursor-pointer"
                                     />
                                 )}
                             </form>

@@ -30,6 +30,8 @@ export default class RecorderModal extends React.Component {
             recordType: "record",
             videoType: "webm",
         };
+
+        this.handleKeyDown = this.handleKeyDown.bind(this);
     }
 
     get animation() {
@@ -56,14 +58,18 @@ export default class RecorderModal extends React.Component {
         this.recorder.onfile = this.handleRecorderFile.bind(this);
         this.recorder.onerror = this.handleRecorderError.bind(this);
 
-        window.addEventListener("keydown", this.handleKeyDown.bind(this));
+        window.addEventListener("keydown", this.handleKeyDown);
     }
 
     componentWillUnmount() {
-        window.removeEventListener("keydown", this.handleKeyDown.bind(this));
+        window.removeEventListener("keydown", this.handleKeyDown);
     }
 
     handleKeyDown(e) {
+        console.log("KEY DOWN", e.key);
+        console.log(this);
+        return;
+
         if (e.key === "F1") {
             this.takeScreenshot();
         } else if (e.key === "F2") {
@@ -86,6 +92,8 @@ export default class RecorderModal extends React.Component {
             console.log("already recording");
             return;
         }
+
+        console.log("RECORD VIDEO");
 
         this.recorder.videoType = this.state.videoType;
         this.recorder.start();
@@ -113,19 +121,19 @@ export default class RecorderModal extends React.Component {
     }
 
     handleRecorderStart() {
-        console.log("STARTED RECORDING");
+        console.log("RECORDER: STARTED");
         toast.success("Recording started");
         this.setState({ isRecording: true });
     }
 
     handleRecorderStop() {
-        console.log("STOPPED RECORDING");
-        // toast.success("Recording stopped");
+        console.log("RECORDER: STOPPED");
+        toast.success("Recording stopped");
         this.setState({ isRecording: false });
     }
 
     handleRecorderProcess() {
-        console.log("PROCESSING");
+        console.log("RECORDER: PROCESSING");
         toast.success("Processing recording");
         this.setState({ isRecording: false, isProcessing: true });
     }
@@ -181,8 +189,6 @@ export default class RecorderModal extends React.Component {
     }
 
     render() {
-        return;
-
         if (!this.state.show) {
             return (
                 <div id="recorder">

@@ -28,7 +28,7 @@ export function ModalBackground(props) {
     return (
         <div
             onClick={handleClickOff}
-            className={`modal-bg bg-black/85 absolute inset-0 z-50 text-white flex justify-center items-center`}>
+            className={`modal-bg bg-white/85 dark:bg-black/85 absolute inset-0 z-50 text-white flex justify-center items-center`}>
             {props.children}
         </div>
     );
@@ -39,9 +39,9 @@ export default function Modal(props) {
 
     return (
         <ModalBackground {...props} onClose={onClose}>
-            <div className="modal bg-gray-1000/100 p-8 rounded-xl shadow-2xl relative flex flex-col justify-between max-w-2xl">
+            <div className="modal bg-white dark:bg-gray-1000 p-8 rounded-xl shadow-2xl relative flex flex-col justify-between max-w-2xl">
                 <a
-                    className="cursor-pointer absolute -top-5 -right-3 font-bold opacity-50 hover:opacity-100 transition-all"
+                    className="cursor-pointer text-black dark:text-white absolute -top-5 -right-3 font-bold opacity-50 hover:opacity-100 transition-all"
                     onClick={onClose}>
                     {Icons.CloseIcon()}
                 </a>

@@ -2,6 +2,8 @@ import { CSS2DRenderer } from "three/addons/renderers/CSS2DRenderer.js";
 import SpriteText from "three-spritetext";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
 import * as Three from "three";
+import Color from "@lib/Color";
+import * as utils from "@lib/utils";
 
 import { ForceGraph3D as ForceGraph3DComponent } from "react-force-graph";
 import Settings from "@lib/Settings";
@@ -17,20 +19,22 @@ export default class ForceGraph3D extends React.Component {
             explains: new Map(),
             chats: new Map(),
         };
+
+        this.handleKeyDown = this.handleKeyDown.bind(this);
     }
 
     componentDidMount() {
         const bloomPass = new UnrealBloomPass();
-        bloomPass.strength = 1.5;
-        bloomPass.radius = 1;
-        bloomPass.threshold = 0;
+        bloomPass.strength = Color.bloom.strength;
+        bloomPass.radius = Color.bloom.radius;
+        bloomPass.threshold = Color.bloom.threshold;
         this.props.graphRef.current.postProcessingComposer().addPass(bloomPass);
 
-        window.addEventListener("keydown", this.handleKeyDown.bind(this), true);
+        window.addEventListener("keydown", this.handleKeyDown);
     }
 
     componentWillUnmount() {
-        window.removeEventListener("keydown", this.handleKeyDown.bind(this), true);
+        window.removeEventListener("keydown", this.handleKeyDown);
     }
 
     handleKeyDown(e) {
@@ -94,7 +98,7 @@ export default class ForceGraph3D extends React.Component {
         const mesh = new Three.Mesh(
             new Three.SphereGeometry(1),
             new Three.MeshLambertMaterial({
-                color: "#000000",
+                color: Color.backgroundColor,
                 transparent: true,
                 opacity: 0.25,
             })
@@ -120,11 +124,13 @@ export default class ForceGraph3D extends React.Component {
 
         if (this.props.activeNodeUUID) {
             if (this.props.activeNodeUUID === node.uuid) {
-                title.backgroundColor = "black";
+                title.backgroundColor = Color.backgroundColor;
             } else {
-                title.color = "rgba(255, 255, 255, 0.5)";
-                title.backgroundColor = "rgba(0, 0, 0, 0.5)";
+                title.color = utils.hexToRGBA(Color.textColor, 0.5);
+                title.backgroundColor = utils.hexToRGBA(Color.backgroundColor, 0.5);
             }
+        } else {
+            title.backgroundColor = Color.backgroundColor;
         }
 
         return title;

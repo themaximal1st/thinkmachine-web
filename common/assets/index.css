@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 #body {
-    @apply bg-black w-full;
+    @apply w-full;
 }
 
 #active-node-wrapper {
@@ -11,7 +11,7 @@
 }
 
 #active-node {
-    @apply w-[600px] ml-[-300px] bg-gray-1000 rounded-xl relative;
+    @apply w-[600px] ml-[-300px] bg-gray-50 dark:bg-gray-1000 rounded-xl relative;
 }
 
 #active-node-panel {
@@ -19,7 +19,7 @@
 }
 
 #active-node-close {
-    @apply absolute right-0 -mr-8 -mt-6 text-gray-500 hover:text-gray-300 cursor-pointer transition-all p-2;
+    @apply absolute right-0 -mr-8 -mt-6 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 cursor-pointer transition-all p-2;
 }
 
 #context-prev {
@@ -32,7 +32,7 @@
 
 #context-prev button,
 #context-next button {
-    @apply flex items-center gap-1 text-gray-700 hover:text-white cursor-pointer py-1 pointer-events-auto;
+    @apply flex items-center gap-1 text-gray-400 dark:text-gray-700 hover:text-gray-900 dark:hover:text-white cursor-pointer py-1 pointer-events-auto;
 }
 
 #active-node-toolbar {
@@ -41,11 +41,11 @@
 
 #active-node-toolbar button {
     @apply flex gap-[6px] uppercase font-medium tracking-wider text-xs items-center px-2 py-2 rounded-xl transition-all outline-none;
-    @apply active:bg-gray-800/30 text-gray-300 active:text-gray-100;
-    @apply hover:text-white;
+    @apply active:bg-gray-100 dark:active:bg-gray-800/30 active:text-gray-600 dark:active:text-gray-100;
+    @apply text-gray-500 dark:hover:text-white;
 
     &.active {
-        @apply bg-gray-800/50 text-white;
+        @apply bg-gray-100 dark:bg-gray-800/50 text-gray-500 dark:text-white;
     }
 }
 
@@ -54,11 +54,11 @@
 }
 
 #chat {
-    @apply -m-3 p-3 pb-2 mt-[2px] bg-gray-1000/50 rounded-b-xl;
+    @apply -m-3 p-2 mt-[2px] bg-gray-100/30 dark:bg-gray-1000/50 rounded-b-xl;
 }
 
 #chat input {
-    @apply bg-transparent w-full text-white focus:outline-none text-sm;
+    @apply bg-transparent w-full text-gray-700 dark:text-white focus:outline-none text-sm;
 }
 
 #interwingle {
@@ -66,7 +66,8 @@
 }
 
 #interwingle button {
-    @apply p-2 opacity-40 bg-black focus:outline-none -ml-1;
+    @apply p-2 opacity-40 bg-white/40 dark:bg-black focus:outline-none -ml-1;
+
     &:hover {
         @apply opacity-100;
     }
@@ -78,6 +79,7 @@
 
 #interwingle img {
     @apply w-12 h-12;
+    @apply invert dark:invert-0;
 }
 
 #interwingle-tooltip {
@@ -93,7 +95,8 @@
 }
 
 #typer-input {
-    @apply py-2 bg-gray-1000 text-base text-center rounded-xl w-full outline-none text-white px-3 opacity-60 transition-all min-w-96;
+    @apply py-2  text-base text-center rounded-xl w-full outline-none px-3 opacity-60 transition-all min-w-96;
+    @apply bg-gray-100 text-gray-900 dark:bg-gray-1000 dark:text-white;
 
     &:focus {
         @apply opacity-100;
@@ -110,21 +113,21 @@
 
 #typer-toolbar button {
     @apply flex gap-[6px] uppercase font-medium tracking-widest text-xs h-9 items-center px-4 py-2 transition-all text-white outline-none rounded-xl;
-    @apply text-gray-300 hover:text-white;
+    @apply bg-gray-50/50  dark:bg-gray-1000/20 text-gray-600 dark:text-gray-300 dark:hover:text-white;
 
     &.active {
-        @apply bg-gray-800/50 text-white;
+        @apply bg-gray-1000/30 text-white dark:bg-gray-800/50 dark:text-white;
     }
 }
 
 #editor {
-    @apply bg-gray-1000/90 absolute inset-0 z-20;
+    @apply bg-gray-50/90 dark:bg-gray-1000/90 absolute inset-0 z-20;
 }
 
 #editor-icon {
-    @apply absolute z-10 text-white w-10 h-10 ml-2 pl-1 cursor-pointer mt-2;
+    @apply absolute z-10 text-black dark:text-white w-10 h-10 ml-2 pl-1 cursor-pointer mt-2;
 
-    @apply opacity-40 bg-black focus:outline-none;
+    @apply opacity-40 bg-white dark:bg-black focus:outline-none;
     &:hover {
         @apply opacity-100;
     }
@@ -150,9 +153,9 @@
     @apply w-48 relative;
 }
 #editor-content .node input {
-    @apply bg-gray-900/50 w-full px-3 py-1 text-white rounded-xl outline-none truncate;
+    @apply bg-gray-100/50 dark:bg-gray-900/50 w-full px-3 py-1 text-gray-500 dark:text-white rounded-xl outline-none truncate;
     &:focus {
-        @apply bg-gray-900/80 pr-8;
+        @apply bg-gray-200/40 dark:bg-gray-900/80 pr-8;
     }
 }
 
@@ -161,7 +164,7 @@
 }
 
 #editor-content textarea {
-    @apply bg-gray-900/50 max-w-xl h-full max-h-64 w-full px-3 py-1 text-white rounded-xl outline-none;
+    @apply bg-gray-100/60 dark:bg-gray-900/50 max-w-xl h-full max-h-64 w-full px-3 py-1 text-white rounded-xl outline-none;
 }
 
 #editor-toolbar {
@@ -169,16 +172,16 @@
 }
 
 #editor-toolbar button {
-    @apply flex items-center gap-1 text-gray-300 border-gray-300 border py-2 px-4 rounded-full uppercase tracking-widest text-xs mb-4 outline-none;
+    @apply flex items-center gap-1 text-gray-600 dark:text-gray-300 border-gray-300 border py-2 px-4 rounded-full uppercase tracking-widest text-xs mb-4 outline-none;
 
     &:hover {
-        @apply bg-white text-black border-white;
+        @apply bg-gray-600 dark:bg-white text-white dark:text-black border-gray-600 dark:border-white;
     }
 }
 
 #editor-add-symbol,
 #editor-add-hyperedge {
-    @apply bg-gray-900/50 px-3 py-1 text-white rounded-xl outline-none flex items-center gap-1 opacity-50;
+    @apply bg-gray-100 dark:bg-gray-900/50 px-3 py-1 text-gray-700 dark:text-white rounded-xl outline-none flex items-center gap-1 opacity-50;
 
     &:hover {
         @apply opacity-100;
@@ -199,7 +202,7 @@
 }
 
 .tooltip {
-    @apply absolute z-30 text-white shadow-sm text-xs uppercase tracking-wider whitespace-nowrap select-none;
+    @apply absolute z-30 text-black dark:text-white text-xs uppercase tracking-wider whitespace-nowrap select-none;
 }
 
 #depth-label {
@@ -218,15 +221,19 @@
     @apply pointer-events-auto cursor-pointer text-white inline-block w-auto max-w-max px-2 -mr-2 outline-none;
 }
 
+#filters .filter {
+    @apply text-gray-600 dark:text-white;
+}
+
 #edit form {
     @apply border border-gray-500/30 px-1 rounded-xl;
 }
 #edit input {
-    @apply text-white w-full py-1 rounded-xl outline-none;
+    @apply text-gray-700 dark:text-white w-full py-1 rounded-xl outline-none;
 }
 
 .markdown {
-    @apply flex flex-col gap-2 text-sm;
+    @apply flex flex-col gap-2 text-sm text-gray-700 dark:text-white;
 
     ol {
         @apply list-decimal pl-4 flex flex-col gap-1;
@@ -243,30 +250,26 @@
     a strong {
         @apply pointer-events-none;
     }
+
+    a {
+        @apply underline;
+    }
 }
 
 #connect-node.active {
     @apply bg-gray-800/50 text-white rounded-xl;
 }
 
-#chat-modal {
-    @apply absolute z-30 top-0 right-0 bg-red-500 w-96 h-96;
-}
-
-.draggable {
-    @apply border-2 border-red-500 z-50;
-}
-
 #settings {
-    @apply bg-gray-1000/90 absolute inset-0 z-20;
+    @apply absolute inset-0 z-20;
 }
 
 #settings-icon {
-    @apply absolute z-10 text-white w-64 h-10 ml-2 pl-1 cursor-pointer bottom-0 mb-3 flex gap-1 items-center;
+    @apply absolute z-10 text-black dark:text-white w-64 h-10 ml-2 pl-1 cursor-pointer bottom-0 mb-3 flex gap-1 items-center;
     @apply opacity-40 focus:outline-none;
 
     button {
-        @apply bg-black w-10;
+        @apply bg-white dark:bg-black w-10;
     }
 
     &:hover {
@@ -286,11 +289,11 @@
     @apply flex flex-col gap-2 w-full max-w-xl;
 
     h2 {
-        @apply text-white text-xl font-bold mb-4;
+        @apply text-black dark:text-white text-xl font-bold mb-4;
     }
 
     label {
-        @apply flex items-center gap-2 text-white;
+        @apply flex items-center gap-2 text-black dark:text-white;
     }
 
     label > span {
@@ -299,7 +302,7 @@
 
     label > input,
     label > select {
-        @apply bg-gray-900/50 w-48 py-1 px-3 text-white rounded-xl outline-none;
+        @apply bg-gray-100/50 dark:bg-gray-900/50 w-48 py-1 px-3 dark:text-white rounded-xl outline-none;
     }
 
     label > select {
@@ -343,11 +346,11 @@
 }
 
 #cac-feedback-link {
-    @apply fixed bottom-2 right-3 z-50 text-white select-none opacity-40 hover:opacity-100 transition-all cursor-pointer pointer-events-auto;
+    @apply fixed bottom-20 right-3 z-50 text-white select-none opacity-40 hover:opacity-100 transition-all cursor-pointer pointer-events-auto;
 }
 
 #cac-feedback-form {
-    @apply fixed bottom-2 right-3;
+    @apply fixed bottom-20 right-3;
 }
 
 #cac-feedback-form textarea {
@@ -368,14 +371,14 @@
     }
 
     button {
-        @apply bg-gray-1000/80 text-white p-3 w-auto min-w-60 max-w-96 cursor-pointer pointer-events-auto rounded-xl transition-all outline-none;
+        @apply bg-gray-100/80 dark:bg-gray-1000/80 text-gray-500 dark:text-white p-3 w-auto min-w-60 max-w-96 cursor-pointer pointer-events-auto rounded-xl transition-all outline-none;
 
         &.active {
-            @apply bg-red-500;
+            @apply bg-gray-200/80 dark:bg-gray-900/80;
         }
 
         &:hover {
-            @apply bg-gray-900/80;
+            @apply bg-gray-200/80 dark:bg-gray-900/80;
         }
     }
 }
@@ -401,8 +404,9 @@
 }
 
 .empty #examples {
-    @apply flex flex-wrap text-white items-center gap-1 w-full max-w-lg justify-center text-xs mt-2;
+    @apply flex flex-wrap items-center gap-1 w-full max-w-lg justify-center text-xs mt-2;
+    @apply text-gray-800 dark:text-white;
     a {
-        @apply px-1 opacity-50 hover:opacity-100 cursor-pointer transition-all;
+        @apply px-1 opacity-60 hover:opacity-100 cursor-pointer transition-all;
     }
 }

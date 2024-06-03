@@ -6,6 +6,7 @@ import classNames from "classnames";
 
 import Settings from "@lib/Settings";
 import * as utils from "@lib/utils";
+import Color from "@lib/Color";
 
 import Client from "@lib/Client";
 import ForceGraph from "./ForceGraph";
@@ -37,15 +38,17 @@ export default class App extends React.Component {
             activeNodeUUID: null,
             graphData: { nodes: [], links: [] },
         };
+
+        this.handleKeyDown = this.handleKeyDown.bind(this);
     }
 
     componentDidMount() {
         this.load();
-        window.addEventListener("keydown", this.handleKeyDown.bind(this));
+        window.addEventListener("keydown", this.handleKeyDown);
     }
 
     componentWillUnmount() {
-        window.removeEventListener("keydown", this.handleKeyDown.bind(this));
+        window.removeEventListener("keydown", this.handleKeyDown);
     }
 
     async handleKeyDown(event) {
@@ -96,6 +99,10 @@ export default class App extends React.Component {
     async load() {
         Client.setup();
         await this.reset();
+
+        // setTimeout(() => {
+        //     this.setActiveNodeUUID(this.thinkabletype.nodes[5].uuid);
+        // }, 1000);
     }
 
     async reset() {
@@ -151,6 +158,7 @@ export default class App extends React.Component {
                     empty: this.isEmpty,
                     desktop: utils.isDesktop(),
                     web: utils.isWeb(),
+                    dark: Color.isDark,
                 })}>
                 <Typer
                     isEmpty={this.isEmpty}
@@ -220,8 +228,8 @@ export default class App extends React.Component {
                         containerStyle={{ zIndex: 999 }}
                         toastOptions={{
                             style: {
-                                background: "#000",
-                                color: "#fff",
+                                background: Color.backgroundColor,
+                                color: Color.textColor,
                             },
                         }}
                     />
