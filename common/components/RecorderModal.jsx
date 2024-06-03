@@ -66,10 +66,6 @@ export default class RecorderModal extends React.Component {
     }
 
     handleKeyDown(e) {
-        console.log("KEY DOWN", e.key);
-        console.log(this);
-        return;
-
         if (e.key === "F1") {
             this.takeScreenshot();
         } else if (e.key === "F2") {
@@ -128,7 +124,7 @@ export default class RecorderModal extends React.Component {
 
     handleRecorderStop() {
         console.log("RECORDER: STOPPED");
-        toast.success("Recording stopped");
+        // toast.success("Recording stopped");
         this.setState({ isRecording: false });
     }
 

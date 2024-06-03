@@ -85,14 +85,14 @@ export default class Recorder {
 
         await this.onstop();
 
-        await this.onprocess();
-
         const webmBlob = new Blob(this.chunks, { "type": this.chunks[0].type });
 
         if (this.videoType === "webm") {
             await this.onfile(webmBlob);
             return;
         }
+
+        await this.onprocess();
 
         try {
             const webmBuffer = await blobToBase64(webmBlob);
