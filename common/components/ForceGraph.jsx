@@ -18,8 +18,8 @@ export default class ForceGraph extends React.Component {
         this.state = {
             connectMode: false,
             isAnimating: false,
-            activeMode: "Explain",
-            hideLabels: Settings.get("hideLabels", false),
+            activeMode: Settings.activeMode,
+            hideLabels: Settings.hideLabels,
             graphType: Settings.graphType,
             width: window.innerWidth,
             height: window.innerHeight,
@@ -70,6 +70,7 @@ export default class ForceGraph extends React.Component {
 
     setActiveMode(activeMode) {
         this.setState({ activeMode });
+        Settings.activeMode = activeMode;
     }
 
     toggleConnectMode(connectMode = undefined) {

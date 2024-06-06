@@ -1,10 +1,19 @@
+const ai_methods = ["generateOne", "explain", "chat", "generateMany"];
+import Settings from "./Settings";
+
 export default class Client {
 
     async handler(name, ...args) {
+        if (Settings.llmIsDisabled && ai_methods.includes(name)) {
+            throw new Error("LLM is disabled");
+        }
         return await this.send(name, { args });
     }
 
     async stream_handler(name, ...args) {
+        if (Settings.llmIsDisabled && ai_methods.includes(name)) {
+            throw new Error("LLM is disabled");
+        }
         return await this.stream(name, { args });
     }
 
@@ -20,6 +29,7 @@ export default class Client {
         const api = {
             edition: this.edition,
         };
+
 
         const methods = ["media", "generateOne", "license", "webmToMp4"];
 

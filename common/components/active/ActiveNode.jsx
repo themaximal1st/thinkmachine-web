@@ -2,9 +2,11 @@ import Component from "./Component";
 import ExplainPanel from "./ExplainPanel";
 import EditPanel from "./EditPanel";
 import MediaPanel from "./MediaPanel";
+import NotesPanel from "./NotesPanel";
 import Toolbar from "./Toolbar";
 import Context from "./Context";
 import * as Icons from "@assets/Icons";
+import Settings from "@lib/Settings";
 
 export default class ActiveNode extends Component {
     constructor(props) {
@@ -14,14 +16,20 @@ export default class ActiveNode extends Component {
         this.context = new Context(props);
 
         this.panels = {
-            Explain: new ExplainPanel(props),
             Media: new MediaPanel(props),
             Edit: new EditPanel(props),
+            Notes: new NotesPanel(props),
         };
+
+        if (!Settings.llmIsDisabled) {
+            this.panels["Explain"] = new ExplainPanel(props);
+        }
     }
 
     get panel() {
-        return this.panels[this.props.activeMode];
+        const panel = this.panels[this.props.activeMode];
+        if (panel) return panel;
+        return this.panels["Edit"];
     }
 
     code() {

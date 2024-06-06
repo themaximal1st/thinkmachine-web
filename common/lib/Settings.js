@@ -37,6 +37,14 @@ export default class Settings extends LocalStorage {
 
     static get colorScheme() { return Settings.get("colorScheme", "dark") }
     static set colorScheme(val) { Settings.set("colorScheme", val) }
+
+    static get hideLabels() { return Settings.get("hideLabels", false) }
+    static set hideLabels(val) { Settings.set("hideLabels", val) }
+
+    static get activeMode() { return Settings.get("activeMode", "Explain") }
+    static set activeMode(val) { Settings.set("activeMode", val) }
+
+    static get llmIsDisabled() { return Settings.get("llmModel") === "none" }
 }
 
 window.Settings = Settings;

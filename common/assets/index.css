@@ -421,3 +421,14 @@
         @apply px-1 opacity-60 hover:opacity-100 cursor-pointer transition-all;
     }
 }
+
+#notes form {
+    @apply flex flex-col gap-2;
+    textarea {
+        @apply border border-gray-500/30 px-1 rounded-xl;
+    }
+
+    input[type="submit"] {
+        @apply bg-gray-100 dark:bg-gray-900/50 px-3 py-2 text-gray-700 dark:text-white rounded-xl outline-none cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-800;
+    }
+}

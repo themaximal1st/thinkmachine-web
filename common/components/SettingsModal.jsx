@@ -39,6 +39,7 @@ export default class SettingsModal extends React.Component {
 
     get models() {
         return [
+            { name: "None", model: "none" },
             { name: "Claude 3 Opus", model: "claude-3-opus-20240229" },
             { name: "Claude 3 Sonnet", model: "claude-3-sonnet-20240229" },
             { name: "Claude 3 Haiku", model: "claude-3-haiku-20240307" },

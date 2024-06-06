@@ -2,6 +2,7 @@ import * as Icons from "@assets/Icons";
 import Component from "./Component";
 import * as utils from "@lib/utils";
 import toast from "react-hot-toast";
+import Settings from "@lib/Settings";
 
 export default class Toolbar extends Component {
     isMode(mode) {
@@ -19,13 +20,24 @@ export default class Toolbar extends Component {
     }
 
     get buttons() {
+        if (Settings.llmIsDisabled) {
+            return [
+                ["Notes", Icons.EditIcon(5)],
+                ["Media", Icons.ScreenshotIcon(5)],
+                ["Filter", Icons.SearchIcon(5)],
+                ["-"],
+                ["Edit", Icons.DotsIcon(5)],
+            ];
+        }
+
         return [
+            ["Notes", Icons.EditIcon(5)],
             ["Explain", Icons.ChatIcon(5)],
             ["Media", Icons.ScreenshotIcon(5)],
             ["Filter", Icons.SearchIcon(5)],
             ["Generate", Icons.GenerateIcon(5)],
             ["-"],
-            ["Edit", Icons.EditIcon(5)],
+            ["Edit", Icons.DotsIcon(5)],
         ];
     }
 
@@ -65,6 +77,7 @@ export default class Toolbar extends Component {
             case "Explain":
             case "Edit":
             case "Media":
+            case "Notes":
                 this.props.setActiveMode(mode);
                 break;
             case "Filter":

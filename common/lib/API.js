@@ -7,7 +7,7 @@ import Chat from "./Chat.js"
 import GenerateOne from "./GenerateOne.js";
 import GenerateMany from "./GenerateMany.js";
 import License from "./License.js";
-import { webmToMp4, base64ToBuffer } from "./ffmpeg.js";
+import { webmToMp4 } from "./ffmpeg.js";
 
 export default class API {
     async media(query) {

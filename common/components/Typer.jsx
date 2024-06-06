@@ -63,10 +63,8 @@ export default class Typer extends React.Component {
         if (event.key === "ArrowDown" || event.key === "ArrowUp") {
             let index = this.state.index;
             if (event.key === "ArrowDown") {
-                console.log("ARROW DOWN");
                 index += 1;
             } else if (event.key === "ArrowUp") {
-                console.log("ARROW UP");
                 index -= 1;
             }
 
@@ -104,6 +102,17 @@ export default class Typer extends React.Component {
     }
 
     get buttons() {
+        if (Settings.llmIsDisabled) {
+            if (this.props.isEmpty) {
+                return [["Add", Icons.AddIcon(4)]];
+            } else {
+                return [
+                    ["Add", Icons.AddIcon(4)],
+                    ["Search", Icons.SearchIcon(4)],
+                ];
+            }
+        }
+
         if (this.props.isEmpty) {
             return [
                 ["Add", Icons.AddIcon(4)],
