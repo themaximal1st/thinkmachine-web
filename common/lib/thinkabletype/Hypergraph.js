@@ -81,10 +81,40 @@ export default class Hypergraph {
             return symbols.map(symbols => this.add(symbols));
         }
 
+        if (symbols[1] === "_meta") {
+            this.addMeta(symbols[0], symbols[2], symbols[3]);
+            return;
+        }
+
         const hyperedge = new Hyperedge(symbols, this);
         this.hyperedges.push(hyperedge);
         this.onUpdate({ event: "hyperedge.add", data: hyperedge });
         return hyperedge;
+    }
+
+    addMeta(symbol, key, value) {
+        // this.addMeta(symbols[0], symbols[2], JSON.parse(symbols[3]));
+        try {
+            value = JSON.parse(value);
+        } catch (e) {
+
+        }
+
+        let added = false;
+        for (const node of this.nodes) {
+            if (node.symbol === symbol) {
+                node.meta[key] = value;
+                added = true;
+            }
+        }
+
+        if (added) {
+            this.onUpdate({
+                event: "node.meta", data: {
+                    symbol, key, value
+                }
+            });
+        }
     }
 
     get(symbols) {
@@ -334,6 +364,17 @@ export default class Hypergraph {
 
     export() {
         const hyperedges = this.hyperedges.map(hyperedge => hyperedge.symbols);
+        for (const hyperedge of this.hyperedges) {
+            for (const node of hyperedge.nodes) {
+                if (node.meta && Object.keys(node.meta).length > 0) {
+                    for (const key in node.meta) {
+                        const edge = [node.symbol, "_meta", key, node.meta[key]];
+                        hyperedges.push(edge);
+                    }
+                }
+            }
+        }
+
         return csv.unparse(hyperedges, { header: false });
     }
 }

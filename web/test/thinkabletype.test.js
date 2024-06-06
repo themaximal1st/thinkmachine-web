@@ -295,8 +295,6 @@ test("parse on existing hypergraph", async function () {
 
     expect(thinkabletype.uniqueSymbols.size).toBe(10);
     expect(thinkabletype.hyperedges.length).toBe(2);
-    console.log(thinkabletype.hyperedges[0].symbols);
-    console.log(thinkabletype.hyperedges[1].symbols);
     expect(thinkabletype.has("thinkabletype")).toBeTruthy();
     expect(thinkabletype.has("tagline")).toBeTruthy();
     expect(thinkabletype.has("Turning C,S,V,s into Hypergraphs.")).toBeTruthy();

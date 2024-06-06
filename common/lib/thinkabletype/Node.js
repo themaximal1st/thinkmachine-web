@@ -7,6 +7,7 @@ export default class Node {
         this.hyperedge = hyperedge;
         this.hypergraph = hyperedge.hypergraph;
         this.uuid = uuidv4();
+        this.meta = {};
     }
 
     get id() {
