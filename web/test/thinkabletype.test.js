@@ -301,10 +301,10 @@ test("parse on existing hypergraph", async function () {
     expect(thinkabletype.has("tagline")).toBeTruthy();
     expect(thinkabletype.has("Turning C,S,V,s into Hypergraphs.")).toBeTruthy();
 
-    thinkabletype.parse(`A,B,C\r\n1,2,3`);
-    expect(thinkabletype.uniqueSymbols.size).toBe(6);
-    expect(thinkabletype.hyperedges.length).toBe(2);
-    expect(thinkabletype.has("thinkabletype")).toBeFalsy();
+    thinkabletype.parse(`A,B,C\r\n1,2,3`); // don't reset
+    expect(thinkabletype.uniqueSymbols.size).toBe(13);
+    expect(thinkabletype.hyperedges.length).toBe(4);
+    expect(thinkabletype.has("thinkabletype")).toBeTruthy();
     expect(thinkabletype.has("1")).toBeTruthy();
 });
 
