@@ -35,7 +35,7 @@ export default class Settings extends LocalStorage {
     static get license() { return Settings.get("license", "") }
     static set license(val) { Settings.set("license", val) }
 
-    static get colorScheme() { return Settings.get("colorScheme", "light") }
+    static get colorScheme() { return Settings.get("colorScheme", "dark") }
     static set colorScheme(val) { Settings.set("colorScheme", val) }
 }
 

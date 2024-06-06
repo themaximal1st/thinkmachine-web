@@ -1,10 +1,8 @@
 import Settings from "@lib/Settings";
 
-import tailwindcss from "../../../tailwind.config";
+import tailwindcss from "@common/tailwind.config";
 
 const colors = tailwindcss.theme.extend.colors;
-
-console.log("TAILWIND", colors.gray[1000]);
 
 const LightScheme = {
     backgroundColor: colors.white,
