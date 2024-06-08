@@ -30,6 +30,28 @@
     @apply w-48 absolute -right-48 top-0 bottom-0 flex flex-col justify-between items-start text-sm py-2 pointer-events-none;
 }
 
+#context-selector {
+    @apply w-full flex items-center justify-start gap-2 overflow-x-scroll mb-2 -mx-1;
+
+    button {
+        @apply flex gap-[6px] uppercase font-medium tracking-wider text-xs items-center px-3 py-1 rounded-xl transition-all outline-none pointer-events-auto;
+        @apply active:bg-gray-100 dark:active:bg-gray-800/30 active:text-gray-600 dark:active:text-gray-100;
+        @apply text-gray-500 dark:hover:text-white cursor-pointer;
+
+        &.active {
+            @apply bg-gray-100 dark:bg-gray-800/50 text-gray-500 dark:text-white;
+        }
+
+        p {
+            @apply cursor-pointer;
+        }
+
+        label {
+            @apply cursor-pointer;
+        }
+    }
+}
+
 #context-prev button,
 #context-next button {
     @apply flex items-center gap-1 text-gray-400 dark:text-gray-700 hover:text-gray-900 dark:hover:text-white cursor-pointer py-1 pointer-events-auto;

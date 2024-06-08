@@ -59,7 +59,12 @@ export default class SettingsModal extends React.Component {
     }
 
     handleLLMChange(event) {
+        const wasDisabled = Settings.llmIsDisabled;
         Settings.llmModel = event.target.value;
+        const isDisabled = Settings.llmIsDisabled;
+        if (wasDisabled !== isDisabled) {
+            window.location.reload();
+        }
     }
 
     handleLicenseChange(event) {

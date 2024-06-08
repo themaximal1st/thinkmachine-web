@@ -1,11 +1,10 @@
-import csv from "papaparse"
-
 import Hyperedge from './Hyperedge.js';
 import Node from './Node.js';
 import BridgeNode from './BridgeNode.js';
 import Colors from "./colors.js";
 import * as utils from "./utils.js";
 import FilterGraph from "./FilterGraph.js";
+import Parser from "./parser.js";
 
 export default class Hypergraph {
     static INTERWINGLE = {
@@ -158,8 +157,8 @@ export default class Hypergraph {
         return graph;
     }
 
-    parse(input, options = {}) {
-        const hyperedges = csv.parse(input.trim(), options.parse || {}).data;
+    parse(input) {
+        const hyperedges = Parser.parseHypergraph(input);
         this.add(hyperedges);
     }
 
@@ -363,19 +362,9 @@ export default class Hypergraph {
     }
 
     export() {
-        const hyperedges = this.hyperedges.map(hyperedge => hyperedge.symbols);
-        for (const hyperedge of this.hyperedges) {
-            for (const node of hyperedge.nodes) {
-                if (node.meta && Object.keys(node.meta).length > 0) {
-                    for (const key in node.meta) {
-                        const edge = [node.symbol, "_meta", key, node.meta[key]];
-                        hyperedges.push(edge);
-                    }
-                }
-            }
-        }
-
-        return csv.unparse(hyperedges, { header: false });
+        const hyperedges = this.hyperedges.map(hyperedge => hyperedge.export());
+        return hyperedges.map(hyperedge => hyperedge.join(",")).join("\n");
+        // return csv.unparse(hyperedges, { header: false, quoteChar: "'" });
     }
 }
 

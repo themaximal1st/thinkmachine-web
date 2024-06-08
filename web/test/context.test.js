@@ -140,3 +140,41 @@ test("fusion bridge context regression", () => {
     expect(data.nodes[1].nodeUUIDs.has(A2.uuid)).toBe(true);
     expect(data.nodes[1].nodeUUIDs.has(A1.uuid)).toBe(true);
 });
+
+test("stacked no context (interwingle)", () => {
+    const thinkabletype = new ThinkableType([
+        ["A", "B", "C"],
+        ["A", "X", "Y"]
+    ]);
+
+    const edge1 = thinkabletype.hyperedges[0];
+    const [A1, B, C] = edge1.nodes;
+    const edge2 = thinkabletype.hyperedges[1];
+    const [A2, X, Y] = edge2.nodes;
+
+    const data = thinkabletype.graphData();
+
+    let context = A1.context(data);
+    expect(context.stack).toEqual([]);
+});
+
+test("stacked context (fusion)", () => {
+    const thinkabletype = new ThinkableType([
+        ["A", "B", "C"],
+        ["A", "X", "Y"]
+    ], {
+        interwingle: ThinkableType.INTERWINGLE.FUSION
+    });
+
+    const edge1 = thinkabletype.hyperedges[0];
+    const [A1, B, C] = edge1.nodes;
+    const edge2 = thinkabletype.hyperedges[1];
+    const [A2, X, Y] = edge2.nodes;
+
+    const data = thinkabletype.graphData();
+
+    let context = A1.context(data);
+    expect(context.stack.length).toBe(1);
+    expect(data.nodes[0].uuid).toBe(A2.uuid);
+    expect(context.stack[0].uuid).toBe(A1.uuid);
+});

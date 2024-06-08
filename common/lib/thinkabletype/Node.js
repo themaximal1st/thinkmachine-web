@@ -1,13 +1,15 @@
 import { v4 as uuidv4 } from 'uuid';
 import slugify from "slugify";
+import Parser from './parser.js';
 
 export default class Node {
-    constructor(symbol, hyperedge) {
+    constructor(input, hyperedge) {
+        const [symbol, meta] = Parser.parseSymbol(input);
         this.symbol = symbol;
         this.hyperedge = hyperedge;
         this.hypergraph = hyperedge.hypergraph;
         this.uuid = uuidv4();
-        this.meta = {};
+        this.meta = meta || {};
     }
 
     get id() {
@@ -133,6 +135,7 @@ export default class Node {
         const context = {
             prev: [],
             next: [],
+            stack: [],
         };
 
         const next = (id) => {
@@ -141,6 +144,10 @@ export default class Node {
 
         const prev = (id) => {
             context.prev.push(this.hypergraph.nodeByID(id));
+        }
+
+        const stack = (uuid) => {
+            context.stack.push(this.hypergraph.nodeByUUID(uuid));
         }
 
         for (const link of graphData.links) {
@@ -167,6 +174,15 @@ export default class Node {
             }
         }
 
+        for (const node of graphData.nodes) {
+            if (node.nodeUUIDs.size > 1) {
+                for (const uuid of node.nodeUUIDs) {
+                    if (uuid !== node.uuid) {
+                        stack(uuid);
+                    }
+                }
+            }
+        }
 
         return context;
     }
@@ -178,6 +194,10 @@ export default class Node {
         ]
 
         return this.hypergraph.add(symbols);
+    }
+
+    export() {
+        return Parser.exportSymbol(this.symbol, this.meta);
     }
 }
 

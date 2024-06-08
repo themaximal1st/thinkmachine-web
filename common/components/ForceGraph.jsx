@@ -23,6 +23,7 @@ export default class ForceGraph extends React.Component {
             graphType: Settings.graphType,
             width: window.innerWidth,
             height: window.innerHeight,
+            contextUUID: null,
         };
         this.handleResize = this.handleResize.bind(this);
     }
@@ -73,6 +74,10 @@ export default class ForceGraph extends React.Component {
         Settings.activeMode = activeMode;
     }
 
+    setContextUUID(contextUUID) {
+        this.setState({ contextUUID });
+    }
+
     toggleConnectMode(connectMode = undefined) {
         connectMode = connectMode === undefined ? !this.state.connectMode : connectMode;
         this.setState({ connectMode });
@@ -102,6 +107,7 @@ export default class ForceGraph extends React.Component {
             toggleConnectMode: this.toggleConnectMode.bind(this),
             onNodeClick: this.handleNodeClick.bind(this),
             onEngineStop: this.handleEngineStop.bind(this),
+            setContextUUID: this.setContextUUID.bind(this),
         };
 
         return (

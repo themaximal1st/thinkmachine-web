@@ -281,15 +281,22 @@ test("remove hyperedge", async function () {
 });
 
 test("export", async function () {
-    const input = `thinkabletype,tagline,"Turning C,S,V,s into Hypergraphs."\r\nA,B,C,D,E,F,G`;
+    const input = `thinkabletype,tagline,"Turning C,S,V,s into Hypergraphs."\nA,B,C,D,E,F,G`;
     const thinkabletype = ThinkableType.parse(input);
+    expect(thinkabletype.uniqueSymbols.size).toBe(10);
+    expect(thinkabletype.hyperedges.length).toBe(2);
 
     const output = thinkabletype.export();
     expect(input).toBe(output);
+
+    thinkabletype.reset();
+    thinkabletype.parse(output);
+    expect(thinkabletype.uniqueSymbols.size).toBe(10);
+    expect(thinkabletype.hyperedges.length).toBe(2);
 });
 
 test("parse on existing hypergraph", async function () {
-    const input = `thinkabletype,tagline,"Turning C,S,V,s into Hypergraphs."\r\nA,B,C,D,E,F,G`;
+    const input = `thinkabletype,tagline,"Turning C,S,V,s into Hypergraphs."\nA,B,C,D,E,F,G`;
     const thinkabletype = new ThinkableType();
     thinkabletype.parse(input);
 
@@ -299,7 +306,7 @@ test("parse on existing hypergraph", async function () {
     expect(thinkabletype.has("tagline")).toBeTruthy();
     expect(thinkabletype.has("Turning C,S,V,s into Hypergraphs.")).toBeTruthy();
 
-    thinkabletype.parse(`A,B,C\r\n1,2,3`); // don't reset
+    thinkabletype.parse(`A,B,C\n1,2,3`); // don't reset
     expect(thinkabletype.uniqueSymbols.size).toBe(13);
     expect(thinkabletype.hyperedges.length).toBe(4);
     expect(thinkabletype.has("thinkabletype")).toBeTruthy();

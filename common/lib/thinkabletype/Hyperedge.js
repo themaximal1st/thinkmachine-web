@@ -195,4 +195,8 @@ export default class Hyperedge {
 
         return link;
     }
+
+    export() {
+        return this.nodes.map(node => node.export())
+    }
 }

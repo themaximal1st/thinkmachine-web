@@ -59,7 +59,7 @@ export default class EditPanel extends Component {
                 </button>
                 <button
                     id="remove-node"
-                    className="absolute -bottom-8 right-4 opacity-50 hover:opacity-100 text-red-300 hover:text-red-400 transition-all p-2 outline-none flex items-center gap-1 uppercase tracking-wider text-xs">
+                    className="absolute -bottom-9 right-4 opacity-50 hover:opacity-100 text-red-300 hover:text-red-400 transition-all p-2 outline-none flex items-center gap-1 uppercase tracking-wider text-xs">
                     {Icons.CloseIcon(4)}
                     Remove
                 </button>

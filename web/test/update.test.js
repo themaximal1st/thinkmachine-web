@@ -9,7 +9,7 @@ test("hypergraph add", () => new Promise(done => {
         interwingle: ThinkableType.INTERWINGLE.CONFLUENCE,
         onUpdate: ({ event, data }) => {
             if (event === "hyperedge.add" && data.symbols.includes("1")) {
-                expect(thinkabletype.hash).toBe("d6e7912076f9c5c6eafff5c4a1d42ded8205a9019c296b9dbb0e9139041ed086");
+                expect(thinkabletype.hash).toBe("53d5aa9f2dd6878baf046ee3949db8f5682f1bf03e51ed82fa243b3fcaf6d86f");
                 done();
             }
         }
