@@ -56,4 +56,20 @@ export default class Component {
         div.innerHTML = renderToStaticMarkup(html);
         return div;
     }
+
+    get activeUUID() {
+        if (this.props.contextUUID) {
+            for (const node of this.props.context.stack) {
+                if (node.uuid === this.props.contextUUID) {
+                    return node.uuid;
+                }
+            }
+        }
+
+        return this.props.node.uuid;
+    }
+
+    get activeNode() {
+        return this.props.thinkabletype.nodeByUUID(this.activeUUID);
+    }
 }

@@ -115,8 +115,15 @@ export default class EditPanel extends Component {
     }
 
     async renameNode(name) {
-        const node = this.props.thinkabletype.nodeByUUID(this.props.node.uuid);
+        if (this.props.contextUUID === null && this.props.context.stack.length > 0) {
+            for (const node of this.props.context.stack) {
+                node.rename(name);
+            }
+        }
+
+        const node = this.activeNode;
         node.rename(name);
+
         this.props.save();
 
         if (this.state.shiftKey) {
@@ -131,17 +138,17 @@ export default class EditPanel extends Component {
     }
 
     async addNode() {
-        const node = this.props.thinkabletype.nodeByUUID(this.props.node.uuid);
+        const node = this.activeNode;
         await this.activateAndEditNode(node.add(""));
     }
 
     async prependNode() {
-        const node = this.props.thinkabletype.nodeByUUID(this.props.node.uuid);
+        const node = this.activeNode;
         await this.activateAndEditNode(node.insert(""));
     }
 
     async forkNode() {
-        const node = this.props.thinkabletype.nodeByUUID(this.props.node.uuid);
+        const node = this.activeNode;
         const symbols = node.hyperedge.symbols.slice(0, node.index + 1);
         symbols.push("");
         const edge = this.props.thinkabletype.add(symbols);
@@ -153,7 +160,7 @@ export default class EditPanel extends Component {
     }
 
     async removeNode() {
-        const node = this.props.thinkabletype.nodeByUUID(this.props.node.uuid);
+        const node = this.activeNode;
         const nextNode = node.prev() || node.next();
 
         node.remove();
