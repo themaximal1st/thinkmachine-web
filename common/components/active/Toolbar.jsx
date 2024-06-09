@@ -20,17 +20,15 @@ export default class Toolbar extends Component {
     }
 
     get buttons() {
-        let buttons;
-
         if (Settings.llmIsDisabled) {
-            buttons = [
+            return [
                 ["Edit", Icons.SettingsIcon(5)],
                 ["Notes", Icons.EditIcon(5)],
                 ["Media", Icons.ScreenshotIcon(5)],
                 ["Filter", Icons.SearchIcon(5)],
             ];
         } else {
-            buttons = [
+            return [
                 ["Edit", Icons.SettingsIcon(5)],
                 ["Notes", Icons.EditIcon(5)],
                 ["Explain", Icons.ChatIcon(5)],
@@ -39,19 +37,6 @@ export default class Toolbar extends Component {
                 ["Generate", Icons.GenerateIcon(5)],
             ];
         }
-
-        if (this.props.context.stack.length > 0) {
-            buttons.push(["-"]);
-            let label;
-            if (this.props.contextUUID === null) {
-                label = "All";
-            } else {
-                label = this.activeNode.hyperedge.symbols.join(" → ");
-            }
-            buttons.push(["Context", label]);
-        }
-
-        return buttons;
     }
 
     code() {
@@ -97,8 +82,6 @@ export default class Toolbar extends Component {
                 return this.handleClickFilter();
             case "Generate":
                 return this.handleGenerate();
-            case "Context":
-                return this.handleContext();
             default:
                 break;
         }
@@ -137,20 +120,5 @@ export default class Toolbar extends Component {
             console.log(e);
             toast.error("Error while generating");
         }
-    }
-
-    handleContext() {
-        const stack = [null];
-
-        stack.push(this.props.node.uuid);
-        stack.push(...this.props.context.stack.map((node) => node.uuid));
-
-        console.log("STACK", stack);
-        let index = stack.indexOf(this.props.contextUUID);
-        console.log("INDEX", index);
-        index += 1;
-        if (index >= stack.length) index = 0;
-
-        this.props.setContextUUID(stack[index]);
     }
 }

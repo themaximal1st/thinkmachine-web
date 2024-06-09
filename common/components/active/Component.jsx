@@ -72,4 +72,8 @@ export default class Component {
     get activeNode() {
         return this.props.thinkabletype.nodeByUUID(this.activeUUID);
     }
+
+    get node() {
+        return this.props.thinkabletype.nodeByUUID(this.props.node.uuid);
+    }
 }

@@ -18,6 +18,14 @@ import Depth from "./Depth";
 import Filters from "./Filters";
 import ChatModal from "./ChatModal";
 
+// TODO: Can we drop contextUUID and just use activeNodeUUID? Because when you change interwingle, it jumps to the active Node, not the contextUUID
+// TODO: Align context on word in center
+
+// TODO: Work on "Notes"...add below Editor
+// TODO: Shows symbols and definitions...just a text editor
+// A->B: "This is a note"
+// Auto completer...this isn't a place to add new notes or connections. Or is it? Is this the editor?
+
 export default class App extends React.Component {
     constructor() {
         super(...arguments);
@@ -100,9 +108,9 @@ export default class App extends React.Component {
         Client.setup();
         await this.reset();
 
-        setTimeout(() => {
-            this.setActiveNodeUUID(this.thinkabletype.nodes[0].uuid);
-        }, 1000);
+        // setTimeout(() => {
+        //     this.setActiveNodeUUID(this.thinkabletype.nodes[0].uuid);
+        // }, 1000);
     }
 
     async reset() {

@@ -175,6 +175,7 @@ export default class Node {
         }
 
         for (const node of graphData.nodes) {
+            if (!node.nodeUUIDs.has(this.uuid)) continue;
             if (node.nodeUUIDs.size > 1) {
                 for (const uuid of node.nodeUUIDs) {
                     if (uuid !== node.uuid) {

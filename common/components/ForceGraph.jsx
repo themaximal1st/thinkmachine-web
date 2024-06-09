@@ -108,6 +108,7 @@ export default class ForceGraph extends React.Component {
             onNodeClick: this.handleNodeClick.bind(this),
             onEngineStop: this.handleEngineStop.bind(this),
             setContextUUID: this.setContextUUID.bind(this),
+            setActiveNodeUUID: this.setActiveNodeUUID.bind(this),
         };
 
         return (
@@ -164,7 +165,12 @@ export default class ForceGraph extends React.Component {
             return;
         }
 
-        this.props.setActiveNodeUUID(node.uuid);
+        this.setActiveNodeUUID(node.uuid);
+    }
+
+    setActiveNodeUUID(uuid) {
+        this.props.setActiveNodeUUID(uuid);
+        this.setState({ contextUUID: null });
     }
 
     handleResize() {

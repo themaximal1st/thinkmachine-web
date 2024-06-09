@@ -57,31 +57,8 @@ export default class NotesPanel extends Component {
         const textarea = form.querySelector("textarea");
         const notes = textarea.value;
 
-        const node = this.props.thinkabletype.nodeByUUID(this.activeUUID);
-        if (this.props.contextUUID === null) {
-            let confirmation = false;
-            for (const uuid of this.props.node.nodeUUIDs) {
-                const n = this.props.thinkabletype.nodeByUUID(uuid);
-                if (n.meta.notes && n.meta.notes.length > 0 && n.meta.notes !== notes) {
-                    if (!confirmation) {
-                        if (
-                            confirm(
-                                "You are about to overwrite notes for multiple nodes. Are you sure?"
-                            )
-                        ) {
-                            confirmation = true;
-                        } else {
-                            node.meta.notes = notes;
-                            break;
-                        }
-                    }
-                }
-                n.meta.notes = notes;
-            }
-        } else {
-            node.meta.notes = notes;
-            console.log("SETTING NODE", node.meta);
-        }
+        const node = this.activeNode;
+        node.meta.notes = notes;
 
         textarea.value = "";
         this.props.save();

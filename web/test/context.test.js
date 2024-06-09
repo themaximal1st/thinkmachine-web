@@ -177,4 +177,10 @@ test("stacked context (fusion)", () => {
     expect(context.stack.length).toBe(1);
     expect(data.nodes[0].uuid).toBe(A2.uuid);
     expect(context.stack[0].uuid).toBe(A1.uuid);
+
+    context = B.context(data);
+    expect(context.stack.length).toBe(0);
+
+    context = C.context(data);
+    expect(context.stack.length).toBe(0);
 });
