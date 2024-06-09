@@ -4,8 +4,7 @@ import classNames from "classnames";
 
 export default class Context extends Component {
     code() {
-        const activeNode = this.props.thinkabletype.nodeByUUID(this.props.activeNodeUUID);
-        const activeEdge = activeNode.hyperedge;
+        const activeEdgeUUID = this.node.hyperedge.uuid;
 
         return (
             <div id="context" className="group">
@@ -17,14 +16,14 @@ export default class Context extends Component {
                             className={classNames({
                                 active:
                                     this.props.context.stack.length > 1 &&
-                                    node.hyperedge.uuid === activeEdge.uuid,
+                                    node.hyperedge.uuid === activeEdgeUUID,
                             })}>
                             <label
                                 className={classNames(
                                     {
                                         invisible:
                                             this.props.context.stack.length === 1 ||
-                                            node.hyperedge.uuid !== activeEdge.uuid,
+                                            node.hyperedge.uuid !== activeEdgeUUID,
                                     },
                                     "group-hover:visible pointer-events-none"
                                 )}>
@@ -42,7 +41,7 @@ export default class Context extends Component {
                             className={classNames({
                                 active:
                                     this.props.context.stack.length > 1 &&
-                                    node.hyperedge.uuid === activeEdge.uuid,
+                                    node.hyperedge.uuid === activeEdgeUUID,
                             })}>
                             {Icons.ChevronRight(6)}
                             <label
@@ -50,7 +49,7 @@ export default class Context extends Component {
                                     {
                                         invisible:
                                             this.props.context.stack.length === 1 ||
-                                            node.hyperedge.uuid !== activeEdge.uuid,
+                                            node.hyperedge.uuid !== activeEdgeUUID,
                                     },
                                     "group-hover:visible pointer-events-none"
                                 )}>
@@ -88,7 +87,6 @@ export default class Context extends Component {
             button.addEventListener("click", (e) => {
                 const uuid = e.target.dataset.uuid;
                 const node = this.props.thinkabletype.nodeByUUID(uuid);
-                console.log("Context button clicked", node.symbol, node.uuid);
                 this.props.setActiveNodeUUID(node.uuid);
                 e.preventDefault();
             });
