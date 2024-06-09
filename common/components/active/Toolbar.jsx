@@ -104,7 +104,7 @@ export default class Toolbar extends Component {
 
     async handleGenerate() {
         try {
-            const node = this.props.thinkabletype.nodeByUUID(this.props.node.uuid);
+            const node = this.node;
             toast.success(`Generating from ${node.symbol}...`);
             const options = { model: Settings.llmModel };
             const symbols = await window.api.generateOne(

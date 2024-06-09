@@ -5,6 +5,7 @@ import * as Three from "three";
 export default class Component {
     constructor(props = {}) {
         this.props = props;
+        this.node = this.props.thinkabletype.nodeByUUID(this.props.node.uuid);
     }
 
     render() {
@@ -55,25 +56,5 @@ export default class Component {
         const div = document.createElement("div");
         div.innerHTML = renderToStaticMarkup(html);
         return div;
-    }
-
-    get activeUUID() {
-        if (this.props.contextUUID) {
-            for (const node of this.props.context.stack) {
-                if (node.uuid === this.props.contextUUID) {
-                    return node.uuid;
-                }
-            }
-        }
-
-        return this.props.node.uuid;
-    }
-
-    get activeNode() {
-        return this.props.thinkabletype.nodeByUUID(this.activeUUID);
-    }
-
-    get node() {
-        return this.props.thinkabletype.nodeByUUID(this.props.node.uuid);
     }
 }

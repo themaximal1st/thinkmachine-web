@@ -115,13 +115,8 @@ export default class EditPanel extends Component {
     }
 
     async renameNode(name) {
-        if (this.props.contextUUID === null && this.props.context.stack.length > 0) {
-            for (const node of this.props.context.stack) {
-                node.rename(name);
-            }
-        }
+        const node = this.node;
 
-        const node = this.activeNode;
         node.rename(name);
 
         this.props.save();
@@ -138,17 +133,15 @@ export default class EditPanel extends Component {
     }
 
     async addNode() {
-        const node = this.activeNode;
-        await this.activateAndEditNode(node.add(""));
+        await this.activateAndEditNode(this.node.add(""));
     }
 
     async prependNode() {
-        const node = this.activeNode;
-        await this.activateAndEditNode(node.insert(""));
+        await this.activateAndEditNode(this.node.insert(""));
     }
 
     async forkNode() {
-        const node = this.activeNode;
+        const node = this.node;
         const symbols = node.hyperedge.symbols.slice(0, node.index + 1);
         symbols.push("");
         const edge = this.props.thinkabletype.add(symbols);
@@ -160,7 +153,7 @@ export default class EditPanel extends Component {
     }
 
     async removeNode() {
-        const node = this.activeNode;
+        const node = this.node;
         const nextNode = node.prev() || node.next();
 
         node.remove();

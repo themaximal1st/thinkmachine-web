@@ -59,8 +59,8 @@ export default class ChatModal extends React.Component {
             model: "gpt-4o",
         };
 
-        const activeSymbol = this.props.activeNodeUUID
-            ? this.props.thinkabletype.nodeByUUID(this.props.activeNodeUUID).symbol
+        const activeSymbol = this.props.trackedActiveNodeUUID
+            ? this.props.thinkabletype.nodeByUUID(this.props.trackedActiveNodeUUID).symbol
             : null;
         const stream = await window.api.chat(messages, hyperedges, activeSymbol, options);
 
@@ -84,7 +84,7 @@ export default class ChatModal extends React.Component {
         const slug = slugify(symbol);
 
         for (const n of this.props.graphData.nodes) {
-            if (n.uuid === this.props.activeNodeUUID) continue;
+            if (n.uuid === this.props.trackedActiveNodeUUID) continue;
             const node = this.props.thinkabletype.nodeByUUID(n.uuid);
             if (!node) continue;
             if (node.matches(slug)) {

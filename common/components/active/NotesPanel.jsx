@@ -3,8 +3,7 @@ import Markdown from "react-markdown";
 
 export default class NotesPanel extends Component {
     code() {
-        const node = this.props.thinkabletype.nodeByUUID(this.activeUUID);
-        const notes = node.meta.notes || "";
+        const notes = this.node.meta.notes || "";
         return (
             <div id="notes">
                 <div className="max-h-36 overflow-y-scroll flex flex-col-reverse">
@@ -57,7 +56,7 @@ export default class NotesPanel extends Component {
         const textarea = form.querySelector("textarea");
         const notes = textarea.value;
 
-        const node = this.activeNode;
+        const node = this.node;
         node.meta.notes = notes;
 
         textarea.value = "";

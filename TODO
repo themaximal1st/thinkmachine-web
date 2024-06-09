@@ -1,7 +1,6 @@
 - Translations
 - Go through and simplify ActiveNode components
     - Use Component for helper funcs
-    - Make sure contextUUID and .activeNode are used everywhere
     - UI needs some work...still kinda confusing
 
 Context needs stacked nodes..what context am I in right now when editing?

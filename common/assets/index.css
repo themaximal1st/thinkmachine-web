@@ -31,7 +31,11 @@
 }
 
 #context-selector {
-    @apply text-sm absolute mt-2 text-gray-400 dark:text-gray-700 w-[600px] text-center flex-col inline-flex justify-center items-center;
+    @apply text-sm absolute mt-2 text-gray-400 dark:text-gray-700 w-[600px] text-center flex-col inline-flex justify-center items-center pointer-events-none;
+
+    svg {
+        @apply pointer-events-auto cursor-pointer;
+    }
 
     button {
         @apply text-gray-400 dark:text-gray-700 hover:text-gray-900 dark:hover:text-white cursor-pointer py-1 pointer-events-auto max-w-max;

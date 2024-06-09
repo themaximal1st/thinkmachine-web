@@ -248,8 +248,8 @@ export default class Typer extends React.Component {
 
         this.ref.current.value = "";
 
-        let activeSymbol = this.props.activeNodeUUID
-            ? this.props.thinkabletype.nodeByUUID(this.props.activeNodeUUID).symbol
+        let activeSymbol = this.props.trackedActiveNodeUUID
+            ? this.props.thinkabletype.nodeByUUID(this.props.trackedActiveNodeUUID).symbol
             : null;
 
         const options = { model: Settings.llmModel };

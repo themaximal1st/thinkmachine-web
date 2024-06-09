@@ -38,7 +38,7 @@ export default class ForceGraph3D extends React.Component {
     }
 
     handleKeyDown(e) {
-        if (!this.props.activeNodeUUID) return;
+        if (!this.props.trackedActiveNodeUUID) return;
         if (e.target.tagName !== "BODY") return;
 
         const context = this.nodeContext;
@@ -49,6 +49,18 @@ export default class ForceGraph3D extends React.Component {
             const node = context.next[0];
             this.props.setActiveNodeUUID(node.uuid);
         }
+
+        if (context.stack.length <= 1) return;
+        if (e.key !== "ArrowDown" && e.key !== "ArrowUp") return;
+
+        const incr = e.key === "ArrowDown" ? 1 : -1;
+        const node = this.props.thinkabletype.nodeByUUID(this.props.activeNodeUUID);
+
+        let idx = context.stack.indexOf(node) + incr;
+        if (idx >= context.stack.length) idx = 0;
+        if (idx < 0) idx = context.stack.length - 1;
+
+        this.props.setActiveNodeUUID(context.stack[idx].uuid);
     }
 
     setMedia(id, m = []) {
@@ -74,11 +86,13 @@ export default class ForceGraph3D extends React.Component {
     }
 
     get nodeContext() {
-        if (!this.props.activeNodeUUID) {
+        if (!this.props.trackedActiveNodeUUID) {
             return null;
         }
 
-        const node = this.props.thinkabletype.nodeByUUID(this.props.activeNodeUUID);
+        const node = this.props.thinkabletype.nodeByUUID(
+            this.props.trackedActiveNodeUUID
+        );
         return node.context(this.props.graphData);
     }
 
@@ -122,8 +136,8 @@ export default class ForceGraph3D extends React.Component {
         title.textHeight = node.textHeight || 10;
         title.fontFace = "Helvetica";
 
-        if (this.props.activeNodeUUID) {
-            if (this.props.activeNodeUUID === node.uuid) {
+        if (this.props.trackedActiveNodeUUID) {
+            if (this.props.trackedActiveNodeUUID === node.uuid) {
                 title.backgroundColor = Color.backgroundColor;
             } else {
                 title.color = utils.hexToRGBA(Color.textColor, 0.5);
@@ -152,7 +166,10 @@ export default class ForceGraph3D extends React.Component {
 
         const title = this.nodeThreeTitleObject(node);
 
-        if (!this.props.activeNodeUUID || this.props.activeNodeUUID !== node.uuid) {
+        if (
+            !this.props.trackedActiveNodeUUID ||
+            this.props.trackedActiveNodeUUID !== node.uuid
+        ) {
             return title;
         }
 

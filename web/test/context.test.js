@@ -155,7 +155,8 @@ test("stacked no context (interwingle)", () => {
     const data = thinkabletype.graphData();
 
     let context = A1.context(data);
-    expect(context.stack).toEqual([]);
+    expect(context.stack.length).toBe(1);
+    expect(context.stack[0].uuid).toBe(A1.uuid);
 });
 
 test("stacked context (fusion)", () => {
@@ -173,14 +174,39 @@ test("stacked context (fusion)", () => {
 
     const data = thinkabletype.graphData();
 
-    let context = A1.context(data);
-    expect(context.stack.length).toBe(1);
+    let context;
+    context = A1.context(data);
+    expect(context.stack.length).toBe(2);
     expect(data.nodes[0].uuid).toBe(A2.uuid);
     expect(context.stack[0].uuid).toBe(A1.uuid);
 
     context = B.context(data);
-    expect(context.stack.length).toBe(0);
+    expect(context.stack.length).toBe(1);
 
     context = C.context(data);
-    expect(context.stack.length).toBe(0);
+    expect(context.stack.length).toBe(1);
 });
+
+test("stacked context order", () => {
+    const thinkabletype = new ThinkableType([
+        ["A", "B", "C"],
+        ["A", "X", "Y"]
+    ], {
+        interwingle: ThinkableType.INTERWINGLE.FUSION
+    });
+
+    const edge1 = thinkabletype.hyperedges[0];
+    const [A1, B, C] = edge1.nodes;
+    const edge2 = thinkabletype.hyperedges[1];
+    const [A2, X, Y] = edge2.nodes;
+
+    const data = thinkabletype.graphData();
+
+    const context = A1.context(data);
+    const nextEdges = context.next.map(node => node.hyperedge.uuid);
+    const stackEdges = context.stack.map(node => node.hyperedge.uuid);
+
+    expect(nextEdges).toEqual(stackEdges);
+});
+
+// TODO: bridges?

@@ -18,7 +18,6 @@ import Depth from "./Depth";
 import Filters from "./Filters";
 import ChatModal from "./ChatModal";
 
-// TODO: Can we drop contextUUID and just use activeNodeUUID? Because when you change interwingle, it jumps to the active Node, not the contextUUID
 // TODO: Align context on word in center
 
 // TODO: Work on "Notes"...add below Editor
@@ -74,7 +73,7 @@ export default class App extends React.Component {
         });
     }
 
-    get activeNodeUUID() {
+    get trackedActiveNodeUUID() {
         if (!this.state.activeNodeUUID) return null;
         return ThinkableType.trackUUID(this.state.activeNodeUUID, this.state.graphData);
     }
@@ -108,9 +107,9 @@ export default class App extends React.Component {
         Client.setup();
         await this.reset();
 
-        // setTimeout(() => {
-        //     this.setActiveNodeUUID(this.thinkabletype.nodes[0].uuid);
-        // }, 1000);
+        setTimeout(() => {
+            this.setActiveNodeUUID(this.thinkabletype.nodes[0].uuid);
+        }, 1000);
     }
 
     async reset() {
@@ -172,7 +171,7 @@ export default class App extends React.Component {
                     isEmpty={this.isEmpty}
                     typerRef={this.typerRef}
                     thinkabletype={this.thinkabletype}
-                    activeNodeUUID={this.activeNodeUUID}
+                    trackedActiveNodeUUID={this.trackedActiveNodeUUID}
                     setActiveNodeUUID={this.setActiveNodeUUID.bind(this)}
                     filters={this.state.filters}
                     setFilters={this.setFilters.bind(this)}
@@ -208,7 +207,8 @@ export default class App extends React.Component {
 
                 <ForceGraph
                     thinkabletype={this.thinkabletype}
-                    activeNodeUUID={this.activeNodeUUID}
+                    trackedActiveNodeUUID={this.trackedActiveNodeUUID}
+                    activeNodeUUID={this.state.activeNodeUUID}
                     setActiveNodeUUID={this.setActiveNodeUUID.bind(this)}
                     filters={this.state.filters}
                     setFilters={this.setFilters.bind(this)}
@@ -221,7 +221,7 @@ export default class App extends React.Component {
                     typerRef={this.typerRef}
                     isChatModalOpen={this.state.isChatModalOpen}
                     toggleChatModal={this.toggleChatModal.bind(this)}
-                    activeNodeUUID={this.activeNodeUUID}
+                    trackedActiveNodeUUID={this.trackedActiveNodeUUID}
                     reloadData={this.reloadData.bind(this)}
                     setActiveNodeUUID={this.setActiveNodeUUID.bind(this)}
                     graphData={this.state.graphData}

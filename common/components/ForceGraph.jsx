@@ -23,7 +23,6 @@ export default class ForceGraph extends React.Component {
             graphType: Settings.graphType,
             width: window.innerWidth,
             height: window.innerHeight,
-            contextUUID: null,
         };
         this.handleResize = this.handleResize.bind(this);
     }
@@ -55,10 +54,10 @@ export default class ForceGraph extends React.Component {
 
     componentDidUpdate(prevProps, prevState) {
         let delay = 100;
-        if (prevProps.activeNodeUUID !== this.props.activeNodeUUID) {
+        if (prevProps.trackedActiveNodeUUID !== this.props.trackedActiveNodeUUID) {
             this.updateCamera(true, 100, prevProps.graphData);
             delay = 400;
-        } else if (this.props.activeNodeUUID) {
+        } else if (this.props.trackedActiveNodeUUID) {
             delay = 400;
         }
 
@@ -72,10 +71,6 @@ export default class ForceGraph extends React.Component {
     setActiveMode(activeMode) {
         this.setState({ activeMode });
         Settings.activeMode = activeMode;
-    }
-
-    setContextUUID(contextUUID) {
-        this.setState({ contextUUID });
     }
 
     toggleConnectMode(connectMode = undefined) {
@@ -107,8 +102,6 @@ export default class ForceGraph extends React.Component {
             toggleConnectMode: this.toggleConnectMode.bind(this),
             onNodeClick: this.handleNodeClick.bind(this),
             onEngineStop: this.handleEngineStop.bind(this),
-            setContextUUID: this.setContextUUID.bind(this),
-            setActiveNodeUUID: this.setActiveNodeUUID.bind(this),
         };
 
         return (
@@ -129,7 +122,7 @@ export default class ForceGraph extends React.Component {
     }
 
     linkColor(link) {
-        if (this.props.activeNodeUUID) {
+        if (this.props.trackedActiveNodeUUID) {
             return utils.hexToRGBA(Color.textColor, 0.25);
         }
 
@@ -146,31 +139,26 @@ export default class ForceGraph extends React.Component {
 
     handleNodeClick(node, e) {
         // don't allow clicking through active node UI
-        if (this.props.activeNodeUUID && e.srcElement.tagName !== "CANVAS") {
+        if (this.props.trackedActiveNodeUUID && e.srcElement.tagName !== "CANVAS") {
             return;
         }
 
         if (this.state.connectMode) {
             this.setState({ connectMode: false });
 
-            if (this.props.activeNodeUUID === node.uuid) {
+            if (this.props.trackedActiveNodeUUID === node.uuid) {
                 return;
             }
 
             const fromNode = this.props.thinkabletype.nodeByUUID(
-                this.props.activeNodeUUID
+                this.props.trackedActiveNodeUUID
             );
             const toNode = this.props.thinkabletype.nodeByUUID(node.uuid);
             fromNode.connect(toNode);
             return;
         }
 
-        this.setActiveNodeUUID(node.uuid);
-    }
-
-    setActiveNodeUUID(uuid) {
-        this.props.setActiveNodeUUID(uuid);
-        this.setState({ contextUUID: null });
+        this.props.setActiveNodeUUID(node.uuid);
     }
 
     handleResize() {
@@ -218,8 +206,8 @@ export default class ForceGraph extends React.Component {
             graphRef: this.graphRef,
         };
 
-        if (this.props.activeNodeUUID) {
-            await this.camera.zoomToNode(this.props.activeNodeUUID, delay);
+        if (this.props.trackedActiveNodeUUID) {
+            await this.camera.zoomToNode(this.props.trackedActiveNodeUUID, delay);
         } else {
             await this.camera.stableZoom(shouldZoom, delay, oldData);
         }
