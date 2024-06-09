@@ -40,27 +40,45 @@ export default class ForceGraph3D extends React.Component {
     handleKeyDown(e) {
         if (!this.props.trackedActiveNodeUUID) return;
         if (e.target.tagName !== "BODY") return;
-
-        const context = this.nodeContext;
-        if (e.key === "ArrowLeft" && context.prev.length > 0) {
-            const node = context.prev[0];
-            this.props.setActiveNodeUUID(node.uuid);
-        } else if (e.key === "ArrowRight" && context.next.length > 0) {
-            const node = context.next[0];
-            this.props.setActiveNodeUUID(node.uuid);
+        if (
+            e.key !== "ArrowDown" &&
+            e.key !== "ArrowUp" &&
+            e.key !== "ArrowLeft" &&
+            e.key !== "ArrowRight"
+        ) {
+            return;
         }
 
-        if (context.stack.length <= 1) return;
-        if (e.key !== "ArrowDown" && e.key !== "ArrowUp") return;
-
-        const incr = e.key === "ArrowDown" ? 1 : -1;
+        const context = this.nodeContext;
         const node = this.props.thinkabletype.nodeByUUID(this.props.activeNodeUUID);
+
+        if (e.key === "ArrowLeft" && context.prev.length > 0) {
+            this.props.setActiveNodeUUID(this.nodePreferenceUUID(context.prev, node));
+            return;
+        } else if (e.key === "ArrowRight" && context.next.length > 0) {
+            this.props.setActiveNodeUUID(this.nodePreferenceUUID(context.next, node));
+            return;
+        }
+
+        if (e.key !== "ArrowDown" && e.key !== "ArrowUp") return;
+        if (context.stack.length <= 1) return;
+        const incr = e.key === "ArrowDown" ? 1 : -1;
 
         let idx = context.stack.indexOf(node) + incr;
         if (idx >= context.stack.length) idx = 0;
         if (idx < 0) idx = context.stack.length - 1;
 
         this.props.setActiveNodeUUID(context.stack[idx].uuid);
+    }
+
+    nodePreferenceUUID(nodes, node) {
+        for (const n of nodes) {
+            if (n.hyperedge.uuid === node.hyperedge.uuid && n.uuid !== node.uuid) {
+                return n.uuid;
+            }
+        }
+
+        return nodes[0].uuid;
     }
 
     setMedia(id, m = []) {
@@ -86,13 +104,12 @@ export default class ForceGraph3D extends React.Component {
     }
 
     get nodeContext() {
-        if (!this.props.trackedActiveNodeUUID) {
+        if (!this.props.activeNodeUUID) {
             return null;
         }
 
-        const node = this.props.thinkabletype.nodeByUUID(
-            this.props.trackedActiveNodeUUID
-        );
+        const node = this.props.thinkabletype.nodeByUUID(this.props.activeNodeUUID);
+
         return node.context(this.props.graphData);
     }
 

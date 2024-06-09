@@ -19,6 +19,7 @@ import Filters from "./Filters";
 import ChatModal from "./ChatModal";
 
 // TODO: Align context on word in center
+// TODO: Keyboard navigation doesn't work with up/down and next
 
 // TODO: Work on "Notes"...add below Editor
 // TODO: Shows symbols and definitions...just a text editor
