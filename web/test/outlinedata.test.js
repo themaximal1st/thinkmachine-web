@@ -2,13 +2,15 @@ import ThinkableType from "@lib/thinkabletype";
 
 import { expect, test } from "vitest";
 
+// TODO: single symbol
+
 // outliner working
 // filter working?
 // merge graphdata & outlinedata helpers (indexes)
 
 // Export data in outliner format
 
-test.only("outline data (interwingle)", () => {
+test("outline data (interwingle)", () => {
     const thinkabletype = new ThinkableType([
         ["A", "B", "C"],
     ]);
@@ -95,7 +97,7 @@ test("multiple hyperedge (confluence)", () => {
 
 // FUSION
 
-test.skip("fusion start", () => {
+test("fusion start", () => {
     const hyperedges = [
         // A.B.C.D.E
         ["A", "B", "C"],
@@ -106,9 +108,33 @@ test.skip("fusion start", () => {
         interwingle: ThinkableType.INTERWINGLE.FUSION
     });
 
-    const data = thinkabletype.outlineData();
-    console.log("DATA", data.nodes);
-    expect(data.nodes.size).toBe(1); // C masquerades as A.B.C
+    const { nodes } = thinkabletype.outlineData();
+    expect(nodes.size).toBe(1); // C masquerades as A.B.C
+
+    const A = nodes.get("A");
+    expect(A.id).toBe("A");
+    expect(A.name).toBe("A");
+    expect(A.nodes.size).toBe(1);
+
+    const B = A.nodes.get("A.B");
+    expect(B.id).toBe("A.B");
+    expect(B.name).toBe("B");
+    expect(B.nodes.size).toBe(1);
+
+    const C = B.nodes.get("A.B.C");
+    expect(C.id).toBe("A.B.C");
+    expect(C.name).toBe("C");
+    expect(C.nodes.size).toBe(1);
+
+    const D = C.nodes.get("C.D");
+    expect(D.id).toBe("C.D");
+    expect(D.name).toBe("D");
+    expect(D.nodes.size).toBe(1);
+
+    const E = D.nodes.get("C.D.E");
+    expect(E.id).toBe("C.D.E");
+    expect(E.name).toBe("E");
+    expect(E.nodes.size).toBe(0);
 });
 
 /*

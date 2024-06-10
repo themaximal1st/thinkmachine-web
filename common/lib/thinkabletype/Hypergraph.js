@@ -361,63 +361,41 @@ export default class Hypergraph {
 
     }
 
-    outlineData() {
+    outlineData(filter = null, lastData = null) {
+        const graphData = this.graphData(filter, lastData);
+
+        const nodeIndex = utils.createIndex(graphData.nodes);
+        function getNode(index) {
+            const node = nodeIndex.get(index);
+            if (!node.nodes) { node.nodes = new Map() }
+            return node;
+        }
+
+        const index = new Map();
         const nodes = new Map();
 
-        this.updateIndexes();
+        for (const link of graphData.links) {
+            const source = getNode(link.source);
+            const target = getNode(link.target);
 
-        for (const hyperedge of this.hyperedges) {
-            if (this.isFusion && hyperedge.isFusionBridge) {
-                // hyperedge.updateIndexes(nodes, links);
+            let parent;
+            if (index.has(target.id)) {
+                parent = target.nodes;
             } else {
-                hyperedge.updateOutlineData(nodes);
+                if (!index.has(source.id)) {
+                    nodes.set(source.id, source);
+                }
+                parent = source.nodes;
             }
+
+
+            parent.set(target.id, target);
+
+            index.set(source.id, source);
+            index.set(target.id, target);
         }
 
-        return {
-            nodes,
-        }
-
-        // const nodes = new Map();
-        // const links = new Map();
-
-        // this.updateIndexes();
-
-        // for (const hyperedge of this.hyperedges) {
-        //     if (this.isFusion && hyperedge.isFusionBridge) {
-        //         // hyperedge.updateIndexes(nodes, links);
-        //     } else {
-        //         hyperedge.updateGraphData(nodes, links);
-        //     }
-        // }
-
-        // if (lastData) {
-        //     utils.restoreData({ nodes, links }, lastData);
-        // }
-
-        // if (this.isFusion) {
-        //     this.updateFusionData(nodes, links);
-        // }
-
-        // if (this.isBridge) {
-        //     this.updateBridgeData(nodes, links);
-        // }
-
-        // utils.verifyGraphData(nodes, links);
-
-        // if (Array.isArray(filter) && filter.length > 0) {
-        //     return FilterGraph({
-        //         filter,
-        //         hyperedges: this.hyperedges,
-        //         graphData: { nodes, links },
-        //         depth: this.depth
-        //     });
-        // }
-
-        // return {
-        //     nodes: Array.from(nodes.values()),
-        //     links: Array.from(links.values()),
-        // };
+        return { nodes }
     }
 
 

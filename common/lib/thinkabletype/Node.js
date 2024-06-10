@@ -196,35 +196,5 @@ export default class Node {
     export() {
         return Parser.exportSymbol(this.symbol, this.meta);
     }
-
-    updateOutlineData(nodes) {
-        const node = this.hypergraph.masqueradeNode(this);
-        const indexes = this.updateIndexes(nodes);
-
-        if (indexes.nodeIDs.size > 1 && indexes.nodeIDs.has(node.id)) {
-            const nodeIDs = Array.from(indexes.nodeIDs);
-            nodeIDs.splice(nodeIDs.indexOf(node.id), 1);
-            console.log("GOT IT", nodeIDs);
-        }
-        if (nodes.has(node.id)) {
-            // if (this.symbol === "C") {
-            // }
-            return node;
-        }
-
-
-        const data = {
-            id: node.id,
-            uuid: node.uuid,
-            name: node.symbol,
-            color: this.hyperedge.color,
-            nodes: new Map(),
-            ...indexes,
-        };
-
-        nodes.set(node.id, data);
-
-        return node;
-    }
 }
 
