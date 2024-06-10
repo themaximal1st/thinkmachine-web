@@ -86,7 +86,7 @@
 }
 
 #interwingle {
-    @apply absolute left-0 top-0 z-10 bottom-0 flex items-center justify-center gap-5 pr-8 flex-col-reverse;
+    @apply absolute left-0 top-0 z-30 bottom-0 flex items-center justify-center gap-5 pr-8 flex-col-reverse;
 }
 
 #interwingle button {
@@ -451,5 +451,25 @@
 
     input[type="submit"] {
         @apply bg-gray-100 dark:bg-gray-900/50 px-3 py-2 text-gray-700 dark:text-white rounded-xl outline-none cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-800;
+    }
+}
+
+#outliner {
+    @apply bg-gray-50 dark:bg-black absolute inset-0 z-20 text-black dark:text-white py-8;
+
+    .inner {
+        @apply max-w-3xl mx-auto h-full p-4 bg-gray-100/80 dark:bg-gray-1000/80 rounded-lg shadow-lg;
+    }
+
+    .indent-0 {
+        @apply pl-0;
+    }
+
+    .indent-1 {
+        @apply pl-4;
+    }
+
+    .indent-2 {
+        @apply pl-8;
     }
 }

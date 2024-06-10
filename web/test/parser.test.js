@@ -53,3 +53,55 @@ test("parse hyperedge string meta with comma and quotes", () => {
 test("parse hyperedge meta env with comma and quotes", () => {
     expect(Parser.parseHyperedge(`A[note="this, is a quoted comma string"],B,C`)).toEqual([`A[note="this, is a quoted comma string"]`, "B", "C"]);
 });
+
+
+// A1=A
+// A2=A
+// A1,B,C
+// A2,1,2
+
+// A1,note,This is a note on A1
+// A2,note,This is a note on A2
+
+
+// A1: This is some context
+// A1: this=is some=more context=here
+
+// A -> B -> C
+// A -> _note -> This is a note on A
+
+
+
+// These notes are doing something interesting together....
+
+
+// Symbols (local vs global)
+// Connections
+// _properties
+// definition:
+// explicit [link]
+
+
+// A -> B -> C
+// A -> _note -> This is a note on A
+
+// A -> 1 -> 2
+// A -> _note -> This is a note on A...again (overwrites old one)
+
+
+// A: This is a
+// B: This is b
+// A -> B
+// A -> _url -> https://www.google.com
+
+// The thing about [A] and [B] is they both point towards [C].
+
+// A,B,C
+// A,1,2
+
+// A1=A
+// A2=A
+// A1,B,C
+// A2,1,2
+// A1,_note,This is a note on the A1
+// A2,_note,This is a note on the A2

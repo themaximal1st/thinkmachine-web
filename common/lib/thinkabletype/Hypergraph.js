@@ -361,6 +361,66 @@ export default class Hypergraph {
 
     }
 
+    outlineData() {
+        const nodes = new Map();
+
+        this.updateIndexes();
+
+        for (const hyperedge of this.hyperedges) {
+            if (this.isFusion && hyperedge.isFusionBridge) {
+                // hyperedge.updateIndexes(nodes, links);
+            } else {
+                hyperedge.updateOutlineData(nodes);
+            }
+        }
+
+        return {
+            nodes,
+        }
+
+        // const nodes = new Map();
+        // const links = new Map();
+
+        // this.updateIndexes();
+
+        // for (const hyperedge of this.hyperedges) {
+        //     if (this.isFusion && hyperedge.isFusionBridge) {
+        //         // hyperedge.updateIndexes(nodes, links);
+        //     } else {
+        //         hyperedge.updateGraphData(nodes, links);
+        //     }
+        // }
+
+        // if (lastData) {
+        //     utils.restoreData({ nodes, links }, lastData);
+        // }
+
+        // if (this.isFusion) {
+        //     this.updateFusionData(nodes, links);
+        // }
+
+        // if (this.isBridge) {
+        //     this.updateBridgeData(nodes, links);
+        // }
+
+        // utils.verifyGraphData(nodes, links);
+
+        // if (Array.isArray(filter) && filter.length > 0) {
+        //     return FilterGraph({
+        //         filter,
+        //         hyperedges: this.hyperedges,
+        //         graphData: { nodes, links },
+        //         depth: this.depth
+        //     });
+        // }
+
+        // return {
+        //     nodes: Array.from(nodes.values()),
+        //     links: Array.from(links.values()),
+        // };
+    }
+
+
     export() {
         const hyperedges = this.hyperedges.map(hyperedge => hyperedge.export());
         return hyperedges.map(hyperedge => hyperedge.join(",")).join("\n");

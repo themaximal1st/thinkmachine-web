@@ -102,7 +102,7 @@ export default class Node {
         });
     }
 
-    updateIndexes(nodes, links) {
+    updateIndexes(nodes) {
         const node = this.hypergraph.masqueradeNode(this);
 
         const existing = nodes.get(node.id);
@@ -195,6 +195,23 @@ export default class Node {
 
     export() {
         return Parser.exportSymbol(this.symbol, this.meta);
+    }
+
+    updateOutlineData(nodes) {
+        const node = this.hypergraph.masqueradeNode(this);
+        const indexes = this.updateIndexes(nodes);
+        if (nodes.has(node.id)) return;
+
+        const data = {
+            id: node.id,
+            uuid: node.uuid,
+            name: node.symbol,
+            color: this.hyperedge.color,
+            nodes: new Map(),
+            ...indexes,
+        };
+
+        nodes.set(this.id, data);
     }
 }
 

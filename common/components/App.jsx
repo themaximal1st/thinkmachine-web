@@ -13,6 +13,7 @@ import ForceGraph from "./ForceGraph";
 import Interwingle from "./Interwingle";
 import Typer from "./Typer";
 import Editor from "./Editor";
+import Outliner from "./Outliner";
 import SettingsModal from "./SettingsModal";
 import Depth from "./Depth";
 import Filters from "./Filters";
@@ -108,9 +109,9 @@ export default class App extends React.Component {
         Client.setup();
         await this.reset();
 
-        setTimeout(() => {
-            this.setActiveNodeUUID(this.thinkabletype.nodes[0].uuid);
-        }, 1000);
+        // setTimeout(() => {
+        //     this.setActiveNodeUUID(this.thinkabletype.nodes[0].uuid);
+        // }, 1000);
     }
 
     async reset() {
@@ -199,6 +200,14 @@ export default class App extends React.Component {
 
                 <Editor
                     thinkabletype={this.thinkabletype}
+                    reset={this.reset.bind(this)}
+                    reloadData={this.reloadData.bind(this)}
+                    saveFile={this.saveFile.bind(this)}
+                />
+
+                <Outliner
+                    thinkabletype={this.thinkabletype}
+                    graphData={this.state.graphData}
                     reset={this.reset.bind(this)}
                     reloadData={this.reloadData.bind(this)}
                     saveFile={this.saveFile.bind(this)}

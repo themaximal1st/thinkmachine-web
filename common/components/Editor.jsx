@@ -86,6 +86,8 @@ export default class Editor extends React.Component {
     }
 
     render() {
+        return;
+
         if (!this.state.show) {
             return (
                 <div className="relative group">

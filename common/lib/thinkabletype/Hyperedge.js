@@ -141,6 +141,13 @@ export default class Hyperedge {
         }
     }
 
+    updateOutlineData(nodes) {
+        for (const node of this.nodes) {
+            node.updateOutlineData(nodes);
+            nodes = nodes.get(node.id).nodes;
+        }
+    }
+
     updateIndexes(nodes, links) {
         if (!this.isFusionBridge) return;
 
