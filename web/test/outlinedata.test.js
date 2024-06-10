@@ -2,6 +2,36 @@ import ThinkableType from "@lib/thinkabletype";
 
 import { expect, test } from "vitest";
 
+// Interwingle could change a little? ...or we could just limit it to 3 levels and only do fusion starts & bridges
+
+// There's no real way to do certain fusion/bridge nodes without a graph
+// A vs B
+// 1 vs 2
+
+// A B C & C D E is fine
+
+// but
+// A B C & 1 2 C is not
+
+// A B C D E
+// 1 2 3 4 5
+// A 1
+// ^--- doesn't work
+
+// Is outliner the right way to flatten the hypergraph?
+// Visually connected links -> no
+// Markdown interface -> maybe
+// Outliner -> yes...we just need to think it through a little more. build a rapid prototype and start using it.
+// Outliner probably needs to stop using graphData and generate its own
+// Outliner should have smart links though — lots of fusion/bridge connections as popup links you can select
+// Easy way to jump back and forth between editor view and graph view
+// Call it Editor...not Outliner
+// Need a concept of project scope...or a workspace.
+// Should use URL scheme for maximum flexibility
+//   namespace://project/a/b
+//   sumerians://gilgamesh/epic/story
+
+
 // TODO: single symbol
 
 // outliner working
@@ -137,8 +167,7 @@ test("fusion start", () => {
     expect(E.nodes.size).toBe(0);
 });
 
-/*
-test("fusion end", () => {
+test.only("fusion end", () => {
     const hyperedges = [
         // A.B.C && 1.2.C with C as fusion node
         ["A", "B", "C"],
@@ -149,17 +178,46 @@ test("fusion end", () => {
         interwingle: ThinkableType.INTERWINGLE.FUSION
     });
 
-    expect(thinkabletype.hyperedges.length).toEqual(2);
+    const data = thinkabletype.outlineData();
+    expect(data.nodes.size).toBe(2); // C masquerades as A.B.C
 
-    const data = thinkabletype.graphData();
-    expect(data.nodes.length).toBe(5); // C masquerades as A.B.C
-    expect(data.links.length).toBe(4);
+    const A = data.nodes.get("A");
+    expect(A.id).toBe("A");
+    expect(A.name).toBe("A");
+    expect(A.nodes.size).toBe(1);
 
-    expect(data.links[0].id).toBe("A->A.B");
-    expect(data.links[1].id).toBe("A.B->A.B.C");
-    expect(data.links[2].id).toBe("1->1.2");
-    expect(data.links[3].id).toBe("1.2->A.B.C");
+    const B = A.nodes.get("A.B");
+    expect(B.id).toBe("A.B");
+    expect(B.name).toBe("B");
+    expect(B.nodes.size).toBe(1);
+
+    const C = B.nodes.get("A.B.C");
+    expect(C.id).toBe("A.B.C");
+    expect(C.name).toBe("C");
+    expect(C.nodes.size).toBe(1);
+    console.log("C", C.nodes);
+
+
+
+    const One = data.nodes.get("1");
+    expect(One.id).toBe("1");
+    expect(One.name).toBe("1");
+    expect(One.nodes.size).toBe(1);
+
+    const Two = One.nodes.get("1.2");
+    expect(Two.id).toBe("1.2");
+    expect(Two.name).toBe("2");
+    console.log("TWO", Two);
+    expect(Two.nodes.size).toBe(1);
+
+    // const C2 = Two.nodes.get("1.2.C");
+    // expect(C2.id).toBe("1.2.C");
+    // expect(C2.name).toBe("C");
+    // expect(C2.nodes.size).toBe(0);
+
 });
+
+/*
 
 
 test("fusion no bridge", () => {
