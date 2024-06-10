@@ -200,7 +200,18 @@ export default class Node {
     updateOutlineData(nodes) {
         const node = this.hypergraph.masqueradeNode(this);
         const indexes = this.updateIndexes(nodes);
-        if (nodes.has(node.id)) return;
+
+        if (indexes.nodeIDs.size > 1 && indexes.nodeIDs.has(node.id)) {
+            const nodeIDs = Array.from(indexes.nodeIDs);
+            nodeIDs.splice(nodeIDs.indexOf(node.id), 1);
+            console.log("GOT IT", nodeIDs);
+        }
+        if (nodes.has(node.id)) {
+            // if (this.symbol === "C") {
+            // }
+            return node;
+        }
+
 
         const data = {
             id: node.id,
@@ -211,7 +222,9 @@ export default class Node {
             ...indexes,
         };
 
-        nodes.set(this.id, data);
+        nodes.set(node.id, data);
+
+        return node;
     }
 }
 

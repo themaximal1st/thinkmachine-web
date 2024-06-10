@@ -142,8 +142,8 @@ export default class Hyperedge {
     }
 
     updateOutlineData(nodes) {
-        for (const node of this.nodes) {
-            node.updateOutlineData(nodes);
+        for (let node of this.nodes) {
+            node = node.updateOutlineData(nodes);
             nodes = nodes.get(node.id).nodes;
         }
     }
