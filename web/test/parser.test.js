@@ -2,6 +2,62 @@ import Parser from "@lib/thinkabletype/parser";
 
 import { expect, test } from "vitest";
 
+test("simple markdown and html", () => {
+    const parser = new Parser("A");
+    const { hyperedges, markdown, html } = parser;
+    expect(hyperedges).toEqual([]);
+    expect(markdown).toEqual("A");
+    expect(html).toEqual("<p>A</p>");
+});
+
+test("multiline markdown", () => {
+    const parser = new Parser(`this is some\nmultiline text`);
+    const { hyperedges, markdown, html } = parser;
+    expect(markdown).toEqual(`this is some\nmultiline text`);
+    expect(html).toEqual("<p>this is some\nmultiline text</p>");
+    expect(hyperedges).toEqual([]);
+});
+
+test("multi paragraph markdown", () => {
+    const parser = new Parser(`this is some\n\nmultiline text`);
+    const { hyperedges, markdown, html } = parser;
+    expect(markdown).toEqual(`this is some\n\nmultiline text`);
+    expect(html).toEqual("<p>this is some</p>\n<p>multiline text</p>");
+    expect(hyperedges).toEqual([]);
+});
+
+test("simple symbols and connections", () => {
+    const parser = new Parser("A -> B -> C");
+    const { hyperedges, markdown, html } = parser;
+    expect(markdown).toEqual("");
+    expect(html).toEqual("");
+    expect(hyperedges).toEqual([["A", "B", "C"]]);
+});
+
+test("symbols and markdown", () => {
+    const parser = new Parser(`
+This is some content
+A -> B -> C
+And then some more content
+with a new line
+`);
+    const { hyperedges, markdown, html } = parser;
+    expect(markdown).toEqual("This is some content\nAnd then some more content\nwith a new line");
+    expect(html).toEqual("<p>This is some content\nAnd then some more content\nwith a new line</p>");
+    expect(hyperedges).toEqual([["A", "B", "C"]]);
+});
+
+// symbols
+// markdown
+// symbols and markdown
+// multiline && newlines
+// connections
+// alias
+// page
+// properties
+// url
+
+/*
 test("parse string symbol", () => {
     expect(Parser.parseSymbol("A")).toEqual(["A", null])
 });
@@ -53,6 +109,7 @@ test("parse hyperedge string meta with comma and quotes", () => {
 test("parse hyperedge meta env with comma and quotes", () => {
     expect(Parser.parseHyperedge(`A[note="this, is a quoted comma string"],B,C`)).toEqual([`A[note="this, is a quoted comma string"]`, "B", "C"]);
 });
+*/
 
 
 // A1=A
