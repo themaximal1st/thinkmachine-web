@@ -4,64 +4,67 @@ import { expect, test } from "vitest";
 
 // TODO: Early on we want to connect it to UI, because the process of going back and forth might change how we build it
 
-test("simple markdown", () => {
-    const doc = new Document("Hello World");
+test("simple markdown", async () => {
+    const doc = await Document.parse("Hello World");
     expect(doc.hyperedges).toEqual([]);
     expect(doc.markdown).toEqual("Hello World");
     expect(doc.lines).toEqual(["Hello World"]);
     expect(doc.html).toEqual("<p>Hello World</p>");
 });
 
-test("multiline markdown", () => {
-    const doc = new Document("Hello World\nAnd Goodbye");
+test("multiline markdown", async () => {
+    const doc = await Document.parse("Hello World\nAnd Goodbye");
     expect(doc.hyperedges).toEqual([]);
     expect(doc.markdown).toEqual("Hello World\nAnd Goodbye");
     expect(doc.lines).toEqual(["Hello World", "And Goodbye"]);
     expect(doc.html).toEqual("<p>Hello World\nAnd Goodbye</p>");
 });
 
-test("multiple paragraph markdown", () => {
-    const doc = new Document("Hello World\n\nAnd Goodbye");
+test("multiple paragraph markdown", async () => {
+    const doc = await Document.parse("Hello World\n\nAnd Goodbye");
     expect(doc.hyperedges).toEqual([]);
     expect(doc.markdown).toEqual("Hello World\n\nAnd Goodbye");
     expect(doc.lines).toEqual(["Hello World", "", "And Goodbye"]);
     expect(doc.html).toEqual("<p>Hello World</p>\n<p>And Goodbye</p>");
 });
 
-test("multiple paragraph markdown with empty space", () => {
-    const doc = new Document("Hello World\n  \nAnd Goodbye");
+test("multiple paragraph markdown with empty space", async () => {
+    const doc = await Document.parse("Hello World\n  \nAnd Goodbye");
     expect(doc.hyperedges).toEqual([]);
     expect(doc.markdown).toEqual("Hello World\n  \nAnd Goodbye");
     expect(doc.lines).toEqual(["Hello World", "  ", "And Goodbye"]);
     expect(doc.html).toEqual("<p>Hello World</p>\n<p>And Goodbye</p>");
 });
 
-test("hyperedge", () => {
-    const doc = new Document("A -> B -> C");
+test("hyperedge", async () => {
+    const doc = await Document.parse("A -> B -> C");
     expect(doc.hyperedges).toEqual([["A", "B", "C"]]);
     expect(doc.markdown).toEqual("A -> B -> C");
     expect(doc.lines).toEqual(["A -> B -> C"]);
-    expect(doc.html).toEqual("<p>A -&gt; B -&gt; C</p>");
+    expect(doc.html).toEqual("<p>A -> B -> C</p>");
 });
 
-test("hyperedge with markdown", () => {
-    const doc = new Document("This is a hyperedge\nA -> B -> C\nPretty cool");
+test("hyperedge with markdown", async () => {
+    const doc = await Document.parse("This is a hyperedge\nA -> B -> C\nPretty cool");
     expect(doc.hyperedges).toEqual([["A", "B", "C"]]);
     expect(doc.markdown).toEqual("This is a hyperedge\nA -> B -> C\nPretty cool");
     expect(doc.lines).toEqual(["This is a hyperedge", "A -> B -> C", "Pretty cool"]);
-    expect(doc.html).toEqual("<p>This is a hyperedge\nA -&gt; B -&gt; C\nPretty cool</p>");
+    expect(doc.html).toEqual("<p>This is a hyperedge\nA -> B -> C\nPretty cool</p>");
 });
 
-test("headers", () => {
-    const doc = new Document("# This is a header\nand a body");
+test("headers", async () => {
+    const doc = await Document.parse("# This is a header\nand a body");
     expect(doc.hyperedges).toEqual([]);
     expect(doc.markdown).toEqual("# This is a header\nand a body");
     expect(doc.lines).toEqual(["# This is a header", "and a body"]);
-    expect(doc.html).toEqual(`<h1 id="thisisaheader">This is a header</h1>\n<p>and a body</p>`);
+    expect(doc.html).toEqual(`<section><h1>This is a header</h1><p>and a body</p></section>`);
 });
 
 
 // A -> _B -> C
+// Start linkifying symbols
+
+
 
 // # Symbol -> notes 
 // Properties
