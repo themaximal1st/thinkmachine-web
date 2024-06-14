@@ -1,3 +1,4 @@
+- Proper japanese support
 - Translations
 - Go through and simplify ActiveNode components
     - Use Component for helper funcs

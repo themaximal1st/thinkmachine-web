@@ -1,6 +1,54 @@
-// import parseEnvString from "parse-env-string"
 import showdown from "showdown";
 
+function makeHTML(markdown) {
+    const converter = new showdown.Converter();
+    return converter.makeHtml(markdown);
+}
+
+export default class Document {
+    constructor(input) {
+        this.input = input;
+        this.parse()
+    }
+
+    parse() {
+        this.lines = this.input.split(/\r?\n/);
+        this.hyperedges = this.lines.filter(line => line.includes("->")).map(line => line.split("->").map(s => s.trim()));
+        this.markdown = this.input;
+        this.html = makeHTML(this.markdown);
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
 export default class Parser {
     CONNECTION = "->";
     ALIAS = "=";
@@ -10,6 +58,7 @@ export default class Parser {
         this.input = input.trim();
         this.markdown = "";
         this.hyperedges = [];
+        this.alias = new Map();
         this.parse();
     }
 
@@ -36,6 +85,7 @@ export default class Parser {
     }
 
     parseLine(line) {
+        if (this.parseAlias(line)) return;
         if (this.parseHyperedge(line)) return;
 
         if (this.markdown.length > 0) {
@@ -43,6 +93,14 @@ export default class Parser {
         }
 
         this.markdown += line;
+    }
+
+    parseAlias(line) {
+        if (line.includes(this.ALIAS) && line.match(/^[A-Za-z0-9\s]+=/)) {
+            const symbols = line.split(this.ALIAS);
+            this.alias.set(symbols[0], symbols[1]);
+            return true;
+        }
     }
 
     parseHyperedge(line) {
@@ -53,9 +111,10 @@ export default class Parser {
         }
 
         if (line.includes(this.CONNECTION)) {
-            const symbols = line.split(/\s*->\s*/);
+
             this.hyperedges.push(symbols);
             return true;
         }
     }
 }
+    */

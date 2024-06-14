@@ -1,14 +1,89 @@
-import Parser from "@lib/thinkabletype/parser";
+import Document from "@lib/thinkabletype/Document";
 
 import { expect, test } from "vitest";
 
-test("simple markdown and html", () => {
-    const parser = new Parser("A");
-    const { hyperedges, markdown, html } = parser;
-    expect(hyperedges).toEqual([]);
-    expect(markdown).toEqual("A");
-    expect(html).toEqual("<p>A</p>");
+// TODO: Early on we want to connect it to UI, because the process of going back and forth might change how we build it
+
+test("simple markdown", () => {
+    const doc = new Document("Hello World");
+    expect(doc.hyperedges).toEqual([]);
+    expect(doc.markdown).toEqual("Hello World");
+    expect(doc.lines).toEqual(["Hello World"]);
+    expect(doc.html).toEqual("<p>Hello World</p>");
 });
+
+test("multiline markdown", () => {
+    const doc = new Document("Hello World\nAnd Goodbye");
+    expect(doc.hyperedges).toEqual([]);
+    expect(doc.markdown).toEqual("Hello World\nAnd Goodbye");
+    expect(doc.lines).toEqual(["Hello World", "And Goodbye"]);
+    expect(doc.html).toEqual("<p>Hello World\nAnd Goodbye</p>");
+});
+
+test("multiple paragraph markdown", () => {
+    const doc = new Document("Hello World\n\nAnd Goodbye");
+    expect(doc.hyperedges).toEqual([]);
+    expect(doc.markdown).toEqual("Hello World\n\nAnd Goodbye");
+    expect(doc.lines).toEqual(["Hello World", "", "And Goodbye"]);
+    expect(doc.html).toEqual("<p>Hello World</p>\n<p>And Goodbye</p>");
+});
+
+test("multiple paragraph markdown with empty space", () => {
+    const doc = new Document("Hello World\n  \nAnd Goodbye");
+    expect(doc.hyperedges).toEqual([]);
+    expect(doc.markdown).toEqual("Hello World\n  \nAnd Goodbye");
+    expect(doc.lines).toEqual(["Hello World", "  ", "And Goodbye"]);
+    expect(doc.html).toEqual("<p>Hello World</p>\n<p>And Goodbye</p>");
+});
+
+test("hyperedge", () => {
+    const doc = new Document("A -> B -> C");
+    expect(doc.hyperedges).toEqual([["A", "B", "C"]]);
+    expect(doc.markdown).toEqual("A -> B -> C");
+    expect(doc.lines).toEqual(["A -> B -> C"]);
+    expect(doc.html).toEqual("<p>A -&gt; B -&gt; C</p>");
+});
+
+test("hyperedge with markdown", () => {
+    const doc = new Document("This is a hyperedge\nA -> B -> C\nPretty cool");
+    expect(doc.hyperedges).toEqual([["A", "B", "C"]]);
+    expect(doc.markdown).toEqual("This is a hyperedge\nA -> B -> C\nPretty cool");
+    expect(doc.lines).toEqual(["This is a hyperedge", "A -> B -> C", "Pretty cool"]);
+    expect(doc.html).toEqual("<p>This is a hyperedge\nA -&gt; B -&gt; C\nPretty cool</p>");
+});
+
+test("headers", () => {
+    const doc = new Document("# This is a header\nand a body");
+    expect(doc.hyperedges).toEqual([]);
+    expect(doc.markdown).toEqual("# This is a header\nand a body");
+    expect(doc.lines).toEqual(["# This is a header", "and a body"]);
+    expect(doc.html).toEqual(`<h1 id="thisisaheader">This is a header</h1>\n<p>and a body</p>`);
+});
+
+
+// A -> _B -> C
+
+// # Symbol -> notes 
+// Properties
+// GET THIS TO FRONTEND ASAP!
+
+
+
+// Need node information
+
+// A --> B
+// A ------------> B
+// A -this-> B
+// A -----this--> B
+
+// Programatically add / ingest / change / move / remove
+
+// Hyperedges
+// Symbols
+// Headers (Symbols)
+// Later (lists / symbols)
+
+/*
 
 test("multiline markdown", () => {
     const parser = new Parser(`this is some\nmultiline text`);
@@ -47,15 +122,64 @@ with a new line
     expect(hyperedges).toEqual([["A", "B", "C"]]);
 });
 
-// symbols
-// markdown
-// symbols and markdown
-// multiline && newlines
-// connections
+test("alias", () => {
+    const parser = new Parser(`
+A1=A
+A1 -> B -> C
+`);
+    const { hyperedges, markdown } = parser;
+    expect(markdown).toEqual("");
+    expect(hyperedges).toEqual([["A", "B", "C"]]);
+});
+
+
+test("properties", () => {
+    const parser = new Parser(`
+A -> B -> C
+A -> _note -> This is a note on A
+`);
+    const { hyperedges, markdown } = parser;
+    expect(markdown).toEqual("");
+    expect(hyperedges).toEqual([
+        ["A", "B", "C"],
+        ["A", "_note", "This is a note on A"]
+    ]);
+});
+
+test.only("alias properties", () => {
+    const parser = new Parser(`
+A1=A
+A2=A
+A1 -> B -> C
+A2 -> 1 -> 2
+A1 -> _note -> This is a note on A1
+A2 -> _note -> This is a note on A2
+`);
+    const { hyperedges, markdown } = parser;
+    expect(markdown).toEqual("");
+    expect(hyperedges).toEqual([
+        ["A", "B", "C"],
+        ["A", "1", "2"],
+        ["A", "_note", "This is a note on A1"],
+        ["A", "_note", "This is a note on A2"]
+    ]);
+});
+*/
+
+// Parser should return more initial information...like a UUID with properties attached to it that can be loaded into General Schematics
+
 // alias
 // page
 // properties
 // url
+// notes on symbol
+// notes on connection?
+
+// export? hrmm
+// alias notes
+// with alias..give a UUID at start and attach properties to it
+// should be part of broader bootstrap into general schematics?
+
 
 /*
 test("parse string symbol", () => {
@@ -162,3 +286,15 @@ test("parse hyperedge meta env with comma and quotes", () => {
 // A2,1,2
 // A1,_note,This is a note on the A1
 // A2,_note,This is a note on the A2
+
+
+// text format is <-
+// hyperedge format is _
+
+// so....
+// a <- b -> c
+
+// is the same as 
+
+// a -> _b -> c
+
