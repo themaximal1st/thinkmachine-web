@@ -17,7 +17,7 @@ test("multiline markdown", async () => {
     expect(doc.hyperedges).toEqual([]);
     expect(doc.markdown).toEqual("Hello World\nAnd Goodbye");
     expect(doc.lines).toEqual(["Hello World", "And Goodbye"]);
-    expect(doc.html).toEqual("<p>Hello World\nAnd Goodbye</p>");
+    expect(doc.html).toEqual("<p>Hello World<br>\nAnd Goodbye</p>");
 });
 
 test("multiple paragraph markdown", async () => {
@@ -44,12 +44,21 @@ test("hyperedge", async () => {
     expect(doc.html).toEqual("<p>A -> B -> C</p>");
 });
 
+test("hyperedge symbols", async () => {
+    const doc = await Document.parse("A -> B -> C");
+    expect(doc.hyperedges).toEqual([["A", "B", "C"]]);
+    expect(doc.markdown).toEqual("A -> B -> C");
+    expect(doc.lines).toEqual(["A -> B -> C"]);
+    expect(doc.html).toEqual("<p>A -> B -> C</p>");
+    console.log(doc.tree.children[0].children[0]);
+});
+
 test("hyperedge with markdown", async () => {
     const doc = await Document.parse("This is a hyperedge\nA -> B -> C\nPretty cool");
     expect(doc.hyperedges).toEqual([["A", "B", "C"]]);
     expect(doc.markdown).toEqual("This is a hyperedge\nA -> B -> C\nPretty cool");
     expect(doc.lines).toEqual(["This is a hyperedge", "A -> B -> C", "Pretty cool"]);
-    expect(doc.html).toEqual("<p>This is a hyperedge\nA -> B -> C\nPretty cool</p>");
+    expect(doc.html).toEqual("<p>This is a hyperedge<br>\nA -> B -> C<br>\nPretty cool</p>");
 });
 
 test("headers", async () => {

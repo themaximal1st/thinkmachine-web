@@ -7,6 +7,13 @@ import remarkRehype from 'remark-rehype'
 import remarkSectionize from 'remark-sectionize'
 import { unified } from 'unified'
 import remarkGfm from 'remark-gfm'
+import remarkBreaks from 'remark-breaks'
+import { find } from 'unist-util-find'
+import { visit, SKIP } from 'unist-util-visit'
+import { u } from 'unist-builder'
+
+
+
 
 // I need a concept of a block
 // remark-sectionize
@@ -46,27 +53,46 @@ export default class Document {
 
     async parse() {
         this.lines = this.markdown.split(/\r?\n/);
-        this.hyperedges = this.lines.filter(line => line.includes("->")).map(line => line.split("->").map(s => s.trim()));
+        this.hyperedges = [];
+        this.tree = null;
         this.file = await unified()
             .use(remarkParse)
             .use(remarkFrontmatter, ['yaml', 'toml'])
             .use(remarkGfm)
             .use(remarkMath)
+            .use(remarkBreaks)
             .use(remarkSectionize)
+            .use(this.remarkHyperedges.bind(this))
+            .use(this.remarkSaveTree.bind(this))
             .use(remarkRehype)
             .use(rehypeSanitize)
             .use(rehypeStringify)
             .process(this.markdown);
 
         this.html = this.file.value;
+        return this;
+    }
 
-        return this.file.value;
+    remarkHyperedges() {
+        return (tree) => {
+            visit(tree, 'text', (node, index, parent) => {
+                if (node.value.includes("->")) {
+                    this.hyperedges.push(node.value.split("->").map(s => s.trim()));
+                }
+            });
+        }
+    }
+
+    // weird...any other way to do this?
+    remarkSaveTree() {
+        return (tree) => {
+            this.tree = tree;
+        }
     }
 
     static async parse(markdown) {
         const doc = new Document(markdown);
-        await doc.parse();
-        return doc;
+        return await doc.parse();
     }
 }
 
