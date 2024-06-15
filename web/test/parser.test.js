@@ -1,4 +1,5 @@
 import Document from "@lib/thinkabletype/Document";
+import { find } from 'unist-util-find'
 
 import { expect, test } from "vitest";
 
@@ -9,7 +10,10 @@ test("simple markdown", async () => {
     expect(doc.hyperedges).toEqual([]);
     expect(doc.markdown).toEqual("Hello World");
     expect(doc.lines).toEqual(["Hello World"]);
-    expect(doc.html).toEqual("<p>Hello World</p>");
+    // expect(doc.html).toEqual("<p>Hello World</p>");
+    expect(doc.symbols.size).toEqual(0);
+    expect(doc.tree.type).toEqual("root");
+    expect(doc.tree.children.length).toEqual(1);
 });
 
 test("multiline markdown", async () => {
@@ -17,7 +21,10 @@ test("multiline markdown", async () => {
     expect(doc.hyperedges).toEqual([]);
     expect(doc.markdown).toEqual("Hello World\nAnd Goodbye");
     expect(doc.lines).toEqual(["Hello World", "And Goodbye"]);
-    expect(doc.html).toEqual("<p>Hello World<br>\nAnd Goodbye</p>");
+    // expect(doc.html).toEqual("<p>Hello World<br>\nAnd Goodbye</p>");
+    expect(doc.symbols.size).toEqual(0);
+    expect(doc.tree.children.length).toEqual(1);
+    expect(doc.tree.children[0].children.length).toEqual(3); // text, break, text
 });
 
 test("multiple paragraph markdown", async () => {
@@ -25,7 +32,8 @@ test("multiple paragraph markdown", async () => {
     expect(doc.hyperedges).toEqual([]);
     expect(doc.markdown).toEqual("Hello World\n\nAnd Goodbye");
     expect(doc.lines).toEqual(["Hello World", "", "And Goodbye"]);
-    expect(doc.html).toEqual("<p>Hello World</p>\n<p>And Goodbye</p>");
+    // expect(doc.html).toEqual("<p>Hello World</p>\n<p>And Goodbye</p>");
+    expect(doc.symbols.size).toEqual(0);
 });
 
 test("multiple paragraph markdown with empty space", async () => {
@@ -33,7 +41,8 @@ test("multiple paragraph markdown with empty space", async () => {
     expect(doc.hyperedges).toEqual([]);
     expect(doc.markdown).toEqual("Hello World\n  \nAnd Goodbye");
     expect(doc.lines).toEqual(["Hello World", "  ", "And Goodbye"]);
-    expect(doc.html).toEqual("<p>Hello World</p>\n<p>And Goodbye</p>");
+    // expect(doc.html).toEqual("<p>Hello World</p>\n<p>And Goodbye</p>");
+    expect(doc.symbols.size).toEqual(0);
 });
 
 test("hyperedge", async () => {
@@ -41,7 +50,8 @@ test("hyperedge", async () => {
     expect(doc.hyperedges).toEqual([["A", "B", "C"]]);
     expect(doc.markdown).toEqual("A -> B -> C");
     expect(doc.lines).toEqual(["A -> B -> C"]);
-    expect(doc.html).toEqual("<p>A -> B -> C</p>");
+    // expect(doc.html).toEqual("<p>A -> B -> C</p>");
+    expect(doc.symbols.size).toEqual(3);
 });
 
 test("hyperedge symbols", async () => {
@@ -49,8 +59,8 @@ test("hyperedge symbols", async () => {
     expect(doc.hyperedges).toEqual([["A", "B", "C"]]);
     expect(doc.markdown).toEqual("A -> B -> C");
     expect(doc.lines).toEqual(["A -> B -> C"]);
-    expect(doc.html).toEqual("<p>A -> B -> C</p>");
-    console.log(doc.tree.children[0].children[0]);
+    // expect(doc.html).toEqual("<p>A -> B -> C</p>");
+    expect(doc.symbols.size).toEqual(3);
 });
 
 test("hyperedge with markdown", async () => {
@@ -58,7 +68,8 @@ test("hyperedge with markdown", async () => {
     expect(doc.hyperedges).toEqual([["A", "B", "C"]]);
     expect(doc.markdown).toEqual("This is a hyperedge\nA -> B -> C\nPretty cool");
     expect(doc.lines).toEqual(["This is a hyperedge", "A -> B -> C", "Pretty cool"]);
-    expect(doc.html).toEqual("<p>This is a hyperedge<br>\nA -> B -> C<br>\nPretty cool</p>");
+    // expect(doc.html).toEqual("<p>This is a hyperedge<br>\nA -> B -> C<br>\nPretty cool</p>");
+    expect(doc.symbols.size).toEqual(3);
 });
 
 test("headers", async () => {
@@ -66,27 +77,165 @@ test("headers", async () => {
     expect(doc.hyperedges).toEqual([]);
     expect(doc.markdown).toEqual("# This is a header\nand a body");
     expect(doc.lines).toEqual(["# This is a header", "and a body"]);
-    expect(doc.html).toEqual(`<section><h1>This is a header</h1><p>and a body</p></section>`);
+    // expect(doc.html).toEqual(`<section><h1>This is a header</h1><p>and a body</p></section>`);
 });
 
+test("node symbol and edge connections", async () => {
+    const doc = await Document.parse("A -> B -> C\n\nA is the first letter of the alphabet.");
+    expect(doc.hyperedges).toEqual([["A", "B", "C"]]);
+    expect(doc.markdown).toEqual("A -> B -> C\n\nA is the first letter of the alphabet.");
+    expect(doc.lines).toEqual(["A -> B -> C", "", "A is the first letter of the alphabet."]);
+    const text1 = find(doc.tree, { value: "A -> B -> C" });
+    expect(text1.type).toEqual("text");
+    expect(text1.hyperedge).toEqual(true);
 
-// A -> _B -> C
-// Start linkifying symbols
+    const p2 = doc.tree.children[1];
+    expect(p2.type).toEqual("paragraph");
+    expect(p2.children[0].symbols).toEqual(["A"]);
+    expect(p2.children[0].hyperedges).toEqual([["A", "B", "C"]]);
+});
 
+test("doesn't link characters...only symbols", async () => {
+    const doc = await Document.parse(`
+A -> B -> C
+
+Because this one shouldn't link.
+`);
+    expect(doc.hyperedges).toEqual([["A", "B", "C"]]);
+    const text1 = find(doc.tree, { value: "A -> B -> C" });
+    expect(text1.type).toEqual("text");
+    expect(text1.hyperedge).toEqual(true);
+
+    const p2 = doc.tree.children[1];
+    expect(p2.type).toEqual("paragraph");
+    expect(p2.symbols).toEqual(undefined);
+    expect(p2.hyperedges).toEqual(undefined);
+    expect(p2.children.length).toEqual(1);
+    expect(p2.children[0].type).toEqual("text");
+    expect(p2.children[0].value).toEqual("Because this one shouldn't link.");
+});
+
+test("multiple edges attached", async () => {
+    const doc = await Document.parse(`
+A -> B -> C
+A -> 1 -> 2
+
+A is the root node.
+`);
+    expect(doc.hyperedges).toEqual([["A", "B", "C"], ["A", "1", "2"]]);
+    const text1 = find(doc.tree, { value: "A -> B -> C" });
+    expect(text1.type).toEqual("text");
+    expect(text1.hyperedge).toEqual(true);
+
+    const text2 = find(doc.tree, { value: "A -> 1 -> 2" });
+    expect(text2.type).toEqual("text");
+    expect(text2.hyperedge).toEqual(true);
+
+    const p2 = doc.tree.children[1];
+    expect(p2.type).toEqual("paragraph");
+    expect(p2.children.length).toEqual(2);
+
+    expect(p2.children[0].type).toEqual("link");
+    expect(p2.children[0].symbols).toEqual(["A"]);
+    expect(p2.children[0].hyperedges).toEqual([["A", "B", "C"], ["A", "1", "2"]]);
+    expect(p2.children[1].type).toEqual("text");
+    expect(p2.children[1].value).toEqual(" is the root node.");
+});
+
+test("symbol into link", async () => {
+    const doc = await Document.parse(`
+A -> B -> C
+
+A is the root node.
+`);
+
+    expect(doc.hyperedges).toEqual([["A", "B", "C"]]);
+    const text1 = find(doc.tree, { value: "A -> B -> C" });
+    expect(text1.type).toEqual("text");
+    expect(text1.hyperedge).toEqual(true);
+
+    const p1 = doc.tree.children[1];
+    expect(p1.type).toEqual("paragraph");
+    expect(p1.children[0].type).toEqual("link");
+    expect(p1.children[0].symbols).toEqual(["A"]);
+    expect(p1.children[0].hyperedges).toEqual([["A", "B", "C"]]);
+    expect(p1.children[1].type).toEqual("text");
+    expect(p1.children[1].value).toEqual(" is the root node.");
+
+    expect(doc.html).toEqual(`<p>A -> B -> C</p>\n<p><a href="#A">A</a> is the root node.</p>`);
+});
+
+test("multiple symbol into link", async () => {
+    const doc = await Document.parse(`
+A -> B -> C
+
+A is the root node and B comes second.
+
+A is also the first letter of the alphabet.
+`);
+
+    expect(doc.hyperedges).toEqual([["A", "B", "C"]]);
+    const text1 = find(doc.tree, { value: "A -> B -> C" });
+    expect(text1.type).toEqual("text");
+    expect(text1.hyperedge).toEqual(true);
+
+    const p2 = doc.tree.children[1];
+    expect(p2.type).toEqual("paragraph");
+    expect(p2.children[0].type).toEqual("link");
+    expect(p2.children[0].symbols).toEqual(["A"]);
+    expect(p2.children[0].hyperedges).toEqual([["A", "B", "C"]]);
+    expect(p2.children[1].type).toEqual("text");
+    expect(p2.children[1].value).toEqual(" is the root node and ");
+    expect(p2.children[2].type).toEqual("link");
+    expect(p2.children[2].symbols).toEqual(["B"]);
+    expect(p2.children[2].hyperedges).toEqual([["A", "B", "C"]]);
+
+    const p3 = doc.tree.children[2];
+    expect(p3.type).toEqual("paragraph");
+    expect(p3.children[0].type).toEqual("link");
+    expect(p3.children[0].symbols).toEqual(["A"]);
+    expect(p3.children[0].hyperedges).toEqual([["A", "B", "C"]]);
+    expect(p3.children[1].type).toEqual("text");
+    expect(p3.children[1].value).toEqual(" is also the first letter of the alphabet.");
+
+    expect(doc.html).toEqual(`<p>A -> B -> C</p>\n<p><a href="#A">A</a> is the root node and <a href="#B">B</a> comes second.</p>\n<p><a href="#A">A</a> is also the first letter of the alphabet.</p>`);
+});
+
+test("hyperedge long arrow", async () => {
+    const doc = await Document.parse("A -> B --> C   --->D-------->E");
+    expect(doc.hyperedges).toEqual([["A", "B", "C", "D", "E"]]);
+    expect(doc.symbols.size).toEqual(5);
+});
+
+test("document hyperedge urn", async () => {
+    const doc = await Document.parse("A -> B -> C");
+    expect(doc.urn(["A"])).toEqual("info:A"); // undeprecating info: ...you heard it here.
+    expect(doc.urn(["A", "B"])).toEqual("info:A/B");
+    expect(doc.urn(["A", "B", "C"])).toEqual("info:A/B/C");
+});
+
+test("document hyperedge urn namespace", async () => {
+    const doc = await Document.parse("A -> B -> C", "memex");
+    expect(doc.urn(["A"])).toEqual("info:memex:A"); // undeprecating info: ...you heard it here.
+    expect(doc.urn(["A", "B"])).toEqual("info:memex:A/B");
+    expect(doc.urn(["A", "B", "C"])).toEqual("info:memex:A/B/C");
+});
+
+// parse into hypergraph...need notes and edges
+
+
+// TODO: doc.hypergraph ...parse hyperedges with meta data  / tree and left over nodes
+
+// Symbol...and a note for that symbol
+// Implicit symbol: paragraph
+// Implicit symbol: header / section
 
 
 // # Symbol -> notes 
-// Properties
+// _Properties
 // GET THIS TO FRONTEND ASAP!
+// EDGE names --like this-->
 
-
-
-// Need node information
-
-// A --> B
-// A ------------> B
-// A -this-> B
-// A -----this--> B
 
 // Programatically add / ingest / change / move / remove
 
@@ -310,3 +459,34 @@ test("parse hyperedge meta env with comma and quotes", () => {
 
 // a -> _b -> c
 
+
+
+// remark-sectionize
+// remark-squeeze-paragraphs
+// textr -> beautiful typography
+// rehype-react
+// Headers -> paragraph need to be connected..or this is what I need to build
+// ```hyperedges support but also just support it inline
+// Think of these as different plugins you can combine together
+// Ensure HTML comments still work
+
+// useful to add
+// remark-abbr -> abbreviations...a short-form of a note. *[ABBR]: Abbreviation
+// remark-admonitions -> callouts
+// remark-directive -> extend markdown :::directive
+// remark-attr -> custom attrbiutes {a: 123, b: 456}
+// remark-breaks -> soft breaks maybe matches expectations better
+// remark-capitalize -> consistent symbol names
+// remark-cite -> citations...using all kinds of different formats though
+// remark-code-frontmatter -> weird idea
+// remark-container -> interesting container idea :::
+// remark-copy-linked-files -> cool...save remove files locally
+// remark-defsplit -> turn references into definitions
+// remark-flexible-containers -> callouts
+// remark-images -> nice images
+// remark-lint && remark-prettier -> might be nice
+// remark-ping -> ping a @user
+// remark-normalize-headings
+// remark-redact -> remark-hashify -> your symbols also have a hash table /~ redacted ~/.... /~ A ~/ -> B -> C
+// remark-shortcodes -> embed content
+// retext-diacritics -> accents

@@ -11,48 +11,17 @@ import remarkBreaks from 'remark-breaks'
 import { find } from 'unist-util-find'
 import { visit, SKIP } from 'unist-util-visit'
 import { u } from 'unist-builder'
-
-
-
-
-// I need a concept of a block
-// remark-sectionize
-// remark-squeeze-paragraphs
-// textr -> beautiful typography
-// rehype-react
-// Headers -> paragraph need to be connected..or this is what I need to build
-// ```hyperedges support but also just support it inline
-// Think of these as different plugins you can combine together
-// Ensure HTML comments still work
-
-// useful to add
-// remark-abbr -> abbreviations...a short-form of a note. *[ABBR]: Abbreviation
-// remark-admonitions -> callouts
-// remark-directive -> extend markdown :::directive
-// remark-attr -> custom attrbiutes {a: 123, b: 456}
-// remark-breaks -> soft breaks maybe matches expectations better
-// remark-capitalize -> consistent symbol names
-// remark-cite -> citations...using all kinds of different formats though
-// remark-code-frontmatter -> weird idea
-// remark-container -> interesting container idea :::
-// remark-copy-linked-files -> cool...save remove files locally
-// remark-defsplit -> turn references into definitions
-// remark-flexible-containers -> callouts
-// remark-images -> nice images
-// remark-lint && remark-prettier -> might be nice
-// remark-ping -> ping a @user
-// remark-normalize-headings
-// remark-redact -> remark-hashify -> your symbols also have a hash table /~ redacted ~/.... /~ A ~/ -> B -> C
-// remark-shortcodes -> embed content
-// retext-diacritics -> accents
+import { h } from 'hastscript'
 
 export default class Document {
-    constructor(markdown) {
-        this.markdown = markdown;
+    constructor(markdown, ns = null) {
+        this.markdown = markdown.trim();
+        this.ns = ns;
     }
 
     async parse() {
         this.lines = this.markdown.split(/\r?\n/);
+        this.symbols = new Set();
         this.hyperedges = [];
         this.tree = null;
         this.file = await unified()
@@ -62,8 +31,9 @@ export default class Document {
             .use(remarkMath)
             .use(remarkBreaks)
             .use(remarkSectionize)
-            .use(this.remarkHyperedges.bind(this))
-            .use(this.remarkSaveTree.bind(this))
+            .use(this.symbolify.bind(this))
+            .use(this.linkify.bind(this))
+            .use(this.treeify.bind(this))
             .use(remarkRehype)
             .use(rehypeSanitize)
             .use(rehypeStringify)
@@ -73,30 +43,97 @@ export default class Document {
         return this;
     }
 
-    remarkHyperedges() {
+    linkify() {
         return (tree) => {
             visit(tree, 'text', (node, index, parent) => {
-                if (node.value.includes("->")) {
-                    this.hyperedges.push(node.value.split("->").map(s => s.trim()));
+                if (node.hyperedge) return;
+                if (parent.type === 'link') return;
+                if (node.handled) return;
+
+                const symbols = [];
+                const tokens = node.value.split(/\s+/);
+                let buffer = [];
+                for (const i in tokens) {
+                    const symbol = tokens[i];
+
+                    if (this.symbols.has(symbol)) {
+                        if (buffer.length > 0) {
+                            let text = buffer.join(" ");
+                            if (i < tokens.length - 1) text += " ";
+                            if (symbols.length > 0) text = " " + text;
+                            symbols.push(u('text', { handled: true }, text));
+                            buffer = [];
+                        }
+
+                        const linkNode = {
+                            type: 'link',
+                            url: `#${symbol}`,
+                            children: [{ type: 'text', value: symbol }],
+                            symbols: [symbol],
+                            hyperedges: this.hyperedges.filter(edge => edge.includes(symbol))
+                        };
+
+                        symbols.push(linkNode);
+                    } else {
+                        buffer.push(symbol);
+                    }
                 }
+
+                if (buffer.length > 0) {
+                    let text = buffer.join(" ");
+                    if (symbols.length > 0) text = " " + text;
+                    symbols.push(u('text', { handled: true }, text));
+                }
+
+                parent.children.splice(
+                    index,
+                    1,
+                    ...symbols
+                );
+
+                return [SKIP, index];
             });
         }
     }
 
-    // weird...any other way to do this?
-    remarkSaveTree() {
+    symbolify() {
+        return (tree) => {
+            visit(tree, 'text', (node, index, parent) => {
+                const arrow = /-+>/;
+                if (!arrow.test(node.value)) return;
+                node.hyperedge = true;
+
+                const symbols = node.value.split(arrow).map(symbol => symbol.trim());
+                for (const symbol of symbols) {
+                    this.symbols.add(symbol);
+                }
+
+                this.hyperedges.push(symbols);
+            });
+        }
+    }
+
+    treeify() {
         return (tree) => {
             this.tree = tree;
         }
     }
 
-    static async parse(markdown) {
-        const doc = new Document(markdown);
+    // interwingle?
+    urn(edge) {
+        const path = edge.join("/");
+        if (this.ns) {
+            return `info:${this.ns}:${path}`;
+        }
+
+        return `info:${path}`;
+    }
+
+    static async parse(markdown, ns = null) {
+        const doc = new Document(markdown, ns);
         return await doc.parse();
     }
 }
-
-
 
 
 
