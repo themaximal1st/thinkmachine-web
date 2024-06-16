@@ -11,6 +11,12 @@ import remarkBreaks from 'remark-breaks'
 import { find } from 'unist-util-find'
 import { visit, SKIP } from 'unist-util-visit'
 import { visitParents } from 'unist-util-visit-parents'
+// import rehypeParse from 'rehype-parse'
+// import rehypeRemark from 'rehype-remark'
+// import remarkStringify from 'remark-stringify'
+import { toMarkdown } from "mdast-util-to-markdown"
+
+import { unified } from 'unified'
 
 import { u } from 'unist-builder'
 import { h } from 'hastscript'
@@ -20,15 +26,15 @@ export default class Parser {
 
     constructor(input = "") {
         this.input = input;
+    }
+
+    async parse() {
         this.file = null;
         this.tree = null;
         this.hyperedges = [];
         this.symbols = new Set();
         this.hypertext = new Map();
         this.leftover = [];
-    }
-
-    async parse() {
 
         this.file = await unified()
             .use(remarkParse)
@@ -114,5 +120,9 @@ export default class Parser {
 
     tokenize(text) {
         return text.split(/\s+/);
+    }
+
+    export() {
+        return toMarkdown(this.tree).trim();
     }
 }

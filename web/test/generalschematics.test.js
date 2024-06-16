@@ -59,16 +59,15 @@ test("simple hyperedge export", async () => {
     await schematic.parse();
 
     const doc = schematic.export();
-    console.log(doc);
     expect(doc).toEqual("A -> B -> C");
 });
 
 test("simple hypertext export", async () => {
-    const schematic = new GeneralSchematics("A -> B -> C\nA is the first letter of the alphabet");
+    const schematic = new GeneralSchematics("A -> B -> C\n\nA is the first letter of the alphabet");
     await schematic.parse();
 
     const doc = schematic.export();
-    expect(doc).toEqual("A -> B -> C\nA is the first letter of the alphabet");
+    expect(doc).toEqual("A -> B -> C\n\nA is the first letter of the alphabet");
 });
 
 test("hypergraph", async () => {
@@ -78,21 +77,32 @@ test("hypergraph", async () => {
     expect(schematic.hypergraph.hyperedges.length).toEqual(1);
 });
 
+test("add text", async () => {
+    const schematic = new GeneralSchematics("Hello");
+    await schematic.parse();
+    schematic.add("World");
+    expect(schematic.export()).toEqual("Hello\n\nWorld");
+});
+
+
 test("add hyperedge", async () => {
     const schematic = new GeneralSchematics("A -> B -> C");
     await schematic.parse();
 
-    const hypergraph = schematic.hypergraph;
-    hypergraph.add(["D", "E", "F"]);
-    expect(hypergraph.export()).toEqual("A -> B -> C\nD -> E -> F");
+    expect(schematic.hyperedges).toEqual([["A", "B", "C"]]);
+
+    schematic.add(["D", "E", "F"]);
+    expect(schematic.hyperedges).toEqual([["A", "B", "C"], ["D", "E", "F"]]);
+    expect(schematic.export()).toEqual("A -> B -> C\n\nD -> E -> F");
 
     const exported = schematic.export();
-    expect(exported).toEqual("A -> B -> C\nD -> E -> F");
+    expect(exported).toEqual("A -> B -> C\n\nD -> E -> F");
 
     const schematic2 = new GeneralSchematics(exported);
     await schematic2.parse();
-    expect(schematic2.hypergraph.export()).toEqual("A -> B -> C\nD -> E -> F");
-    expect(hypergraph.hash).toEqual(schematic2.hypergraph.hash);
+    expect(schematic2.export()).toEqual("A -> B -> C\n\nD -> E -> F");
+
+    expect(schematic.hypergraph.hash).toEqual(schematic2.hypergraph.hash);
 });
 
 test("skip header hypertext with no symbol", async () => {
@@ -130,12 +140,16 @@ test("parse header hypertext with reference", async () => {
     expect(schematic.hypertext.get("B")[0]).toEqual("Section about the first letter of the alphabet before B");
 });
 
+// How do we know how to write header sections?
+
+
+// TODO: schematics should generate actions to be performed...keeps tree and hypergraph in sync and gives undo/redo for free
+// TODO: soft break bug with single \n above -> doesn't translate back properly on export
 // TODO: Reading node header sections
 // TODO: Writing node header sections
+// TODO: replace hypergraph.hash with GeneralSchematic.hash
 
 // TODO: Uppercase/lowercase symbols...shouldn't matter?
-
-
 // TODO: Keep order! This is going to get annoying to have all hyperedges at top and all hypertext on bottom
 // TODO: Our parser right now is really dumb..we're gonna miss a lot of markdown elements cuz we're only getting text
 
