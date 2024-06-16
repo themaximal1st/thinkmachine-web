@@ -16,6 +16,8 @@ import { visitParents } from 'unist-util-visit-parents'
 import rehypeRemark from 'rehype-remark'
 import remarkStringify from 'remark-stringify'
 import { toMarkdown } from "mdast-util-to-markdown"
+import { inspect } from "unist-util-inspect"
+import { matches, select, selectAll } from 'unist-util-select'
 
 import { unified } from 'unified'
 
@@ -27,31 +29,80 @@ export default class Parser {
 
     constructor(input = "") {
         this.input = input;
+        this.tree = null;
     }
 
     parse() {
-        this.file = null;
-        this.tree = null;
-        this.hyperedges = [];
-        this.symbols = new Set();
-        this.hypertext = new Map();
-
-        this.file = unified()
+        const processor = unified()
             .use(remarkParse)
             .use(remarkFrontmatter, ['yaml', 'toml'])
             .use(remarkGfm)
             .use(remarkMath)
             .use(remarkBreaks)
             .use(remarkSectionize)
-            .use(this.symbolify.bind(this))
-            .use(this.hypertextify.bind(this))
-            .use(this.treeify.bind(this))
+            .use(this.hyperedgeify.bind(this))
+
+        this.tree = processor.parse(this.input);
+        processor.runSync(this.tree);
+    }
+
+    html() {
+        const clonedTree = JSON.parse(JSON.stringify(this.tree));
+
+        const processor = unified()
+            .use(this.removeSections.bind(this))
+            .use(this.unhyperedgeify.bind(this))
             .use(remarkRehype)
             .use(rehypeSanitize)
             .use(rehypeStringify)
-            .processSync(this.input);
 
-        this.html = this.file.value;
+        const tree = processor.runSync(clonedTree);
+        return processor.stringify(tree);
+
+        // .replace(/\\\n/, "\n") // hack: soft breaks...not clear how to force stringify to not escape them
+        // .trim()
+        // const processor = unified()
+        //     .use(remarkRehype)
+        //     .use(this.unhyperedgeify.bind(this))
+        //     .use(rehypeStringify)
+
+        // console.log("INSEPECT", inspect(this.tree))
+        // const hdast = processor.runSync(this.tree);
+        // return processor.stringify(hdast);
+    }
+
+    get hyperedges() {
+        return selectAll('hyperedge', this.tree);
+    }
+
+    get nodes() {
+        return selectAll('node', this.tree);
+    }
+
+    hyperedgeify() {
+        return (tree) => {
+            visit(tree, 'text', (node, index, parent) => {
+                if (node.children && node.children.length > 0) return;
+                if (!this.ARROW.test(node.value)) return;
+                node.type = "hyperedge";
+                node.children = node.value.split(this.ARROW).map(symbol => {
+                    return {
+                        type: "node",
+                        value: symbol.trim()
+                    }
+                });
+            });
+        }
+    }
+
+    unhyperedgeify() {
+        return (tree) => {
+            visit(tree, 'hyperedge', (node, index, parent) => {
+                node.type = "text";
+                node.value = node.children.map(child => child.value).join(" -> ");
+                delete node.children;
+            });
+        }
     }
 
     symbolify() {
@@ -104,12 +155,6 @@ export default class Parser {
 
     }
 
-    treeify() {
-        return (tree) => {
-            this.tree = tree;
-        }
-    }
-
     tokenize(text) {
         return text.split(/\s+/);
     }
@@ -126,15 +171,16 @@ export default class Parser {
     export() {
         // clone tree
         const clonedTree = JSON.parse(JSON.stringify(this.tree));
+
         const tree = unified()
             .use(this.removeSections.bind(this))
-            .use(remarkStringify)
+            .use(this.unhyperedgeify.bind(this))
             .runSync(clonedTree)
-
 
         return unified()
             .use(remarkStringify)
             .stringify(tree)
+            .replace(/\\\n/, "\n") // hack: soft breaks...not clear how to force stringify to not escape them
             .trim()
     }
 }

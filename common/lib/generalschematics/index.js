@@ -11,12 +11,15 @@ export default class GeneralSchematics {
         this.parser = new Parser();
         this.tree = null;
         this.markdown = null;
-        this.html = null;
         this.hypergraph = null;
         this.hypertext = new Map();
 
         this.parse();
 
+    }
+
+    get html() {
+        return this.parser.html();
     }
 
     add(input) {
@@ -103,9 +106,8 @@ export default class GeneralSchematics {
         this.parser.parse();
 
         this.tree = this.parser.tree;
-        this.html = this.parser.html;
         this.hypertext = this.parser.hypertext;
-        this.hypergraph = new Hypergraph(this.hyperedges);
+        this.hypergraph = new Hypergraph(this.tree);
     }
 
     update() {

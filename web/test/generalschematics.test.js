@@ -1,4 +1,6 @@
 import GeneralSchematics from "@lib/generalschematics"
+import { inspect } from "unist-util-inspect"
+import { matches, select, selectAll } from 'unist-util-select'
 
 import { expect, test, beforeAll } from "vitest";
 
@@ -9,15 +11,111 @@ test("parse simple doc", async () => {
     expect(schematic.input).toEqual("Hello World");
     expect(schematic.html).toEqual("<p>Hello World</p>");
     expect(schematic.hyperedges).toEqual([]);
+    expect(schematic.export()).toEqual("Hello World");
 });
 
-test("parse hyperedge", async () => {
+test("parse and export hyperedge", async () => {
     const schematic = new GeneralSchematics("A -> B -> C");
     expect(schematic.input).toEqual("A -> B -> C");
+    const tree = schematic.tree;
+
+    expect(tree.type).toEqual("root");
+    expect(tree.children.length).toEqual(1);
+    expect(tree.children[0].type).toEqual("paragraph");
+    expect(tree.children[0].children.length).toEqual(1);
+
+    const hyperedge = tree.children[0].children[0];
+    expect(hyperedge.type).toEqual("hyperedge");
+    expect(hyperedge.children.length).toEqual(3);
+
+    const [A, B, C] = hyperedge.children;
+    expect(A.type).toEqual("node");
+    expect(A.value).toEqual("A");
+    expect(B.type).toEqual("node");
+    expect(B.value).toEqual("B");
+    expect(C.type).toEqual("node");
+    expect(C.value).toEqual("C");
+
+    expect(schematic.export()).toEqual("A -> B -> C");
     expect(schematic.html).toEqual("<p>A -> B -> C</p>");
-    expect(schematic.hyperedges).toEqual([["A", "B", "C"]]);
+    // expect(schematic.hyperedges.length).toEqual(1);
+    // expect(schematic.nodes).toEqual(["A", "B", "C"]);
 });
 
+test("multiple hyperedges", async () => {
+    const schematic = new GeneralSchematics("A -> B -> C\n1 -> 2 -> 3");
+    const tree = schematic.tree;
+
+    // console.log(inspect(tree))
+    const hyperedges = selectAll("hyperedge", tree);
+    expect(hyperedges.length).toEqual(2);
+    expect(hyperedges[0].children.length).toEqual(3);
+    expect(hyperedges[0].children[0].value).toEqual("A");
+    expect(hyperedges[0].children[1].value).toEqual("B");
+    expect(hyperedges[0].children[2].value).toEqual("C");
+    expect(hyperedges[1].children.length).toEqual(3);
+    expect(hyperedges[1].children[0].value).toEqual("1");
+    expect(hyperedges[1].children[1].value).toEqual("2");
+    expect(hyperedges[1].children[2].value).toEqual("3");
+
+    expect(schematic.export()).toEqual("A -> B -> C\n1 -> 2 -> 3");
+    expect(schematic.html).toEqual("<p>A -> B -> C<br>\n1 -> 2 -> 3</p>");
+    // expect(schematic.hyperedges).toEqual([["A", "B", "C"], ["1", "2", "3"]]);
+    // expect(schematic.nodes).toEqual(["A", "B", "C"]);
+});
+
+test("soft breaks", async () => {
+    const schematic = new GeneralSchematics("Hello\nWorld");
+    expect(schematic.input).toEqual("Hello\nWorld");
+    expect(schematic.html).toEqual("<p>Hello<br>\nWorld</p>");
+    expect(schematic.hyperedges).toEqual([]);
+    expect(schematic.export()).toEqual("Hello\nWorld");
+});
+
+test("rename node", async () => {
+    const schematic = new GeneralSchematics("A -> B -> C");
+    const [A, _] = selectAll("node", schematic.tree);
+    expect(A.type).toEqual("node");
+    expect(A.value).toEqual("A");
+
+    A.value = "A1";
+
+    expect(schematic.export()).toEqual("A1 -> B -> C");
+    expect(schematic.hyperedges[0].children[0].value).toEqual("A1");
+
+    expect(schematic.html).toEqual("<p>A1 -> B -> C</p>");
+    // expect(schematic.hyperedges..()).toEqual("A1 -> B -> C");
+    // expect(schematic.nodes).toEqual(["A", "B", "C"]);
+});
+
+// TODO: Clean interface for nodes / hyperedges / referencing them in hypergraph / and back...just use those objects!?!?!?!!!!!!!
+
+// TODO: Add hyperedges / nodes as dynamic getters
+
+
+
+// Multiple ones
+// A -> B -> C
+// 1 -> 2 -> 3
+
+// To do this "right" we actually need to translate these into a symbol properly
+// And then fully translate them back to markdown
+
+
+
+
+
+
+
+// TODO: We need nodes like connected....on uuid? how to make it stable?
+
+// TODO: Focus a lot on the interface for adding/editing/modifying
+
+// schematic.nodes["A"].add("B");
+// schematic.hypertext["A"].add("B")
+// ...
+
+/*
 test("parse hypertext", async () => {
     const schematic = new GeneralSchematics("A -> B -> C\nA is the first letter of the alphabet");
     expect(schematic.html).toEqual("<p>A -> B -> C<br>\nA is the first letter of the alphabet</p>");
@@ -174,6 +272,8 @@ test("multiple symbols multiple hyperedges", async () => {
     expect(schematic1.hypertext.get("B")[0]).toEqual("Section about the second letter of the alphabet");
     expect(schematic1.hypertext.get("B")[1]).toEqual("Second piece of hypertext for BBB");
 });
+
+*/
 
 // We have a bit of a problem...because all of our editing is done on the objects themselves...node.add("BLAH");
 // We need this in sync with the hypertext tree somehow

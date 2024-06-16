@@ -1,3 +1,15 @@
+export default class Hypergraph {
+    constructor(tree, options = {}) {
+        this.tree = tree;
+        this.hyperedges = [];
+    }
+
+    update() {
+        this.hyperedges = [];
+    }
+}
+
+/*
 import Hyperedge from './Hyperedge.js';
 import Node from './Node.js';
 import BridgeNode from './BridgeNode.js';
@@ -372,3 +384,4 @@ Hypergraph.Hyperedge = Hyperedge;
 Hypergraph.Node = Node;
 Hypergraph.BridgeNode = BridgeNode;
 Hypergraph.trackUUID = utils.trackUUID;
+*/
