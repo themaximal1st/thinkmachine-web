@@ -10,6 +10,8 @@ import remarkGfm from 'remark-gfm'
 import remarkBreaks from 'remark-breaks'
 import { find } from 'unist-util-find'
 import { visit, SKIP } from 'unist-util-visit'
+import { visitParents } from 'unist-util-visit-parents'
+
 import { u } from 'unist-builder'
 import { h } from 'hastscript'
 
@@ -36,6 +38,7 @@ export default class Parser {
             .use(remarkBreaks)
             .use(remarkSectionize)
             .use(this.symbolify.bind(this))
+            .use(this.hypertextify.bind(this))
             // .use(this.linkify.bind(this))
             .use(this.treeify.bind(this))
             .use(remarkRehype)
@@ -49,34 +52,58 @@ export default class Parser {
     symbolify() {
         return (tree) => {
             visit(tree, 'text', (node, index, parent) => {
-                if (!this.ARROW.test(node.value)) {
-                    const tokens = this.tokenize(node.value);
-                    let added = false;
-                    for (const symbol of this.symbols) {
-                        if (tokens.includes(symbol)) {
-                            if (!this.hypertext.has(symbol)) {
-                                this.hypertext.set(symbol, []);
-                            }
-                            this.hypertext.get(symbol).push(node.value);
-                            added = true;
-                        }
-                    }
-
-                    if (!added) {
-                        this.leftover.push(node.value);
-                    }
-
-                    return;
-                }
+                if (!this.ARROW.test(node.value)) return;
 
                 const symbols = node.value.split(this.ARROW).map(symbol => symbol.trim());
                 for (const symbol of symbols) {
                     this.symbols.add(symbol);
+
+                    if (!this.hypertext.has(symbol)) {
+                        this.hypertext.set(symbol, []);
+                    }
                 }
 
                 this.hyperedges.push(symbols);
             });
         }
+    }
+
+    hypertextify() {
+        return (tree) => {
+            visitParents(tree, 'text', (node, ancestors) => {
+                if (this.ARROW.test(node.value)) return;
+
+                const parent = ancestors[ancestors.length - 1];
+                const grandparent = ancestors[ancestors.length - 2];
+
+                if (parent.type === "heading" && grandparent.type === "section" && this.symbols.has(node.value)) {
+                    const symbol = node.value;
+                    visit(grandparent, 'text', (node, index, parent) => {
+                        if (parent.type === "heading") return;
+                        this.hypertext.get(symbol).push(node.value);
+                    });
+                    return;
+                }
+
+                const tokens = this.tokenize(node.value);
+                let added = false;
+                for (const symbol of this.symbols) {
+                    if (tokens.includes(symbol)) {
+                        this.hypertext.get(symbol).push(node.value);
+                        added = true;
+                    }
+                }
+
+                if (!added) {
+                    this.leftover.push(node.value);
+                }
+
+            });
+        }
+    }
+
+    hypertextifySection(node, index, parent) {
+
     }
 
     treeify() {

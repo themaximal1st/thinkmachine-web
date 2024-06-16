@@ -32,7 +32,7 @@ export default class GeneralSchematics {
     export() {
         let buffer = "";
         buffer += this.hypergraph.export();
-        for (const [symbol, hypertext] of this.hypertext) {
+        for (const [_, hypertext] of this.hypertext) {
             if (buffer) buffer += "\n";
             buffer += `${hypertext.join("\n")}`;
         }
@@ -42,6 +42,6 @@ export default class GeneralSchematics {
             buffer += leftover;
         }
 
-        return buffer;
+        return buffer.trim();
     }
 }
