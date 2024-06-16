@@ -3,13 +3,12 @@ import slugify from "slugify";
 import Parser from './parser.js';
 
 export default class Node {
-    constructor(input, hyperedge) {
-        const [symbol, meta] = Parser.parseSymbol(input);
+    constructor(symbol, hyperedge) {
         this.symbol = symbol;
         this.hyperedge = hyperedge;
         this.hypergraph = hyperedge.hypergraph;
         this.uuid = uuidv4();
-        this.meta = meta || {};
+        this.meta = {};
     }
 
     get id() {
@@ -194,7 +193,7 @@ export default class Node {
     }
 
     export() {
-        return Parser.exportSymbol(this.symbol, this.meta);
+        return this.symbol;
     }
 }
 

@@ -1,3 +1,9 @@
+// General Schematics
+// - markdown
+// - tree
+// - hypergraph
+
+
 import Document from "@lib/thinkabletype/Document";
 import { find } from 'unist-util-find'
 
@@ -5,6 +11,22 @@ import { expect, test } from "vitest";
 
 // TODO: Early on we want to connect it to UI, because the process of going back and forth might change how we build it
 
+test.only("build hyperedges and resource tree", async () => {
+    const doc = await Document.parse("Hello World");
+    expect(doc.hyperedges).toEqual([]);
+    expect(doc.markdown).toEqual("Hello World");
+    expect(doc.lines).toEqual(["Hello World"]);
+    // expect(doc.html).toEqual("<p>Hello World</p>");
+    expect(doc.symbols.size).toEqual(0);
+    expect(doc.tree.type).toEqual("root");
+    expect(doc.tree.children.length).toEqual(1);
+});
+
+// import from markdown -> modify -> export to markdown -> import -> double check
+
+
+
+/*
 test("simple markdown", async () => {
     const doc = await Document.parse("Hello World");
     expect(doc.hyperedges).toEqual([]);
@@ -220,6 +242,7 @@ test("document hyperedge urn namespace", async () => {
     expect(doc.urn(["A", "B"])).toEqual("info:memex:A/B");
     expect(doc.urn(["A", "B", "C"])).toEqual("info:memex:A/B/C");
 });
+*/
 
 // parse into hypergraph...need notes and edges
 
@@ -235,6 +258,7 @@ test("document hyperedge urn namespace", async () => {
 // _Properties
 // GET THIS TO FRONTEND ASAP!
 // EDGE names --like this-->
+// How to prevent a random -> arrow in a paragraph from being a hyperedge?
 
 
 // Programatically add / ingest / change / move / remove

@@ -361,47 +361,9 @@ export default class Hypergraph {
 
     }
 
-    outlineData(filter = null, lastData = null) {
-        const graphData = this.graphData(filter, lastData);
-
-        const nodeIndex = utils.createIndex(graphData.nodes);
-        function getNode(index) {
-            const node = nodeIndex.get(index);
-            if (!node.nodes) { node.nodes = new Map() }
-            return node;
-        }
-
-        const index = new Map();
-        const nodes = new Map();
-
-        for (const link of graphData.links) {
-            const source = getNode(link.source);
-            const target = getNode(link.target);
-
-            let parent;
-            if (index.has(target.id)) {
-                parent = target.nodes;
-            } else {
-                if (!index.has(source.id)) {
-                    nodes.set(source.id, source);
-                }
-                parent = source.nodes;
-            }
-
-
-            parent.set(target.id, target);
-
-            index.set(source.id, source);
-            index.set(target.id, target);
-        }
-
-        return { nodes }
-    }
-
-
     export() {
         const hyperedges = this.hyperedges.map(hyperedge => hyperedge.export());
-        return hyperedges.map(hyperedge => hyperedge.join(",")).join("\n");
+        return hyperedges.map(hyperedge => hyperedge.join(" -> ")).join("\n");
         // return csv.unparse(hyperedges, { header: false, quoteChar: "'" });
     }
 }
