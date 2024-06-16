@@ -8,12 +8,13 @@ import remarkSectionize from 'remark-sectionize'
 import { unified } from 'unified'
 import remarkGfm from 'remark-gfm'
 import remarkBreaks from 'remark-breaks'
+import { remark } from 'remark'
 import { find } from 'unist-util-find'
 import { visit, SKIP } from 'unist-util-visit'
 import { visitParents } from 'unist-util-visit-parents'
 // import rehypeParse from 'rehype-parse'
-// import rehypeRemark from 'rehype-remark'
-// import remarkStringify from 'remark-stringify'
+import rehypeRemark from 'rehype-remark'
+import remarkStringify from 'remark-stringify'
 import { toMarkdown } from "mdast-util-to-markdown"
 
 import { unified } from 'unified'
@@ -28,15 +29,14 @@ export default class Parser {
         this.input = input;
     }
 
-    async parse() {
+    parse() {
         this.file = null;
         this.tree = null;
         this.hyperedges = [];
         this.symbols = new Set();
         this.hypertext = new Map();
-        this.leftover = [];
 
-        this.file = await unified()
+        this.file = unified()
             .use(remarkParse)
             .use(remarkFrontmatter, ['yaml', 'toml'])
             .use(remarkGfm)
@@ -45,12 +45,11 @@ export default class Parser {
             .use(remarkSectionize)
             .use(this.symbolify.bind(this))
             .use(this.hypertextify.bind(this))
-            // .use(this.linkify.bind(this))
             .use(this.treeify.bind(this))
             .use(remarkRehype)
             .use(rehypeSanitize)
             .use(rehypeStringify)
-            .process(this.input);
+            .processSync(this.input);
 
         this.html = this.file.value;
     }
@@ -92,18 +91,11 @@ export default class Parser {
                 }
 
                 const tokens = this.tokenize(node.value);
-                let added = false;
                 for (const symbol of this.symbols) {
                     if (tokens.includes(symbol)) {
                         this.hypertext.get(symbol).push(node.value);
-                        added = true;
                     }
                 }
-
-                if (!added) {
-                    this.leftover.push(node.value);
-                }
-
             });
         }
     }
@@ -122,7 +114,25 @@ export default class Parser {
         return text.split(/\s+/);
     }
 
+    removeSections() {
+        return (tree) => {
+            visit(tree, 'section', (node, index, parent) => {
+                parent.children.splice(index, 1, ...node.children);
+                return [SKIP, index];
+            });
+        }
+    }
+
     export() {
-        return toMarkdown(this.tree).trim();
+        const tree = unified()
+            .use(this.removeSections.bind(this))
+            .use(remarkStringify)
+            .runSync(this.tree)
+
+
+        return unified()
+            .use(remarkStringify)
+            .stringify(tree)
+            .trim()
     }
 }

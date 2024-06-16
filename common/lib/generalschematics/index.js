@@ -1,5 +1,6 @@
 import Hypergraph from './Hypergraph.js';
 import Parser from './Parser.js';
+import { find } from 'unist-util-find'
 
 
 export default class GeneralSchematics {
@@ -13,6 +14,9 @@ export default class GeneralSchematics {
         this.html = null;
         this.hypergraph = null;
         this.hypertext = new Map();
+
+        this.parse();
+
     }
 
     add(input) {
@@ -33,18 +37,22 @@ export default class GeneralSchematics {
         this.parse();
     }
 
+    addHypertext(symbol, text) {
+        this.input += "\n\n# " + symbol + "\n" + text;
+        this.parse();
+    }
+
     get hyperedges() {
         return this.parser.hyperedges;
     }
 
-    async parse() {
+    parse() {
         this.parser.input = this.input;
-        await this.parser.parse();
+        this.parser.parse();
 
         this.tree = this.parser.tree;
         this.html = this.parser.html;
         this.hypertext = this.parser.hypertext;
-        this.leftover = this.parser.leftover;
         this.hypergraph = new Hypergraph(this.hyperedges);
     }
 

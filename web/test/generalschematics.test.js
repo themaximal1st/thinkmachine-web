@@ -6,7 +6,6 @@ import { expect, test, beforeAll } from "vitest";
 
 test("parse simple doc", async () => {
     const schematic = new GeneralSchematics("Hello World");
-    await schematic.parse();
     expect(schematic.input).toEqual("Hello World");
     expect(schematic.html).toEqual("<p>Hello World</p>");
     expect(schematic.hyperedges).toEqual([]);
@@ -14,7 +13,6 @@ test("parse simple doc", async () => {
 
 test("parse hyperedge", async () => {
     const schematic = new GeneralSchematics("A -> B -> C");
-    await schematic.parse();
     expect(schematic.input).toEqual("A -> B -> C");
     expect(schematic.html).toEqual("<p>A -> B -> C</p>");
     expect(schematic.hyperedges).toEqual([["A", "B", "C"]]);
@@ -22,7 +20,6 @@ test("parse hyperedge", async () => {
 
 test("parse hypertext", async () => {
     const schematic = new GeneralSchematics("A -> B -> C\nA is the first letter of the alphabet");
-    await schematic.parse();
     expect(schematic.html).toEqual("<p>A -> B -> C<br>\nA is the first letter of the alphabet</p>");
     expect(schematic.hyperedges).toEqual([["A", "B", "C"]]);
 
@@ -33,7 +30,6 @@ test("parse hypertext", async () => {
 
 test("parse multiple hypertext", async () => {
     const schematic = new GeneralSchematics("A -> B -> C\nA is the first letter of the alphabet while B is the second.\nA is also usually associated with numeric value 1");
-    await schematic.parse();
     expect(schematic.hyperedges).toEqual([["A", "B", "C"]]);
 
     let hypertext = schematic.hypertext.get("A");
@@ -48,38 +44,30 @@ test("parse multiple hypertext", async () => {
 
 test("simple doc export", async () => {
     const schematic = new GeneralSchematics("hello world");
-    await schematic.parse();
-
     const doc = schematic.export();
     expect(doc).toEqual("hello world");
 });
 
 test("simple hyperedge export", async () => {
     const schematic = new GeneralSchematics("A -> B -> C");
-    await schematic.parse();
-
     const doc = schematic.export();
     expect(doc).toEqual("A -> B -> C");
 });
 
 test("simple hypertext export", async () => {
     const schematic = new GeneralSchematics("A -> B -> C\n\nA is the first letter of the alphabet");
-    await schematic.parse();
-
     const doc = schematic.export();
     expect(doc).toEqual("A -> B -> C\n\nA is the first letter of the alphabet");
 });
 
 test("hypergraph", async () => {
     const schematic = new GeneralSchematics("A -> B -> C");
-    await schematic.parse();
     expect(schematic.hypergraph).toBeDefined();
     expect(schematic.hypergraph.hyperedges.length).toEqual(1);
 });
 
 test("add text", async () => {
     const schematic = new GeneralSchematics("Hello");
-    await schematic.parse();
     schematic.add("World");
     expect(schematic.export()).toEqual("Hello\n\nWorld");
 });
@@ -87,7 +75,6 @@ test("add text", async () => {
 
 test("add hyperedge", async () => {
     const schematic = new GeneralSchematics("A -> B -> C");
-    await schematic.parse();
 
     expect(schematic.hyperedges).toEqual([["A", "B", "C"]]);
 
@@ -99,7 +86,6 @@ test("add hyperedge", async () => {
     expect(exported).toEqual("A -> B -> C\n\nD -> E -> F");
 
     const schematic2 = new GeneralSchematics(exported);
-    await schematic2.parse();
     expect(schematic2.export()).toEqual("A -> B -> C\n\nD -> E -> F");
 
     expect(schematic.hypergraph.hash).toEqual(schematic2.hypergraph.hash);
@@ -107,7 +93,6 @@ test("add hyperedge", async () => {
 
 test("skip header hypertext with no symbol", async () => {
     const schematic = new GeneralSchematics("# A\nThis is an a section");
-    await schematic.parse();
     expect(schematic.hypertext.size).toEqual(0);
     expect(schematic.hyperedges).toEqual([]);
     expect(schematic.html).toEqual("<section><h1>A</h1><p>This is an a section</p></section>");
@@ -115,7 +100,6 @@ test("skip header hypertext with no symbol", async () => {
 
 test("parse header hypertext", async () => {
     const schematic = new GeneralSchematics("A -> B -> C\n# A\nSection about the first letter of the alphabet");
-    await schematic.parse();
     expect(schematic.hyperedges).toEqual([["A", "B", "C"]]);
     expect(schematic.hypertext.get("A").length).toEqual(1);
     expect(schematic.hypertext.get("A")[0]).toEqual("Section about the first letter of the alphabet");
@@ -123,7 +107,6 @@ test("parse header hypertext", async () => {
 
 test("parse header multiple hypertext", async () => {
     const schematic = new GeneralSchematics("A -> B -> C\n# A\nSection about the first letter of the alphabet\n\nAlso associated with 1");
-    await schematic.parse();
     expect(schematic.hyperedges).toEqual([["A", "B", "C"]]);
     expect(schematic.hypertext.get("A").length).toEqual(2);
     expect(schematic.hypertext.get("A")[0]).toEqual("Section about the first letter of the alphabet");
@@ -132,13 +115,37 @@ test("parse header multiple hypertext", async () => {
 
 test("parse header hypertext with reference", async () => {
     const schematic = new GeneralSchematics("A -> B -> C\n# A\nSection about the first letter of the alphabet before B");
-    await schematic.parse();
     expect(schematic.hyperedges).toEqual([["A", "B", "C"]]);
     expect(schematic.hypertext.get("A").length).toEqual(1);
     expect(schematic.hypertext.get("A")[0]).toEqual("Section about the first letter of the alphabet before B");
     expect(schematic.hypertext.get("B").length).toEqual(1);
     expect(schematic.hypertext.get("B")[0]).toEqual("Section about the first letter of the alphabet before B");
 });
+
+test("export header hypertext", async () => {
+    const schematic = new GeneralSchematics("A -> B -> C\n# A\nSection about the first letter of the alphabet");
+    expect(schematic.export()).toEqual("A -> B -> C\n\n# A\n\nSection about the first letter of the alphabet");
+});
+
+test.skip("write hypertext for symbol", async () => {
+    const schematic = new GeneralSchematics("A -> B -> C");
+    const A = schematic.hypergraph.hyperedges[0].firstNode;
+    schematic.addHypertext("A", "Section about the first letter of the alphabet");
+
+    expect(schematic.hypertext.get("A").length).toEqual(1);
+    expect(schematic.hypertext.get("A")[0]).toEqual("Section about the first letter of the alphabet");
+    expect(schematic.export()).toEqual("A -> B -> C\n\n# A\nSection about the first letter of the alphabet");
+});
+
+// TODO: write hypertext for symbol...existing section
+// TODO: write multiple hypertext
+
+// TODO: Check if header exists...otherwise..create
+
+
+// TODO: Ideally we abstract this. We have ways to get directly to the part of the tree we want, and know how to do certain actions.
+
+
 
 // How do we know how to write header sections?
 
