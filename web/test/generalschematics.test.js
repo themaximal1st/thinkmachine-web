@@ -175,6 +175,14 @@ test("multiple symbols multiple hyperedges", async () => {
     expect(schematic1.hypertext.get("B")[1]).toEqual("Second piece of hypertext for BBB");
 });
 
+// We have a bit of a problem...because all of our editing is done on the objects themselves...node.add("BLAH");
+// We need this in sync with the hypertext tree somehow
+// We probably want to uniquely identify nodes...then uniquely identify them in hypertext
+
+
+// TODO: better interface for setting hypertext...set it on the Node?
+// TODO: is having to save and re-parse the hypertext/hypergraph every change really feasible?
+
 // TODO: schematics should generate actions to be performed...keeps tree and hypergraph in sync and gives undo/redo for free
 // TODO: soft break bug with single \n above -> doesn't translate back properly on export
 // TODO: Reading node header sections
