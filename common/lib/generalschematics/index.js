@@ -35,11 +35,41 @@ export default class GeneralSchematics {
         }
 
         this.parse();
+        // TODO: Switch to update
     }
 
     addHypertext(symbol, text) {
-        this.input += "\n\n# " + symbol + "\n" + text;
-        this.parse();
+        const paragraph = {
+            type: "paragraph",
+            children: [{ type: "text", value: text }]
+        };
+
+        const node = find(this.tree, {
+            type: "section",
+            children: [
+                { type: "heading", children: [{ type: "text", value: symbol }] }
+            ]
+        });
+
+        if (node) {
+            node.children.push(paragraph);
+        } else {
+
+            this.tree.children.push({
+                type: "section",
+                depth: 1,
+                children: [
+                    {
+                        type: "heading",
+                        depth: 2,
+                        children: [{ type: "text", value: symbol }]
+                    },
+                    paragraph
+                ]
+            })
+        }
+
+        this.update();
     }
 
     get hyperedges() {
@@ -54,6 +84,11 @@ export default class GeneralSchematics {
         this.html = this.parser.html;
         this.hypertext = this.parser.hypertext;
         this.hypergraph = new Hypergraph(this.hyperedges);
+    }
+
+    update() {
+        this.input = this.export();
+        this.parse();
     }
 
     export() {

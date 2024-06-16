@@ -123,31 +123,35 @@ test("parse header hypertext with reference", async () => {
 });
 
 test("export header hypertext", async () => {
-    const schematic = new GeneralSchematics("A -> B -> C\n# A\nSection about the first letter of the alphabet");
-    expect(schematic.export()).toEqual("A -> B -> C\n\n# A\n\nSection about the first letter of the alphabet");
+    const schematic = new GeneralSchematics("A -> B -> C\n## A\nSection about the first letter of the alphabet");
+    expect(schematic.export()).toEqual("A -> B -> C\n\n## A\n\nSection about the first letter of the alphabet");
 });
 
-test.skip("write hypertext for symbol", async () => {
+test("write hypertext for symbol", async () => {
     const schematic = new GeneralSchematics("A -> B -> C");
-    const A = schematic.hypergraph.hyperedges[0].firstNode;
     schematic.addHypertext("A", "Section about the first letter of the alphabet");
 
     expect(schematic.hypertext.get("A").length).toEqual(1);
     expect(schematic.hypertext.get("A")[0]).toEqual("Section about the first letter of the alphabet");
-    expect(schematic.export()).toEqual("A -> B -> C\n\n# A\nSection about the first letter of the alphabet");
+    expect(schematic.export()).toEqual("A -> B -> C\n\n## A\n\nSection about the first letter of the alphabet");
 });
 
-// TODO: write hypertext for symbol...existing section
-// TODO: write multiple hypertext
+test("write multiple hypertext for symbol", async () => {
+    const schematic = new GeneralSchematics("A -> B -> C");
+    schematic.addHypertext("A", "Section about the first letter of the alphabet");
+    schematic.addHypertext("A", "Second piece of hypertext");
 
-// TODO: Check if header exists...otherwise..create
+    expect(schematic.hypertext.get("A").length).toEqual(2);
+    expect(schematic.hypertext.get("A")[0]).toEqual("Section about the first letter of the alphabet");
+    expect(schematic.hypertext.get("A")[1]).toEqual("Second piece of hypertext");
+    expect(schematic.export()).toEqual("A -> B -> C\n\n## A\n\nSection about the first letter of the alphabet\n\nSecond piece of hypertext");
 
+    const schematic2 = new GeneralSchematics(schematic.export());
+    schematic2.addHypertext("A", "Third piece of hypertext");
+    expect(schematic2.hypertext.get("A").length).toEqual(3);
+});
 
-// TODO: Ideally we abstract this. We have ways to get directly to the part of the tree we want, and know how to do certain actions.
-
-
-
-// How do we know how to write header sections?
+// Edit hypertext....
 
 
 // TODO: schematics should generate actions to be performed...keeps tree and hypergraph in sync and gives undo/redo for free
@@ -155,6 +159,7 @@ test.skip("write hypertext for symbol", async () => {
 // TODO: Reading node header sections
 // TODO: Writing node header sections
 // TODO: replace hypergraph.hash with GeneralSchematic.hash
+// TODO: Ideally we abstract this. We have ways to get directly to the part of the tree we want, and know how to do certain actions.
 
 // TODO: Uppercase/lowercase symbols...shouldn't matter?
 // TODO: Keep order! This is going to get annoying to have all hyperedges at top and all hypertext on bottom
