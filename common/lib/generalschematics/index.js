@@ -72,6 +72,28 @@ export default class GeneralSchematics {
         this.update();
     }
 
+
+    setHypertext(symbol, text) {
+        const node = find(this.tree, {
+            type: "section",
+            children: [
+                { type: "heading", children: [{ type: "text", value: symbol }] }
+            ]
+        });
+
+        if (node) {
+            node.children = node.children.filter(child => child.type !== "paragraph");
+            node.children.push({
+                type: "paragraph",
+                children: [{ type: "text", value: text }]
+            });
+
+            this.update();
+        } else {
+            this.addHypertext(symbol, text);
+        }
+    }
+
     get hyperedges() {
         return this.parser.hyperedges;
     }

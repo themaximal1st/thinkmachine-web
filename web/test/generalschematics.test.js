@@ -151,8 +151,29 @@ test("write multiple hypertext for symbol", async () => {
     expect(schematic2.hypertext.get("A").length).toEqual(3);
 });
 
-// Edit hypertext....
+test("overwrite hypertext for symbol", async () => {
+    const schematic = new GeneralSchematics("A -> B -> C");
+    schematic.setHypertext("A", "New section about the first letter of the alphabet123");
+    schematic.setHypertext("A", "New section about the first letter of the alphabet");
+    expect(schematic.hypertext.get("A")[0]).toEqual("New section about the first letter of the alphabet");
+    expect(schematic.export()).toEqual("A -> B -> C\n\n## A\n\nNew section about the first letter of the alphabet");
+});
 
+test("multiple symbols multiple hyperedges", async () => {
+    const schematic = new GeneralSchematics("A -> B -> C\n\n# A\n\nSection about the first letter of the alphabet\n\n# B\n\nSection about the second letter of the alphabet");
+    expect(schematic.hypertext.get("A")[0]).toEqual("Section about the first letter of the alphabet");
+    expect(schematic.hypertext.get("B")[0]).toEqual("Section about the second letter of the alphabet");
+    schematic.addHypertext("A", "Second piece of hypertext for AAA");
+    schematic.addHypertext("B", "Second piece of hypertext for BBB");
+
+    const schematic1 = new GeneralSchematics(schematic.export());
+    expect(schematic1.hypertext.get("A").length).toEqual(2);
+    expect(schematic1.hypertext.get("B").length).toEqual(2);
+    expect(schematic1.hypertext.get("A")[0]).toEqual("Section about the first letter of the alphabet");
+    expect(schematic1.hypertext.get("A")[1]).toEqual("Second piece of hypertext for AAA");
+    expect(schematic1.hypertext.get("B")[0]).toEqual("Section about the second letter of the alphabet");
+    expect(schematic1.hypertext.get("B")[1]).toEqual("Second piece of hypertext for BBB");
+});
 
 // TODO: schematics should generate actions to be performed...keeps tree and hypergraph in sync and gives undo/redo for free
 // TODO: soft break bug with single \n above -> doesn't translate back properly on export
@@ -160,13 +181,11 @@ test("write multiple hypertext for symbol", async () => {
 // TODO: Writing node header sections
 // TODO: replace hypergraph.hash with GeneralSchematic.hash
 // TODO: Ideally we abstract this. We have ways to get directly to the part of the tree we want, and know how to do certain actions.
+//            And this is handled through a transformation library to work at a higher level
 
 // TODO: Uppercase/lowercase symbols...shouldn't matter?
 // TODO: Keep order! This is going to get annoying to have all hyperedges at top and all hypertext on bottom
-// TODO: Our parser right now is really dumb..we're gonna miss a lot of markdown elements cuz we're only getting text
-
-
-// import...modify...export...import...check
+// TODO: Our parser right now is really dumb..we're gonna miss a lot of markdown elements cuz we're only getting text. Right now it's a subset. it should be a superset
 
 // INTERWINGLE
-// CONTEXTUAL HYPERTEXT (A -> B vs 1 -> B)
+// TODO: CONTEXTUAL HYPERTEXT (A -> B vs 1 -> B)

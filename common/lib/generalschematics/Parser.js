@@ -124,10 +124,12 @@ export default class Parser {
     }
 
     export() {
+        // clone tree
+        const clonedTree = JSON.parse(JSON.stringify(this.tree));
         const tree = unified()
             .use(this.removeSections.bind(this))
             .use(remarkStringify)
-            .runSync(this.tree)
+            .runSync(clonedTree)
 
 
         return unified()
