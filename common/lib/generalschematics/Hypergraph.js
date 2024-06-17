@@ -58,12 +58,16 @@ class Node {
         this.hyperedge.removeAt(this.index);
     }
 
+    get schematic() {
+        return this.hyperedge.hypergraph.schematic;
+    }
+
     get hypertexts() {
-        return this.hyperedge.hypergraph.schematic.hypertexts.get(this.value);
+        return this.schematic.hypertexts.get(this.value);
     }
 
     addHypertext(input) {
-        this.hyperedge.hypergraph.schematic.hypertexts.add(this.value, input);
+        this.schematic.hypertexts.add(this.value, input);
     }
 
 }
@@ -130,6 +134,10 @@ export default class Hypergraph {
         return this.schematic.tree;
     }
 
+    update() {
+        this.schematic.update();
+    }
+
     build() {
         const hyperedges = selectAll('hyperedge', this.tree);
         for (const hyperedge of hyperedges) {
@@ -150,6 +158,8 @@ export default class Hypergraph {
         }
 
         this.tree.children.push(paragraph);
+        this.update();
+
         const hyperedge = new Hyperedge(data, this)
         this.hyperedges.push(hyperedge);
         return hyperedge;
@@ -176,30 +186,7 @@ export default class Hypergraph {
             this.hyperedges.splice(this.hyperedges.indexOf(hyperedge), 1);
         });
 
-        /*
-        visit(this.tree, function (node) {
-            if (node.type !== "paragraph") return false;
-
-            for (const child of node.children) {
-                if (child.type !== "hyperedge") continue;
-                if (child.children !== hyperedge.data.children) continue;
-                return true;
-                console.log("GOOD", child);
-            }
-
-            return false;
-        }, (node, index, parent) => {
-            console.log("REMOVING", node);
-        });
-        */
-
-        // console.log("REMOVING", hyperedge);
-        // const filter = {
-        //     type: "paragraph",
-        //     children: [hyperedge.data]
-        // }
-        // const paragraph = find(this.tree, filter);
-        // console.log("PARA", paragraph);
+        this.update();
     }
 }
 

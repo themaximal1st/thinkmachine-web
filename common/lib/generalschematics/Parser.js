@@ -4,7 +4,8 @@ import remarkParse from 'remark-parse'
 import remarkMath from 'remark-math'
 import remarkFrontmatter from 'remark-frontmatter'
 import remarkRehype from 'remark-rehype'
-import remarkSectionize from 'remark-sectionize'
+// import remarkSectionize from 'remark-sectionize'
+import remarkSectionize from './sectionize.js'
 import { unified } from 'unified'
 import remarkGfm from 'remark-gfm'
 import remarkBreaks from 'remark-breaks'
@@ -125,18 +126,37 @@ export default class Parser {
         }
     }
 
-    updateIndexes(tree) {
+    update(tree) {
         visitParents(tree, 'hypertext', (node, ancestors) => {
-            this.updateOwners(node);
+            this.updateOwners(node, ancestors);
         });
     }
 
-    updateOwners(node) {
+    updateOwners(node, ancestors) {
         node.owners = [];
 
+        // Handle header owners
+        for (const ancestor of ancestors) {
+            if (ancestor.type !== "section") continue;
+            if (ancestor.children[0].type !== "heading") continue;
+
+            const heading = ancestor.children[0];
+            if (!heading.children) continue;
+            if (heading.children.length !== 1) continue;
+            if (heading.children[0].type !== "text") continue;
+
+            const symbol = heading.children[0].value;
+            if (!this.symbols.includes(symbol)) continue;
+            if (node.owners.includes(symbol)) continue;
+            node.owners.push(symbol);
+        }
+
+
+        // Handle text owners
         const tokens = this.tokenize(node.value);
         for (const symbol of this.symbols) {
             if (tokens.includes(symbol)) {
+                if (node.owners.includes(symbol)) continue;
                 node.owners.push(symbol);
             }
         }

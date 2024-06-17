@@ -15,14 +15,19 @@ class Hypertext {
 
     set value(value) {
         this.data.value = value;
-        this.hypertexts.schematic.updateIndexes();
+        this.hypertexts.schematic.update();
     }
 
     get owners() {
         return this.data.owners;
     }
 
+    get schematic() {
+        return this.hypertexts.schematic;
+    }
+
     delete() {
+        const owners = this.owners;
         visitParents(this.hypertexts.tree, (node, parents) => {
             if (node === this.data) {
                 const parent = parents[parents.length - 1];
@@ -30,6 +35,8 @@ class Hypertext {
                 parent.children.splice(index, 1);
             }
         });
+
+        this.schematic.deleteEmptySections(owners);
     }
 }
 
@@ -55,49 +62,58 @@ export default class Hypertexts {
         return selectAll("hypertext[owners~=global]", this.tree).map(node => new Hypertext(node, this));
     }
 
-    add(symbol, input = null) {
-        if (input) {
-            const data = {
-                type: "paragraph",
-                children: [
-                    {
-                        type: 'heading',
-                        depth: 2,
-                        children: [{ type: 'text', value: symbol }]
-                    }
-                ]
-            };
+    getSymbolSection(symbol) {
+        return find(this.tree, {
+            type: "section",
+            children: [{ type: "heading", children: [{ type: "text", value: symbol }] }, { type: "paragraph" }]
+        });
+    }
 
-            const section = find(this.tree, data);
-            if (section) {
-                if (section.children.length > 0) {
-                    section.children.push({ type: 'break' });
-                }
+    getOrCreateSymbolSection(symbol) {
+        const section = this.getSymbolSection(symbol);
+        if (section) return section;
 
-                section.children.push({ type: 'hypertext', value: input });
-            } else {
-                this.tree.children.push({
-                    type: 'paragraph',
-                    children: [
-                        data.children[0],
-                        { type: 'break' },
-                        { type: 'hypertext', value: input }
-                    ]
-                });
-            }
-        } else {
-            input = symbol;
-            this.tree.children.push({
-                type: 'paragraph',
-                children: [
-                    {
-                        type: 'hypertext',
-                        value: input
-                    }
-                ]
-            });
+        this.tree.children.push({
+            type: "section",
+            children: [
+                { type: "heading", depth: 2, children: [{ type: "text", value: symbol }] },
+                { type: "paragraph", children: [] }
+            ]
+        });
+
+        return this.getSymbolSection(symbol);
+    }
+
+    addGlobal(input) {
+        const data = { type: 'hypertext', value: input };
+
+        this.tree.children.push({
+            type: 'paragraph',
+            children: [data]
+        });
+
+        this.schematic.update();
+
+        return new Hypertext(data, this);
+    }
+
+    addLocal(symbol, input) {
+        const section = this.getOrCreateSymbolSection(symbol);
+        const paragraph = section.children[1];
+        if (paragraph.children.length > 0) {
+            paragraph.children.push({ type: "break" });
         }
 
-        this.schematic.updateIndexes();
+        paragraph.children.push({ type: "hypertext", value: input });
+
+        this.schematic.update();
+    }
+
+    add(symbol, input = null) {
+        if (!input) {
+            return this.addGlobal(symbol);
+        }
+
+        return this.addLocal(symbol, input);
     }
 }
