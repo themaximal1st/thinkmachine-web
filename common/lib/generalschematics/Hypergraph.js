@@ -9,6 +9,9 @@ class Node {
     constructor(hyperedge, index) {
         this.hyperedge = hyperedge;
         this.index = parseInt(index);
+        this.hypertext = {
+            add: this.addHypertext.bind(this),
+        };
 
         if (!this.data.uuid) {
             this.data.uuid = uuidv4();
@@ -55,9 +58,14 @@ class Node {
         this.hyperedge.removeAt(this.index);
     }
 
-    get hypertext() {
-        return this.hyperedge.hypergraph.schematic.hypertext.get(this.value);
+    get hypertexts() {
+        return this.hyperedge.hypergraph.schematic.hypertexts.get(this.value);
     }
+
+    addHypertext(input) {
+        this.hyperedge.hypergraph.schematic.hypertexts.add(this.value, input);
+    }
+
 }
 
 class Hyperedge {

@@ -1,6 +1,7 @@
 import Hypergraph from './Hypergraph.js';
 import Hypertexts from './Hypertexts.js';
 import Parser from './Parser.js';
+import { inspect } from "unist-util-inspect"
 
 export default class GeneralSchematics {
     constructor(input = "") {
@@ -25,7 +26,7 @@ export default class GeneralSchematics {
 
         this.tree = this.parser.tree;
         this.updateIndexes();
-        this.hypertext = new Hypertexts(this);
+        this.hypertexts = new Hypertexts(this);
         this.hypergraph = new Hypergraph(this);
     }
 
@@ -35,5 +36,9 @@ export default class GeneralSchematics {
 
     export() {
         return this.parser.export();
+    }
+
+    debug() {
+        console.log(inspect(this.tree));
     }
 }

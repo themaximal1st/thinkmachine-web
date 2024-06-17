@@ -74,14 +74,14 @@ export default class Hypertexts {
                     section.children.push({ type: 'break' });
                 }
 
-                section.children.push({ type: 'text', value: input });
+                section.children.push({ type: 'hypertext', value: input });
             } else {
                 this.tree.children.push({
                     type: 'paragraph',
                     children: [
                         data.children[0],
                         { type: 'break' },
-                        { type: 'text', value: input }
+                        { type: 'hypertext', value: input }
                     ]
                 });
             }
@@ -91,11 +91,13 @@ export default class Hypertexts {
                 type: 'paragraph',
                 children: [
                     {
-                        type: 'text',
+                        type: 'hypertext',
                         value: input
                     }
                 ]
             });
         }
+
+        this.schematic.updateIndexes();
     }
 }
