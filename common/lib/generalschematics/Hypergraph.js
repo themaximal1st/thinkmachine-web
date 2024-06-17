@@ -1,132 +1,13 @@
 import { selectAll } from 'unist-util-select'
-import { v4 as uuidv4 } from 'uuid';
-import { inspect } from "unist-util-inspect"
-import { find } from 'unist-util-find'
-import { visit } from 'unist-util-visit'
 import { visitParents } from 'unist-util-visit-parents'
 
-class Node {
-    constructor(hyperedge, index) {
-        this.hyperedge = hyperedge;
-        this.index = parseInt(index);
-        this.hypertext = {
-            add: this.addHypertext.bind(this),
-        };
-
-        if (!this.data.uuid) {
-            this.data.uuid = uuidv4();
-        }
-    }
-
-    get data() {
-        return this.hyperedge.data.children[this.index];
-    }
-
-    get uuid() {
-        return this.data.uuid;
-    }
-
-    get value() {
-        return this.data.value;
-    }
-
-    get isFirst() {
-        return this.index === 0;
-    }
-
-    get isLast() {
-        return this.index === this.hyperedge.nodes.length - 1;
-    }
-
-    get isMiddle() {
-        return !this.isFirst && !this.isLast;
-    }
-
-    rename(input) {
-        this.hyperedge.rename(input, this.index);
-    }
-
-    add(input) {
-        this.hyperedge.insertAt(input, this.index + 1);
-    }
-
-    insert(input) {
-        this.hyperedge.insertAt(input, this.index);
-    }
-
-    remove() {
-        this.hyperedge.removeAt(this.index);
-    }
-
-    get schematic() {
-        return this.hyperedge.hypergraph.schematic;
-    }
-
-    get hypertexts() {
-        return this.schematic.hypertexts.get(this.value);
-    }
-
-    addHypertext(input) {
-        this.schematic.hypertexts.add(this.value, input);
-    }
-
-}
-
-class Hyperedge {
-    constructor(data = {}, hypergraph) {
-        this.data = data;
-        this.hypergraph = hypergraph;
-        this.nodes = [];
-        this.build();
-    }
-
-    get values() {
-        return this.nodes.map(node => node.value);
-    }
-
-    build() {
-        for (const i in this.data.children) {
-            this.nodes.push(new Node(this, i));
-        }
-    }
-
-    rename(input, index) {
-        this.data.children[index].value = input;
-    }
-
-    remove() {
-        this.hypergraph.remove(this);
-    }
-
-    insertAt(input, index) {
-        const data = { type: "text", value: input };
-        this.data.children.splice(index, 0, data);
-
-        const node = new Node(this, index);
-        this.nodes.splice(index, 0, node);
-    }
-
-    removeAt(index) {
-        this.data.children.splice(index, 1);
-        this.nodes.splice(index, 1);
-    }
-
-    static make(hyperedge) {
-        return {
-            type: "hyperedge",
-            children: hyperedge.map(symbol => {
-                return { type: "node", value: symbol }
-            })
-        };
-
-    }
-}
-
+import Hyperedge from './Hyperedge.js';
 
 export default class Hypergraph {
     constructor(schematic) {
         this.schematic = schematic;
         this.hyperedges = [];
+
         this.build();
     }
 
@@ -166,11 +47,9 @@ export default class Hypergraph {
     }
 
     remove(hyperedge) {
-
         visitParents(this.tree, (node, ancestors) => {
             if (node.type !== "hyperedge") return;
             if (node.children !== hyperedge.data.children) return;
-            // console.log("ANCESTORS", ancestors);
             const parent = ancestors[ancestors.length - 1];
 
             const nodeIndex = parent.children.indexOf(node);
@@ -200,19 +79,6 @@ import FilterGraph from "./FilterGraph.js";
 import Parser from "./parser.js";
 
 export default class Hypergraph {
-    static INTERWINGLE = {
-        ISOLATED: 0,        // only explicit connections you've added
-        CONFLUENCE: 1,      // shared parents
-        FUSION: 2,          // shared children
-        BRIDGE: 3           // shared symbols
-    };
-
-    static DEPTH = {
-        SHALLOW: 0,         // don't connect
-        // any number between 1 and Infinity is valid, up to maxDepth
-        DEEP: Infinity,     // infinitely connect
-    };
-
     constructor(input, options = {}) {
         let hyperedges;
 
@@ -226,25 +92,11 @@ export default class Hypergraph {
             hyperedges = [];
         }
 
-        options.interwingle = options.interwingle || Hypergraph.INTERWINGLE.ISOLATED;
-        options.depth = options.depth || Hypergraph.DEPTH.SHALLOW;
-        options.colors = options.colors || Colors;
-        this.options = options;
 
         this.hyperedges = [];
         this.add(hyperedges);
     }
 
-    get interwingle() { return this.options.interwingle }
-    set interwingle(value) { this.options.interwingle = value }
-    get depth() { return this.options.depth }
-    set depth(value) { this.options.depth = value }
-    get colors() { return this.options.colors }
-    set colors(value) { this.options.colors = value }
-    get isIsolated() { return this.interwingle === Hypergraph.INTERWINGLE.ISOLATED }
-    get isConfluence() { return this.interwingle >= Hypergraph.INTERWINGLE.CONFLUENCE }
-    get isFusion() { return this.interwingle >= Hypergraph.INTERWINGLE.FUSION }
-    get isBridge() { return this.interwingle >= Hypergraph.INTERWINGLE.BRIDGE }
     get onUpdate() { return this.options.onUpdate || function () { } }
     set onUpdate(value) { this.options.onUpdate = value }
     get nodes() {

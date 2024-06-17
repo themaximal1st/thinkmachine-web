@@ -4,26 +4,15 @@ import remarkParse from 'remark-parse'
 import remarkMath from 'remark-math'
 import remarkFrontmatter from 'remark-frontmatter'
 import remarkRehype from 'remark-rehype'
-// import remarkSectionize from 'remark-sectionize'
 import remarkSectionize from './sectionize.js'
 import { unified } from 'unified'
 import remarkGfm from 'remark-gfm'
 import remarkBreaks from 'remark-breaks'
-import { remark } from 'remark'
-import { find } from 'unist-util-find'
 import { visit, SKIP } from 'unist-util-visit'
 import { visitParents } from 'unist-util-visit-parents'
-// import rehypeParse from 'rehype-parse'
-import rehypeRemark from 'rehype-remark'
 import remarkStringify from 'remark-stringify'
-import { toMarkdown } from "mdast-util-to-markdown"
 import { inspect } from "unist-util-inspect"
-import { matches, select, selectAll } from 'unist-util-select'
-
-import { unified } from 'unified'
-
-import { u } from 'unist-builder'
-import { h } from 'hastscript'
+import { selectAll } from 'unist-util-select'
 
 export default class Parser {
     ARROW = /-+>/;

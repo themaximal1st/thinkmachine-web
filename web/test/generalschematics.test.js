@@ -1,8 +1,5 @@
 import GeneralSchematics from "@lib/generalschematics"
-import { inspect } from "unist-util-inspect"
-import { matches, select, selectAll } from 'unist-util-select'
-
-import { expect, test, beforeAll } from "vitest";
+import { expect, test } from "vitest";
 
 // test high-level API — specifics are handled in other tests
 
@@ -44,23 +41,20 @@ test("parse and export hyperedge", async () => {
 
 test("multiple hyperedges", async () => {
     const schematic = new GeneralSchematics("A -> B -> C\n1 -> 2 -> 3");
-    const tree = schematic.tree;
-
-    const hyperedges = selectAll("hyperedge", tree);
+    const hyperedges = schematic.hyperedges;
     expect(hyperedges.length).toEqual(2);
-    expect(hyperedges[0].children.length).toEqual(3);
-    expect(hyperedges[0].children[0].value).toEqual("A");
-    expect(hyperedges[0].children[1].value).toEqual("B");
-    expect(hyperedges[0].children[2].value).toEqual("C");
-    expect(hyperedges[1].children.length).toEqual(3);
-    expect(hyperedges[1].children[0].value).toEqual("1");
-    expect(hyperedges[1].children[1].value).toEqual("2");
-    expect(hyperedges[1].children[2].value).toEqual("3");
+
+    expect(hyperedges[0].nodes.length).toEqual(3);
+    expect(hyperedges[0].nodes[0].value).toEqual("A");
+    expect(hyperedges[0].nodes[1].value).toEqual("B");
+    expect(hyperedges[0].nodes[2].value).toEqual("C");
+    expect(hyperedges[1].nodes.length).toEqual(3);
+    expect(hyperedges[1].nodes[0].value).toEqual("1");
+    expect(hyperedges[1].nodes[1].value).toEqual("2");
+    expect(hyperedges[1].nodes[2].value).toEqual("3");
 
     expect(schematic.export()).toEqual("A -> B -> C\n1 -> 2 -> 3");
     expect(schematic.html).toEqual("<p>A -> B -> C<br>\n1 -> 2 -> 3</p>");
-    // expect(schematic.hyperedges).toEqual([["A", "B", "C"], ["1", "2", "3"]]);
-    // expect(schematic.nodes).toEqual(["A", "B", "C"]);
 });
 
 test("soft breaks", async () => {
@@ -156,7 +150,7 @@ test("remove hyperedge", async () => {
 test("hypertextify global and local hypertext", async () => {
     const schematic = new GeneralSchematics("A -> B -> C\n\nThis is global hypertext.\n\n# A\nThis is local hypertext for A");
 
-    const hypertexts = selectAll("hypertext", schematic.tree);
+    const hypertexts = schematic.hypertexts.all;
     expect(hypertexts.length).toEqual(2);
 
     const global = schematic.hypertexts.global;

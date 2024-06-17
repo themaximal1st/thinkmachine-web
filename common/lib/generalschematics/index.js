@@ -6,13 +6,44 @@ import { visit } from 'unist-util-visit'
 import { sha256 } from './utils.js';
 
 export default class GeneralSchematics {
-    constructor(input = "") {
+    static INTERWINGLE = {
+        ISOLATED: 0,        // only explicit connections you've added
+        CONFLUENCE: 1,      // shared parents
+        FUSION: 2,          // shared children
+        BRIDGE: 3           // shared symbols
+    };
+
+    static DEPTH = {
+        SHALLOW: 0,         // don't connect
+        // any number between 1 and Infinity is valid, up to maxDepth
+        DEEP: Infinity,     // infinitely connect
+    };
+
+    constructor(input = "", options = {}) {
         if (typeof input !== "string") throw new Error("Input must be a string");
 
         this.input = input;
+
+        options.interwingle = options.interwingle || GeneralSchematics.INTERWINGLE.ISOLATED;
+        options.depth = options.depth || GeneralSchematics.DEPTH.SHALLOW;
+        // options.colors = options.colors || Colors;
+
+        this.options = options;
+
         this.parser = new Parser();
         this.parse();
     }
+
+    get interwingle() { return this.options.interwingle }
+    set interwingle(value) { this.options.interwingle = value }
+    get depth() { return this.options.depth }
+    set depth(value) { this.options.depth = value }
+    // get colors() { return this.options.colors }
+    // set colors(value) { this.options.colors = value }
+    get isIsolated() { return this.interwingle === GeneralSchematics.INTERWINGLE.ISOLATED }
+    get isConfluence() { return this.interwingle >= GeneralSchematics.INTERWINGLE.CONFLUENCE }
+    get isFusion() { return this.interwingle >= GeneralSchematics.INTERWINGLE.FUSION }
+    get isBridge() { return this.interwingle >= GeneralSchematics.INTERWINGLE.BRIDGE }
 
     get hash() {
         return sha256(inspect(this.tree));

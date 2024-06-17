@@ -1,19 +1,81 @@
 import { v4 as uuidv4 } from 'uuid';
-import slugify from "slugify";
-import Parser from './parser.js';
 
 export default class Node {
-    constructor(symbol, hyperedge) {
-        this.symbol = symbol;
+    constructor(hyperedge, index) {
         this.hyperedge = hyperedge;
-        this.hypergraph = hyperedge.hypergraph;
-        this.uuid = uuidv4();
-        this.meta = {};
+        this.index = parseInt(index);
+        this.hypertext = {
+            add: this.addHypertext.bind(this),
+        };
+
+        if (!this.data.uuid) {
+            this.data.uuid = uuidv4();
+        }
     }
 
     get id() {
         return this.hyperedge.nodeId(this.index);
     }
+
+    get data() {
+        return this.hyperedge.data.children[this.index];
+    }
+
+    get uuid() {
+        return this.data.uuid;
+    }
+
+    get value() {
+        return this.data.value;
+    }
+
+    get isFirst() {
+        return this.index === 0;
+    }
+
+    get isLast() {
+        return this.index === this.hyperedge.nodes.length - 1;
+    }
+
+    get isMiddle() {
+        return !this.isFirst && !this.isLast;
+    }
+
+    get schematic() {
+        return this.hyperedge.hypergraph.schematic;
+    }
+
+    get hypertexts() {
+        return this.schematic.hypertexts.get(this.value);
+    }
+
+    rename(input) {
+        this.hyperedge.rename(input, this.index);
+    }
+
+    add(input) {
+        this.hyperedge.insertAt(input, this.index + 1);
+    }
+
+    insert(input) {
+        this.hyperedge.insertAt(input, this.index);
+    }
+
+    remove() {
+        this.hyperedge.removeAt(this.index);
+    }
+
+    addHypertext(input) {
+        this.schematic.hypertexts.add(this.value, input);
+    }
+}
+
+/*
+import { v4 as uuidv4 } from 'uuid';
+import slugify from "slugify";
+import Parser from './parser.js';
+
+export default class Node {
 
     get index() {
         return this.hyperedge.nodes.indexOf(this);
@@ -197,3 +259,5 @@ export default class Node {
     }
 }
 
+
+*/

@@ -1,44 +1,7 @@
-import { inspect } from "unist-util-inspect"
 import { find } from 'unist-util-find'
 import { selectAll } from 'unist-util-select'
-import { visitParents } from 'unist-util-visit-parents'
 
-class Hypertext {
-    constructor(data, hypertexts) {
-        this.data = data;
-        this.hypertexts = hypertexts;
-    }
-
-    get value() {
-        return this.data.value;
-    }
-
-    set value(value) {
-        this.data.value = value;
-        this.hypertexts.schematic.update();
-    }
-
-    get owners() {
-        return this.data.owners;
-    }
-
-    get schematic() {
-        return this.hypertexts.schematic;
-    }
-
-    delete() {
-        const owners = this.owners;
-        visitParents(this.hypertexts.tree, (node, parents) => {
-            if (node === this.data) {
-                const parent = parents[parents.length - 1];
-                const index = parent.children.indexOf(node);
-                parent.children.splice(index, 1);
-            }
-        });
-
-        this.schematic.deleteEmptySections(owners);
-    }
-}
+import Hypertext from './Hypertext.js';
 
 
 export default class Hypertexts {
@@ -55,11 +18,15 @@ export default class Hypertexts {
     }
 
     get size() {
-        return selectAll("text", this.tree).length;
+        return selectAll("hypertext", this.tree).length;
     }
 
     get global() {
         return selectAll("hypertext[owners~=global]", this.tree).map(node => new Hypertext(node, this));
+    }
+
+    get all() {
+        return selectAll("hypertext", this.tree).map(node => new Hypertext(node, this));
     }
 
     getSymbolSection(symbol) {
