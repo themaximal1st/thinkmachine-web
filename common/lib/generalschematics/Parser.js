@@ -121,19 +121,28 @@ export default class Parser {
                 const parent = ancestors[ancestors.length - 1];
                 if (parent.type === "heading") return;
                 node.type = "hypertext";
-                node.owners = [];
-
-                const tokens = this.tokenize(node.value);
-                for (const symbol of this.symbols) {
-                    if (tokens.includes(symbol)) {
-                        node.owners.push(symbol);
-                    }
-                }
-
-                if (node.owners.length === 0) {
-                    node.owners.push("global");
-                }
             });
+        }
+    }
+
+    updateIndexes(tree) {
+        visitParents(tree, 'hypertext', (node, ancestors) => {
+            this.updateOwners(node);
+        });
+    }
+
+    updateOwners(node) {
+        node.owners = [];
+
+        const tokens = this.tokenize(node.value);
+        for (const symbol of this.symbols) {
+            if (tokens.includes(symbol)) {
+                node.owners.push(symbol);
+            }
+        }
+
+        if (node.owners.length === 0) {
+            node.owners.push("global");
         }
     }
 
@@ -146,7 +155,7 @@ export default class Parser {
     }
 
     tokenize(text) {
-        return text.split(/\s+/);
+        return text.split(/[\s\.,;:]+/).filter(token => token.length > 0);
     }
 
     removeSections() {

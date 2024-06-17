@@ -1,5 +1,5 @@
 import Hypergraph from './Hypergraph.js';
-import Hypertext from './Hypertext.js';
+import Hypertexts from './Hypertexts.js';
 import Parser from './Parser.js';
 
 export default class GeneralSchematics {
@@ -24,8 +24,13 @@ export default class GeneralSchematics {
         this.parser.parse();
 
         this.tree = this.parser.tree;
-        this.hypertext = new Hypertext(this.tree);
-        this.hypergraph = new Hypergraph(this.tree);
+        this.updateIndexes();
+        this.hypertext = new Hypertexts(this);
+        this.hypergraph = new Hypergraph(this);
+    }
+
+    updateIndexes() {
+        this.parser.updateIndexes(this.tree);
     }
 
     export() {

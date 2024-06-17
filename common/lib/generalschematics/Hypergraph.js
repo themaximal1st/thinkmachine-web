@@ -54,6 +54,10 @@ class Node {
     remove() {
         this.hyperedge.removeAt(this.index);
     }
+
+    get hypertext() {
+        return this.hyperedge.hypergraph.schematic.hypertext.get(this.value);
+    }
 }
 
 class Hyperedge {
@@ -108,10 +112,14 @@ class Hyperedge {
 
 
 export default class Hypergraph {
-    constructor(tree) {
-        this.tree = tree;
+    constructor(schematic) {
+        this.schematic = schematic;
         this.hyperedges = [];
         this.build();
+    }
+
+    get tree() {
+        return this.schematic.tree;
     }
 
     build() {
