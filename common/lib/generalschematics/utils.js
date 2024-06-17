@@ -1,5 +1,5 @@
 import Colors from "./colors.js";
-import sha256 from "@lib/sha256"
+import sha256lib from "@lib/sha256"
 
 export function addIndex(index, key, val) {
     if (!index.has(key)) {
@@ -102,8 +102,8 @@ export function restoreData(data, old) {
     }
 }
 
-export function hash(str) {
-    return sha256(str).hex();
+export function sha256(str) {
+    return sha256lib(str).hex();
 }
 
 export function findReferenceUUID(data, uuid) {

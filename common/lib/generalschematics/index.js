@@ -3,6 +3,7 @@ import Hypertexts from './Hypertexts.js';
 import Parser from './Parser.js';
 import { inspect } from "unist-util-inspect"
 import { visit } from 'unist-util-visit'
+import { sha256 } from './utils.js';
 
 export default class GeneralSchematics {
     constructor(input = "") {
@@ -11,6 +12,10 @@ export default class GeneralSchematics {
         this.input = input;
         this.parser = new Parser();
         this.parse();
+    }
+
+    get hash() {
+        return sha256(inspect(this.tree));
     }
 
     get html() {
