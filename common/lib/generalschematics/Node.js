@@ -25,8 +25,16 @@ export default class Node {
         return this.data.uuid;
     }
 
+    set uuid(uuid) {
+        this.data.uuid = uuid;
+    }
+
     get value() {
         return this.data.value;
+    }
+
+    get symbol() {
+        return this.value;
     }
 
     get isFirst() {
@@ -41,8 +49,12 @@ export default class Node {
         return !this.isFirst && !this.isLast;
     }
 
+    get hypergraph() {
+        return this.hyperedge.hypergraph;
+    }
+
     get schematic() {
-        return this.hyperedge.hypergraph.schematic;
+        return this.schematic;
     }
 
     get hypertexts() {
@@ -63,10 +75,31 @@ export default class Node {
 
     remove() {
         this.hyperedge.removeAt(this.index);
+
+        if (this.hyperedge.length === 0) {
+            this.hyperedge.remove();
+        }
     }
 
     addHypertext(input) {
         this.schematic.hypertexts.add(this.value, input);
+    }
+
+    equal(node) {
+        return this.id === node.id;
+    }
+
+    equals(symbol) {
+        return this.symbol.toLowerCase() === symbol.toLowerCase();
+    }
+
+    connect(node) {
+        const symbols = [
+            this.symbol,
+            node.symbol,
+        ]
+
+        return this.hypergraph.add(symbols);
     }
 }
 
@@ -95,14 +128,6 @@ export default class Node {
 
     get isMiddle() {
         return !this.isFirst && !this.isLast;
-    }
-
-    equal(node) {
-        return this.id === node.id;
-    }
-
-    equals(symbol) {
-        return this.symbol.toLowerCase() === symbol.toLowerCase();
     }
 
     rename(symbol) {
@@ -245,14 +270,6 @@ export default class Node {
         return context;
     }
 
-    connect(node) {
-        const symbols = [
-            this.symbol,
-            node.symbol,
-        ]
-
-        return this.hypergraph.add(symbols);
-    }
 
     export() {
         return this.symbol;

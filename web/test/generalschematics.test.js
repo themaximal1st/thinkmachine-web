@@ -349,9 +349,10 @@ test("hashes equal", async () => {
     const schematic1 = new GeneralSchematics("A -> B -> C\n\nThis is some hypertext");
     const schematic2 = new GeneralSchematics("A -> B -> C\n\nThis is some hypertext");
     expect(schematic1.hash).not.toBe(schematic2.hash);
-    schematic2.parser.nodes[0].uuid = schematic1.parser.nodes[0].uuid;
-    schematic2.parser.nodes[1].uuid = schematic1.parser.nodes[1].uuid;
-    schematic2.parser.nodes[2].uuid = schematic1.parser.nodes[2].uuid;
+    schematic2.hyperedges[0].uuid = schematic1.hyperedges[0].uuid;
+    schematic2.nodes[0].uuid = schematic1.nodes[0].uuid;
+    schematic2.nodes[1].uuid = schematic1.nodes[1].uuid;
+    schematic2.nodes[2].uuid = schematic1.nodes[2].uuid;
     expect(schematic1.hash).toEqual(schematic2.hash);
 });
 

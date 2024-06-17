@@ -1,7 +1,9 @@
 import { selectAll } from 'unist-util-select'
 import { visitParents } from 'unist-util-visit-parents'
+import { arrayContains } from './utils.js';
 
 import Hyperedge from './Hyperedge.js';
+import Node from './Node.js';
 
 export default class Hypergraph {
     constructor(schematic) {
@@ -15,6 +17,24 @@ export default class Hypergraph {
         return this.schematic.tree;
     }
 
+    get nodes() {
+        const nodes = [];
+        for (const hyperedge of this.hyperedges) {
+            for (const node of hyperedge.nodes) {
+                nodes.push(node);
+            }
+        }
+        return nodes;
+    }
+
+    get symbols() {
+        return this.nodes.map(node => node.value);
+    }
+
+    get uniqueSymbols() {
+        return new Set(this.symbols.flat());
+    }
+
     update() {
         this.schematic.update();
     }
@@ -23,6 +43,24 @@ export default class Hypergraph {
         const hyperedges = selectAll('hyperedge', this.tree);
         for (const hyperedge of hyperedges) {
             this.hyperedges.push(new Hyperedge(hyperedge, this));
+        }
+    }
+
+    nodeByUUID(uuid) {
+        for (const node of this.nodes) {
+            if (node.uuid === uuid) return node;
+        }
+    }
+
+    nodeByID(id) {
+        for (const node of this.nodes) {
+            if (node.id === id) return node;
+        }
+    }
+
+    edgeByUUID(uuid) {
+        for (const hyperedge of this.hyperedges) {
+            if (hyperedge.uuid === uuid) return hyperedge;
         }
     }
 
@@ -67,7 +105,30 @@ export default class Hypergraph {
 
         this.update();
     }
+
+    get(symbols) {
+        for (const hyperedge of this.hyperedges) {
+            if (arrayContains(hyperedge.symbols, symbols)) {
+                return hyperedge;
+            }
+        }
+
+        return null;
+    }
+
+    has(symbol) {
+        if (Array.isArray(symbol)) {
+            return !!this.get(symbol);
+        } else {
+            return this.uniqueSymbols.has(symbol);
+        }
+    }
 }
+
+Hypergraph.Hyperedge = Hyperedge;
+Hypergraph.Node = Node;
+// Hypergraph.BridgeNode = BridgeNode;
+// Hypergraph.trackUUID = utils.trackUUID;
 
 /*
 import Hyperedge from './Hyperedge.js';
@@ -161,24 +222,6 @@ export default class Hypergraph {
         }
     }
 
-    get(symbols) {
-        for (const hyperedge of this.hyperedges) {
-            if (utils.arrayContains(hyperedge.symbols, symbols)) {
-                return hyperedge;
-            }
-        }
-
-        return null;
-    }
-
-    has(symbol) {
-        if (Array.isArray(symbol)) {
-            return !!this.get(symbol);
-        } else {
-            return this.uniqueSymbols.has(symbol);
-        }
-    }
-
     filter(symbols) {
         if (symbols.length === 0) return [];
         if (!Array.isArray(symbols[0])) {
@@ -220,27 +263,6 @@ export default class Hypergraph {
     }
 
 
-    nodeByUUID(uuid) {
-        for (const hyperedge of this.hyperedges) {
-            for (const node of hyperedge.nodes) {
-                if (node.uuid === uuid) return node;
-            }
-        }
-    }
-
-    nodeByID(id) {
-        for (const hyperedge of this.hyperedges) {
-            for (const node of hyperedge.nodes) {
-                if (node.id === id) return node;
-            }
-        }
-    }
-
-    edgeByUUID(uuid) {
-        for (const hyperedge of this.hyperedges) {
-            if (hyperedge.uuid === uuid) return hyperedge;
-        }
-    }
 
     masqueradeNode(node, max = 1000) {
         let i = 0;

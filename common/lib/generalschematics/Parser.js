@@ -67,9 +67,12 @@ export default class Parser {
         return (tree) => {
             visit(tree, 'text', (node, index, parent) => {
                 if (node.children && node.children.length > 0) return;
-                if (!this.ARROW.test(node.value)) return;
+                if (!this.stringIsHyperedge(node.value)) return;
+
+                const symbols = this.stringToHyperedge(node.value);
+
                 node.type = "hyperedge";
-                node.children = node.value.split(this.ARROW).map(symbol => {
+                node.children = symbols.map(symbol => {
                     return {
                         type: "node",
                         value: symbol.trim()
@@ -93,9 +96,9 @@ export default class Parser {
     symbolify() {
         return (tree) => {
             visit(tree, 'text', (node, index, parent) => {
-                if (!this.ARROW.test(node.value)) return;
+                if (!this.stringIsHyperedge(node.value)) return;
 
-                const symbols = node.value.split(this.ARROW).map(symbol => symbol.trim());
+                const symbols = this.stringToHyperedge(node.value);
                 for (const symbol of symbols) {
                     this.symbols.add(symbol);
                 }
@@ -103,6 +106,14 @@ export default class Parser {
                 this.hyperedges.push(symbols);
             });
         }
+    }
+
+    stringIsHyperedge(string) {
+        return this.ARROW.test(string);
+    }
+
+    stringToHyperedge(string) {
+        return string.split(this.ARROW).map(symbol => symbol.trim());
     }
 
     hypertextify() {

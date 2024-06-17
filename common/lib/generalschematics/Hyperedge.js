@@ -1,9 +1,15 @@
 import Node from './Node.js';
-import { stringToColor } from './utils.js';
+import { v4 as uuidv4 } from 'uuid';
+import { stringToColor, arrayContains } from './utils.js';
 
 export default class Hyperedge {
     constructor(data = {}, hypergraph) {
         this.data = data;
+
+        if (!this.data.uuid) {
+            this.data.uuid = uuidv4();
+        }
+
         this.hypergraph = hypergraph;
         this.nodes = [];
         this.build();
@@ -21,8 +27,24 @@ export default class Hyperedge {
         return id;
     }
 
+    equal(edge) {
+        return this.id === edge.id;
+    }
+
+    get uuid() {
+        return this.data.uuid;
+    }
+
+    set uuid(value) {
+        this.data.uuid = value;
+    }
+
     get values() {
         return this.nodes.map(node => node.value);
+    }
+
+    get symbols() {
+        return this.values;
     }
 
     get color() {
@@ -91,23 +113,59 @@ export default class Hyperedge {
 
     rename(input, index) {
         this.data.children[index].value = input;
+        this.schematic.update();
     }
 
     remove() {
         this.hypergraph.remove(this);
+        this.schematic.update();
+    }
+
+    add(symbol) {
+        if (Array.isArray(symbol)) {
+            return symbol.map(s => this.add(s));
+        }
+
+        return this.insertAt(symbol, this.nodes.length);
     }
 
     insertAt(input, index) {
         const data = { type: "text", value: input };
         this.data.children.splice(index, 0, data);
 
+        if (index > this.nodes.length) {
+            index = this.nodes.length;
+        }
+
         const node = new Node(this, index);
         this.nodes.splice(index, 0, node);
+
+        this.updateNodeIndexes();
+
+        return node;
     }
 
     removeAt(index) {
         this.data.children.splice(index, 1);
         this.nodes.splice(index, 1);
+
+        this.updateNodeIndexes();
+    }
+
+    updateNodeIndexes() {
+        for (let i = 0; i < this.nodes.length; i++) {
+            this.nodes[i].index = i;
+        }
+
+        this.schematic.update();
+    }
+
+    has(symbol) {
+        if (Array.isArray(symbol)) {
+            return arrayContains(this.symbols, symbol);
+        } else {
+            return this.symbols.includes(symbol);
+        }
     }
 
     static make(hyperedge) {
@@ -134,31 +192,9 @@ export default class Hyperedge {
         this.uuid = uuidv4();
     }
 
-    add(symbol) {
-        if (Array.isArray(symbol)) {
-            return symbol.map(s => this.add(s));
-        }
-
-        const node = new Node(symbol, this);
-        this.nodes.push(node);
-        this.hypergraph.onUpdate({ event: "node.add", data: node });
-        return node;
-    }
-
-    addAtIndex(symbol, index) {
-        const node = new Node(symbol, this);
-        this.nodes.splice(index, 0, node);
-        this.hypergraph.onUpdate({ event: "node.add", data: node });
-        return node;
-    }
-
     remove() {
         this.hypergraph.hyperedges.splice(this.index, 1);
         this.hypergraph.onUpdate({ event: "hyperedge.remove", data: this });
-    }
-
-    removeIndex(idx) {
-        this.nodes.splice(idx, 1);
     }
 
     prev() {
@@ -171,17 +207,6 @@ export default class Hyperedge {
         return this.hypergraph.hyperedges[this.index + 1];
     }
 
-    has(symbol) {
-        if (Array.isArray(symbol)) {
-            return utils.arrayContains(this.symbols, symbol);
-        } else {
-            return this.symbols.includes(symbol);
-        }
-    }
-
-    equal(edge) {
-        return this.id === edge.id;
-    }
 
     updateGraphData(nodes, links) {
         let parent = null;

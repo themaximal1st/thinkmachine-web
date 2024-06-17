@@ -4,6 +4,7 @@ import Parser from './Parser.js';
 import { inspect } from "unist-util-inspect"
 import { visit } from 'unist-util-visit'
 import { sha256 } from './utils.js';
+import Colors from './colors.js';
 
 export default class GeneralSchematics {
     static INTERWINGLE = {
@@ -20,13 +21,27 @@ export default class GeneralSchematics {
     };
 
     constructor(input = "", options = {}) {
+        if (typeof input === "object" && !Array.isArray(input) && Object.keys(options).length === 0) {
+            options = input;
+            input = "";
+
+            if (options.hyperedges && Array.isArray(options.hyperedges)) {
+                input = options.hyperedges;
+                delete options.hyperedges;
+            }
+        }
+
+        if (Array.isArray(input)) {
+            input = input.map(hyperedge => hyperedge.join(" -> ")).join("\n");
+        }
+
         if (typeof input !== "string") throw new Error("Input must be a string");
 
         this.input = input;
 
         options.interwingle = options.interwingle || GeneralSchematics.INTERWINGLE.ISOLATED;
         options.depth = options.depth || GeneralSchematics.DEPTH.SHALLOW;
-        // options.colors = options.colors || Colors;
+        options.colors = options.colors || Colors;
 
         this.options = options;
 
@@ -38,26 +53,30 @@ export default class GeneralSchematics {
     set interwingle(value) { this.options.interwingle = value }
     get depth() { return this.options.depth }
     set depth(value) { this.options.depth = value }
-    // get colors() { return this.options.colors }
-    // set colors(value) { this.options.colors = value }
+    get colors() { return this.options.colors }
+    set colors(value) { this.options.colors = value }
     get isIsolated() { return this.interwingle === GeneralSchematics.INTERWINGLE.ISOLATED }
     get isConfluence() { return this.interwingle >= GeneralSchematics.INTERWINGLE.CONFLUENCE }
     get isFusion() { return this.interwingle >= GeneralSchematics.INTERWINGLE.FUSION }
     get isBridge() { return this.interwingle >= GeneralSchematics.INTERWINGLE.BRIDGE }
 
-    get hash() {
-        return sha256(inspect(this.tree));
-    }
+    get hash() { return sha256(inspect(this.tree)) }
+    get hyperedges() { return this.hypergraph.hyperedges }
+    get nodes() { return this.hypergraph.nodes }
+    get symbols() { return this.hypergraph.symbols }
+    get uniqueSymbols() { return this.hypergraph.uniqueSymbols }
+    get() { return this.hypergraph.get(...arguments) }
+    has() { return this.hypergraph.has(...arguments) }
 
-    get html() {
-        return this.parser.html();
-    }
+    get html() { return this.parser.html() }
 
-    get hyperedges() {
-        return this.hypergraph.hyperedges;
-    }
+    nodeByID(id) { return this.hypergraph.nodeByID(id) }
+    nodeByUUID(uuid) { return this.hypergraph.nodeByUUID(uuid) }
+    edgeByUUID(uuid) { return this.hypergraph.edgeByUUID(uuid) }
 
-    parse() {
+
+    parse(input) {
+        if (input) this.input = input;
         this.parser.input = this.input;
         this.parser.parse();
 
@@ -98,4 +117,29 @@ export default class GeneralSchematics {
     debug() {
         console.log(inspect(this.tree));
     }
+
+    add(input) {
+        if (Array.isArray(input)) {
+            return this.hypergraph.add(input);
+        } else if (typeof input === "string") {
+            const lines = input.split(/\r?\n/);
+            for (const line of lines) {
+                if (this.parser.stringIsHyperedge(line)) {
+                    const symbols = this.parser.stringToHyperedge(line);
+                    this.hypergraph.add(symbols);
+                } else {
+                    return this.hypertexts.add(line);
+                }
+            }
+        } else {
+            throw new Error("Input must be a string or an array of strings");
+        }
+    }
+
+    reset() {
+        this.input = "";
+        this.tree = null;
+    }
 }
+
+GeneralSchematics.Hypergraph = Hypergraph;
