@@ -72,21 +72,94 @@ test("soft breaks", async () => {
     expect(schematic.export()).toEqual("Hello\nWorld");
 });
 
-test("rename node", async () => {
+test("custom node object", async () => {
     const schematic = new GeneralSchematics("A -> B -> C");
-    const [A, _] = selectAll("node", schematic.tree);
-    expect(A.type).toEqual("node");
-    expect(A.value).toEqual("A");
+    const edge = schematic.hyperedges[0];
+    const [A, B, C] = edge.nodes;
 
-    A.value = "A1";
+    A.rename("A1");
+    B.rename("B1");
+    C.rename("C1");
 
-    expect(schematic.export()).toEqual("A1 -> B -> C");
-    expect(schematic.hyperedges[0].children[0].value).toEqual("A1");
+    expect(schematic.export()).toEqual("A1 -> B1 -> C1");
+    expect(schematic.hyperedges[0].nodes[0].value).toEqual("A1");
 
-    expect(schematic.html).toEqual("<p>A1 -> B -> C</p>");
-    // expect(schematic.hyperedges..()).toEqual("A1 -> B -> C");
-    // expect(schematic.nodes).toEqual(["A", "B", "C"]);
+    expect(schematic.html).toEqual("<p>A1 -> B1 -> C1</p>");
 });
+
+test("add node", async () => {
+    const schematic = new GeneralSchematics("A -> B -> C");
+    const [A, B, C] = schematic.hyperedges[0].nodes;
+
+    C.add("D");
+    expect(schematic.export()).toEqual("A -> B -> C -> D");
+
+    A.add("A1");
+    expect(schematic.export()).toEqual("A -> A1 -> B -> C -> D");
+});
+
+test("insert node", async () => {
+    const schematic = new GeneralSchematics("A -> B -> C");
+    const [A, B, C] = schematic.hyperedges[0].nodes;
+
+    C.insert("D");
+    expect(schematic.export()).toEqual("A -> B -> D -> C");
+
+    A.insert("A1");
+    expect(schematic.export()).toEqual("A1 -> A -> B -> D -> C");
+});
+
+test("remove node", async () => {
+    const schematic = new GeneralSchematics("A -> B -> C");
+    const [A, B, C] = schematic.hyperedges[0].nodes;
+
+    B.remove();
+    expect(schematic.export()).toEqual("A -> C");
+
+    A.remove();
+    expect(schematic.export()).toEqual("C");
+});
+
+test("node UUID", async () => {
+    const schematic = new GeneralSchematics("A -> B -> C");
+    const [A, B, C] = schematic.hyperedges[0].nodes;
+
+    expect(A.uuid).toBeDefined();
+    expect(A.uuid).toMatch(/[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}/);
+});
+
+test("add hyperedge", async () => {
+    const schematic = new GeneralSchematics("A -> B -> C");
+    const edge = schematic.hypergraph.add(["D", "E", "F"]);
+    const [D, E, F] = edge.nodes;
+    expect(D.value).toEqual("D");
+    expect(E.value).toEqual("E");
+    expect(F.value).toEqual("F");
+    expect(schematic.export()).toEqual("A -> B -> C\n\nD -> E -> F");
+    expect(schematic.hyperedges.length).toEqual(2);
+});
+
+test("remove hyperedge", async () => {
+    const schematic = new GeneralSchematics("A -> B -> C\nD -> E -> F");
+    const hyperedges = schematic.hypergraph.hyperedges;
+    const [ABC, DEF] = hyperedges;
+    ABC.remove();
+    expect(schematic.hyperedges.length).toEqual(1);
+    expect(schematic.export()).toEqual("D -> E -> F");
+
+    DEF.remove();
+    expect(schematic.hyperedges.length).toEqual(0);
+    expect(schematic.export()).toEqual("");
+    // TODO: test empty tree!! should remove paragraph
+
+
+});
+
+// REMOVE HYPEREDGE + paragargraph if empty
+
+
+
+// TODO: Add hypertext...
 
 // TODO: Clean interface for nodes / hyperedges / referencing them in hypergraph / and back...just use those objects!?!?!?!!!!!!!
 

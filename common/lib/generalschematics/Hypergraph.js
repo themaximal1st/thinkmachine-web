@@ -1,11 +1,190 @@
-export default class Hypergraph {
-    constructor(tree, options = {}) {
-        this.tree = tree;
-        this.hyperedges = [];
+import { selectAll } from 'unist-util-select'
+import { v4 as uuidv4 } from 'uuid';
+import { inspect } from "unist-util-inspect"
+import { find } from 'unist-util-find'
+import { visit } from 'unist-util-visit'
+import { visitParents } from 'unist-util-visit-parents'
+
+class Node {
+    constructor(hyperedge, index) {
+        this.hyperedge = hyperedge;
+        this.index = parseInt(index);
+
+        if (!this.data.uuid) {
+            this.data.uuid = uuidv4();
+        }
     }
 
-    update() {
+    get data() {
+        return this.hyperedge.data.children[this.index];
+    }
+
+    get uuid() {
+        return this.data.uuid;
+    }
+
+    get value() {
+        return this.data.value;
+    }
+
+    get isFirst() {
+        return this.index === 0;
+    }
+
+    get isLast() {
+        return this.index === this.hyperedge.nodes.length - 1;
+    }
+
+    get isMiddle() {
+        return !this.isFirst && !this.isLast;
+    }
+
+    rename(input) {
+        this.hyperedge.rename(input, this.index);
+    }
+
+    add(input) {
+        this.hyperedge.insertAt(input, this.index + 1);
+    }
+
+    insert(input) {
+        this.hyperedge.insertAt(input, this.index);
+    }
+
+    remove() {
+        this.hyperedge.removeAt(this.index);
+    }
+}
+
+class Hyperedge {
+    constructor(data = {}, hypergraph) {
+        this.data = data;
+        this.hypergraph = hypergraph;
+        this.nodes = [];
+        this.build();
+    }
+
+    get values() {
+        return this.nodes.map(node => node.value);
+    }
+
+    build() {
+        for (const i in this.data.children) {
+            this.nodes.push(new Node(this, i));
+        }
+    }
+
+    rename(input, index) {
+        this.data.children[index].value = input;
+    }
+
+    remove() {
+        this.hypergraph.remove(this);
+    }
+
+    insertAt(input, index) {
+        const data = { type: "text", value: input };
+        this.data.children.splice(index, 0, data);
+
+        const node = new Node(this, index);
+        this.nodes.splice(index, 0, node);
+    }
+
+    removeAt(index) {
+        this.data.children.splice(index, 1);
+        this.nodes.splice(index, 1);
+    }
+
+    static make(hyperedge) {
+        return {
+            type: "hyperedge",
+            children: hyperedge.map(symbol => {
+                return { type: "node", value: symbol }
+            })
+        };
+
+    }
+}
+
+
+export default class Hypergraph {
+    constructor(tree) {
+        this.tree = tree;
         this.hyperedges = [];
+        this.build();
+    }
+
+    build() {
+        const hyperedges = selectAll('hyperedge', this.tree);
+        for (const hyperedge of hyperedges) {
+            this.hyperedges.push(new Hyperedge(hyperedge, this));
+        }
+    }
+
+    add(symbols) {
+        if (!Array.isArray(symbols)) {
+            throw new Error("Expected an array of symbols");
+        }
+
+        const data = Hyperedge.make(symbols);
+
+        const paragraph = {
+            type: "paragraph",
+            children: [data]
+        }
+
+        this.tree.children.push(paragraph);
+        const hyperedge = new Hyperedge(data, this)
+        this.hyperedges.push(hyperedge);
+        return hyperedge;
+    }
+
+    remove(hyperedge) {
+
+        visitParents(this.tree, (node, ancestors) => {
+            if (node.type !== "hyperedge") return;
+            if (node.children !== hyperedge.data.children) return;
+            // console.log("ANCESTORS", ancestors);
+            const parent = ancestors[ancestors.length - 1];
+
+            const nodeIndex = parent.children.indexOf(node);
+            parent.children.splice(nodeIndex, 1);
+
+            if (parent.children.length === 0) {
+                // remove parent
+            } else {
+                if (parent.children[nodeIndex].type === "break") {
+                    parent.children.splice(nodeIndex, 1);
+                }
+            }
+
+            this.hyperedges.splice(this.hyperedges.indexOf(hyperedge), 1);
+        });
+
+        /*
+        visit(this.tree, function (node) {
+            if (node.type !== "paragraph") return false;
+
+            for (const child of node.children) {
+                if (child.type !== "hyperedge") continue;
+                if (child.children !== hyperedge.data.children) continue;
+                return true;
+                console.log("GOOD", child);
+            }
+
+            return false;
+        }, (node, index, parent) => {
+            console.log("REMOVING", node);
+        });
+        */
+
+        // console.log("REMOVING", hyperedge);
+        // const filter = {
+        //     type: "paragraph",
+        //     children: [hyperedge.data]
+        // }
+        // const paragraph = find(this.tree, filter);
+        // console.log("PARA", paragraph);
     }
 }
 

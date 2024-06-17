@@ -91,6 +91,7 @@ export default class Parser {
                         value: symbol.trim()
                     }
                 });
+                delete node.value;
             });
         }
     }

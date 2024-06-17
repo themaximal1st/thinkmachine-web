@@ -22,6 +22,11 @@ export default class GeneralSchematics {
         return this.parser.html();
     }
 
+    get hyperedges() {
+        return this.hypergraph.hyperedges;
+    }
+
+
     add(input) {
         if (typeof input === "string") {
             this.input += "\n\n" + input;
@@ -95,10 +100,6 @@ export default class GeneralSchematics {
         } else {
             this.addHypertext(symbol, text);
         }
-    }
-
-    get hyperedges() {
-        return this.parser.hyperedges;
     }
 
     parse() {
