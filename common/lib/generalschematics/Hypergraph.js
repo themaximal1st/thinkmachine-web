@@ -151,11 +151,10 @@ export default class Hypergraph {
             parent.children.splice(nodeIndex, 1);
 
             if (parent.children.length === 0) {
-                // remove parent
-            } else {
-                if (parent.children[nodeIndex].type === "break") {
-                    parent.children.splice(nodeIndex, 1);
-                }
+                const grandparent = ancestors[ancestors.length - 2];
+                grandparent.children.splice(ancestors[ancestors.length - 1], 1);
+            } else if (parent.children[nodeIndex].type === "break") {
+                parent.children.splice(nodeIndex, 1);
             }
 
             this.hyperedges.splice(this.hyperedges.indexOf(hyperedge), 1);

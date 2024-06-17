@@ -41,6 +41,7 @@ export default class Parser {
             .use(remarkBreaks)
             .use(remarkSectionize)
             .use(this.hyperedgeify.bind(this))
+            .use(this.hypertextify.bind(this))
 
         this.tree = processor.parse(this.input);
         processor.runSync(this.tree);
@@ -58,17 +59,6 @@ export default class Parser {
 
         const tree = processor.runSync(clonedTree);
         return processor.stringify(tree);
-
-        // .replace(/\\\n/, "\n") // hack: soft breaks...not clear how to force stringify to not escape them
-        // .trim()
-        // const processor = unified()
-        //     .use(remarkRehype)
-        //     .use(this.unhyperedgeify.bind(this))
-        //     .use(rehypeStringify)
-
-        // console.log("INSEPECT", inspect(this.tree))
-        // const hdast = processor.runSync(this.tree);
-        // return processor.stringify(hdast);
     }
 
     get hyperedges() {
@@ -77,6 +67,10 @@ export default class Parser {
 
     get nodes() {
         return selectAll('node', this.tree);
+    }
+
+    get symbols() {
+        return this.nodes.map(node => node.value);
     }
 
     hyperedgeify() {
@@ -114,10 +108,6 @@ export default class Parser {
                 const symbols = node.value.split(this.ARROW).map(symbol => symbol.trim());
                 for (const symbol of symbols) {
                     this.symbols.add(symbol);
-
-                    if (!this.hypertext.has(symbol)) {
-                        this.hypertext.set(symbol, []);
-                    }
                 }
 
                 this.hyperedges.push(symbols);
@@ -128,32 +118,31 @@ export default class Parser {
     hypertextify() {
         return (tree) => {
             visitParents(tree, 'text', (node, ancestors) => {
-                if (this.ARROW.test(node.value)) return;
-
                 const parent = ancestors[ancestors.length - 1];
-                const grandparent = ancestors[ancestors.length - 2];
-
-                if (parent.type === "heading" && grandparent.type === "section" && this.symbols.has(node.value)) {
-                    const symbol = node.value;
-                    visit(grandparent, 'text', (node, index, parent) => {
-                        if (parent.type === "heading") return;
-                        this.hypertext.get(symbol).push(node.value);
-                    });
-                    return;
-                }
+                if (parent.type === "heading") return;
+                node.type = "hypertext";
+                node.owners = [];
 
                 const tokens = this.tokenize(node.value);
                 for (const symbol of this.symbols) {
                     if (tokens.includes(symbol)) {
-                        this.hypertext.get(symbol).push(node.value);
+                        node.owners.push(symbol);
                     }
+                }
+
+                if (node.owners.length === 0) {
+                    node.owners.push("global");
                 }
             });
         }
     }
 
-    hypertextifySection(node, index, parent) {
-
+    unhypertextify() {
+        return (tree) => {
+            visit(tree, 'hypertext', (node, index, parent) => {
+                node.type = "text";
+            });
+        }
     }
 
     tokenize(text) {
@@ -176,12 +165,13 @@ export default class Parser {
         const tree = unified()
             .use(this.removeSections.bind(this))
             .use(this.unhyperedgeify.bind(this))
+            .use(this.unhypertextify.bind(this))
             .runSync(clonedTree)
 
         return unified()
             .use(remarkStringify)
             .stringify(tree)
-            .replace(/\\\n/, "\n") // hack: soft breaks...not clear how to force stringify to not escape them
+            .replace(/\\\n/g, "\n") // hack: soft breaks...not clear how to force stringify to not escape them
             .trim()
     }
 }

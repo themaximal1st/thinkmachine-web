@@ -150,13 +150,77 @@ test("remove hyperedge", async () => {
     DEF.remove();
     expect(schematic.hyperedges.length).toEqual(0);
     expect(schematic.export()).toEqual("");
-    // TODO: test empty tree!! should remove paragraph
 
-
+    console.log(inspect(schematic.tree))
+    expect(schematic.tree.children.length).toEqual(0);
 });
 
-// REMOVE HYPEREDGE + paragargraph if empty
+test("hypertextify global and local hypertext", async () => {
+    const schematic = new GeneralSchematics("A -> B -> C\n\nThis is global hypertext.\n\n# A\nThis is local hypertext for A");
 
+    const hypertexts = selectAll("hypertext", schematic.tree);
+    expect(hypertexts.length).toEqual(2);
+
+    const global = schematic.hypertext.global;
+    expect(global.length).toEqual(1);
+    expect(global[0].value).toEqual("This is global hypertext.");
+
+    const local = schematic.hypertext.get("A");
+    expect(local.length).toEqual(1);
+    expect(local[0].value).toEqual("This is local hypertext for A");
+});
+
+// TODO: Modify hypertext object...directly there....
+
+test.skip("add global hypertext", async () => {
+    const schematic = new GeneralSchematics();
+    schematic.hypertext.add("This is some hypertext")
+    expect(schematic.export()).toEqual("This is some hypertext");
+
+    expect(schematic.hypertext.size).toEqual(1);
+
+
+    console.log(inspect(schematic.tree));
+});
+
+// TODO: We want an object interface to hypertext...just like Hypergraph
+// TODO: Give every node a UUID
+
+test.skip("add node hypertext", async () => {
+    const schematic = new GeneralSchematics();
+    schematic.hypertext.add("A", "This is some hypertext")
+
+    expect(schematic.export()).toEqual("## A\nThis is some hypertext");
+
+    schematic.hypertext.add("A", "This is some more hypertext")
+    expect(schematic.export()).toEqual("## A\nThis is some hypertext\nThis is some more hypertext");
+});
+
+test.skip("add node hypertext", async () => {
+    const schematic = new GeneralSchematics();
+    schematic.hypertext.add("A", "This is some hypertext")
+    schematic.hypertext.add("This is some global hypertext");
+
+    const exported = schematic.export();
+    expect(exported).toEqual("## A\nThis is some hypertext\n\nThis is some global hypertext");
+    expect(schematic.hypertext.size).toEqual(2);
+
+
+    // const hypertext = schematic.hypertext.get("A");
+    // console.log(hypertext);
+
+
+    // schematic.hypertext.add("A", "This is some more hypertext")
+    // expect(schematic.export()).toEqual("## A\nThis is some hypertext\nThis is some more hypertext");
+});
+
+// TODO: easy interface for accessing / changing / deleting hypertext
+// TODO: Bug where adding symbol hypertext...then adding global hypertext gets added to symbol hypertext    ...should be ok with <section>?
+// TODO: Every node gets a UUID?
+
+
+// TODO: Add symbol specific hypertext
+// TODO: Add context specific hypertext
 
 
 // TODO: Add hypertext...
