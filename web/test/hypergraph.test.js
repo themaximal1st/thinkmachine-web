@@ -156,21 +156,6 @@ test("edge uuid", () => {
     expect(edge.uuid).toMatch(uuid);
 });
 
-test.skip("custom colors", () => {
-    const schematic = new GeneralSchematics([
-        ["A", "B", "C"],
-        ["L", "M", "N"],
-        ["X", "Y", "Z"],
-    ], {
-        colors: ["#000000"]
-    });
-
-    const data = schematic.graphData();
-    for (const node of data.nodes) {
-        expect(node.color).toBe("#000000");
-    }
-});
-
 test("empty schematic", () => {
     const schematic = new GeneralSchematics();
     expect(schematic.hyperedges).toEqual([]);
@@ -404,29 +389,6 @@ test("hyperedge has", () => {
     expect(edge.has(["A", "C"])).toBeFalsy();
 });
 
-test.skip("restore node position", () => {
-    const schematic = new GeneralSchematics([
-        ["A", "B", "C"],
-    ]);
-
-    let oldData = schematic.graphData();
-    oldData.nodes[0].x = 100;
-    oldData.nodes[0].y = 100;
-    oldData.nodes[0].z = 100;
-    oldData.nodes[0].vx = 100;
-    oldData.nodes[0].vy = 100;
-    oldData.nodes[0].vz = 100;
-
-    let newData = schematic.graphData(null, oldData);
-    expect(oldData.nodes[0].id).toBe(newData.nodes[0].id);
-    expect(newData.nodes[0].x).toBe(100);
-    expect(newData.nodes[0].y).toBe(100);
-    expect(newData.nodes[0].z).toBe(100);
-    expect(newData.nodes[0].vx).toBe(100);
-    expect(newData.nodes[0].vy).toBe(100);
-    expect(newData.nodes[0].vz).toBe(100);
-});
-
 test("insert node at index", () => {
     const schematic = new GeneralSchematics();
     const edge = schematic.add(["A", "B", "C"]);
@@ -554,26 +516,3 @@ test("connect nodes partial", () => {
     expect(schematic.hyperedges.length).toBe(3);
     expect(schematic.hyperedges[2].symbols).toEqual(["B", "1"]);
 });
-
-
-/*
-test.skip("huge", async () => {
-    const fs = require("fs");
-    const hyperedges = fs
-        .readFileSync("/Users/brad/Projects/loom/data/data.schematic", "utf-8")
-        .split("\n")
-        // .slice(0, 1800)
-        .map((line) => {
-            return line.split(" -> ");
-        });
-
-    const start = Date.now();
-    const schematic= new GeneralSchematics({ hyperedges, interwingle: GeneralSchematics.INTERWINGLE.BRIDGE });
-    // await schematic.sync();
-    const data = schematic.graphData();
-    const elapsed = Date.now() - start;
-    console.log("elapsed", elapsed);
-
-    // console.log(data);
-});
-*/

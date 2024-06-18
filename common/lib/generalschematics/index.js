@@ -139,6 +139,11 @@ export default class GeneralSchematics {
     reset() {
         this.input = "";
         this.tree = null;
+        this.hypergraph.reset();
+    }
+
+    graphData() {
+        return this.hypergraph.graphData(...arguments);
     }
 }
 

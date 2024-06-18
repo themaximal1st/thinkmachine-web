@@ -54,7 +54,7 @@ export default class Node {
     }
 
     get schematic() {
-        return this.schematic;
+        return this.hypergraph.schematic;
     }
 
     get hypertexts() {
@@ -100,6 +100,48 @@ export default class Node {
         ]
 
         return this.hypergraph.add(symbols);
+    }
+
+    updateGraphData(nodes, links) {
+        const node = this.hypergraph.masqueradeNode(this);
+        const indexes = this.updateIndexes(nodes, links);
+
+        nodes.set(node.id, {
+            id: node.id,
+            uuid: node.uuid,
+            name: node.symbol,
+            color: this.hyperedge.color,
+            ...indexes
+        });
+    }
+
+    updateIndexes(nodes) {
+        const node = this.hypergraph.masqueradeNode(this);
+
+        const existing = nodes.get(node.id);
+
+        const edgeIDs = existing ? existing.edgeIDs : new Set();
+        edgeIDs.add(this.hyperedge.id);
+        edgeIDs.add(node.hyperedge.id);
+
+        const edgeUUIDs = existing ? existing.edgeUUIDs : new Set();
+        edgeUUIDs.add(this.hyperedge.uuid);
+        edgeUUIDs.add(node.hyperedge.uuid);
+
+        const nodeIDs = existing ? existing.nodeIDs : new Set();
+        nodeIDs.add(this.id);
+        nodeIDs.add(node.id);
+
+        const nodeUUIDs = existing ? existing.nodeUUIDs : new Set();
+        nodeUUIDs.add(this.uuid);
+        nodeUUIDs.add(node.uuid);
+
+        return {
+            edgeIDs,
+            edgeUUIDs,
+            nodeIDs,
+            nodeUUIDs,
+        }
     }
 }
 
@@ -175,47 +217,7 @@ export default class Node {
         return this.slugs.includes(slugify(input.toLowerCase()));
     }
 
-    updateGraphData(nodes, links) {
-        const node = this.hypergraph.masqueradeNode(this);
-        const indexes = this.updateIndexes(nodes, links);
 
-        nodes.set(node.id, {
-            id: node.id,
-            uuid: node.uuid,
-            name: node.symbol,
-            color: this.hyperedge.color,
-            ...indexes
-        });
-    }
-
-    updateIndexes(nodes) {
-        const node = this.hypergraph.masqueradeNode(this);
-
-        const existing = nodes.get(node.id);
-
-        const edgeIDs = existing ? existing.edgeIDs : new Set();
-        edgeIDs.add(this.hyperedge.id);
-        edgeIDs.add(node.hyperedge.id);
-
-        const edgeUUIDs = existing ? existing.edgeUUIDs : new Set();
-        edgeUUIDs.add(this.hyperedge.uuid);
-        edgeUUIDs.add(node.hyperedge.uuid);
-
-        const nodeIDs = existing ? existing.nodeIDs : new Set();
-        nodeIDs.add(this.id);
-        nodeIDs.add(node.id);
-
-        const nodeUUIDs = existing ? existing.nodeUUIDs : new Set();
-        nodeUUIDs.add(this.uuid);
-        nodeUUIDs.add(node.uuid);
-
-        return {
-            edgeIDs,
-            edgeUUIDs,
-            nodeIDs,
-            nodeUUIDs,
-        }
-    }
 
     context(graphData) {
         const context = {

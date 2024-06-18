@@ -1,15 +1,15 @@
-import ThinkableType from "@lib/thinkabletype";
+import GeneralSchematics from "@lib/generalschematics";
 
 import { expect, test } from "vitest";
 
 // ISOLATED
 
 test("graph data (interwingle)", () => {
-    const thinkabletype = new ThinkableType([
+    const schematic = new GeneralSchematics([
         ["A", "B", "C"],
     ]);
 
-    const data = thinkabletype.graphData();
+    const data = schematic.graphData();
     expect(data.nodes.length).toBe(3);
     expect(data.nodes[0].id).toBe("0:A");
     expect(data.nodes[1].id).toBe("0:A.B");
@@ -21,11 +21,11 @@ test("graph data (interwingle)", () => {
 });
 
 test("single hyperedge (isolate)", () => {
-    const thinkabletype = new ThinkableType([["A", "B", "C"]]);
-    expect(thinkabletype).toBeInstanceOf(ThinkableType);
-    expect(thinkabletype.hyperedges[0].symbols).toEqual(["A", "B", "C"]);
+    const schematic = new GeneralSchematics([["A", "B", "C"]]);
+    expect(schematic).toBeInstanceOf(GeneralSchematics);
+    expect(schematic.hyperedges[0].symbols).toEqual(["A", "B", "C"]);
 
-    const data = thinkabletype.graphData();
+    const data = schematic.graphData();
     expect(data.nodes.length).toBe(3);
     expect(data.nodes[0].id).toBe("0:A");
     expect(data.nodes[1].id).toBe("0:A.B");
@@ -48,11 +48,11 @@ test("single hyperedge (isolate)", () => {
 // CONFLUENCE
 
 test("graph data (confluence)", () => {
-    const thinkabletype = new ThinkableType([
+    const schematic = new GeneralSchematics([
         ["A", "B", "C"],
-    ], { interwingle: ThinkableType.INTERWINGLE.CONFLUENCE });
+    ], { interwingle: GeneralSchematics.INTERWINGLE.CONFLUENCE });
 
-    const data = thinkabletype.graphData();
+    const data = schematic.graphData();
     expect(data.nodes.length).toBe(3);
     expect(data.nodes[0].id).toBe("A");
     expect(data.nodes[1].id).toBe("A.B");
@@ -64,11 +64,11 @@ test("graph data (confluence)", () => {
 });
 
 test("single hyperedge (confluence)", () => {
-    const thinkabletype = new ThinkableType([["A", "B", "C"]], { interwingle: ThinkableType.INTERWINGLE.CONFLUENCE });
-    expect(thinkabletype).toBeInstanceOf(ThinkableType);
-    expect(thinkabletype.hyperedges[0].symbols).toEqual(["A", "B", "C"]);
+    const schematic = new GeneralSchematics([["A", "B", "C"]], { interwingle: GeneralSchematics.INTERWINGLE.CONFLUENCE });
+    expect(schematic).toBeInstanceOf(GeneralSchematics);
+    expect(schematic.hyperedges[0].symbols).toEqual(["A", "B", "C"]);
 
-    const data = thinkabletype.graphData();
+    const data = schematic.graphData();
     expect(data.nodes.length).toBe(3);
     expect(data.nodes[0].id).toBe("A");
     expect(data.nodes[1].id).toBe("A.B");
@@ -87,17 +87,17 @@ test("single hyperedge (confluence)", () => {
 });
 
 test("multiple hyperedge (confluence)", () => {
-    const thinkabletype = new ThinkableType([
+    const schematic = new GeneralSchematics([
         ["A", "B", "C"],
         ["A", "1", "2"],
     ], {
-        interwingle: ThinkableType.INTERWINGLE.CONFLUENCE
+        interwingle: GeneralSchematics.INTERWINGLE.CONFLUENCE
     });
 
-    expect(thinkabletype).toBeInstanceOf(ThinkableType);
-    expect(thinkabletype.uniqueSymbols).toEqual(new Set(["A", "B", "C", "1", "2"]));
+    expect(schematic).toBeInstanceOf(GeneralSchematics);
+    expect(schematic.uniqueSymbols).toEqual(new Set(["A", "B", "C", "1", "2"]));
 
-    const data = thinkabletype.graphData();
+    const data = schematic.graphData();
     expect(data.nodes.length).toBe(5);
     expect(data.links.length).toBe(4);
 
@@ -121,16 +121,16 @@ test("fusion start", () => {
         ["C", "D", "E"]
     ];
 
-    const thinkabletype = new ThinkableType(hyperedges, {
-        interwingle: ThinkableType.INTERWINGLE.FUSION
+    const schematic = new GeneralSchematics(hyperedges, {
+        interwingle: GeneralSchematics.INTERWINGLE.FUSION
     });
 
-    expect(thinkabletype.hyperedges.length).toEqual(2);
+    expect(schematic.isFusion).toBeTruthy();
+    expect(schematic.hyperedges.length).toEqual(2);
 
-    const data = thinkabletype.graphData();
+    const data = schematic.graphData();
     expect(data.nodes.length).toBe(5); // C masquerades as A.B.C
     expect(data.links.length).toBe(4);
-
 
     expect(data.links[0].id).toBe("A->A.B");
     expect(data.links[1].id).toBe("A.B->A.B.C");
@@ -145,13 +145,13 @@ test("fusion end", () => {
         ["1", "2", "C"],
     ];
 
-    const thinkabletype = new ThinkableType(hyperedges, {
-        interwingle: ThinkableType.INTERWINGLE.FUSION
+    const schematic = new GeneralSchematics(hyperedges, {
+        interwingle: GeneralSchematics.INTERWINGLE.FUSION
     });
 
-    expect(thinkabletype.hyperedges.length).toEqual(2);
+    expect(schematic.hyperedges.length).toEqual(2);
 
-    const data = thinkabletype.graphData();
+    const data = schematic.graphData();
     expect(data.nodes.length).toBe(5); // C masquerades as A.B.C
     expect(data.links.length).toBe(4);
 
@@ -163,23 +163,23 @@ test("fusion end", () => {
 
 
 test("fusion no bridge", () => {
-    const thinkabletype = new ThinkableType({ interwingle: ThinkableType.INTERWINGLE.FUSION });
-    thinkabletype.add(["A", "B"]);
-    thinkabletype.add(["B", "C"]);
-    thinkabletype.add(["1", "B", "2"]);
-    thinkabletype.add(["3", "B", "4"]);
+    const schematic = new GeneralSchematics({ interwingle: GeneralSchematics.INTERWINGLE.FUSION });
+    schematic.add(["A", "B"]);
+    schematic.add(["B", "C"]);
+    schematic.add(["1", "B", "2"]);
+    schematic.add(["3", "B", "4"]);
 
-    const data = thinkabletype.graphData();
+    const data = schematic.graphData();
     expect(data.nodes.length).toBe(9);
     expect(data.links.length).toBe(10);
 });
 
 test("two-edge start bridge", () => {
-    const thinkabletype = new ThinkableType({ interwingle: ThinkableType.INTERWINGLE.FUSION });
-    thinkabletype.add(["1", "B", "2"]);
-    thinkabletype.add(["B", "C"]);
+    const schematic = new GeneralSchematics({ interwingle: GeneralSchematics.INTERWINGLE.FUSION });
+    schematic.add(["1", "B", "2"]);
+    schematic.add(["B", "C"]);
 
-    const data = thinkabletype.graphData();
+    const data = schematic.graphData();
 
     expect(data.nodes.length).toBe(4);
     expect(data.nodes[0].name).toBe("1");
@@ -193,155 +193,155 @@ test("two-edge start bridge", () => {
 });
 
 test("two-edge start fusion incoming", () => {
-    const thinkabletype = new ThinkableType({ interwingle: ThinkableType.INTERWINGLE.FUSION });
-    thinkabletype.add(["1", "B", "2"]);
-    thinkabletype.add(["A", "B"]);
+    const schematic = new GeneralSchematics({ interwingle: GeneralSchematics.INTERWINGLE.FUSION });
+    schematic.add(["1", "B", "2"]);
+    schematic.add(["A", "B"]);
 
-    const data = thinkabletype.graphData();
+    const data = schematic.graphData();
     expect(data.nodes.length).toBe(4);
     expect(data.links.length).toBe(3);
 });
 
 test("continuous fusion", () => {
-    const thinkabletype = new ThinkableType({ interwingle: ThinkableType.INTERWINGLE.FUSION });
-    thinkabletype.add(["A", "B"]);
-    thinkabletype.add(["B", "C"]);
-    thinkabletype.add(["C", "D"]);
-    thinkabletype.add(["D", "E"]);
+    const schematic = new GeneralSchematics({ interwingle: GeneralSchematics.INTERWINGLE.FUSION });
+    schematic.add(["A", "B"]);
+    schematic.add(["B", "C"]);
+    schematic.add(["C", "D"]);
+    schematic.add(["D", "E"]);
 
-    const data = thinkabletype.graphData();
+    const data = schematic.graphData();
     expect(data.nodes.length).toBe(5);
     expect(data.links.length).toBe(4);
 });
 
 test("two edge disconnected", () => {
-    const thinkabletype = new ThinkableType({
+    const schematic = new GeneralSchematics({
         hyperedges: [
             ["A", "B", "C"],
             ["B", "2"],
         ],
-        interwingle: ThinkableType.INTERWINGLE.FUSION
+        interwingle: GeneralSchematics.INTERWINGLE.FUSION
     });
 
-    const graphData = thinkabletype.graphData();
+    const graphData = schematic.graphData();
     expect(graphData.nodes.length).toBe(4);
     expect(graphData.links.length).toBe(3);
 });
 
 
 test("two edge start connection", () => {
-    const thinkabletype = new ThinkableType({
+    const schematic = new GeneralSchematics({
         hyperedges: [
             ["A", "B", "C"],
             ["1", "2", "3"],
             ["A", "1"],
         ],
-        interwingle: ThinkableType.INTERWINGLE.FUSION
+        interwingle: GeneralSchematics.INTERWINGLE.FUSION
     });
 
-    const graphData = thinkabletype.graphData();
+    const graphData = schematic.graphData();
     expect(graphData.nodes.length).toBe(6);
     expect(graphData.links.length).toBe(5);
 });
 
 test("two edge middle connection", () => {
-    const thinkabletype = new ThinkableType({
+    const schematic = new GeneralSchematics({
         hyperedges: [
             ["A", "B", "C"],
             ["1", "2", "3"],
             ["B", "2"],
         ],
-        interwingle: ThinkableType.INTERWINGLE.FUSION
+        interwingle: GeneralSchematics.INTERWINGLE.FUSION
     });
 
-    const graphData = thinkabletype.graphData();
+    const graphData = schematic.graphData();
     expect(graphData.nodes.length).toBe(6);
     expect(graphData.links.length).toBe(5);
 });
 
 test("two edge end connection", () => {
-    const thinkabletype = new ThinkableType({
+    const schematic = new GeneralSchematics({
         hyperedges: [
             ["A", "B", "C"],
             ["1", "2", "3"],
             ["C", "3"],
         ],
-        interwingle: ThinkableType.INTERWINGLE.FUSION
+        interwingle: GeneralSchematics.INTERWINGLE.FUSION
     });
 
-    const graphData = thinkabletype.graphData();
+    const graphData = schematic.graphData();
     expect(graphData.nodes.length).toBe(6);
     expect(graphData.links.length).toBe(5);
 });
 
 test("two edge multiple start connections", () => {
-    const thinkabletype = new ThinkableType({
+    const schematic = new GeneralSchematics({
         hyperedges: [
             ["A", "Y", "Z"],
             ["A", "B", "C"],
             ["1", "2", "3"],
             ["A", "1"],
         ],
-        interwingle: ThinkableType.INTERWINGLE.FUSION
+        interwingle: GeneralSchematics.INTERWINGLE.FUSION
     });
 
-    const graphData = thinkabletype.graphData();
+    const graphData = schematic.graphData();
     expect(graphData.nodes.length).toBe(8);
     expect(graphData.links.length).toBe(7); // would be 8 but A hits confluence node
 });
 
 test("two edge multiple middle connections", () => {
-    const thinkabletype = new ThinkableType({
+    const schematic = new GeneralSchematics({
         hyperedges: [
             ["X", "Y", "Z"],
             ["A", "Y", "C"],
             ["1", "2", "3"],
             ["Y", "1"],
         ],
-        interwingle: ThinkableType.INTERWINGLE.FUSION
+        interwingle: GeneralSchematics.INTERWINGLE.FUSION
     });
 
-    const graphData = thinkabletype.graphData();
+    const graphData = schematic.graphData();
     expect(graphData.nodes.length).toBe(9);
     expect(graphData.links.length).toBe(8);
 });
 
 test("two edge multiple end connections", () => {
-    const thinkabletype = new ThinkableType({
+    const schematic = new GeneralSchematics({
         hyperedges: [
             ["X", "Y", "Z"],
             ["A", "B", "Z"],
             ["1", "2", "3"],
             ["Z", "1"],
         ],
-        interwingle: ThinkableType.INTERWINGLE.FUSION
+        interwingle: GeneralSchematics.INTERWINGLE.FUSION
     });
 
-    const graphData = thinkabletype.graphData();
+    const graphData = schematic.graphData();
     expect(graphData.nodes.length).toBe(8);
     expect(graphData.links.length).toBe(7);
 });
 
 test("two edge close loop", () => {
-    const thinkabletype = new ThinkableType({
+    const schematic = new GeneralSchematics({
         hyperedges: [
             ["A", "B", "C"],
             ["A", "C"],
         ],
-        interwingle: ThinkableType.INTERWINGLE.FUSION
+        interwingle: GeneralSchematics.INTERWINGLE.FUSION
     });
 
-    const graphData = thinkabletype.graphData();
+    const graphData = schematic.graphData();
     expect(graphData.nodes.length).toBe(3);
     expect(graphData.links.length).toBe(3);
 });
 
 
 test("closed fusion loop", () => {
-    const thinkabletype = new ThinkableType({ interwingle: ThinkableType.INTERWINGLE.FUSION });
-    thinkabletype.add(["A", "B", "C", "A"]);
+    const schematic = new GeneralSchematics({ interwingle: GeneralSchematics.INTERWINGLE.FUSION });
+    schematic.add(["A", "B", "C", "A"]);
 
-    const data = thinkabletype.graphData();
+    const data = schematic.graphData();
 
     expect(data.nodes.length).toBe(3);
     expect(data.links.length).toBe(3);
@@ -349,11 +349,11 @@ test("closed fusion loop", () => {
 
 
 test("two two-edge connections", () => {
-    const thinkabletype = new ThinkableType({ interwingle: ThinkableType.INTERWINGLE.FUSION });
-    thinkabletype.add(["A", "B", "C"]);
-    thinkabletype.add(["D", "A"]);
+    const schematic = new GeneralSchematics({ interwingle: GeneralSchematics.INTERWINGLE.FUSION });
+    schematic.add(["A", "B", "C"]);
+    schematic.add(["D", "A"]);
 
-    const data = thinkabletype.graphData();
+    const data = schematic.graphData();
     expect(data.nodes.length).toBe(4);
     expect(data.links.length).toBe(3);
 });
@@ -366,14 +366,14 @@ test("bridge", () => {
         ["1", "vs", "2"],
     ];
 
-    const thinkabletype = new ThinkableType({
+    const schematic = new GeneralSchematics({
         hyperedges,
-        interwingle: ThinkableType.INTERWINGLE.BRIDGE
+        interwingle: GeneralSchematics.INTERWINGLE.BRIDGE
     });
 
-    expect(thinkabletype.hyperedges.length).toEqual(2);
+    expect(schematic.hyperedges.length).toEqual(2);
 
-    const data = thinkabletype.graphData();
+    const data = schematic.graphData();
     expect(data.nodes.length).toBe(7);
     expect(data.links.length).toBe(6);
 
@@ -386,76 +386,114 @@ test("bridge", () => {
 });
 
 test("single node edge", () => {
-    const thinkabletype = new ThinkableType({ interwingle: ThinkableType.INTERWINGLE.BRIDGE });
-    thinkabletype.add(["A"]);
-    const data = thinkabletype.graphData();
+    const schematic = new GeneralSchematics({ interwingle: GeneralSchematics.INTERWINGLE.BRIDGE });
+    schematic.add(["A"]);
+    const data = schematic.graphData();
     expect(data.nodes.length).toBe(1);
 });
 
 test("two-edge end bridge incoming", () => {
-    const thinkabletype = new ThinkableType({ interwingle: ThinkableType.INTERWINGLE.BRIDGE });
-    thinkabletype.add(["1", "B", "2"]);
-    thinkabletype.add(["A", "B"]);
+    const schematic = new GeneralSchematics({ interwingle: GeneralSchematics.INTERWINGLE.BRIDGE });
+    schematic.add(["1", "B", "2"]);
+    schematic.add(["A", "B"]);
 
-    const data = thinkabletype.graphData();
+    const data = schematic.graphData();
     expect(data.nodes.length).toBe(4);
     expect(data.links.length).toBe(3);
 });
 
 test("two-edge end bridge reverse order", () => {
-    const thinkabletype = new ThinkableType({ interwingle: ThinkableType.INTERWINGLE.BRIDGE });
-    thinkabletype.add(["A", "B"]);
-    thinkabletype.add(["1", "B", "2"]);
+    const schematic = new GeneralSchematics({ interwingle: GeneralSchematics.INTERWINGLE.BRIDGE });
+    schematic.add(["A", "B"]);
+    schematic.add(["1", "B", "2"]);
 
-    const data = thinkabletype.graphData();
+    const data = schematic.graphData();
     expect(data.nodes.length).toBe(4);
     expect(data.links.length).toBe(3);
 });
 
 test("two-edge fusion skip bridge", () => {
-    const thinkabletype = new ThinkableType({ interwingle: ThinkableType.INTERWINGLE.BRIDGE });
-    thinkabletype.add(["A", "B"]);
-    thinkabletype.add(["B", "C"]);
+    const schematic = new GeneralSchematics({ interwingle: GeneralSchematics.INTERWINGLE.BRIDGE });
+    schematic.add(["A", "B"]);
+    schematic.add(["B", "C"]);
 
-    const data = thinkabletype.graphData();
+    const data = schematic.graphData();
     expect(data.nodes.length).toBe(3);
     expect(data.links.length).toBe(2);
 });
 
 
 test("two-edge confluence skip fusion and bridge", () => {
-    const thinkabletype = new ThinkableType({ interwingle: ThinkableType.INTERWINGLE.BRIDGE });
-    thinkabletype.add(["A", "B"]);
-    thinkabletype.add(["B", "C"]);
-    thinkabletype.add(["B", "1", "2"]);
+    const schematic = new GeneralSchematics({ interwingle: GeneralSchematics.INTERWINGLE.BRIDGE });
+    schematic.add(["A", "B"]);
+    schematic.add(["B", "C"]);
+    schematic.add(["B", "1", "2"]);
 
-    const data = thinkabletype.graphData();
+    const data = schematic.graphData();
     expect(data.nodes.length).toBe(5);
     expect(data.links.length).toBe(4);
 });
 
 test("two-edge fusion bridge", () => {
-    const thinkabletype = new ThinkableType({ interwingle: ThinkableType.INTERWINGLE.BRIDGE });
-    thinkabletype.add(["A", "B"]);
-    thinkabletype.add(["B", "C"]);
-    thinkabletype.add(["1", "B", "2"]);
-    thinkabletype.add(["3", "B", "4"]);
+    const schematic = new GeneralSchematics({ interwingle: GeneralSchematics.INTERWINGLE.BRIDGE });
+    schematic.add(["A", "B"]);
+    schematic.add(["B", "C"]);
+    schematic.add(["1", "B", "2"]);
+    schematic.add(["3", "B", "4"]);
 
-    const data = thinkabletype.graphData();
+    const data = schematic.graphData();
     expect(data.nodes.length).toBe(10);
     expect(data.links.length).toBe(12);
 });
 
 test("two-edge fusion bridge regression", () => {
-    const thinkabletype = new ThinkableType({
+    const schematic = new GeneralSchematics({
         hyperedges: [
             ["A", "B"],
         ],
-        interwingle: ThinkableType.INTERWINGLE.FUSION
+        interwingle: GeneralSchematics.INTERWINGLE.FUSION
     });
 
-    const graphData = thinkabletype.graphData();
+    const graphData = schematic.graphData();
     expect(graphData.nodes.length).toBe(2);
     expect(graphData.links.length).toBe(1);
 });
 
+
+test("custom colors", () => {
+    const schematic = new GeneralSchematics([
+        ["A", "B", "C"],
+        ["L", "M", "N"],
+        ["X", "Y", "Z"],
+    ], {
+        colors: ["#000000"]
+    });
+
+    const data = schematic.graphData();
+    for (const node of data.nodes) {
+        expect(node.color).toBe("#000000");
+    }
+});
+
+test("restore node position", () => {
+    const schematic = new GeneralSchematics([
+        ["A", "B", "C"],
+    ]);
+
+    let oldData = schematic.graphData();
+    oldData.nodes[0].x = 100;
+    oldData.nodes[0].y = 100;
+    oldData.nodes[0].z = 100;
+    oldData.nodes[0].vx = 100;
+    oldData.nodes[0].vy = 100;
+    oldData.nodes[0].vz = 100;
+
+    let newData = schematic.graphData(null, oldData);
+    expect(oldData.nodes[0].id).toBe(newData.nodes[0].id);
+    expect(newData.nodes[0].x).toBe(100);
+    expect(newData.nodes[0].y).toBe(100);
+    expect(newData.nodes[0].z).toBe(100);
+    expect(newData.nodes[0].vx).toBe(100);
+    expect(newData.nodes[0].vy).toBe(100);
+    expect(newData.nodes[0].vz).toBe(100);
+});

@@ -48,8 +48,7 @@ export default class Hyperedge {
     }
 
     get color() {
-        return "red";
-        // return stringToColor(this.firstNode.symbol, this.hypergraph.colors);
+        return stringToColor(this.firstNode.symbol, this.schematic.colors);
     }
 
     get nodeIds() {
@@ -168,46 +167,6 @@ export default class Hyperedge {
         }
     }
 
-    static make(hyperedge) {
-        return {
-            type: "hyperedge",
-            children: hyperedge.map(symbol => {
-                return { type: "node", value: symbol }
-            })
-        };
-
-    }
-}
-/*
-import { v4 as uuidv4 } from 'uuid';
-
-import Node from './Node.js';
-import * as utils from './utils.js';
-
-export default class Hyperedge {
-    constructor(symbols = [], hypergraph) {
-        this.nodes = [];
-        this.hypergraph = hypergraph;
-        this.add(symbols);
-        this.uuid = uuidv4();
-    }
-
-    remove() {
-        this.hypergraph.hyperedges.splice(this.index, 1);
-        this.hypergraph.onUpdate({ event: "hyperedge.remove", data: this });
-    }
-
-    prev() {
-        if (this.index === 0) return null;
-        return this.hypergraph.hyperedges[this.index - 1];
-    }
-
-    next() {
-        if (this.index === this.hypergraph.hyperedges.length - 1) return null;
-        return this.hypergraph.hyperedges[this.index + 1];
-    }
-
-
     updateGraphData(nodes, links) {
         let parent = null;
 
@@ -220,14 +179,6 @@ export default class Hyperedge {
             }
 
             parent = node;
-        }
-    }
-
-    updateIndexes(nodes, links) {
-        if (!this.isFusionBridge) return;
-
-        for (const node of this.nodes) {
-            node.updateIndexes(nodes, links);
         }
     }
 
@@ -277,6 +228,58 @@ export default class Hyperedge {
 
         return link;
     }
+
+
+    updateIndexes(nodes, links) {
+        if (!this.isFusionBridge) return;
+
+        for (const node of this.nodes) {
+            node.updateIndexes(nodes, links);
+        }
+    }
+
+    static make(hyperedge) {
+        return {
+            type: "hyperedge",
+            children: hyperedge.map(symbol => {
+                return { type: "node", value: symbol }
+            })
+        };
+    }
+}
+/*
+import { v4 as uuidv4 } from 'uuid';
+
+import Node from './Node.js';
+import * as utils from './utils.js';
+
+export default class Hyperedge {
+    constructor(symbols = [], hypergraph) {
+        this.nodes = [];
+        this.hypergraph = hypergraph;
+        this.add(symbols);
+        this.uuid = uuidv4();
+    }
+
+    remove() {
+        this.hypergraph.hyperedges.splice(this.index, 1);
+        this.hypergraph.onUpdate({ event: "hyperedge.remove", data: this });
+    }
+
+    prev() {
+        if (this.index === 0) return null;
+        return this.hypergraph.hyperedges[this.index - 1];
+    }
+
+    next() {
+        if (this.index === this.hypergraph.hyperedges.length - 1) return null;
+        return this.hypergraph.hyperedges[this.index + 1];
+    }
+
+
+
+
+
 
     export() {
         return this.nodes.map(node => node.export())
