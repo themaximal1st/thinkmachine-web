@@ -1,6 +1,6 @@
 import { selectAll } from 'unist-util-select'
 import { visitParents } from 'unist-util-visit-parents'
-import { arrayContains, addIndex, setIndex, verifyGraphData, restoreData } from './utils.js';
+import { arrayContains, addIndex, setIndex, verifyGraphData, restoreData, trackUUID } from './utils.js';
 
 import Hyperedge from './Hyperedge.js';
 import Node from './Node.js';
@@ -305,7 +305,7 @@ export default class Hypergraph {
 Hypergraph.Hyperedge = Hyperedge;
 Hypergraph.Node = Node;
 Hypergraph.BridgeNode = BridgeNode;
-// Hypergraph.trackUUID = utils.trackUUID;
+Hypergraph.trackUUID = trackUUID;
 
 /*
 import Hyperedge from './Hyperedge.js';

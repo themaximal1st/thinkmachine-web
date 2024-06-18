@@ -148,3 +148,7 @@ export default class GeneralSchematics {
 }
 
 GeneralSchematics.Hypergraph = Hypergraph;
+GeneralSchematics.Hyperedge = Hypergraph.Hyperedge;
+GeneralSchematics.Node = Hypergraph.Node;
+GeneralSchematics.BridgeNode = Hypergraph.BridgeNode;
+GeneralSchematics.trackUUID = Hypergraph.trackUUID;
