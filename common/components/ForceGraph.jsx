@@ -163,7 +163,7 @@ export default class ForceGraph extends React.Component {
 
     handleResize() {
         this.setState({
-            width: window.innerWidth,
+            width: window.innerWidth - 600,
             height: window.innerHeight,
         });
     }

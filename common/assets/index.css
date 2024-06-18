@@ -87,6 +87,7 @@
 
 #interwingle {
     @apply absolute left-0 top-0 z-20 bottom-0 flex items-center justify-center gap-5 pr-8 flex-col-reverse pointer-events-none;
+    @apply hidden;
 }
 
 #interwingle button {
@@ -112,6 +113,7 @@
 
 #typer {
     @apply absolute top-0 z-10 left-0 right-0 flex flex-col items-center justify-center mt-2 gap-3;
+    @apply hidden;
 }
 
 #typer-toolbar {
@@ -416,15 +418,19 @@
     }
 
     .content {
-        @apply w-full h-full flex items-center justify-center py-8;
+        @apply w-full h-full flex items-center justify-center;
     }
 
     textarea {
-        @apply min-w-96 h-full max-w-3xl text-2xl p-4 rounded-xl outline-none bg-transparent text-black dark:text-white bg-gray-100/50 dark:bg-gray-1000/50 resize-none;
+        @apply min-w-[600px] h-full max-w-3xl text-2xl p-4 rounded-xl outline-none bg-transparent text-black dark:text-white bg-gray-100/50 dark:bg-gray-1000/50 resize-none;
     }
 }
-/*
-#editor {
 
+#force-graph {
+    /* @apply border-2 w-full max-w-max min-w-max w-full; */
+    /* @apply border-2 border-blue-500 w-full; */
 }
-    */
+
+canvas {
+    /* @apply max-h-[50%] max-w-[50%] border-2 aspect-square; */
+}

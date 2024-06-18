@@ -19,6 +19,9 @@ import Depth from "./Depth";
 import Filters from "./Filters";
 import ChatModal from "./ChatModal";
 
+// TODO: We have a UUID bug...if there's two nodes with same ID they're going to collide on same UUID
+// TODO: Try to minimize updates to the graph...can we avoid updating the graph if we're just updating hypertext?
+
 // TODO: WYSIWYG Editor
 // TODO: See if we can keep active node even while editing..sets foundation for node editing...restore uuids?
 // TODO: We kinda need a way to have multi-paragraph notes.. we're gonna have to hack around it...or just fix it somehow
@@ -181,12 +184,6 @@ export default class App extends React.Component {
                     toggleChatModal={this.toggleChatModal.bind(this)}
                 />
 
-                <Interwingle
-                    schematic={this.schematic}
-                    graphData={this.state.graphData}
-                    reloadData={this.reloadData.bind(this)}
-                />
-
                 <Filters
                     schematic={this.schematic}
                     setFilters={this.setFilters.bind(this)}
@@ -208,17 +205,25 @@ export default class App extends React.Component {
                         saveFile={this.saveFile.bind(this)}
                     />
 
-                    <ForceGraph
-                        schematic={this.schematic}
-                        trackedActiveNodeUUID={this.trackedActiveNodeUUID}
-                        activeNodeUUID={this.state.activeNodeUUID}
-                        setActiveNodeUUID={this.setActiveNodeUUID.bind(this)}
-                        filters={this.state.filters}
-                        setFilters={this.setFilters.bind(this)}
-                        graphData={this.state.graphData}
-                        reloadData={this.reloadData.bind(this)}
-                        save={this.save.bind(this)}
-                    />
+                    <div className="relative">
+                        <Interwingle
+                            schematic={this.schematic}
+                            graphData={this.state.graphData}
+                            reloadData={this.reloadData.bind(this)}
+                        />
+
+                        <ForceGraph
+                            schematic={this.schematic}
+                            trackedActiveNodeUUID={this.trackedActiveNodeUUID}
+                            activeNodeUUID={this.state.activeNodeUUID}
+                            setActiveNodeUUID={this.setActiveNodeUUID.bind(this)}
+                            filters={this.state.filters}
+                            setFilters={this.setFilters.bind(this)}
+                            graphData={this.state.graphData}
+                            reloadData={this.reloadData.bind(this)}
+                            save={this.save.bind(this)}
+                        />
+                    </div>
                 </div>
 
                 <ChatModal
