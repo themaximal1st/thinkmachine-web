@@ -95,6 +95,9 @@ export default class Hypergraph {
 
         const hyperedge = new Hyperedge(data, this)
         this.hyperedges.push(hyperedge);
+
+        this.schematic.onUpdate({ event: "hyperedge.add", data: hyperedge });
+
         return hyperedge;
     }
 
@@ -115,6 +118,7 @@ export default class Hypergraph {
             }
 
             this.hyperedges.splice(this.hyperedges.indexOf(hyperedge), 1);
+            this.schematic.onUpdate({ event: "hyperedge.remove", data: hyperedge });
         });
 
         this.update();
@@ -324,127 +328,3 @@ Hypergraph.Hyperedge = Hyperedge;
 Hypergraph.Node = Node;
 Hypergraph.BridgeNode = BridgeNode;
 Hypergraph.trackUUID = trackUUID;
-
-/*
-import Hyperedge from './Hyperedge.js';
-import Node from './Node.js';
-import BridgeNode from './BridgeNode.js';
-import Colors from "./colors.js";
-import * as utils from "./utils.js";
-import Parser from "./parser.js";
-
-export default class Hypergraph {
-    constructor(input, options = {}) {
-        let hyperedges;
-
-        if (Array.isArray(input)) {
-            hyperedges = input;
-        } else if (typeof input === "object") {
-            hyperedges = input.hyperedges || [];
-            delete input.hyperedges;
-            options = input;
-        } else {
-            hyperedges = [];
-        }
-
-
-        this.hyperedges = [];
-        this.add(hyperedges);
-    }
-
-    get onUpdate() { return this.options.onUpdate || function () { } }
-    set onUpdate(value) { this.options.onUpdate = value }
-    get nodes() {
-        const nodes = [];
-        for (const hyperedge of this.hyperedges) {
-            for (const node of hyperedge.nodes) {
-                nodes.push(node);
-            }
-        }
-        return nodes;
-    }
-    get symbols() {
-        return this.hyperedges.map(hyperedge => hyperedge.symbols);
-    }
-    get uniqueSymbols() {
-        return new Set(this.symbols.flat());
-    }
-    get hash() {
-        return utils.hash(this.export());
-    }
-
-    add(symbols) {
-        if (!Array.isArray(symbols)) throw new Error("Expected an array of symbols");
-        if (symbols.length === 0) return;
-        if (Array.isArray(symbols[0])) {
-            return symbols.map(symbols => this.add(symbols));
-        }
-
-        if (symbols[1] === "_meta") {
-            this.addMeta(symbols[0], symbols[2], symbols[3]);
-            return;
-        }
-
-        const hyperedge = new Hyperedge(symbols, this);
-        this.hyperedges.push(hyperedge);
-        this.onUpdate({ event: "hyperedge.add", data: hyperedge });
-        return hyperedge;
-    }
-
-    addMeta(symbol, key, value) {
-        // this.addMeta(symbols[0], symbols[2], JSON.parse(symbols[3]));
-        try {
-            value = JSON.parse(value);
-        } catch (e) {
-
-        }
-
-        let added = false;
-        for (const node of this.nodes) {
-            if (node.symbol === symbol) {
-                node.meta[key] = value;
-                added = true;
-            }
-        }
-
-        if (added) {
-            this.onUpdate({
-                event: "node.meta", data: {
-                    symbol, key, value
-                }
-            });
-        }
-    }
-
-
-
-    static parse(input, options = {}) {
-        const graph = new Hypergraph(options);
-        graph.parse(input, options);
-        return graph;
-    }
-
-    parse(input) {
-        const hyperedges = Parser.parseHypergraph(input);
-        this.add(hyperedges);
-    }
-
-
-
-
-
-
-
-
-    export() {
-        const hyperedges = this.hyperedges.map(hyperedge => hyperedge.export());
-        return hyperedges.map(hyperedge => hyperedge.join(" -> ")).join("\n");
-        // return csv.unparse(hyperedges, { header: false, quoteChar: "'" });
-    }
-}
-
-Hypergraph.Hyperedge = Hyperedge;
-Hypergraph.Node = Node;
-Hypergraph.BridgeNode = BridgeNode;
-Hypergraph.trackUUID = utils.trackUUID;
-*/

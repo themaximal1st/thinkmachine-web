@@ -13,6 +13,7 @@ export default class Hypertext {
     set value(value) {
         this.data.value = value;
         this.hypertexts.schematic.update();
+        this.schematic.onUpdate({ event: "hypertext.update", data: this });
     }
 
     get owners() {
@@ -23,16 +24,20 @@ export default class Hypertext {
         return this.hypertexts.schematic;
     }
 
-    delete() {
+    remove() {
         const owners = this.owners;
         visitParents(this.hypertexts.tree, (node, parents) => {
             if (node === this.data) {
                 const parent = parents[parents.length - 1];
                 const index = parent.children.indexOf(node);
                 parent.children.splice(index, 1);
+
+                const data = { value: this.value, owners };
+
+                this.schematic.onUpdate({ event: "hypertext.remove", data });
             }
         });
 
-        this.schematic.deleteEmptySections(owners);
+        this.schematic.removeEmptySections(owners);
     }
 }

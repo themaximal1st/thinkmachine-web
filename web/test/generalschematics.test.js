@@ -172,10 +172,10 @@ test("modify global hypertext", async () => {
     expect(schematic.export()).toEqual("This is new global hypertext");
 });
 
-test("delete global hypertext", async () => {
+test("remove global hypertext", async () => {
     const schematic = new GeneralSchematics("This is global hypertext");
     const [hypertext] = schematic.hypertexts.global;
-    hypertext.delete();
+    hypertext.remove();
     expect(schematic.export()).toEqual("");
 });
 
@@ -235,7 +235,7 @@ test("complex hypertext attaches to two symbols", async () => {
     expect(B.hypertexts[0].owners).toEqual(["A", "B"]);
 
     const hypertext = B.hypertexts[0];
-    hypertext.delete();
+    hypertext.remove();
     expect(B.hypertexts.length).toEqual(0);
     expect(A.hypertexts.length).toEqual(0);
     expect(schematic.export()).toEqual("A -> B -> C");
@@ -289,7 +289,7 @@ test("modifying hypertext", async () => {
     expect(B.hypertexts.length).toEqual(1);
     expect(C.hypertexts.length).toEqual(1);
 
-    hypertext.delete();
+    hypertext.remove();
     expect(A.hypertexts.length).toEqual(0);
     expect(B.hypertexts.length).toEqual(0);
     expect(C.hypertexts.length).toEqual(0);
@@ -332,7 +332,7 @@ test("hyperedges before hypertext", async () => {
     expect(B.hypertexts[0].owners).toEqual(["A", "B"]);
 
     const hypertext = B.hypertexts[0];
-    hypertext.delete();
+    hypertext.remove();
     expect(B.hypertexts.length).toEqual(0);
     expect(A.hypertexts.length).toEqual(0);
     expect(schematic.export()).toEqual("A -> B -> C");

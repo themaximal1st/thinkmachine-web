@@ -49,6 +49,8 @@ export default class GeneralSchematics {
         this.parse();
     }
 
+    get onUpdate() { return this.options.onUpdate || function () { } }
+    set onUpdate(value) { this.options.onUpdate = value }
     get interwingle() { return this.options.interwingle }
     set interwingle(value) { this.options.interwingle = value }
     get depth() { return this.options.depth }
@@ -90,7 +92,7 @@ export default class GeneralSchematics {
         this.parser.update(this.tree);
     }
 
-    deleteEmptySections(symbols = []) {
+    removeEmptySections(symbols = []) {
         if (!Array.isArray(symbols)) return;
         if (symbols.length === 0) return;
 

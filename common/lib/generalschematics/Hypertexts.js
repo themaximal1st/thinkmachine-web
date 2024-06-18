@@ -61,7 +61,11 @@ export default class Hypertexts {
 
         this.schematic.update();
 
-        return new Hypertext(data, this);
+        const hypertext = new Hypertext(data, this);
+
+        this.schematic.onUpdate({ event: "hypertext.add", data: hypertext });
+
+        return hypertext;
     }
 
     addLocal(symbol, input) {
@@ -71,9 +75,14 @@ export default class Hypertexts {
             paragraph.children.push({ type: "break" });
         }
 
-        paragraph.children.push({ type: "hypertext", value: input });
+        const data = { type: "hypertext", value: input };
+        const hypertext = new Hypertext(data, this);
+
+        paragraph.children.push(data);
 
         this.schematic.update();
+
+        this.schematic.onUpdate({ event: "hypertext.add", data: hypertext });
     }
 
     add(symbol, input = null) {

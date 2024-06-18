@@ -113,6 +113,7 @@ export default class Hyperedge {
     rename(input, index) {
         this.data.children[index].value = input;
         this.schematic.update();
+        this.schematic.onUpdate({ event: "node.rename", data: this.nodes[index] });
     }
 
     remove() {
@@ -141,13 +142,21 @@ export default class Hyperedge {
 
         this.updateNodeIndexes();
 
+        this.schematic.onUpdate({ event: "node.add", data: node });
+
         return node;
     }
 
     removeAt(index) {
+        const node = {
+            id: this.nodes[index].id,
+            data: this.nodes[index].data,
+        };
+
         this.data.children.splice(index, 1);
         this.nodes.splice(index, 1);
 
+        this.schematic.onUpdate({ event: "node.remove", data: node });
         this.updateNodeIndexes();
     }
 

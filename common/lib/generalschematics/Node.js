@@ -250,14 +250,6 @@ export default class Node {
         return this.hyperedge.nodes[this.index - 1];
     }
 
-    add(symbol) {
-        return this.hyperedge.addAtIndex(symbol, this.index + 1);
-    }
-
-    insert(symbol) {
-        return this.hyperedge.addAtIndex(symbol, this.index);
-    }
-
     get slugs() {
         return [
             slugify(this.symbol.toLowerCase()),
