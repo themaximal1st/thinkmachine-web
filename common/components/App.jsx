@@ -12,11 +12,18 @@ import Client from "@lib/Client";
 import ForceGraph from "./ForceGraph";
 import Interwingle from "./Interwingle";
 import Typer from "./Typer";
+import OldEditor from "./OldEditor";
 import Editor from "./Editor";
 import SettingsModal from "./SettingsModal";
 import Depth from "./Depth";
 import Filters from "./Filters";
 import ChatModal from "./ChatModal";
+
+// TODO: WYSIWYG Editor
+// TODO: See if we can keep active node even while editing..sets foundation for node editing...restore uuids?
+// TODO: We kinda need a way to have multi-paragraph notes.. we're gonna have to hack around it...or just fix it somehow
+//         look for double break? or something?
+// TODO: Fix CSS parser bug
 
 export default class App extends React.Component {
     constructor() {
@@ -87,6 +94,8 @@ export default class App extends React.Component {
     }
 
     async onDataUpdate(event) {
+        if (!this.state) return; // TODO: Why is this happening?
+
         if (this.state.isLoading) {
             return;
         }
@@ -146,7 +155,8 @@ export default class App extends React.Component {
 
     async saveFile() {
         const name = `${this.title} ${new Date().toISOString()}`;
-        utils.saveFile(this.schematic.export(), `${slugify(name)}.csv`);
+        this.schematic.debug();
+        utils.saveFile(this.schematic.export(), `${slugify(name)}.md`);
     }
 
     render() {
@@ -186,7 +196,6 @@ export default class App extends React.Component {
                     graphData={this.state.graphData}
                     reloadData={this.reloadData.bind(this)}
                 />
-
                 <Editor
                     schematic={this.schematic}
                     reset={this.reset.bind(this)}

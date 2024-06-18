@@ -86,6 +86,8 @@ export default class GeneralSchematics {
         this.update();
         this.hypertexts = new Hypertexts(this);
         this.hypergraph = new Hypergraph(this);
+
+        this.onUpdate({ event: "schematic.parse" });
     }
 
     update() {

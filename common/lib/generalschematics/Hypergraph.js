@@ -46,7 +46,7 @@ export default class Hypergraph {
 
         this.fusionIndex = new Map();
 
-        // this.onUpdate({ event: "hypergraph.reset" });
+        this.schematic.onUpdate({ event: "hypergraph.reset" });
     }
 
     update() {

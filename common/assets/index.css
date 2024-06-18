@@ -86,11 +86,11 @@
 }
 
 #interwingle {
-    @apply absolute left-0 top-0 z-30 bottom-0 flex items-center justify-center gap-5 pr-8 flex-col-reverse;
+    @apply absolute left-0 top-0 z-20 bottom-0 flex items-center justify-center gap-5 pr-8 flex-col-reverse pointer-events-none;
 }
 
 #interwingle button {
-    @apply p-2 opacity-40 bg-white/40 dark:bg-black focus:outline-none -ml-1;
+    @apply p-2 opacity-40 bg-white/40 dark:bg-black focus:outline-none -ml-1 pointer-events-auto;
 
     &:hover {
         @apply opacity-100;
@@ -148,8 +148,8 @@
     @apply bg-gray-50/90 dark:bg-gray-1000/90 absolute inset-0 z-20;
 }
 
-#editor-icon {
-    @apply absolute z-10 text-black dark:text-white w-10 h-10 ml-2 pl-1 cursor-pointer mt-2;
+#old-editor-icon {
+    @apply absolute z-40 text-black dark:text-white w-10 h-10 ml-2 pl-1 cursor-pointer mt-2;
 
     @apply opacity-40 bg-white dark:bg-black focus:outline-none;
     &:hover {
@@ -157,45 +157,45 @@
     }
 
     &.close {
-        @apply bg-transparent;
+        @apply bg-transparent pointer-events-auto;
     }
 }
 
-#editor-tooltip {
+#old-editor-tooltip {
     @apply absolute top-5 w-32 left-[58px];
 }
 
-#editor-content {
+#old-editor-content {
     @apply w-full h-full flex flex-col gap-2 overflow-scroll items-start p-10 px-20;
 }
 
-#editor-content .hyperedge {
+#old-editor-content .hyperedge {
     @apply flex items-center gap-2;
 }
 
-#editor-content .node {
+#old-editor-content .node {
     @apply w-48 relative;
 }
-#editor-content .node input {
+#old-editor-content .node input {
     @apply bg-gray-100/50 dark:bg-gray-900/50 w-full px-3 py-1 text-gray-500 dark:text-white rounded-xl outline-none truncate;
     &:focus {
         @apply bg-gray-200/40 dark:bg-gray-900/80 pr-8;
     }
 }
 
-#editor-content .delete-node {
+#old-editor-content .delete-node {
     @apply absolute right-0 p-1 pr-2 mt-[3px] outline-none;
 }
 
-#editor-content textarea {
+#old-editor-content textarea {
     @apply bg-gray-100/60 dark:bg-gray-900/50 max-w-xl h-full max-h-64 w-full px-3 py-1 text-white rounded-xl outline-none;
 }
 
-#editor-toolbar {
+#old-editor-toolbar {
     @apply flex items-center gap-4;
 }
 
-#editor-toolbar button {
+#old-editor-toolbar button {
     @apply flex items-center gap-1 text-gray-600 dark:text-gray-300 border-gray-300 border py-2 px-4 rounded-full uppercase tracking-widest text-xs mb-4 outline-none;
 
     &:hover {
@@ -203,12 +203,41 @@
     }
 }
 
-#editor-add-symbol,
-#editor-add-hyperedge {
+#old-editor-add-symbol,
+#old-editor-add-hyperedge {
     @apply bg-gray-100 dark:bg-gray-900/50 px-3 py-1 text-gray-700 dark:text-white rounded-xl outline-none flex items-center gap-1 opacity-50;
 
     &:hover {
         @apply opacity-100;
+    }
+}
+
+#editor-button {
+    button {
+        @apply absolute z-40 text-black dark:text-white w-10 h-10 ml-2 pl-1 cursor-pointer mt-2;
+
+        @apply opacity-40 bg-white dark:bg-black focus:outline-none;
+        &:hover {
+            @apply opacity-100;
+        }
+
+        &.close {
+            @apply bg-transparent pointer-events-auto;
+        }
+    }
+
+    .tooltip {
+        @apply absolute top-5 w-32 left-[58px];
+    }
+}
+
+#editor {
+    .content {
+        @apply w-full h-full flex items-center justify-center py-8;
+    }
+
+    textarea {
+        @apply w-full h-full max-w-3xl text-2xl p-4 rounded-xl outline-none bg-transparent text-black dark:text-white bg-gray-100/50 dark:bg-gray-1000/50 resize-none;
     }
 }
 
@@ -451,25 +480,5 @@
 
     input[type="submit"] {
         @apply bg-gray-100 dark:bg-gray-900/50 px-3 py-2 text-gray-700 dark:text-white rounded-xl outline-none cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-800;
-    }
-}
-
-#outliner {
-    @apply bg-gray-50 dark:bg-black absolute inset-0 z-20 text-black dark:text-white py-8;
-
-    .inner {
-        @apply max-w-3xl mx-auto h-full p-4 bg-gray-100/80 dark:bg-gray-1000/80 rounded-lg shadow-lg;
-    }
-
-    .indent-0 {
-        @apply pl-0;
-    }
-
-    .indent-1 {
-        @apply pl-4;
-    }
-
-    .indent-2 {
-        @apply pl-8;
     }
 }

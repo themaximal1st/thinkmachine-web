@@ -3,7 +3,13 @@ import Markdown from "react-markdown";
 
 export default class NotesPanel extends Component {
     code() {
-        const notes = "These are some notes";
+        let notes = "";
+
+        const hypertexts = this.props.schematic.hypertexts.get(this.node.value);
+        if (hypertexts) {
+            notes = hypertexts.map((hypertext) => hypertext.value).join("\n");
+        }
+
         return (
             <div id="notes">
                 <div className="max-h-36 overflow-y-scroll flex flex-col-reverse">
