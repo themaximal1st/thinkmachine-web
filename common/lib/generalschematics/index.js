@@ -145,6 +145,11 @@ export default class GeneralSchematics {
     graphData() {
         return this.hypergraph.graphData(...arguments);
     }
+
+    filter() {
+        return this.hypergraph.filter(...arguments);
+    }
+
 }
 
 GeneralSchematics.Hypergraph = Hypergraph;

@@ -1,6 +1,7 @@
 import { selectAll } from 'unist-util-select'
 import { visitParents } from 'unist-util-visit-parents'
 import { arrayContains, addIndex, setIndex, verifyGraphData, restoreData, trackUUID } from './utils.js';
+import FilterGraph from "./FilterGraph.js";
 
 import Hyperedge from './Hyperedge.js';
 import Node from './Node.js';
@@ -170,7 +171,7 @@ export default class Hypergraph {
                 filter,
                 hyperedges: this.hyperedges,
                 graphData: { nodes, links },
-                depth: this.depth
+                depth: this.schematic.depth
             });
         }
 
@@ -300,6 +301,23 @@ export default class Hypergraph {
 
     }
 
+    filter(symbols) {
+        if (symbols.length === 0) return [];
+        if (!Array.isArray(symbols[0])) {
+            symbols = [symbols];
+        }
+
+        return this.hyperedges.filter(hyperedge => {
+            for (const symbol of symbols) {
+                if (hyperedge.has(symbol)) {
+                    return true;
+                }
+            }
+
+            return false;
+        });
+    }
+
 }
 
 Hypergraph.Hyperedge = Hyperedge;
@@ -313,7 +331,6 @@ import Node from './Node.js';
 import BridgeNode from './BridgeNode.js';
 import Colors from "./colors.js";
 import * as utils from "./utils.js";
-import FilterGraph from "./FilterGraph.js";
 import Parser from "./parser.js";
 
 export default class Hypergraph {
@@ -399,22 +416,7 @@ export default class Hypergraph {
         }
     }
 
-    filter(symbols) {
-        if (symbols.length === 0) return [];
-        if (!Array.isArray(symbols[0])) {
-            symbols = [symbols];
-        }
 
-        return this.hyperedges.filter(hyperedge => {
-            for (const symbol of symbols) {
-                if (hyperedge.has(symbol)) {
-                    return true;
-                }
-            }
-
-            return false;
-        });
-    }
 
     static parse(input, options = {}) {
         const graph = new Hypergraph(options);

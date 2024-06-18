@@ -1,8 +1,7 @@
 import GeneralSchematics from "@lib/generalschematics"
 const Hyperedge = GeneralSchematics.Hypergraph.Hyperedge;
 
-import { inspect } from "unist-util-inspect"
-import { expect, test, beforeAll } from "vitest";
+import { expect, test } from "vitest";
 
 test("parse interwingle isolated", async () => {
     const schematic = new GeneralSchematics("A -> B -> C");
