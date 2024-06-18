@@ -380,6 +380,18 @@ test("hypertext import modify export import", async () => {
     expect(schematic2.hypertexts.get("A")[1].value).toEqual("Modified with C");
 });
 
+test("parse keeps uuids", async () => {
+    const schematic = new GeneralSchematics("A -> B -> C");
+    const uuids = schematic.hyperedges[0].nodes.map(node => node.uuid);
+    const edgeUUID = schematic.hyperedges[0].uuid;
+    expect(uuids.length).toEqual(3);
+
+    schematic.parse("A -> B -> C");
+    const nuuids = schematic.hyperedges[0].nodes.map(node => node.uuid);
+    expect(nuuids).toEqual(uuids);
+    expect(schematic.hyperedges[0].uuid).toEqual(edgeUUID);
+});
+
 // TODO: Add hypertext in different contexts
 // 1 -> B
 // A -> B

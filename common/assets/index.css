@@ -144,42 +144,6 @@
     }
 }
 
-#editor {
-    /* @apply bg-gray-50/90 dark:bg-gray-1000/90 absolute inset-0 z-20; */
-    /* @apply absolute z-20 w-5/12 top-0 bottom-0 right-0; */
-}
-
-/*
-#editor-button {
-    button {
-        @apply absolute z-40 text-black dark:text-white w-10 h-10 ml-2 pl-1 cursor-pointer mt-2 right-1;
-
-        @apply opacity-40 bg-white dark:bg-black focus:outline-none;
-        &:hover {
-            @apply opacity-100;
-        }
-
-        &.close {
-            @apply bg-transparent pointer-events-auto;
-        }
-    }
-
-    .tooltip {
-        @apply absolute top-5 w-32 left-[58px];
-    }
-}
-
-#editor {
-    .content {
-        @apply w-full h-full flex items-center justify-center py-8;
-    }
-
-    textarea {
-        @apply w-full h-full max-w-3xl text-2xl p-4 rounded-xl outline-none bg-transparent text-black dark:text-white bg-gray-100/50 dark:bg-gray-1000/50 resize-none;
-    }
-}
-    */
-
 #depth-slider {
     @apply bg-gray-400 rotate-180 h-96 w-3 appearance-none opacity-60 hover:opacity-100 transition-all rounded-full pointer-events-auto;
     writing-mode: vertical-lr;
@@ -423,5 +387,44 @@
 }
 
 #workspace {
-    @apply border-2 flex;
+    @apply flex flex-row w-full;
 }
+
+#editor-button {
+    button {
+        @apply absolute z-40 text-black dark:text-white w-10 h-10 ml-2 pl-1 cursor-pointer mt-2;
+        @apply opacity-40 bg-white dark:bg-black focus:outline-none;
+        &:hover {
+            @apply opacity-100;
+        }
+    }
+
+    .tooltip {
+        @apply absolute top-5 w-32 left-[58px];
+    }
+}
+
+#editor {
+    @apply bg-gray-50 dark:bg-black max-w-max w-full;
+
+    .close-icon {
+        @apply absolute top-2 right-2 z-40 text-black dark:text-white w-10 h-10 ml-2 pl-1 cursor-pointer mt-2;
+        @apply opacity-40 bg-white dark:bg-black focus:outline-none;
+        &:hover {
+            @apply opacity-100;
+        }
+    }
+
+    .content {
+        @apply w-full h-full flex items-center justify-center py-8;
+    }
+
+    textarea {
+        @apply min-w-96 h-full max-w-3xl text-2xl p-4 rounded-xl outline-none bg-transparent text-black dark:text-white bg-gray-100/50 dark:bg-gray-1000/50 resize-none;
+    }
+}
+/*
+#editor {
+
+}
+    */

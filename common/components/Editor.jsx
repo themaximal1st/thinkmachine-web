@@ -38,7 +38,7 @@ export default class Editor extends React.Component {
     }
 
     handleTextareaChange(event) {
-        console.log("CHANGED TEXT AREA", event.target.value);
+        // console.log("CHANGED TEXT AREA", event.target.value);
         this.props.schematic.parse(event.target.value);
     }
 
@@ -56,7 +56,7 @@ export default class Editor extends React.Component {
 
         return (
             <div id="editor">
-                <div className="relative group" id="editor-button">
+                <div className="relative group close-icon">
                     <button onClick={() => this.setState({ show: false })}>
                         {Icons.CloseIcon(8)}
                     </button>

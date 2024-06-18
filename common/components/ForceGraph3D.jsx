@@ -108,7 +108,10 @@ export default class ForceGraph3D extends React.Component {
             return null;
         }
 
+        console.log("UUID", this.props.activeNodeUUID);
         const node = this.props.schematic.nodeByUUID(this.props.activeNodeUUID);
+        console.log("NODE", node);
+        console.log("GRAPH DATA", this.props.graphData);
 
         return node.context(this.props.graphData);
     }

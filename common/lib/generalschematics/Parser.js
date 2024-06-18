@@ -13,6 +13,7 @@ import { visitParents } from 'unist-util-visit-parents'
 import remarkStringify from 'remark-stringify'
 import { inspect } from "unist-util-inspect"
 import { selectAll } from 'unist-util-select'
+import { find } from 'unist-util-find'
 
 export default class Parser {
     ARROW = /-+>/;
@@ -20,9 +21,12 @@ export default class Parser {
     constructor(input = "") {
         this.input = input;
         this.tree = null;
+        this.lastTree = null;
     }
 
     parse() {
+        this.lastTree = this.tree;
+
         const processor = unified()
             .use(remarkParse)
             .use(remarkFrontmatter, ['yaml', 'toml'])
@@ -38,8 +42,6 @@ export default class Parser {
     }
 
     html() {
-        const clonedTree = JSON.parse(JSON.stringify(this.tree));
-
         const processor = unified()
             .use(this.removeSections.bind(this))
             .use(this.unhyperedgeify.bind(this))
@@ -47,7 +49,7 @@ export default class Parser {
             .use(rehypeSanitize)
             .use(rehypeStringify)
 
-        const tree = processor.runSync(clonedTree);
+        const tree = processor.runSync(this.tree);
         return processor.stringify(tree);
     }
 
@@ -72,15 +74,37 @@ export default class Parser {
                 const symbols = this.stringToHyperedge(node.value);
 
                 node.type = "hyperedge";
+                node.uuid = this.edgeUUIDFromLastTree(symbols);
+
                 node.children = symbols.map(symbol => {
                     return {
                         type: "node",
-                        value: symbol.trim()
+                        value: symbol.trim(),
+                        uuid: this.nodeUUIDFromLastTree(symbol),
                     }
                 });
                 delete node.value;
             });
         }
+    }
+
+    nodeUUIDFromLastTree(symbol) {
+        if (!this.lastTree) return null;
+        const node = find(this.lastTree, { type: "node", value: symbol });
+        if (!node) return null;
+        return node.uuid;
+    }
+
+    edgeUUIDFromLastTree(symbols) {
+        if (!this.lastTree) return null;
+        const children = symbols.map(symbol => {
+            return { type: "node", value: symbol }
+        });
+
+        const edge = find(this.lastTree, { type: "hyperedge", children });
+        if (!edge) return null;
+
+        return edge.uuid;
     }
 
     unhyperedgeify() {
