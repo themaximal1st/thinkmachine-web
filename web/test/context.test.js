@@ -1,15 +1,15 @@
-import ThinkableType from "@lib/thinkabletype";
+import GeneralSchematics from "@lib/generalschematics"
 
 import { expect, test } from "vitest";
 
 // Get context across the hypergraph, useful for navigating with keyboard or UI and exposing relationships
 
 test("simple isolated hyperedge", () => {
-    const thinkabletype = new ThinkableType();
-    const edge = thinkabletype.add(["A", "B", "C"]);
+    const schematic = new GeneralSchematics();
+    const edge = schematic.add(["A", "B", "C"]);
     const [A, B, C] = edge.nodes;
 
-    const data = thinkabletype.graphData();
+    const data = schematic.graphData();
 
     let context;
     context = A.context(data);
@@ -26,15 +26,15 @@ test("simple isolated hyperedge", () => {
 });
 
 test("simple fusion hyperedge", () => {
-    const thinkabletype = new ThinkableType({
-        interwingle: ThinkableType.INTERWINGLE.FUSION
+    const schematic = new GeneralSchematics({
+        interwingle: GeneralSchematics.INTERWINGLE.FUSION
     });
-    const edge1 = thinkabletype.add(["A", "B", "C"]);
+    const edge1 = schematic.add(["A", "B", "C"]);
     const [A, B, C] = edge1.nodes;
-    const edge2 = thinkabletype.add(["C", "D", "E"]);
+    const edge2 = schematic.add(["C", "D", "E"]);
     const [C2, D, E] = edge2.nodes;
 
-    const data = thinkabletype.graphData();
+    const data = schematic.graphData();
     let context;
 
     context = A.context(data);
@@ -59,15 +59,15 @@ test("simple fusion hyperedge", () => {
 });
 
 test("simple confluence hyperedge", () => {
-    const thinkabletype = new ThinkableType({
-        interwingle: ThinkableType.INTERWINGLE.CONFLUENCE
+    const schematic = new GeneralSchematics({
+        interwingle: GeneralSchematics.INTERWINGLE.CONFLUENCE
     });
-    const edge1 = thinkabletype.add(["A", "B", "C"]);
+    const edge1 = schematic.add(["A", "B", "C"]);
     const [A, B, C] = edge1.nodes;
-    const edge2 = thinkabletype.add(["A", "1", "2"]);
+    const edge2 = schematic.add(["A", "1", "2"]);
     const [A2, One, Two] = edge2.nodes;
 
-    const data = thinkabletype.graphData();
+    const data = schematic.graphData();
     let context;
 
     context = A.context(data);
@@ -88,15 +88,15 @@ test("simple confluence hyperedge", () => {
 });
 
 test("simple confluence hyperedge", () => {
-    const thinkabletype = new ThinkableType({
-        interwingle: ThinkableType.INTERWINGLE.BRIDGE
+    const schematic = new GeneralSchematics({
+        interwingle: GeneralSchematics.INTERWINGLE.BRIDGE
     });
-    const edge1 = thinkabletype.add(["A", "vs", "B"]);
+    const edge1 = schematic.add(["A", "vs", "B"]);
     const [A, vs1, B] = edge1.nodes;
-    const edge2 = thinkabletype.add(["1", "vs", "2"]);
+    const edge2 = schematic.add(["1", "vs", "2"]);
     const [One, vs2, Two] = edge2.nodes;
 
-    const data = thinkabletype.graphData();
+    const data = schematic.graphData();
     let context;
 
     context = A.context(data);
@@ -126,33 +126,33 @@ test("simple confluence hyperedge", () => {
 
 
 test("fusion bridge context regression", () => {
-    const thinkabletype = new ThinkableType({
-        interwingle: ThinkableType.INTERWINGLE.FUSION
+    const schematic = new GeneralSchematics({
+        interwingle: GeneralSchematics.INTERWINGLE.FUSION
     });
 
-    const edge1 = thinkabletype.add(["A", "B"]);
+    const edge1 = schematic.add(["A", "B"]);
     const [A1, B] = edge1.nodes;
-    const edge2 = thinkabletype.add(["A", "1"]);
+    const edge2 = schematic.add(["A", "1"]);
     const [A2, One] = edge2.nodes;
 
-    const data = thinkabletype.graphData();
+    const data = schematic.graphData();
 
     expect(data.nodes[1].nodeUUIDs.has(A2.uuid)).toBe(true);
     expect(data.nodes[1].nodeUUIDs.has(A1.uuid)).toBe(true);
 });
 
 test("stacked no context (interwingle)", () => {
-    const thinkabletype = new ThinkableType([
+    const schematic = new GeneralSchematics([
         ["A", "B", "C"],
         ["A", "X", "Y"]
     ]);
 
-    const edge1 = thinkabletype.hyperedges[0];
+    const edge1 = schematic.hyperedges[0];
     const [A1, B, C] = edge1.nodes;
-    const edge2 = thinkabletype.hyperedges[1];
+    const edge2 = schematic.hyperedges[1];
     const [A2, X, Y] = edge2.nodes;
 
-    const data = thinkabletype.graphData();
+    const data = schematic.graphData();
 
     let context = A1.context(data);
     expect(context.stack.length).toBe(1);
@@ -160,19 +160,19 @@ test("stacked no context (interwingle)", () => {
 });
 
 test("stacked context (fusion)", () => {
-    const thinkabletype = new ThinkableType([
+    const schematic = new GeneralSchematics([
         ["A", "B", "C"],
         ["A", "X", "Y"]
     ], {
-        interwingle: ThinkableType.INTERWINGLE.FUSION
+        interwingle: GeneralSchematics.INTERWINGLE.FUSION
     });
 
-    const edge1 = thinkabletype.hyperedges[0];
+    const edge1 = schematic.hyperedges[0];
     const [A1, B, C] = edge1.nodes;
-    const edge2 = thinkabletype.hyperedges[1];
+    const edge2 = schematic.hyperedges[1];
     const [A2, X, Y] = edge2.nodes;
 
-    const data = thinkabletype.graphData();
+    const data = schematic.graphData();
 
     let context;
     context = A1.context(data);
@@ -188,19 +188,19 @@ test("stacked context (fusion)", () => {
 });
 
 test("stacked context order", () => {
-    const thinkabletype = new ThinkableType([
+    const schematic = new GeneralSchematics([
         ["A", "B", "C"],
         ["A", "X", "Y"]
     ], {
-        interwingle: ThinkableType.INTERWINGLE.FUSION
+        interwingle: GeneralSchematics.INTERWINGLE.FUSION
     });
 
-    const edge1 = thinkabletype.hyperedges[0];
+    const edge1 = schematic.hyperedges[0];
     const [A1, B, C] = edge1.nodes;
-    const edge2 = thinkabletype.hyperedges[1];
+    const edge2 = schematic.hyperedges[1];
     const [A2, X, Y] = edge2.nodes;
 
-    const data = thinkabletype.graphData();
+    const data = schematic.graphData();
 
     const context = A1.context(data);
     const nextEdges = context.next.map(node => node.hyperedge.uuid);

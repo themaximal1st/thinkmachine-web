@@ -143,6 +143,59 @@ export default class Node {
             nodeUUIDs,
         }
     }
+
+    context(graphData) {
+        const context = {
+            prev: [],
+            next: [],
+            stack: [],
+        };
+
+        const next = (id) => {
+            context.next.push(this.hypergraph.nodeByID(id));
+        }
+
+        const prev = (id) => {
+            context.prev.push(this.hypergraph.nodeByID(id));
+        }
+
+        const stack = (uuid) => {
+            context.stack.push(this.hypergraph.nodeByUUID(uuid));
+        }
+
+        for (const link of graphData.links) {
+            // force 3d graph modifies graphData...kinda crummy, would be better to store graphData internally rather than passing it around
+            let source = link.source.id || link.source;
+            let target = link.target.id || link.target;
+
+            if (source === this.id) {
+                if (link.bridge) {
+                    for (const nodeId of link.nodeIDs) {
+                        if (nodeId !== this.id) { next(nodeId) }
+                    }
+                } else {
+                    next(target);
+                }
+            } else if (target === this.id) {
+                if (link.bridge) {
+                    for (const nodeId of link.nodeIDs) {
+                        if (nodeId !== this.id) { prev(nodeId) }
+                    }
+                } else {
+                    prev(source);
+                }
+            }
+        }
+
+        for (const node of graphData.nodes) {
+            if (!node.nodeUUIDs.has(this.uuid)) continue;
+            for (const uuid of node.nodeUUIDs) {
+                stack(uuid);
+            }
+        }
+
+        return context;
+    }
 }
 
 /*
@@ -219,58 +272,7 @@ export default class Node {
 
 
 
-    context(graphData) {
-        const context = {
-            prev: [],
-            next: [],
-            stack: [],
-        };
 
-        const next = (id) => {
-            context.next.push(this.hypergraph.nodeByID(id));
-        }
-
-        const prev = (id) => {
-            context.prev.push(this.hypergraph.nodeByID(id));
-        }
-
-        const stack = (uuid) => {
-            context.stack.push(this.hypergraph.nodeByUUID(uuid));
-        }
-
-        for (const link of graphData.links) {
-            // force 3d graph modifies graphData...kinda crummy, would be better to store graphData internally rather than passing it around
-            let source = link.source.id || link.source;
-            let target = link.target.id || link.target;
-
-            if (source === this.id) {
-                if (link.bridge) {
-                    for (const nodeId of link.nodeIDs) {
-                        if (nodeId !== this.id) { next(nodeId) }
-                    }
-                } else {
-                    next(target);
-                }
-            } else if (target === this.id) {
-                if (link.bridge) {
-                    for (const nodeId of link.nodeIDs) {
-                        if (nodeId !== this.id) { prev(nodeId) }
-                    }
-                } else {
-                    prev(source);
-                }
-            }
-        }
-
-        for (const node of graphData.nodes) {
-            if (!node.nodeUUIDs.has(this.uuid)) continue;
-            for (const uuid of node.nodeUUIDs) {
-                stack(uuid);
-            }
-        }
-
-        return context;
-    }
 
 
     export() {
