@@ -496,4 +496,36 @@ test("restore node position", () => {
     expect(newData.nodes[0].vx).toBe(100);
     expect(newData.nodes[0].vy).toBe(100);
     expect(newData.nodes[0].vz).toBe(100);
+    expect(newData.nodes[0].uuid).toBe(oldData.nodes[0].uuid);
+    expect(newData.nodes[1].uuid).toBe(oldData.nodes[1].uuid);
+    expect(newData.nodes[2].uuid).toBe(oldData.nodes[2].uuid);
 });
+
+test("restore node positions with parse", () => {
+    const schematic = new GeneralSchematics("A -> B -> C");
+
+    let oldData = schematic.graphData();
+    oldData.nodes[0].x = 100;
+    oldData.nodes[0].y = 100;
+    oldData.nodes[0].z = 100;
+    oldData.nodes[0].vx = 100;
+    oldData.nodes[0].vy = 100;
+    oldData.nodes[0].vz = 100;
+
+    schematic.parse("A -> B -> C");
+
+    let newData = schematic.graphData(null, oldData);
+
+    expect(oldData.nodes[0].id).toBe(newData.nodes[0].id);
+    expect(newData.nodes[0].uuid).toBe(oldData.nodes[0].uuid);
+    expect(newData.nodes[1].uuid).toBe(oldData.nodes[1].uuid);
+    expect(newData.nodes[2].uuid).toBe(oldData.nodes[2].uuid);
+    expect(newData.nodes[0].x).toBe(100);
+    expect(newData.nodes[0].y).toBe(100);
+    expect(newData.nodes[0].z).toBe(100);
+    expect(newData.nodes[0].vx).toBe(100);
+    expect(newData.nodes[0].vy).toBe(100);
+    expect(newData.nodes[0].vz).toBe(100);
+});
+
+// We're gonna lose uuids on interwingle isolated here....

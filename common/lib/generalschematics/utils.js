@@ -86,10 +86,12 @@ export function verifyGraphData(nodes, links) {
 }
 
 export function restoreData(data, old) {
-    const index = createUUIDIndex(old.nodes.values());
+    const uuidIndex = createUUIDIndex(old.nodes.values());
+    const idIndex = createIndex(old.nodes.values());
     for (const node of data.nodes.values()) {
-        const old = index.get(node.uuid);
+        const old = uuidIndex.get(node.uuid) || idIndex.get(node.id);
         if (!old) continue;
+        if (old.uuid !== node.uuid) node.uuid = old.uuid;
         if (typeof old.x === 'number') node.x = old.x;
         if (typeof old.y === 'number') node.y = old.y;
         if (typeof old.z === 'number') node.z = old.z;

@@ -77,8 +77,8 @@ export default class GeneralSchematics {
     edgeByUUID(uuid) { return this.hypergraph.edgeByUUID(uuid) }
 
 
-    parse(input) {
-        if (input) this.input = input;
+    parse(input = null) {
+        if (input !== null) this.input = input;
         this.parser.input = this.input;
         this.parser.parse();
 

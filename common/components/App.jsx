@@ -44,6 +44,7 @@ export default class App extends React.Component {
             filters: [],
             activeNodeUUID: null,
             graphData: { nodes: [], links: [] },
+            dirty: false,
         };
 
         this.handleKeyDown = this.handleKeyDown.bind(this);
@@ -102,6 +103,7 @@ export default class App extends React.Component {
 
         if (this.schematic.hash !== this.state.dataHash) {
             // console.log("DATA UPDATE", event);
+            await this.asyncSetState({ dirty: true });
             await this.save();
         }
     }
@@ -163,7 +165,7 @@ export default class App extends React.Component {
         return (
             <div
                 className={classNames({
-                    empty: this.isEmpty,
+                    empty: this.isEmpty && !this.state.dirty,
                     desktop: utils.isDesktop(),
                     web: utils.isWeb(),
                     dark: Color.isDark,
@@ -196,26 +198,28 @@ export default class App extends React.Component {
                     graphData={this.state.graphData}
                     reloadData={this.reloadData.bind(this)}
                 />
-                <Editor
-                    schematic={this.schematic}
-                    reset={this.reset.bind(this)}
-                    reloadData={this.reloadData.bind(this)}
-                    saveFile={this.saveFile.bind(this)}
-                />
-
                 <SettingsModal />
 
-                <ForceGraph
-                    schematic={this.schematic}
-                    trackedActiveNodeUUID={this.trackedActiveNodeUUID}
-                    activeNodeUUID={this.state.activeNodeUUID}
-                    setActiveNodeUUID={this.setActiveNodeUUID.bind(this)}
-                    filters={this.state.filters}
-                    setFilters={this.setFilters.bind(this)}
-                    graphData={this.state.graphData}
-                    reloadData={this.reloadData.bind(this)}
-                    save={this.save.bind(this)}
-                />
+                <div id="workspace">
+                    <Editor
+                        schematic={this.schematic}
+                        reset={this.reset.bind(this)}
+                        reloadData={this.reloadData.bind(this)}
+                        saveFile={this.saveFile.bind(this)}
+                    />
+
+                    <ForceGraph
+                        schematic={this.schematic}
+                        trackedActiveNodeUUID={this.trackedActiveNodeUUID}
+                        activeNodeUUID={this.state.activeNodeUUID}
+                        setActiveNodeUUID={this.setActiveNodeUUID.bind(this)}
+                        filters={this.state.filters}
+                        setFilters={this.setFilters.bind(this)}
+                        graphData={this.state.graphData}
+                        reloadData={this.reloadData.bind(this)}
+                        save={this.save.bind(this)}
+                    />
+                </div>
 
                 <ChatModal
                     typerRef={this.typerRef}
