@@ -1,5 +1,5 @@
 import React from "react";
-import ThinkableType from "@lib/thinkabletype";
+import GeneralSchematics from "@lib/generalschematics";
 import { Toaster } from "react-hot-toast";
 import slugify from "slugify";
 import classNames from "classnames";
@@ -13,19 +13,10 @@ import ForceGraph from "./ForceGraph";
 import Interwingle from "./Interwingle";
 import Typer from "./Typer";
 import Editor from "./Editor";
-import Outliner from "./Outliner";
 import SettingsModal from "./SettingsModal";
 import Depth from "./Depth";
 import Filters from "./Filters";
 import ChatModal from "./ChatModal";
-
-// TODO: Align context on word in center
-// TODO: Keyboard navigation doesn't work with up/down and next
-
-// TODO: Work on "Notes"...add below Editor
-// TODO: Shows symbols and definitions...just a text editor
-// A->B: "This is a note"
-// Auto completer...this isn't a place to add new notes or connections. Or is it? Is this the editor?
 
 export default class App extends React.Component {
     constructor() {
@@ -34,7 +25,7 @@ export default class App extends React.Component {
         const uuid = "thinkmachine";
         this.settings = new Settings(uuid);
         window.settings = this.settings;
-        this.thinkabletype = new ThinkableType({
+        this.thinkabletype = new GeneralSchematics({
             interwingle: Settings.interwingle,
             onUpdate: this.onDataUpdate.bind(this),
         });
@@ -71,13 +62,16 @@ export default class App extends React.Component {
     get filters() {
         return this.state.filters.map((f) => {
             if (!f.node) return f;
-            return { node: ThinkableType.trackUUID(f.node, this.state.graphData) };
+            return { node: GeneralSchematics.trackUUID(f.node, this.state.graphData) };
         });
     }
 
     get trackedActiveNodeUUID() {
         if (!this.state.activeNodeUUID) return null;
-        return ThinkableType.trackUUID(this.state.activeNodeUUID, this.state.graphData);
+        return GeneralSchematics.trackUUID(
+            this.state.activeNodeUUID,
+            this.state.graphData
+        );
     }
 
     get title() {
@@ -200,14 +194,6 @@ export default class App extends React.Component {
 
                 <Editor
                     thinkabletype={this.thinkabletype}
-                    reset={this.reset.bind(this)}
-                    reloadData={this.reloadData.bind(this)}
-                    saveFile={this.saveFile.bind(this)}
-                />
-
-                <Outliner
-                    thinkabletype={this.thinkabletype}
-                    graphData={this.state.graphData}
                     reset={this.reset.bind(this)}
                     reloadData={this.reloadData.bind(this)}
                     saveFile={this.saveFile.bind(this)}

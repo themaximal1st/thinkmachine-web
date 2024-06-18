@@ -380,6 +380,15 @@ test("hypertext import modify export import", async () => {
     expect(schematic2.hypertexts.get("A")[1].value).toEqual("Modified with C");
 });
 
+// TODO: Add hypertext in different contexts
+// 1 -> B
+// A -> B
+// # B
+// stuff
+//
+// # 1 -> B
+// stuff
+
 // TODO: Uppercase/lowercase symbols...shouldn't matter?
 // TODO: schematics should generate actions to be performed...keeps tree and hypergraph in sync and gives undo/redo for free
 // TODO: CONTEXTUAL HYPERTEXT (A -> B vs 1 -> B)
