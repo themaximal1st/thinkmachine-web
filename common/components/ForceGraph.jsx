@@ -111,7 +111,7 @@ export default class ForceGraph extends React.Component {
                 {this.is2D && <ForceGraph2D {...props} />}
                 {this.is3D && <ForceGraph3D {...props} />}
                 <RecorderModal
-                    thinkabletype={this.props.thinkabletype}
+                    thinkabletype={this.props.schematic}
                     animation={this.animation}
                     toggleAnimation={this.toggleAnimation.bind(this)}
                     graphRef={this.graphRef}
@@ -150,10 +150,10 @@ export default class ForceGraph extends React.Component {
                 return;
             }
 
-            const fromNode = this.props.thinkabletype.nodeByUUID(
+            const fromNode = this.props.schematic.nodeByUUID(
                 this.props.trackedActiveNodeUUID
             );
-            const toNode = this.props.thinkabletype.nodeByUUID(node.uuid);
+            const toNode = this.props.schematic.nodeByUUID(node.uuid);
             fromNode.connect(toNode);
             return;
         }

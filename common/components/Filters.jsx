@@ -5,11 +5,11 @@ export default class Filter extends React.Component {
         if (Array.isArray(filter)) {
             return filter.join(" → ");
         } else if (filter.node) {
-            const node = this.props.thinkabletype.nodeByUUID(filter.node);
+            const node = this.props.schematic.nodeByUUID(filter.node);
             if (!node) return JSON.stringify(filter);
             return node.symbol;
         } else if (filter.edge) {
-            return this.props.thinkabletype.edgeByUUID(filter.edge).symbols.join(" → ");
+            return this.props.schematic.edgeByUUID(filter.edge).symbols.join(" → ");
         } else {
             return JSON.stringify(filter);
         }

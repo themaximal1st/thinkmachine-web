@@ -25,7 +25,7 @@ export default class App extends React.Component {
         const uuid = "thinkmachine";
         this.settings = new Settings(uuid);
         window.settings = this.settings;
-        this.thinkabletype = new GeneralSchematics({
+        this.schematic = new GeneralSchematics({
             interwingle: Settings.interwingle,
             onUpdate: this.onDataUpdate.bind(this),
         });
@@ -75,17 +75,15 @@ export default class App extends React.Component {
     }
 
     get title() {
-        if (this.thinkabletype.hyperedges.length === 0) {
+        if (this.schematic.hyperedges.length === 0) {
             return `Think Machine — Multidimensional Mind Mapping`;
         } else {
-            return `${this.thinkabletype.hyperedges[0].symbols.join(
-                " "
-            )} — Think Machine`;
+            return `${this.schematic.hyperedges[0].symbols.join(" ")} — Think Machine`;
         }
     }
 
     get isEmpty() {
-        return this.thinkabletype.hyperedges.length === 0;
+        return this.schematic.hyperedges.length === 0;
     }
 
     async onDataUpdate(event) {
@@ -93,7 +91,7 @@ export default class App extends React.Component {
             return;
         }
 
-        if (this.thinkabletype.hash !== this.state.dataHash) {
+        if (this.schematic.hash !== this.state.dataHash) {
             // console.log("DATA UPDATE", event);
             await this.save();
         }
@@ -104,24 +102,21 @@ export default class App extends React.Component {
         await this.reset();
 
         // setTimeout(() => {
-        //     this.setActiveNodeUUID(this.thinkabletype.nodes[0].uuid);
+        //     this.setActiveNodeUUID(this.schematic.nodes[0].uuid);
         // }, 1000);
     }
 
     async reset() {
         await this.asyncSetState({ isLoading: true });
         const hypergraph = await this.settings.hypergraph();
-        this.thinkabletype.parse(hypergraph);
+        this.schematic.parse(hypergraph);
         await this.asyncSetState({ isLoading: false });
 
         await this.reloadData();
     }
 
     async reloadData() {
-        const graphData = this.thinkabletype.graphData(
-            this.filters,
-            this.state.graphData
-        );
+        const graphData = this.schematic.graphData(this.filters, this.state.graphData);
 
         await this.asyncSetState({ graphData });
 
@@ -129,8 +124,8 @@ export default class App extends React.Component {
     }
 
     async save() {
-        await this.settings.hypergraph(this.thinkabletype.export()); // save hypergraph
-        await this.asyncSetState({ dataHash: this.thinkabletype.hash });
+        await this.settings.hypergraph(this.schematic.export()); // save hypergraph
+        await this.asyncSetState({ dataHash: this.schematic.hash });
         await this.reloadData();
     }
 
@@ -151,7 +146,7 @@ export default class App extends React.Component {
 
     async saveFile() {
         const name = `${this.title} ${new Date().toISOString()}`;
-        utils.saveFile(this.thinkabletype.export(), `${slugify(name)}.csv`);
+        utils.saveFile(this.schematic.export(), `${slugify(name)}.csv`);
     }
 
     render() {
@@ -166,7 +161,7 @@ export default class App extends React.Component {
                 <Typer
                     isEmpty={this.isEmpty}
                     typerRef={this.typerRef}
-                    thinkabletype={this.thinkabletype}
+                    schematic={this.schematic}
                     trackedActiveNodeUUID={this.trackedActiveNodeUUID}
                     setActiveNodeUUID={this.setActiveNodeUUID.bind(this)}
                     filters={this.state.filters}
@@ -175,25 +170,25 @@ export default class App extends React.Component {
                 />
 
                 <Interwingle
-                    thinkabletype={this.thinkabletype}
+                    schematic={this.schematic}
                     graphData={this.state.graphData}
                     reloadData={this.reloadData.bind(this)}
                 />
 
                 <Filters
-                    thinkabletype={this.thinkabletype}
+                    schematic={this.schematic}
                     setFilters={this.setFilters.bind(this)}
                     filters={this.state.filters}
                 />
 
                 <Depth
-                    thinkabletype={this.thinkabletype}
+                    schematic={this.schematic}
                     graphData={this.state.graphData}
                     reloadData={this.reloadData.bind(this)}
                 />
 
                 <Editor
-                    thinkabletype={this.thinkabletype}
+                    schematic={this.schematic}
                     reset={this.reset.bind(this)}
                     reloadData={this.reloadData.bind(this)}
                     saveFile={this.saveFile.bind(this)}
@@ -202,7 +197,7 @@ export default class App extends React.Component {
                 <SettingsModal />
 
                 <ForceGraph
-                    thinkabletype={this.thinkabletype}
+                    schematic={this.schematic}
                     trackedActiveNodeUUID={this.trackedActiveNodeUUID}
                     activeNodeUUID={this.state.activeNodeUUID}
                     setActiveNodeUUID={this.setActiveNodeUUID.bind(this)}
@@ -221,7 +216,7 @@ export default class App extends React.Component {
                     reloadData={this.reloadData.bind(this)}
                     setActiveNodeUUID={this.setActiveNodeUUID.bind(this)}
                     graphData={this.state.graphData}
-                    thinkabletype={this.thinkabletype}
+                    schematic={this.schematic}
                     filters={this.filters}
                     setFilters={this.setFilters.bind(this)}
                 />

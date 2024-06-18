@@ -37,12 +37,12 @@ export default class Interwingle extends React.Component {
 
     async toggleInterwingle(interwingle = undefined, backwards = false) {
         if (typeof interwingle === "undefined") {
-            interwingle = this.props.thinkabletype.interwingle;
+            interwingle = this.props.schematic.interwingle;
             interwingle = backwards ? interwingle - 1 : interwingle + 1;
             if (interwingle > 3) interwingle = 0;
             if (interwingle < 0) interwingle = 3;
         }
-        this.props.thinkabletype.interwingle = interwingle;
+        this.props.schematic.interwingle = interwingle;
         Settings.interwingle = interwingle;
         this.props.reloadData();
     }
@@ -74,9 +74,7 @@ export default class Interwingle extends React.Component {
                         </div>
                         <button
                             className={
-                                this.props.thinkabletype.interwingle === index
-                                    ? "active"
-                                    : ""
+                                this.props.schematic.interwingle === index ? "active" : ""
                             }
                             onClick={() => this.toggleInterwingle(index)}>
                             <img src={interwingle} />

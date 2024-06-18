@@ -5,7 +5,7 @@ import * as Three from "three";
 export default class Component {
     constructor(props = {}) {
         this.props = props;
-        this.node = this.props.thinkabletype.nodeByUUID(this.props.activeNodeUUID);
+        this.node = this.props.schematic.nodeByUUID(this.props.activeNodeUUID);
     }
 
     render() {

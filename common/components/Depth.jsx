@@ -12,8 +12,8 @@ export default class Depth extends React.Component {
 
     componentWillUnmount() {
         console.log("RESET DEPTH");
-        this.props.thinkabletype.depth = 0;
-        this.props.thinkabletype.maxDepth = 0;
+        this.props.schematic.depth = 0;
+        this.props.schematic.maxDepth = 0;
         window.removeEventListener("keydown", this.handleKeyDown);
     }
 
@@ -37,24 +37,24 @@ export default class Depth extends React.Component {
             case "7":
             case "8":
             case "9":
-                this.props.thinkabletype.depth = parseInt(event.key);
+                this.props.schematic.depth = parseInt(event.key);
                 break;
             case "=": // +
-                this.props.thinkabletype.depth += 1;
+                this.props.schematic.depth += 1;
                 break;
             case "-": //
-                this.props.thinkabletype.depth -= 1;
+                this.props.schematic.depth -= 1;
                 break;
             default:
                 return;
         }
 
-        if (this.props.thinkabletype.depth > this.props.thinkabletype.maxDepth) {
-            this.props.thinkabletype.depth = this.props.thinkabletype.maxDepth;
+        if (this.props.schematic.depth > this.props.schematic.maxDepth) {
+            this.props.schematic.depth = this.props.schematic.maxDepth;
         }
 
-        if (this.props.thinkabletype.depth < 0) {
-            this.props.thinkabletype.depth = 0;
+        if (this.props.schematic.depth < 0) {
+            this.props.schematic.depth = 0;
         }
 
         this.props.reloadData();
@@ -75,7 +75,7 @@ export default class Depth extends React.Component {
     handleDepthChange(e) {
         e.preventDefault();
         const depth = parseInt(e.target.value);
-        this.props.thinkabletype.depth = depth;
+        this.props.schematic.depth = depth;
         this.props.reloadData();
     }
 

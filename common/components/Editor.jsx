@@ -39,7 +39,7 @@ export default class Editor extends React.Component {
         let nextNode;
 
         if (e.key === "Enter" && e.shiftKey) {
-            nextNode = this.props.thinkabletype.add([""]).firstNode;
+            nextNode = this.props.schematic.add([""]).firstNode;
         } else if (e.key === "Enter" && !e.shiftKey && node.symbol !== "") {
             nextNode = node.isLast ? node.hyperedge.add("") : node.next();
             e.target.blur();
@@ -72,8 +72,8 @@ export default class Editor extends React.Component {
 
     removeAll() {
         if (window.confirm("Are you sure you want to remove everything?")) {
-            while (this.props.thinkabletype.hyperedges.length > 0) {
-                this.props.thinkabletype.hyperedges[0].remove();
+            while (this.props.schematic.hyperedges.length > 0) {
+                this.props.schematic.hyperedges[0].remove();
             }
         }
     }
@@ -81,7 +81,7 @@ export default class Editor extends React.Component {
     handleImport(e) {
         const data = this.importRef.current.value;
         this.importRef.current.value = "";
-        this.props.thinkabletype.parse(data);
+        this.props.schematic.parse(data);
         this.setState({ isImporting: false });
     }
 
@@ -162,7 +162,7 @@ export default class Editor extends React.Component {
                             Save File
                         </button>
                     </div>
-                    {this.props.thinkabletype.hyperedges.map((hyperedge, idx) => (
+                    {this.props.schematic.hyperedges.map((hyperedge, idx) => (
                         <div
                             key={hyperedge.uuid}
                             className="hyperedge text-white group/edge">
@@ -201,8 +201,7 @@ export default class Editor extends React.Component {
                     <button
                         onClick={() => {
                             this.setState({
-                                activeUUID: this.props.thinkabletype.add([""]).firstNode
-                                    .uuid,
+                                activeUUID: this.props.schematic.add([""]).firstNode.uuid,
                             });
                         }}
                         id="editor-add-hyperedge">

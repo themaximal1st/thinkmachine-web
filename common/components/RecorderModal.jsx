@@ -135,10 +135,10 @@ export default class RecorderModal extends React.Component {
     }
 
     get title() {
-        if (this.props.thinkabletype.hyperedges.length === 0) {
+        if (this.props.schematic.hyperedges.length === 0) {
             return `Think Machine — Multidimensional Mind Mapping`;
         } else {
-            return `${this.props.thinkabletype.hyperedges[0].symbols.join(
+            return `${this.props.schematic.hyperedges[0].symbols.join(
                 " "
             )} — Think Machine`;
         }

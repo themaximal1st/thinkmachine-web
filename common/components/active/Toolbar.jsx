@@ -114,7 +114,7 @@ export default class Toolbar extends Component {
                 options
             );
 
-            const edge = this.props.thinkabletype.add(symbols);
+            const edge = this.props.schematic.add(symbols);
             await this.props.setActiveNodeUUID(edge.lastNode.uuid);
         } catch (e) {
             console.log(e);

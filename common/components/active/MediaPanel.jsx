@@ -33,7 +33,7 @@ export default class MediaPanel extends Component {
     mediaQuery() {
         const words = [];
         for (const edgeUUID of this.props.node.edgeUUIDs) {
-            const edge = this.props.thinkabletype.edgeByUUID(edgeUUID);
+            const edge = this.props.schematic.edgeByUUID(edgeUUID);
             for (const symbol of Array.from(edge.symbols)) {
                 words.push(symbol);
             }

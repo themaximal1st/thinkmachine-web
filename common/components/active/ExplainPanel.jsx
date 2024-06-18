@@ -91,7 +91,7 @@ export default class ExplainPanel extends Component {
 
         this.props.setExplain(node.uuid, ""); // prevent stampeded
 
-        const hyperedges = this.props.thinkabletype.symbols;
+        const hyperedges = this.props.schematic.symbols;
 
         const options = { model: Settings.llmModel };
 
@@ -108,7 +108,7 @@ export default class ExplainPanel extends Component {
     async handleClickSlug(slug) {
         for (const n of this.props.graphData.nodes) {
             if (n.uuid === this.props.node.uuid) continue;
-            const node = this.props.thinkabletype.nodeByUUID(n.uuid);
+            const node = this.props.schematic.nodeByUUID(n.uuid);
             if (!node) continue;
             if (node.matches(slug)) {
                 this.props.setActiveNodeUUID(node.uuid);
@@ -117,7 +117,7 @@ export default class ExplainPanel extends Component {
         }
 
         // node wasn't found in current graph, so we need to expand out until we find it
-        for (const node of this.props.thinkabletype.nodes) {
+        for (const node of this.props.schematic.nodes) {
             if (node.matches(slug)) {
                 this.props.setActiveNodeUUID(node.uuid);
 
@@ -126,14 +126,14 @@ export default class ExplainPanel extends Component {
                 await this.props.setFilters(filters);
 
                 for (
-                    let interwingle = this.props.thinkabletype.interwingle;
+                    let interwingle = this.props.schematic.interwingle;
                     interwingle <= 3;
                     interwingle++
                 ) {
-                    this.props.thinkabletype.interwingle = interwingle;
+                    this.props.schematic.interwingle = interwingle;
 
                     for (let i = 0; i < 5; i++) {
-                        this.props.thinkabletype.depth = i;
+                        this.props.schematic.depth = i;
                         await this.props.reloadData();
                     }
                 }
@@ -153,7 +153,7 @@ export default class ExplainPanel extends Component {
         });
         this.props.setChat(this.props.node.uuid, messages);
 
-        const hyperedges = this.props.thinkabletype.symbols;
+        const hyperedges = this.props.schematic.symbols;
 
         const options = {
             model: "gpt-4o",

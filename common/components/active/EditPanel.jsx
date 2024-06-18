@@ -144,7 +144,7 @@ export default class EditPanel extends Component {
         const node = this.node;
         const symbols = node.hyperedge.symbols.slice(0, node.index + 1);
         symbols.push("");
-        const edge = this.props.thinkabletype.add(symbols);
+        const edge = this.props.schematic.add(symbols);
         await this.activateAndEditNode(edge.lastNode);
     }
 

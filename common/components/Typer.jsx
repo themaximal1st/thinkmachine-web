@@ -215,9 +215,7 @@ export default class Typer extends React.Component {
         }
 
         const lastHyperedge =
-            this.props.thinkabletype.hyperedges[
-                this.props.thinkabletype.hyperedges.length - 1
-            ];
+            this.props.schematic.hyperedges[this.props.schematic.hyperedges.length - 1];
         let isMatch = false;
         if (lastHyperedge) {
             isMatch =
@@ -228,7 +226,7 @@ export default class Typer extends React.Component {
         const hyperedge = this.state.hyperedge;
 
         hyperedge.push(input);
-        const edge = this.props.thinkabletype.add(hyperedge);
+        const edge = this.props.schematic.add(hyperedge);
         if (isMatch) {
             lastHyperedge.remove();
         }
@@ -249,7 +247,7 @@ export default class Typer extends React.Component {
         this.ref.current.value = "";
 
         let activeSymbol = this.props.trackedActiveNodeUUID
-            ? this.props.thinkabletype.nodeByUUID(this.props.trackedActiveNodeUUID).symbol
+            ? this.props.schematic.nodeByUUID(this.props.trackedActiveNodeUUID).symbol
             : null;
 
         const options = { model: Settings.llmModel };
@@ -258,12 +256,12 @@ export default class Typer extends React.Component {
             input,
             activeSymbol,
             this.state.hyperedge,
-            this.props.thinkabletype.symbols,
+            this.props.schematic.symbols,
             options
         );
 
         for await (const hyperedge of hyperedges) {
-            this.props.thinkabletype.add(hyperedge);
+            this.props.schematic.add(hyperedge);
         }
     }
 
@@ -276,7 +274,7 @@ export default class Typer extends React.Component {
         filters.push([input]);
         this.props.setFilters(filters);
 
-        for (const node of this.props.thinkabletype.nodes) {
+        for (const node of this.props.schematic.nodes) {
             if (node.equals(input)) {
                 this.props.setActiveNodeUUID(node.uuid);
                 break;
@@ -302,7 +300,7 @@ export default class Typer extends React.Component {
     get autocomplete() {
         if (!this.showAutoComplete) return [];
 
-        const haystack = Array.from(this.props.thinkabletype.uniqueSymbols);
+        const haystack = Array.from(this.props.schematic.uniqueSymbols);
         const needle = this.ref.current.value;
         if (!needle) return haystack; // limit?
 

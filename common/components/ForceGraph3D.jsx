@@ -50,7 +50,7 @@ export default class ForceGraph3D extends React.Component {
         }
 
         const context = this.nodeContext;
-        const node = this.props.thinkabletype.nodeByUUID(this.props.activeNodeUUID);
+        const node = this.props.schematic.nodeByUUID(this.props.activeNodeUUID);
 
         if (e.key === "ArrowLeft" && context.prev.length > 0) {
             this.props.setActiveNodeUUID(this.nodePreferenceUUID(context.prev, node));
@@ -108,7 +108,7 @@ export default class ForceGraph3D extends React.Component {
             return null;
         }
 
-        const node = this.props.thinkabletype.nodeByUUID(this.props.activeNodeUUID);
+        const node = this.props.schematic.nodeByUUID(this.props.activeNodeUUID);
 
         return node.context(this.props.graphData);
     }

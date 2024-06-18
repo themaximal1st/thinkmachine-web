@@ -53,14 +53,14 @@ export default class ChatModal extends React.Component {
             messages,
         });
 
-        const hyperedges = this.props.thinkabletype.symbols;
+        const hyperedges = this.props.schematic.symbols;
 
         const options = {
             model: "gpt-4o",
         };
 
         const activeSymbol = this.props.trackedActiveNodeUUID
-            ? this.props.thinkabletype.nodeByUUID(this.props.trackedActiveNodeUUID).symbol
+            ? this.props.schematic.nodeByUUID(this.props.trackedActiveNodeUUID).symbol
             : null;
         const stream = await window.api.chat(messages, hyperedges, activeSymbol, options);
 
@@ -85,7 +85,7 @@ export default class ChatModal extends React.Component {
 
         for (const n of this.props.graphData.nodes) {
             if (n.uuid === this.props.trackedActiveNodeUUID) continue;
-            const node = this.props.thinkabletype.nodeByUUID(n.uuid);
+            const node = this.props.schematic.nodeByUUID(n.uuid);
             if (!node) continue;
             if (node.matches(slug)) {
                 this.props.setActiveNodeUUID(node.uuid);
@@ -94,7 +94,7 @@ export default class ChatModal extends React.Component {
         }
 
         // node wasn't found in current graph, so we need to expand out until we find it
-        for (const node of this.props.thinkabletype.nodes) {
+        for (const node of this.props.schematic.nodes) {
             if (node.matches(slug)) {
                 this.props.setActiveNodeUUID(node.uuid);
 
@@ -103,14 +103,14 @@ export default class ChatModal extends React.Component {
                 await this.props.setFilters(filters);
 
                 for (
-                    let interwingle = this.props.thinkabletype.interwingle;
+                    let interwingle = this.props.schematic.interwingle;
                     interwingle <= 3;
                     interwingle++
                 ) {
-                    this.props.thinkabletype.interwingle = interwingle;
+                    this.props.schematic.interwingle = interwingle;
 
                     for (let i = 0; i < 5; i++) {
-                        this.props.thinkabletype.depth = i;
+                        this.props.schematic.depth = i;
                         await this.props.reloadData();
                     }
                 }

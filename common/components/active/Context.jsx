@@ -86,7 +86,7 @@ export default class Context extends Component {
         for (const button of buttons) {
             button.addEventListener("click", (e) => {
                 const uuid = e.target.dataset.uuid;
-                const node = this.props.thinkabletype.nodeByUUID(uuid);
+                const node = this.props.schematic.nodeByUUID(uuid);
                 this.props.setActiveNodeUUID(node.uuid);
                 e.preventDefault();
             });

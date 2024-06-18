@@ -17,7 +17,7 @@ export default defineConfig({
         },
         plugins: [
             externalizeDepsPlugin({
-                exclude: ["@themaximalist/thinkabletype"],
+                exclude: ["@themaximalist/generalschematics"],
             }),
         ],
     },
