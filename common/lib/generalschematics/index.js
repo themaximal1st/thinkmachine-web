@@ -45,6 +45,8 @@ export default class GeneralSchematics {
 
         this.options = options;
 
+        this.hypertexts = null;
+        this.hypergraph = null;
         this.parser = new Parser();
         this.parse();
     }
@@ -73,13 +75,14 @@ export default class GeneralSchematics {
     get html() { return this.parser.html() }
 
     nodeByID(id) { return this.hypergraph.nodeByID(id) }
+    nodeByUID(uid) { return this.hypergraph.nodeByUID(uid) }
     nodeByUUID(uuid) { return this.hypergraph.nodeByUUID(uuid) }
     edgeByUUID(uuid) { return this.hypergraph.edgeByUUID(uuid) }
-
 
     parse(input = null) {
         if (input !== null) this.input = input;
 
+        this.parser.hypergraph = this.hypergraph;
         this.parser.input = this.input;
         this.parser.parse();
 

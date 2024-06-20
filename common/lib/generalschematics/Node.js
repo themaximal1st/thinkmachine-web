@@ -1,12 +1,24 @@
 import { v4 as uuidv4 } from 'uuid';
 
+class NodeHypertext {
+    constructor(node) {
+        this.node = node;
+    }
+
+    add(input) {
+        this.node.schematic.hypertexts.add(this.node.value, input);
+    }
+
+    get all() {
+        return this.node.schematic.hypertexts.get(this.node.value);
+    }
+}
+
 export default class Node {
     constructor(hyperedge, index) {
         this.hyperedge = hyperedge;
         this.index = parseInt(index);
-        this.hypertext = {
-            add: this.addHypertext.bind(this),
-        };
+        this.hypertext = new NodeHypertext(this);
 
         if (!this.data.uuid) {
             this.data.uuid = uuidv4();
@@ -15,6 +27,10 @@ export default class Node {
 
     get id() {
         return this.hyperedge.nodeId(this.index);
+    }
+
+    get uid() {
+        return this.hyperedge.uniqueNodeId(this.index);
     }
 
     get data() {
@@ -58,7 +74,7 @@ export default class Node {
     }
 
     get hypertexts() {
-        return this.schematic.hypertexts.get(this.value);
+        return this.hypertext.all
     }
 
     rename(input) {
@@ -79,10 +95,6 @@ export default class Node {
         if (this.hyperedge.length === 0) {
             this.hyperedge.remove();
         }
-    }
-
-    addHypertext(input) {
-        this.schematic.hypertexts.add(this.value, input);
     }
 
     equal(node) {

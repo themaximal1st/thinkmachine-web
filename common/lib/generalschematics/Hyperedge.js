@@ -110,6 +110,11 @@ export default class Hyperedge {
         return id;
     }
 
+    uniqueNodeId(index) {
+        const id = this.values.slice(0, index + 1).join(".");
+        return `${this.index}:${id}`;
+    }
+
     rename(input, index) {
         this.data.children[index].value = input;
         this.schematic.update();

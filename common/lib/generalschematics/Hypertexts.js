@@ -14,7 +14,7 @@ export default class Hypertexts {
     }
 
     get(symbol) {
-        return selectAll(`hypertext[owners~=${symbol}]`, this.tree).map(node => new Hypertext(node, this));
+        return selectAll(`hypertext[owners~="${symbol}"]`, this.tree).map(node => new Hypertext(node, this));
     }
 
     get size() {

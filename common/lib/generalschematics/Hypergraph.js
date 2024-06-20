@@ -72,6 +72,12 @@ export default class Hypergraph {
         }
     }
 
+    nodeByUID(uid) {
+        for (const node of this.nodes) {
+            if (node.uid === uid) return node;
+        }
+    }
+
     edgeByUUID(uuid) {
         for (const hyperedge of this.hyperedges) {
             if (hyperedge.uuid === uuid) return hyperedge;

@@ -18,14 +18,17 @@ import { find } from 'unist-util-find'
 export default class Parser {
     ARROW = /-+>/;
 
-    constructor(input = "") {
-        this.input = input;
+    constructor() {
+        this.schematic = null;
+        this.input = "";
         this.tree = null;
         this.lastTree = null;
+        this.hyperedges = []; // used for uid index
     }
 
     parse() {
         this.lastTree = this.tree;
+        this.hyperedges = [];
 
         const processor = unified()
             .use(remarkParse)
@@ -53,9 +56,9 @@ export default class Parser {
         return processor.stringify(tree);
     }
 
-    get hyperedges() {
-        return selectAll('hyperedge', this.tree);
-    }
+    // get hyperedges() {
+    //     return selectAll('hyperedge', this.tree);
+    // }
 
     get nodes() {
         return selectAll('node', this.tree);
@@ -73,14 +76,35 @@ export default class Parser {
 
                 const symbols = this.stringToHyperedge(node.value);
 
-                node.type = "hyperedge";
-                node.uuid = this.edgeUUIDFromLastTree(symbols);
+                const edge = this.edgeFromLastTree(symbols);
+                const uuid = edge ? edge.uuid : null;
 
-                node.children = symbols.map(symbol => {
+                node.type = "hyperedge";
+                node.uuid = uuid;
+
+                this.hyperedges.push(symbols);
+                const edgeIndex = this.hyperedges.length - 1;
+                let uid;
+
+                node.children = symbols.map((symbol, i) => {
+                    if (!uid) {
+                        uid = `${edgeIndex}:${symbol}`;
+                    } else {
+                        uid += `.${symbol}`;
+                    }
+
+                    let uuid = null;
+                    if (this.hypergraph) {
+                        const n = this.hypergraph.nodeByUID(uid);
+                        if (n) {
+                            uuid = n.uuid;
+                        }
+                    }
+
                     return {
                         type: "node",
                         value: symbol.trim(),
-                        uuid: this.nodeUUIDFromLastTree(symbol),
+                        uuid,
                     }
                 });
                 delete node.value;
@@ -88,14 +112,7 @@ export default class Parser {
         }
     }
 
-    nodeUUIDFromLastTree(symbol) {
-        if (!this.lastTree) return null;
-        const node = find(this.lastTree, { type: "node", value: symbol });
-        if (!node) return null;
-        return node.uuid;
-    }
-
-    edgeUUIDFromLastTree(symbols) {
+    edgeFromLastTree(symbols) {
         if (!this.lastTree) return null;
         const children = symbols.map(symbol => {
             return { type: "node", value: symbol }
@@ -104,7 +121,7 @@ export default class Parser {
         const edge = find(this.lastTree, { type: "hyperedge", children });
         if (!edge) return null;
 
-        return edge.uuid;
+        return edge;
     }
 
     unhyperedgeify() {
@@ -113,21 +130,6 @@ export default class Parser {
                 node.type = "text";
                 node.value = node.children.map(child => child.value).join(" -> ");
                 delete node.children;
-            });
-        }
-    }
-
-    symbolify() {
-        return (tree) => {
-            visit(tree, 'text', (node, index, parent) => {
-                if (!this.stringIsHyperedge(node.value)) return;
-
-                const symbols = this.stringToHyperedge(node.value);
-                for (const symbol of symbols) {
-                    this.symbols.add(symbol);
-                }
-
-                this.hyperedges.push(symbols);
             });
         }
     }

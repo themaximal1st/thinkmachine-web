@@ -1,10 +1,26 @@
-- Proper japanese support
-- Translations
-- Go through and simplify ActiveNode components
-    - Use Component for helper funcs
-    - UI needs some work...still kinda confusing
+- LEFT HAND TOOLBAR
+- MODES
+    - EDITOR
+    - 3D
+    - REPORT
+    - BETA
+        - ANIMATION MODE
+        - 2D
+- PANES PUSH MODES ONTO SLIDER
+- FIX BUG WITH CANVAS NOT RESIZING PROPERLY
+- ADD UID SUPPORT FOR STABLE UPDATES
+- WYSIWYG EDITOR
+    - Auto convert -> to →
+    - MINIMIZE UPDATES WHILE EDITING
+    - CONNECTED TO HYPERGRAPH...CLICKING SYMBOL TAKES YOU TO PLACE IN OTHER
+- ZOOM OUT GET MAP. ZOOM IN GET TERRITORY.
+- _PROPERTIES
+- MOBILE PHONE
+- RATE LIMIT
+- TEACH AI TO HOW WRITE GENERAL SCHEMATICS
+- GENERATIVE MODE (ELI5, EXECUTIVE SUMMARY, PHD PAPER, SHIZO)
+- LOCALIZE (JAPANESE)
 
-- Animation: The graph being built out...would be really cool. Almost like Git history
 
 Context needs stacked nodes..what context am I in right now when editing?
 Am I adding notes to all symbols or just a single symbol?
@@ -192,3 +208,10 @@ distribution
 * Meta Store
 * infinitecanvas.tools
 * Obsidian Plugin
+
+
+Marketing:
+- AI Second Brain
+
+Use Cases
+- Book Summaries

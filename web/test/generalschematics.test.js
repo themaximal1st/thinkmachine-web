@@ -392,6 +392,29 @@ test("parse keeps uuids", async () => {
     expect(schematic.hyperedges[0].uuid).toEqual(edgeUUID);
 });
 
+test("parse keeps uuids multiple symbols", async () => {
+    const schematic = new GeneralSchematics("A -> B -> C\nA -> 1 -> 2");
+
+    expect(schematic.nodes.length).toEqual(6);
+    const uids = schematic.nodes.map(node => node.uid);
+    const uuids = schematic.nodes.map(node => node.uuid);
+
+    schematic.parse("A -> B -> C\nA -> 1 -> 2");
+    const nuuids = schematic.nodes.map(node => node.uuid);
+    const nuids = schematic.nodes.map(node => node.uid);
+
+    expect(nuids).toEqual(uids);
+    expect(nuuids).toEqual(uuids);
+});
+
+// A -> B -> A will break....
+
+// A -> 1 -> 2
+// A -> 1 -> B ...will break
+
+// TODO: parse keeps UUIDs with multiple symbols (A -> B -> C, A -> 1 -> 2)
+
+
 // TODO: Add hypertext in different contexts
 // 1 -> B
 // A -> B

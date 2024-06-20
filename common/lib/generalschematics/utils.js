@@ -23,6 +23,13 @@ export function createIndex(items) {
     return index;
 }
 
+export function createUIDIndex(items) {
+    const index = new Map();
+    console.log("ITEMS", items);
+    for (const item of items) { index.set(item.uid, item) }
+    return index;
+}
+
 export function createUUIDIndex(items) {
     const index = new Map();
     for (const item of items) { index.set(item.uuid, item) }

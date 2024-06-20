@@ -31,6 +31,10 @@ export default class ForceGraph3D extends React.Component {
         this.props.graphRef.current.postProcessingComposer().addPass(bloomPass);
 
         window.addEventListener("keydown", this.handleKeyDown);
+
+        this.props.graphRef.current.controls().addEventListener("start", () => {
+            console.log("CAMERA CHANGE");
+        });
     }
 
     componentWillUnmount() {
