@@ -434,3 +434,7 @@
 canvas {
     /* @apply max-h-[50%] max-w-[50%] border-2 aspect-square; */
 }
+
+.node-panel {
+    @apply text-white;
+}

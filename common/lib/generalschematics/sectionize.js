@@ -3,8 +3,12 @@ import { inspect } from "unist-util-inspect"
 
 export default function sectionize() {
     return (tree) => {
+
         visit(tree, 'heading', (node, index, parent) => {
             if (node.depth !== 2) return;
+            console.log(inspect(parent));
+            return;
+
             const paragraph = parent.children[index + 1];
             if (!paragraph || paragraph.type !== "paragraph") return;
 

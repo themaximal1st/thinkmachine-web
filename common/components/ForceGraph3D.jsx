@@ -9,19 +9,25 @@ import { ForceGraph3D as ForceGraph3DComponent } from "react-force-graph";
 import Settings from "@lib/Settings";
 import React from "react";
 import ActiveNode from "./active/ActiveNode";
+import NodePanel from "./active/NodePanel";
 
 export default class ForceGraph3D extends React.Component {
     constructor(props) {
         super(props);
         this.activeNodeUI = null;
+        this.nodePanels = [];
         this.state = {
             media: new Map(),
             explains: new Map(),
             chats: new Map(),
+            distances: {},
+            isDragging: false,
         };
 
         this.handleKeyDown = this.handleKeyDown.bind(this);
     }
+
+    // TODO: Check if component is off screen...then bail
 
     componentDidMount() {
         const bloomPass = new UnrealBloomPass();
@@ -32,9 +38,52 @@ export default class ForceGraph3D extends React.Component {
 
         window.addEventListener("keydown", this.handleKeyDown);
 
-        this.props.graphRef.current.controls().addEventListener("start", () => {
-            console.log("CAMERA CHANGE");
+        this.props.graphRef.current.controls().addEventListener("start", (e) => {
+            this.updateDistances(e);
         });
+
+        // // this.props.graphRef.current.controls().addEventListener("end", (a, b, c) => {
+        // //     console.log("END");
+        // // });
+
+        this.props.graphRef.current.controls().addEventListener("change", () => {
+            this.updateDistances();
+        });
+
+        // console.log("CONTROLS", this.props.graphRef.current.controls());
+    }
+
+    // TODO: This is jumpy
+    updateDistances(e) {
+        if (!this.props.graphRef) return;
+        if (!this.props.graphRef.current) return;
+
+        const distances = {};
+        // console.log(this.props.graphdata.nodes[0].__threeobj.position);
+
+        for (const node of this.props.graphData.nodes) {
+            if (!node.__threeObj) continue;
+            // console.log("NODE", node.__threeObj);
+
+            const pos = node.__threeObj.position;
+            if (!pos) continue;
+            if (pos.x === 0 && pos.y === 0 && pos.z === 0) continue;
+
+            const camera = this.props.graphRef.current.camera();
+            if (!camera) continue;
+
+            const distance = camera.position.distanceTo(pos);
+            distances[node.uuid] = distance;
+        }
+
+        if (Object.keys(distances).length === 0) return;
+
+        for (const nodePanel of this.nodePanels) {
+            nodePanel.updateDistances(distances);
+        }
+
+        // this.state.distances = distances;
+        // this.setState({ distances });
     }
 
     componentWillUnmount() {
@@ -120,13 +169,28 @@ export default class ForceGraph3D extends React.Component {
         return node.context(this.props.graphData);
     }
 
+    onNodeDrag(node) {
+        console.log("onNodeDrag");
+        this.state.isDragging = true;
+        // this.setState({ isDragging: true });
+    }
+
+    onNodeDragEnd(node) {
+        console.log("onNodeDragEnd");
+        this.state.isDragging = false;
+    }
+
     render() {
+        this.nodePanels = [];
+
         return (
             <ForceGraph3DComponent
                 ref={this.props.graphRef} // won't allow in prop?
                 controlType={Settings.controlType}
                 nodeThreeObject={this.nodeThreeObject.bind(this)}
                 extraRenderers={[new CSS2DRenderer()]}
+                onNodeDrag={this.onNodeDrag.bind(this)}
+                onNodeDragEnd={this.onNodeDragEnd.bind(this)}
                 {...this.props}
             />
         );
@@ -175,10 +239,10 @@ export default class ForceGraph3D extends React.Component {
     }
 
     nodeThreeObject(node) {
-        if (this.activeNodeUI && this.activeNodeUI.props.node.uuid === node.uuid) {
-            this.activeNodeUI.unload();
-            this.activeNodeUI = null;
-        }
+        // if (this.activeNodeUI && this.activeNodeUI.props.node.uuid === node.uuid) {
+        //     this.activeNodeUI.unload();
+        //     this.activeNodeUI = null;
+        // }
 
         if (this.props.hideLabels) {
             return null;
@@ -190,26 +254,40 @@ export default class ForceGraph3D extends React.Component {
 
         const title = this.nodeThreeTitleObject(node);
 
-        if (
-            !this.props.trackedActiveNodeUUID ||
-            this.props.trackedActiveNodeUUID !== node.uuid
-        ) {
-            return title;
-        }
+        // if (
+        //     !this.props.trackedActiveNodeUUID ||
+        //     this.props.trackedActiveNodeUUID !== node.uuid
+        // ) {
+        //     return title;
+        // }
 
         // leaving react here...
-
-        this.activeNodeUI = new ActiveNode({
+        const nodePanel = new NodePanel({
             ...this.state,
             ...this.props,
             node,
             title,
-            context: this.nodeContext,
-            setMedia: this.setMedia.bind(this),
-            setExplain: this.setExplain.bind(this),
-            setChat: this.setChat.bind(this),
+            // context: this.nodeContext,
+            // setMedia: this.setMedia.bind(this),
+            // setExplain: this.setExplain.bind(this),
+            // setChat: this.setChat.bind(this),
         });
 
-        return this.activeNodeUI.render();
+        this.nodePanels.push(nodePanel);
+
+        return nodePanel.render();
+
+        // this.activeNodeUI = new ActiveNode({
+        //     ...this.state,
+        //     ...this.props,
+        //     node,
+        //     title,
+        //     context: this.nodeContext,
+        //     setMedia: this.setMedia.bind(this),
+        //     setExplain: this.setExplain.bind(this),
+        //     setChat: this.setChat.bind(this),
+        // });
+
+        // return this.activeNodeUI.render();
     }
 }

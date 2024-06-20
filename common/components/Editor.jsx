@@ -14,9 +14,9 @@ export default class Editor extends React.Component {
     componentDidMount() {
         window.addEventListener("keydown", this.handleKeyDown);
 
-        setTimeout(() => {
-            this.setState({ show: true });
-        }, 250);
+        // setTimeout(() => {
+        //     this.setState({ show: true });
+        // }, 250);
     }
 
     componentWillUnmount() {

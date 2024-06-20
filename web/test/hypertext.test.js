@@ -53,3 +53,17 @@ test("punctuation", () => {
     schematic.parse(`A -> B -> C\nThis is for C/B`);
     expect(schematic.hypertexts.get("C").length).toEqual(1);
 });
+
+test("symbolify section", () => {
+    const schematic = new GeneralSchematics("A -> B -> C\n\n## A\nThis is some hypertext.\nIt goes on and on\n\n## C\nThis is some more hypertext.\nIt goes on and on");
+    expect(schematic.hypertexts.get("A").length).toEqual(2);
+    expect(schematic.hypertexts.get("C").length).toEqual(2);
+});
+
+test.only("symbolify section until double break", () => {
+    const schematic = new GeneralSchematics("A -> B -> C\n\n## A\nThis is some hypertext.\ \n   \n  \n \nIt goes on and on");
+
+    // schematic.debug();
+
+    // expect(schematic.hypertexts.get("A").length).toEqual(2);
+});
