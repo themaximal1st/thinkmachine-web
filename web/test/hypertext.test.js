@@ -25,3 +25,31 @@ test("numeric symbol", () => {
     schematic.hyperedges[0].nodes[0].hypertext.add("This is about one");
     expect(one.hypertexts.length).toEqual(2);
 });
+
+test("punctuation", () => {
+    const schematic = new GeneralSchematics();
+
+    schematic.parse(`A -> B -> C\nThis is for C`);
+    expect(schematic.hypertexts.get("C").length).toEqual(1);
+
+    schematic.parse(`A -> B -> C\nThis is for C.`);
+    expect(schematic.hypertexts.get("C").length).toEqual(1);
+
+    schematic.parse(`A -> B -> C\nThis is for C?`);
+    expect(schematic.hypertexts.get("C").length).toEqual(1);
+
+    schematic.parse(`A -> B -> C\nThis is for C!`);
+    expect(schematic.hypertexts.get("C").length).toEqual(1);
+
+    schematic.parse(`A -> B -> C\nThis is for C—and then more.`); // long dash = symbol
+    expect(schematic.hypertexts.get("C").length).toEqual(1);
+
+    schematic.parse(`A -> B -> C\nThis is for C-and then more.`); // short dash = no symbol
+    expect(schematic.hypertexts.get("C").length).toEqual(0);
+
+    schematic.parse(`A -> B -> C\nThis is for C(and then more)`);
+    expect(schematic.hypertexts.get("C").length).toEqual(1);
+
+    schematic.parse(`A -> B -> C\nThis is for C/B`);
+    expect(schematic.hypertexts.get("C").length).toEqual(1);
+});

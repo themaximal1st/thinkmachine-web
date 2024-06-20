@@ -201,7 +201,7 @@ export default class Parser {
     }
 
     tokenize(text) {
-        return text.split(/[\s\.,;:]+/).filter(token => token.length > 0);
+        return text.split(/[\s\.,;:?!—()/]+/).filter(token => token.length > 0);
     }
 
     removeSections() {
