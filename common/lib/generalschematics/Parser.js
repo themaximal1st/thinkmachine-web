@@ -16,7 +16,7 @@ import { selectAll } from 'unist-util-select'
 import { find } from 'unist-util-find'
 
 export default class Parser {
-    ARROW = /-+>/;
+    ARROW = /-+>|→/;
 
     constructor() {
         this.schematic = null;
@@ -124,11 +124,13 @@ export default class Parser {
         return edge;
     }
 
-    unhyperedgeify() {
+    unhyperedgeify(opts = {}) {
+        const arrow = opts.arrow || "->";
+
         return (tree) => {
             visit(tree, 'hyperedge', (node, index, parent) => {
                 node.type = "text";
-                node.value = node.children.map(child => child.value).join(" -> ");
+                node.value = node.children.map(child => child.value).join(` ${arrow} `);
                 delete node.children;
             });
         }
@@ -210,14 +212,14 @@ export default class Parser {
         }
     }
 
-    export() {
+    export(opts = {}) {
         // clone tree
         const clonedTree = JSON.parse(JSON.stringify(this.tree));
 
         const tree = unified()
-            .use(this.removeSections.bind(this))
-            .use(this.unhyperedgeify.bind(this))
-            .use(this.unhypertextify.bind(this))
+            .use(() => this.removeSections(opts))
+            .use(() => this.unhyperedgeify(opts))
+            .use(() => this.unhypertextify(opts))
             .runSync(clonedTree)
 
         return unified()

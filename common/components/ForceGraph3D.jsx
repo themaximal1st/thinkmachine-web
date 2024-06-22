@@ -49,23 +49,16 @@ export default class ForceGraph3D extends React.Component {
         this.props.graphRef.current.controls().addEventListener("change", () => {
             this.updateDistances();
         });
-
-        // console.log("CONTROLS", this.props.graphRef.current.controls());
     }
 
-    // TODO: This is jumpy
     updateDistances(e) {
-        return;
-
         if (!this.props.graphRef) return;
         if (!this.props.graphRef.current) return;
 
         const distances = {};
-        // console.log(this.props.graphdata.nodes[0].__threeobj.position);
 
         for (const node of this.props.graphData.nodes) {
             if (!node.__threeObj) continue;
-            // console.log("NODE", node.__threeObj);
 
             const pos = node.__threeObj.position;
             if (!pos) continue;
@@ -78,39 +71,11 @@ export default class ForceGraph3D extends React.Component {
             distances[node.uuid] = distance;
         }
 
-        if (Object.keys(distances).length === 0) return;
+        for (const panel of this.nodePanels) {
+            panel.updateDistance(distances[panel.props.node.uuid]);
+        }
 
-        // for (const nodePanel of this.nodePanels) {
-        //     const distance = distances[nodePanel.props.node.uuid];
-        //     nodePanel.updateDistance(distance);
-        // }
-
-        // this.state.distances = distances;
-        // this.setState({ distances });
-    }
-
-    nodeDistance(node) {
-        return;
-        // // console.log("NODE", node);
-        // if (!node.x || !node.y || !node.z) return null;
-
-        // const pos = { x: node.x, y: node.y, z: node.z };
-        // // console.log("POS", pos);
-        // console.log("POS", node.x);
-
-        // // if (!node.__threeObj) return null;
-
-        // // // console.log("NODE", node.__threeObj);
-
-        // // const pos = node.__threeObj.position;
-        // if (!pos) return null;
-        // if (pos.x === 0 && pos.y === 0 && pos.z === 0) return;
-
-        // const camera = this.props.graphRef.current.camera();
-
-        // if (!camera) return null;
-
-        // return camera.position.distanceTo(pos);
+        this.state.distances = distances;
     }
 
     componentWillUnmount() {
@@ -196,17 +161,6 @@ export default class ForceGraph3D extends React.Component {
         return node.context(this.props.graphData);
     }
 
-    onNodeDrag(node) {
-        console.log("onNodeDrag");
-        this.state.isDragging = true;
-        // this.setState({ isDragging: true });
-    }
-
-    onNodeDragEnd(node) {
-        console.log("onNodeDragEnd");
-        this.state.isDragging = false;
-    }
-
     render() {
         this.nodePanels = [];
 
@@ -216,8 +170,7 @@ export default class ForceGraph3D extends React.Component {
                 controlType={Settings.controlType}
                 nodeThreeObject={this.nodeThreeObject.bind(this)}
                 extraRenderers={[new CSS2DRenderer()]}
-                onNodeDrag={this.onNodeDrag.bind(this)}
-                onNodeDragEnd={this.onNodeDragEnd.bind(this)}
+                onEngineTick={this.updateDistances.bind(this)}
                 {...this.props}
             />
         );
@@ -281,15 +234,14 @@ export default class ForceGraph3D extends React.Component {
 
         const title = this.nodeThreeTitleObject(node);
 
-        // if (
-        //     !this.props.trackedActiveNodeUUID ||
-        //     this.props.trackedActiveNodeUUID !== node.uuid
-        // ) {
-        //     return title;
-        // }
+        if (
+            !this.props.trackedActiveNodeUUID ||
+            this.props.trackedActiveNodeUUID !== node.uuid
+        ) {
+            return title;
+        }
 
-        // const distance = this.nodeDistance(node);
-        // console.log("INITIAL DISTANCE", distance);
+        console.log("NODE DISTANCE", this.state.distances[node.uuid]);
 
         // leaving react here...
         const nodePanel = new NodePanel({
@@ -297,6 +249,7 @@ export default class ForceGraph3D extends React.Component {
             ...this.props,
             node,
             title,
+            distance: this.state.distances[node.uuid],
             // context: this.nodeContext,
             // setMedia: this.setMedia.bind(this),
             // setExplain: this.setExplain.bind(this),

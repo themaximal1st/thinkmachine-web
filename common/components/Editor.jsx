@@ -44,6 +44,7 @@ export default class Editor extends React.Component {
     handleTextareaChange(event) {
         // console.log("CHANGED TEXT AREA", event.target.value);
         this.props.schematic.parse(event.target.value);
+        // event.target.value = this.props.schematic.export({ arrow: "→" });
     }
 
     render() {
@@ -68,7 +69,9 @@ export default class Editor extends React.Component {
                 <div className="relative group content">
                     <textarea
                         onChange={this.handleTextareaChange.bind(this)}
-                        defaultValue={this.props.schematic.export()}></textarea>
+                        defaultValue={this.props.schematic.export({
+                            arrow: "→",
+                        })}></textarea>
                 </div>
             </div>
         );

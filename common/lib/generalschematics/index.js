@@ -119,7 +119,7 @@ export default class GeneralSchematics {
     }
 
     export() {
-        return this.parser.export();
+        return this.parser.export(...arguments);
     }
 
     debug() {

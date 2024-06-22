@@ -13,32 +13,28 @@ export default class NodePanel extends Component {
         super(props);
 
         this.panels = {};
-        this.distance = 90;
     }
 
-    // /*
     updateDistance(distance) {
-        // console.log("BOOM TOWN", distances);
-        this.distance = distance;
+        this.props.distance = distance;
 
         const div = document.getElementById(this.props.node.uuid);
         if (!div) return;
 
-        // set tranform
-        div.style.transform = `scale(${100 / this.distance})`;
-        // div.innerHTML = distance;
+        div.style.transform = `scale(${100 / this.props.distance})`;
     }
 
     code() {
-        // const distance = Math.round(this.props.distances[this.props.node.uuid]);
         const node = this.props.schematic.nodeByUUID(this.props.node.uuid);
-        const hypertexts = node.hypertexts.map((h) => h.value).join("\n");
         return (
             <div
                 className="node-panel"
-                style={{ transform: `scale(${100 / this.distance})` }}
+                key={`panel-${node.uuid}`}
+                style={{ transform: `scale(${100 / this.props.distance})` }}
                 id={this.props.node.uuid}>
-                {hypertexts}
+                {node.hypertexts.map((h, idx) => (
+                    <div key={`hypertext-${node.uuid}-${idx}`}>{h.value}</div>
+                ))}
             </div>
         );
     }

@@ -417,6 +417,16 @@ test("symbols with spaces", async () => {
     expect(schematic.export()).toEqual("This is A -> This is B -> This is C");
 });
 
+test("export symbols as unicode", async () => {
+    const schematic = new GeneralSchematics("A -> B -> C");
+    const exported = schematic.export({ arrow: "→" });
+
+    expect(exported).toEqual("A → B → C");
+
+    const schematic2 = new GeneralSchematics(exported);
+    expect(schematic.symbols).toEqual(schematic2.symbols);
+});
+
 
 
 // symbol headers with spaces
