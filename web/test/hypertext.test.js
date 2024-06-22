@@ -72,6 +72,12 @@ test("hypertext and symbols with spaces", async () => {
     expect(schematic.hypertexts.get("This is A").length).toEqual(1);
 });
 
+test("hypertext section and symbols with spaces", async () => {
+    const schematic = new GeneralSchematics("This is A -> This is B -> This is C\n\n## This is A\na cool symbol with spaces.");
+    expect(schematic.hypertexts.global.length).toEqual(0);
+    expect(schematic.hypertexts.get("This is A").length).toEqual(1);
+});
+
 test.skip("symbolify section until double break", () => {
     const schematic = new GeneralSchematics(`
 Hello World
