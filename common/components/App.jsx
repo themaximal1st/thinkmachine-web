@@ -48,6 +48,10 @@ export default class App extends React.Component {
             activeNodeUUID: null,
             graphData: { nodes: [], links: [] },
             dirty: false,
+            panes: {
+                editor: false,
+                graph: true,
+            },
         };
 
         this.handleKeyDown = this.handleKeyDown.bind(this);
@@ -158,6 +162,12 @@ export default class App extends React.Component {
         });
     }
 
+    async togglePane(pane, val = undefined) {
+        const panes = { ...this.state.panes };
+        panes[pane] = val === undefined ? !panes[pane] : val;
+        await this.asyncSetState({ panes });
+    }
+
     async saveFile() {
         const name = `${this.title} ${new Date().toISOString()}`;
         this.schematic.debug();
@@ -203,6 +213,8 @@ export default class App extends React.Component {
                         reset={this.reset.bind(this)}
                         reloadData={this.reloadData.bind(this)}
                         saveFile={this.saveFile.bind(this)}
+                        panes={this.state.panes}
+                        togglePane={this.togglePane.bind(this)}
                     />
 
                     <div className="relative">
@@ -222,6 +234,8 @@ export default class App extends React.Component {
                             graphData={this.state.graphData}
                             reloadData={this.reloadData.bind(this)}
                             save={this.save.bind(this)}
+                            panes={this.state.panes}
+                            togglePane={this.togglePane.bind(this)}
                         />
                     </div>
                 </div>

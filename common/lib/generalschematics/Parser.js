@@ -177,14 +177,11 @@ export default class Parser {
             node.owners.push(symbol);
         }
 
-
-        // Handle text owners
-        const tokens = this.tokenize(node.value);
         for (const symbol of this.symbols) {
-            if (tokens.includes(symbol)) {
-                if (node.owners.includes(symbol)) continue;
-                node.owners.push(symbol);
-            }
+            if (node.owners.includes(symbol)) continue;
+            const token = new RegExp(`\\b${symbol}\\b`, "g");
+            if (!token.test(node.value)) continue;
+            node.owners.push(symbol);
         }
 
         if (node.owners.length === 0) {

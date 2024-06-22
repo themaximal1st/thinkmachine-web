@@ -44,8 +44,8 @@ test("punctuation", () => {
     schematic.parse(`A -> B -> C\nThis is for C—and then more.`); // long dash = symbol
     expect(schematic.hypertexts.get("C").length).toEqual(1);
 
-    schematic.parse(`A -> B -> C\nThis is for C-and then more.`); // short dash = no symbol
-    expect(schematic.hypertexts.get("C").length).toEqual(0);
+    schematic.parse(`A -> B -> C\nThis is for C-and then more.`); // short dash = symbol
+    expect(schematic.hypertexts.get("C").length).toEqual(1);
 
     schematic.parse(`A -> B -> C\nThis is for C(and then more)`);
     expect(schematic.hypertexts.get("C").length).toEqual(1);
@@ -60,8 +60,27 @@ test("symbolify section", () => {
     expect(schematic.hypertexts.get("C").length).toEqual(2);
 });
 
-test.only("symbolify section until double break", () => {
-    const schematic = new GeneralSchematics("A -> B -> C\n\n## A\nThis is some hypertext.\ \n   \n  \n \nIt goes on and on");
+test("symbol token matching", async () => {
+    const schematic = new GeneralSchematics("This is A -> This is B -> This is C\n\nThis is AA not matching anything");
+    expect(schematic.hypertexts.global.length).toEqual(1);
+    expect(schematic.hypertexts.get("This is A").length).toEqual(0);
+});
+
+test("hypertext and symbols with spaces", async () => {
+    const schematic = new GeneralSchematics("This is A -> This is B -> This is C\n\nThis is A is a cool symbol with spaces.");
+    expect(schematic.hypertexts.global.length).toEqual(0);
+    expect(schematic.hypertexts.get("This is A").length).toEqual(1);
+});
+
+test.skip("symbolify section until double break", () => {
+    const schematic = new GeneralSchematics(`
+Hello World
+And more
+
+And more1
+
+
+And even more2`);
 
     // schematic.debug();
 

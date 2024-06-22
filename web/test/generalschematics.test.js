@@ -407,6 +407,21 @@ test("parse keeps uuids multiple symbols", async () => {
     expect(nuuids).toEqual(uuids);
 });
 
+test("symbols with spaces", async () => {
+    const schematic = new GeneralSchematics("This is A -> This is B -> This is C");
+    expect(schematic.hyperedges.length).toEqual(1);
+    expect(schematic.nodes.length).toEqual(3);
+    expect(schematic.nodes[0].value).toEqual("This is A");
+    expect(schematic.nodes[1].value).toEqual("This is B");
+    expect(schematic.nodes[2].value).toEqual("This is C");
+    expect(schematic.export()).toEqual("This is A -> This is B -> This is C");
+});
+
+
+
+// symbol headers with spaces
+
+
 // A -> B -> A will break....
 
 // A -> 1 -> 2

@@ -55,6 +55,8 @@ export default class ForceGraph3D extends React.Component {
 
     // TODO: This is jumpy
     updateDistances(e) {
+        return;
+
         if (!this.props.graphRef) return;
         if (!this.props.graphRef.current) return;
 
@@ -78,12 +80,37 @@ export default class ForceGraph3D extends React.Component {
 
         if (Object.keys(distances).length === 0) return;
 
-        for (const nodePanel of this.nodePanels) {
-            nodePanel.updateDistances(distances);
-        }
+        // for (const nodePanel of this.nodePanels) {
+        //     const distance = distances[nodePanel.props.node.uuid];
+        //     nodePanel.updateDistance(distance);
+        // }
 
         // this.state.distances = distances;
         // this.setState({ distances });
+    }
+
+    nodeDistance(node) {
+        return;
+        // // console.log("NODE", node);
+        // if (!node.x || !node.y || !node.z) return null;
+
+        // const pos = { x: node.x, y: node.y, z: node.z };
+        // // console.log("POS", pos);
+        // console.log("POS", node.x);
+
+        // // if (!node.__threeObj) return null;
+
+        // // // console.log("NODE", node.__threeObj);
+
+        // // const pos = node.__threeObj.position;
+        // if (!pos) return null;
+        // if (pos.x === 0 && pos.y === 0 && pos.z === 0) return;
+
+        // const camera = this.props.graphRef.current.camera();
+
+        // if (!camera) return null;
+
+        // return camera.position.distanceTo(pos);
     }
 
     componentWillUnmount() {
@@ -260,6 +287,9 @@ export default class ForceGraph3D extends React.Component {
         // ) {
         //     return title;
         // }
+
+        // const distance = this.nodeDistance(node);
+        // console.log("INITIAL DISTANCE", distance);
 
         // leaving react here...
         const nodePanel = new NodePanel({

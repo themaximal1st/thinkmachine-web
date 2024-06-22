@@ -95,6 +95,7 @@ export default class ForceGraph extends React.Component {
             ...defaultProps,
             ...this.props,
             ...this.state,
+            width: this.width,
             graphRef: this.graphRef,
             linkColor: this.linkColor.bind(this),
             linkDirectionalArrowLength: this.linkDirectionalArrowLength.bind(this),
@@ -103,6 +104,8 @@ export default class ForceGraph extends React.Component {
             onNodeClick: this.handleNodeClick.bind(this),
             onEngineStop: this.handleEngineStop.bind(this),
         };
+
+        console.log("WIDTH", this.width);
 
         return (
             <div
@@ -163,12 +166,22 @@ export default class ForceGraph extends React.Component {
 
     handleResize() {
         this.setState({
-            width: window.innerWidth - 600,
+            width: window.innerWidth,
             height: window.innerHeight,
         });
     }
 
+    get width() {
+        if (this.props.panes.editor) {
+            return this.state.width - 600;
+        }
+
+        return this.state.width;
+    }
+
     setupForces() {
+        if (!this.graphRef.current) return;
+
         this.graphRef.current.d3Force("link").distance((link) => {
             return link.length || defaultForces.link.distance;
         });

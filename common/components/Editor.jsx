@@ -6,8 +6,12 @@ export default class Editor extends React.Component {
         super(props);
         this.importRef = React.createRef();
         this.state = {
-            show: false,
+            activeUUID: null,
         };
+
+        // this.state = {
+        //     show: false,
+        // };
         this.handleKeyDown = this.handleKeyDown.bind(this);
     }
 
@@ -30,10 +34,10 @@ export default class Editor extends React.Component {
     }
 
     handleKeyDown(event) {
-        if (event.key === "Escape" && this.state.show) {
-            this.setState({ show: false });
+        if (event.key === "Escape" && this.props.panes.editor) {
+            this.props.togglePane("editor", false);
         } else if (event.key === "`") {
-            this.setState({ show: !this.state.show });
+            this.props.togglePane("editor");
         }
     }
 
@@ -43,10 +47,10 @@ export default class Editor extends React.Component {
     }
 
     render() {
-        if (!this.state.show) {
+        if (!this.props.panes.editor) {
             return (
                 <div className="relative group" id="editor-button">
-                    <button onClick={() => this.setState({ show: true })}>
+                    <button onClick={() => this.props.togglePane("editor")}>
                         {Icons.EditorIcon(8)}
                     </button>
                     <div className="tooltip invisible group-hover:visible">Editor</div>
@@ -57,7 +61,7 @@ export default class Editor extends React.Component {
         return (
             <div id="editor">
                 <div className="relative group close-icon">
-                    <button onClick={() => this.setState({ show: false })}>
+                    <button onClick={() => this.props.togglePane("editor", false)}>
                         {Icons.CloseIcon(8)}
                     </button>
                 </div>
