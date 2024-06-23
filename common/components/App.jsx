@@ -119,9 +119,9 @@ export default class App extends React.Component {
         Client.setup();
         await this.reset();
 
-        // setTimeout(() => {
-        //     this.setActiveNodeUUID(this.schematic.nodes[0].uuid);
-        // }, 1000);
+        setTimeout(() => {
+            this.setActiveNodeUUID(this.schematic.nodes[0].uuid);
+        }, 1000);
     }
 
     async reset() {

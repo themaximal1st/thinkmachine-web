@@ -13,36 +13,15 @@ export default class Editor extends React.Component {
             value: [],
         };
 
-        // this.state = {
-        //     show: false,
-        // };
-
         this.handleKeyDown = this.handleKeyDown.bind(this);
     }
 
     componentDidMount() {
         window.addEventListener("keydown", this.handleKeyDown);
-
-        // setTimeout(() => {
-        //     this.setState({ show: true });
-        // }, 250);
     }
 
     componentWillUnmount() {
         window.removeEventListener("keydown", this.handleKeyDown);
-    }
-
-    componentDidUpdate(prevProps, prevState) {
-        // console.log("UPDATE", this.state.value);
-        // if (this.state.value !== this.props.schematic.slate) {
-        //     console.log("CHANGE STATE");
-        //     this.setState({ value: this.props.schematic.slate });
-        // }
-        // console.log("PREV PROPS", prevProps);
-        // console.log("CURR PROPS", this.props);
-        // if (prevState.activeUUID !== this.state.activeUUID) {
-        //     document.getElementById(this.state.activeUUID).focus();
-        // }
     }
 
     handleKeyDown(event) {
@@ -74,9 +53,6 @@ export default class Editor extends React.Component {
                 </div>
                 <div className="relative group content">
                     <WYSIWYG schematic={this.props.schematic} />
-                    {/* <textarea
-                        onChange={this.handleTextareaChange.bind(this)}
-                        defaultValue={this.props.schematic.export()}></textarea> */}
                 </div>
             </div>
         );

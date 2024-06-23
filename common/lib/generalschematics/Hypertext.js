@@ -14,6 +14,7 @@ export default class Hypertext {
         this.data.value = value;
         this.hypertexts.schematic.update();
         this.schematic.onUpdate({ event: "hypertext.update", data: this });
+        console.log("Hypertext value set to", value)
     }
 
     get owners() {

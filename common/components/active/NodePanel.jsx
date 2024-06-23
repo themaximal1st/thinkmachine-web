@@ -1,45 +1,109 @@
 import Component from "./Component";
-import ExplainPanel from "./ExplainPanel";
-import EditPanel from "./EditPanel";
-import MediaPanel from "./MediaPanel";
-import NotesPanel from "./NotesPanel";
-import Toolbar from "./Toolbar";
-import Context from "./Context";
-import * as Icons from "@assets/Icons";
-import Settings from "@lib/Settings";
+import Cursor from "@lib/Cursor";
 
 export default class NodePanel extends Component {
     constructor(props) {
+        console.log("NEW NODE PANEL");
+
         super(props);
 
         this.panels = {};
+        this.onChange = this.onChange.bind(this);
+        this.cursors = [];
+    }
+
+    get nodePanel() {
+        return document.getElementById(this.props.node.uuid);
     }
 
     updateDistance(distance) {
         this.props.distance = distance;
+        const panel = this.nodePanel;
+        if (!panel) return;
+        panel.style.transform = `scale(${100 / this.props.distance})`;
+    }
 
-        const div = document.getElementById(this.props.node.uuid);
-        if (!div) return;
+    onChange(e) {
+        const target = e.target;
+        if (target.tagName !== "TEXTAREA") return;
 
-        div.style.transform = `scale(${100 / this.props.distance})`;
+        const cursor = this.cursors.find((c) => c.id === target.id);
+        if (cursor) {
+            console.log("SAVE CURSOR");
+            cursor.save();
+        }
+
+        // this.cursor.save();
+
+        const value = target.value;
+        const index = target.dataset.index;
+
+        const hypertext = this.node.hypertexts[index];
+        hypertext.value = value;
+
+        this.props.schematic.input = this.props.schematic.export();
+
+        // this.props.schematic.debug();
     }
 
     code() {
-        const node = this.props.schematic.nodeByUUID(this.props.node.uuid);
         return (
             <div
                 className="node-panel"
-                key={`panel-${node.uuid}`}
+                key={`panel-${this.node.uuid}`}
                 style={{ transform: `scale(${100 / this.props.distance})` }}
-                id={this.props.node.uuid}>
-                {node.hypertexts.map((h, idx) => (
-                    <div key={`hypertext-${node.uuid}-${idx}`}>{h.value}</div>
+                id={this.node.uuid}>
+                {this.node.hypertexts.map((h, idx) => (
+                    <textarea
+                        key={`hypertext-${this.node.uuid}-${idx}`}
+                        id={`hypertext-${this.node.uuid}-${idx}`}
+                        data-index={idx}
+                        onChange={() => ""}
+                        value={h.value}></textarea>
                 ))}
             </div>
         );
     }
 
-    load(div) {}
+    // TODO: This has to be much more straight forward.
+    // TODO: Is there really no way to use react? We're having to re-render this over and over and over and over
+    // TODO: At best it creates a bad flickering artifact and takes a lot of performance
+    // TODO: At worst...it's really buggy and doesn't work
 
-    unload() {}
+    load(div) {
+        console.log("LOAD");
+
+        // if (this.cursor.element) {
+        //     console.log("RESTORE CURSOR");
+        //     this.cursor.element.focus();
+        //     this.cursor.restore();
+        // }
+
+        const cursorIds = this.cursors.map((c) => c.id);
+
+        const textareas = div.querySelectorAll("textarea");
+        for (const textarea of textareas) {
+            textarea.addEventListener("input", this.onChange);
+            // if (cursorIds.includes(textarea.id)) {
+            //     const cursor = this.cursors.find((c) => c.id === textarea.id);
+            //     console.log("RESTORE CURSOR");
+            //     setTimeout(() => {
+            //         textarea.focus();
+            //         Cursor.set(textarea, cursor.position);
+            //     }, 5);
+            //     console.log(textarea);
+            //     // cursor.restore();
+            // } else {
+            // const cursor = new Cursor(textarea.id);
+            // this.cursors.push(cursor);
+            // }
+        }
+    }
+
+    unload() {
+        const textareas = div.querySelectorAll("textarea");
+        for (const textarea of textareas) {
+            textarea.removeEventListener("input", this.onChange);
+        }
+    }
 }

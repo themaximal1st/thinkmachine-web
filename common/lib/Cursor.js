@@ -14,6 +14,7 @@ export default class Cursor {
     }
 
     restore() {
+        if (document.activeElement !== this.element) return;
         Cursor.set(this.element, this.position);
     }
 

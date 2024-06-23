@@ -436,7 +436,11 @@ canvas {
 }
 
 .node-panel {
-    @apply text-white;
+    @apply text-white bg-gray-1000 flex flex-col gap-1;
+
+    textarea {
+        @apply bg-gray-1000/50 outline-none resize-none w-full h-full pointer-events-auto;
+    }
 }
 
 #wysiwyg {

@@ -15,7 +15,7 @@ export default class ForceGraph3D extends React.Component {
     constructor(props) {
         super(props);
         this.activeNodeUI = null;
-        this.nodePanels = [];
+        this.nodePanels = new Map();
         this.state = {
             media: new Map(),
             explains: new Map(),
@@ -71,7 +71,7 @@ export default class ForceGraph3D extends React.Component {
             distances[node.uuid] = distance;
         }
 
-        for (const panel of this.nodePanels) {
+        for (const panel of this.nodePanels.values()) {
             panel.updateDistance(distances[panel.props.node.uuid]);
         }
 
@@ -162,8 +162,6 @@ export default class ForceGraph3D extends React.Component {
     }
 
     render() {
-        this.nodePanels = [];
-
         return (
             <ForceGraph3DComponent
                 ref={this.props.graphRef} // won't allow in prop?
@@ -241,7 +239,13 @@ export default class ForceGraph3D extends React.Component {
             return title;
         }
 
-        console.log("NODE DISTANCE", this.state.distances[node.uuid]);
+        // console.log("NODE DISTANCE", this.state.distances[node.uuid]);
+        const existingNodePanel = this.nodePanels.get(node.uuid);
+        if (existingNodePanel) {
+            console.log("RENDERING EXISTING NODE PANEL");
+            console.log(existingNodePanel);
+            return existingNodePanel.render();
+        }
 
         // leaving react here...
         const nodePanel = new NodePanel({
@@ -256,7 +260,7 @@ export default class ForceGraph3D extends React.Component {
             // setChat: this.setChat.bind(this),
         });
 
-        this.nodePanels.push(nodePanel);
+        this.nodePanels.set(node.uuid, nodePanel);
 
         return nodePanel.render();
 
