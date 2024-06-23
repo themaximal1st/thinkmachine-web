@@ -2,8 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-#body {
-    @apply w-full;
+body {
+    @apply w-full dark:bg-black;
 }
 
 #active-node-wrapper {
@@ -440,7 +440,7 @@ canvas {
 }
 
 #wysiwyg {
-    @apply text-white w-full h-full p-8 text-xl inline-block;
+    @apply text-white w-full h-full p-8 text-xl inline-block bg-gray-1000/50 outline-none resize-none;
 
     .paragraph {
         @apply py-2;

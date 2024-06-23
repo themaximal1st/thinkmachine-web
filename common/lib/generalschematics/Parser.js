@@ -2,7 +2,7 @@ import rehypeSanitize from 'rehype-sanitize'
 import rehypeStringify from 'rehype-stringify'
 import remarkParse from 'remark-parse'
 import rehypeParse from 'rehype-parse'
-import slate from 'remark-slate';
+// import slate from 'remark-slate';
 import rehypeRemark from 'rehype-remark'
 import remarkMath from 'remark-math'
 import remarkFrontmatter from 'remark-frontmatter'
@@ -17,7 +17,7 @@ import remarkStringify from 'remark-stringify'
 import { inspect } from "unist-util-inspect"
 import { selectAll } from 'unist-util-select'
 import { find } from 'unist-util-find'
-import { serialize } from "remark-slate";
+// import { serialize } from "remark-slate";
 
 export default class Parser {
     ARROW = /-+>|→/;
@@ -63,23 +63,23 @@ export default class Parser {
         return processor.stringify(tree);
     }
 
-    slate() {
-        const clonedTree = JSON.parse(JSON.stringify(this.tree));
+    // slate() {
+    //     const clonedTree = JSON.parse(JSON.stringify(this.tree));
 
-        const processor = unified()
-            .use(this.removeSections.bind(this))
-            .use(this.unhyperedgeify.bind(this))
-            .use(slate)
+    //     const processor = unified()
+    //         .use(this.removeSections.bind(this))
+    //         .use(this.unhyperedgeify.bind(this))
+    //         .use(slate)
 
-        const tree = processor.runSync(clonedTree);
+    //     const tree = processor.runSync(clonedTree);
 
-        return processor.stringify(tree);
+    //     return processor.stringify(tree);
 
-    }
+    // }
 
-    parseSlate(slate) {
-        return slate.map(child => serialize(child)).join("").replace(/<br>\n/g, "\n");
-    }
+    // parseSlate(slate) {
+    //     return slate.map(child => serialize(child)).join("").replace(/<br>\n/g, "\n");
+    // }
 
     parseHTML(html) {
         console.log("PARSING HTML", html);
@@ -263,6 +263,6 @@ export default class Parser {
             .use(remarkStringify)
             .stringify(tree)
             .replace(/\\\n/g, "\n") // hack: soft breaks...not clear how to force stringify to not escape them
-            .trim()
+            .replace(/\n?$/, "") // ensure newline at end
     }
 }

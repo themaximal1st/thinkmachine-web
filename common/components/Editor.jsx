@@ -1,9 +1,7 @@
 import React from "react";
 import * as Icons from "@assets/Icons";
 import WYSIWYG from "./WYSIWYG";
-import { createEditor } from "slate";
-import { Slate, Editable, withReact } from "slate-react";
-import { serialize } from "remark-slate";
+// import { serialize } from "remark-slate";
 
 export default class Editor extends React.Component {
     constructor(props) {
@@ -18,7 +16,6 @@ export default class Editor extends React.Component {
         // this.state = {
         //     show: false,
         // };
-        this.editor = withReact(createEditor());
 
         this.handleKeyDown = this.handleKeyDown.bind(this);
     }
@@ -37,25 +34,12 @@ export default class Editor extends React.Component {
 
     componentDidUpdate(prevProps, prevState) {
         // console.log("UPDATE", this.state.value);
-        if (this.state.dataHash !== this.props.schematic.hash) {
-            console.log("UPDATE SLATE");
-            const value = this.props.schematic.slate;
-            this.setState({
-                value,
-                dataHash: this.props.schematic.hash,
-            });
-
-            this.editor.children = value;
-        }
-
         // if (this.state.value !== this.props.schematic.slate) {
         //     console.log("CHANGE STATE");
         //     this.setState({ value: this.props.schematic.slate });
         // }
-
         // console.log("PREV PROPS", prevProps);
         // console.log("CURR PROPS", this.props);
-
         // if (prevState.activeUUID !== this.state.activeUUID) {
         //     document.getElementById(this.state.activeUUID).focus();
         // }
@@ -81,32 +65,6 @@ export default class Editor extends React.Component {
             );
         }
 
-        const handleChange = (value) => {
-            // console.log("HANDLE CHANGE");
-            this.props.schematic.parseSlate(value);
-
-            // const val = value.map((v) => serialize(v)).join("");
-
-            // // convert &gt; to >, &lt; to <, etc.
-            // const html = val.replace(/&gt;/g, ">").replace(/&lt;/g, "<");
-
-            // console.log("HTML", html);
-
-            // this.props.schematic.parse(html);
-        };
-
-        // this.props.schematic.debug();
-        // const value = this.props.schematic.slate;
-
-        // console.log("RENDER SLATE", JSON.stringify(value, null, 2));
-
-        // const value = [
-        //     {
-        //         type: "paragraph",
-        //         children: [{ text: "A line of text in a paragraph." }],
-        //     },
-        // ];
-
         return (
             <div id="editor">
                 <div className="relative group close-icon">
@@ -115,14 +73,7 @@ export default class Editor extends React.Component {
                     </button>
                 </div>
                 <div className="relative group content">
-                    <Slate
-                        id="editor"
-                        editor={this.editor}
-                        initialValue={this.state.value}
-                        onChange={handleChange}>
-                        <Editable id="editable" />
-                    </Slate>
-                    {/* <WYSIWYG schematic={this.props.schematic} /> */}
+                    <WYSIWYG schematic={this.props.schematic} />
                     {/* <textarea
                         onChange={this.handleTextareaChange.bind(this)}
                         defaultValue={this.props.schematic.export()}></textarea> */}
