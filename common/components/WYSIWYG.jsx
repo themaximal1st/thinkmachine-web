@@ -12,7 +12,7 @@ export default class WYSIWYG extends React.Component {
 
     componentDidUpdate() {
         this.cursor.restore();
-        console.log("WYSIWYG DID UPDATE");
+        // console.log("WYSIWYG DID UPDATE");
     }
 
     children() {

@@ -48,6 +48,11 @@ export default class GeneralSchematics {
         this.hypertexts = null;
         this.hypergraph = null;
         this.parser = new Parser();
+
+        this.tree = null;
+        this.hypertexts = new Hypertexts(this);
+        this.hypergraph = new Hypergraph(this);
+
         this.parse();
     }
 

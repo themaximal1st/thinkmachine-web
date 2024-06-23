@@ -1,4 +1,5 @@
 import React from "react";
+
 import ForceGraph3D from "./ForceGraph3D";
 import ForceGraph2D from "./ForceGraph2D";
 import Settings from "@lib/Settings";
@@ -53,6 +54,9 @@ export default class ForceGraph extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
+        // difference between prevProps and this.props
+        console.log("😇 ForceGraph componentDidUpdate", this.props);
+
         let delay = 100;
         if (prevProps.trackedActiveNodeUUID !== this.props.trackedActiveNodeUUID) {
             this.updateCamera(true, 100, prevProps.graphData);
@@ -91,6 +95,7 @@ export default class ForceGraph extends React.Component {
     }
 
     render() {
+        console.log("😇 ForceGraph render");
         const props = {
             ...defaultProps,
             ...this.props,
@@ -98,11 +103,11 @@ export default class ForceGraph extends React.Component {
             width: this.width,
             graphRef: this.graphRef,
             linkColor: this.linkColor.bind(this),
-            linkDirectionalArrowLength: this.linkDirectionalArrowLength.bind(this),
-            setActiveMode: this.setActiveMode.bind(this),
-            toggleConnectMode: this.toggleConnectMode.bind(this),
-            onNodeClick: this.handleNodeClick.bind(this),
-            onEngineStop: this.handleEngineStop.bind(this),
+            // linkDirectionalArrowLength: this.linkDirectionalArrowLength.bind(this),
+            // setActiveMode: this.setActiveMode.bind(this),
+            // toggleConnectMode: this.toggleConnectMode.bind(this),
+            // onNodeClick: this.handleNodeClick.bind(this),
+            // onEngineStop: this.handleEngineStop.bind(this),
         };
 
         return (

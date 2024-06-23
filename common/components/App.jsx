@@ -102,14 +102,14 @@ export default class App extends React.Component {
     }
 
     async onDataUpdate(event) {
-        if (!this.state) return; // TODO: Why is this happening?
+        console.log("DATA UPDATE", event);
 
         if (this.state.isLoading) {
             return;
         }
 
         if (this.schematic.hash !== this.state.dataHash) {
-            console.log("DATA UPDATE", event);
+            console.log("📀 DATA UPDATE", this.schematic.hash, this.state.dataHash);
             // await this.asyncSetState({ dirty: true });
             await this.save();
         }
@@ -119,22 +119,23 @@ export default class App extends React.Component {
         Client.setup();
         await this.reset();
 
-        setTimeout(() => {
-            this.setActiveNodeUUID(this.schematic.nodes[0].uuid);
-        }, 1000);
+        // setTimeout(() => {
+        //     this.setActiveNodeUUID(this.schematic.nodes[0].uuid);
+        // }, 1000);
     }
 
     async reset() {
-        await this.asyncSetState({ isLoading: true });
+        console.log("❌ RESET");
+        this.state.isLoading = true;
         const hypergraph = await this.settings.hypergraph();
         this.schematic.parse(hypergraph);
-        await this.asyncSetState({ isLoading: false });
+        this.state.isLoading = false;
 
         await this.reloadData();
     }
 
     async reloadData() {
-        console.log("RELOAD DATA");
+        console.log("✅ RELOAD DATA");
 
         const graphData = this.schematic.graphData(this.filters, this.state.graphData);
 
@@ -269,6 +270,12 @@ export default class App extends React.Component {
                         }}
                     />
                 </div>
+
+                <button
+                    className="absolute top-0 right-0 bg-blue-500 text-white"
+                    onClick={this.reloadData.bind(this)}>
+                    Reload
+                </button>
             </div>
         );
     }
@@ -276,6 +283,7 @@ export default class App extends React.Component {
     // utils
 
     async asyncSetState(state = {}) {
+        console.log("🚀 SET STATE", state);
         return new Promise((resolve, reject) => {
             this.setState(state, () => {
                 resolve();

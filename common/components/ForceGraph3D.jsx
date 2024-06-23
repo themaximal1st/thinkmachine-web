@@ -8,6 +8,8 @@ import * as utils from "@lib/utils";
 import { ForceGraph3D as ForceGraph3DComponent } from "react-force-graph";
 import Settings from "@lib/Settings";
 import React from "react";
+import { useCallback } from "react";
+
 import ActiveNode from "./active/ActiveNode";
 import NodePanel from "./active/NodePanel";
 
@@ -22,9 +24,13 @@ export default class ForceGraph3D extends React.Component {
             chats: new Map(),
             distances: {},
             isDragging: false,
+            graphData: { nodes: [], links: [] },
+            dataHash: null,
         };
 
         this.handleKeyDown = this.handleKeyDown.bind(this);
+        // this.nodeThreeObject = this.nodeThreeObject.bind(this);
+        this.updateDistances = this.updateDistances.bind(this);
     }
 
     // TODO: Check if component is off screen...then bail
@@ -49,6 +55,16 @@ export default class ForceGraph3D extends React.Component {
         this.props.graphRef.current.controls().addEventListener("change", () => {
             this.updateDistances();
         });
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if (prevState.dataHash !== this.props.schematic.hash) {
+            console.log("🔒 GRAPH DATA CHANGED");
+            this.setState({
+                graphData: this.props.graphData,
+                dataHash: this.props.schematic.hash,
+            });
+        }
     }
 
     updateDistances(e) {
@@ -161,15 +177,19 @@ export default class ForceGraph3D extends React.Component {
         return node.context(this.props.graphData);
     }
 
+    nodeThreeObjectProp = this.nodeThreeObject.bind(this);
+
     render() {
+        console.log("🎄 FORCE GRAPH 3D RENDER");
         return (
             <ForceGraph3DComponent
                 ref={this.props.graphRef} // won't allow in prop?
                 controlType={Settings.controlType}
-                nodeThreeObject={this.nodeThreeObject.bind(this)}
+                nodeThreeObject={this.nodeThreeObjectProp}
                 extraRenderers={[new CSS2DRenderer()]}
-                onEngineTick={this.updateDistances.bind(this)}
+                onEngineTick={this.updateDistances}
                 {...this.props}
+                graphData={this.state.graphData}
             />
         );
     }
@@ -217,6 +237,7 @@ export default class ForceGraph3D extends React.Component {
     }
 
     nodeThreeObject(node) {
+        console.log("🤘 NODE THREE OBJECT");
         // if (this.activeNodeUI && this.activeNodeUI.props.node.uuid === node.uuid) {
         //     this.activeNodeUI.unload();
         //     this.activeNodeUI = null;
@@ -239,6 +260,9 @@ export default class ForceGraph3D extends React.Component {
             return title;
         }
 
+        return title;
+
+        /*
         // console.log("NODE DISTANCE", this.state.distances[node.uuid]);
         const existingNodePanel = this.nodePanels.get(node.uuid);
         if (existingNodePanel) {
@@ -276,5 +300,6 @@ export default class ForceGraph3D extends React.Component {
         // });
 
         // return this.activeNodeUI.render();
+        */
     }
 }
