@@ -407,7 +407,7 @@
 }
 
 #editor {
-    @apply bg-gray-50 dark:bg-black max-w-max w-full;
+    @apply bg-gray-50 dark:bg-black w-[600px];
 
     .close-icon {
         @apply absolute top-2 right-2 z-40 text-black dark:text-white w-10 h-10 ml-2 pl-1 cursor-pointer mt-2;
@@ -421,9 +421,9 @@
         @apply w-full h-full flex items-center justify-center;
     }
 
-    textarea {
+    /* textarea {
         @apply min-w-[600px] h-full max-w-3xl text-2xl p-4 rounded-xl outline-none bg-transparent text-black dark:text-white bg-gray-100/50 dark:bg-gray-1000/50 resize-none;
-    }
+    } */
 }
 
 #force-graph {
@@ -437,4 +437,28 @@ canvas {
 
 .node-panel {
     @apply text-white;
+}
+
+#wysiwyg {
+    @apply text-white w-full h-full p-8 text-xl inline-block;
+
+    .paragraph {
+        @apply py-2;
+    }
+
+    .hyperedge {
+        @apply flex gap-4 min-w-16;
+    }
+
+    .node {
+        @apply font-medium italic;
+    }
+}
+
+#editor {
+    @apply w-full min-h-full text-white outline-none;
+
+    #editable {
+        @apply w-full h-full p-8 text-xl outline-none;
+    }
 }

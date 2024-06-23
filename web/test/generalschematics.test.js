@@ -429,8 +429,6 @@ test("export symbols as unicode", async () => {
 
 
 
-// symbol headers with spaces
-
 
 // A -> B -> A will break....
 

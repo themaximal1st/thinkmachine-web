@@ -1,6 +1,9 @@
 import rehypeSanitize from 'rehype-sanitize'
 import rehypeStringify from 'rehype-stringify'
 import remarkParse from 'remark-parse'
+import rehypeParse from 'rehype-parse'
+import slate from 'remark-slate';
+import rehypeRemark from 'rehype-remark'
 import remarkMath from 'remark-math'
 import remarkFrontmatter from 'remark-frontmatter'
 import remarkRehype from 'remark-rehype'
@@ -14,6 +17,7 @@ import remarkStringify from 'remark-stringify'
 import { inspect } from "unist-util-inspect"
 import { selectAll } from 'unist-util-select'
 import { find } from 'unist-util-find'
+import { serialize } from "remark-slate";
 
 export default class Parser {
     ARROW = /-+>|→/;
@@ -45,6 +49,9 @@ export default class Parser {
     }
 
     html() {
+        // clone tree
+        const clonedTree = JSON.parse(JSON.stringify(this.tree));
+
         const processor = unified()
             .use(this.removeSections.bind(this))
             .use(this.unhyperedgeify.bind(this))
@@ -52,8 +59,38 @@ export default class Parser {
             .use(rehypeSanitize)
             .use(rehypeStringify)
 
-        const tree = processor.runSync(this.tree);
+        const tree = processor.runSync(clonedTree);
         return processor.stringify(tree);
+    }
+
+    slate() {
+        const clonedTree = JSON.parse(JSON.stringify(this.tree));
+
+        const processor = unified()
+            .use(this.removeSections.bind(this))
+            .use(this.unhyperedgeify.bind(this))
+            .use(slate)
+
+        const tree = processor.runSync(clonedTree);
+
+        return processor.stringify(tree);
+
+    }
+
+    parseSlate(slate) {
+        return slate.map(child => serialize(child)).join("").replace(/<br>\n/g, "\n");
+    }
+
+    parseHTML(html) {
+        console.log("PARSING HTML", html);
+
+        const file = unified()
+            .use(rehypeParse)
+            .use(rehypeRemark)
+            .use(remarkStringify)
+            .processSync(html)
+
+        return file.value.trim();
     }
 
     // get hyperedges() {

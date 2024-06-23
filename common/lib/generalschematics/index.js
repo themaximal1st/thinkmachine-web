@@ -73,6 +73,7 @@ export default class GeneralSchematics {
     has() { return this.hypergraph.has(...arguments) }
 
     get html() { return this.parser.html() }
+    get slate() { return this.parser.slate() }
 
     nodeByID(id) { return this.hypergraph.nodeByID(id) }
     nodeByUID(uid) { return this.hypergraph.nodeByUID(uid) }
@@ -92,6 +93,14 @@ export default class GeneralSchematics {
         this.hypergraph = new Hypergraph(this);
 
         this.onUpdate({ event: "schematic.parse" });
+    }
+
+    parseHTML(html) {
+        this.parse(this.parser.parseHTML(html));
+    }
+
+    parseSlate(slate) {
+        this.parse(this.parser.parseSlate(slate));
     }
 
     update() {

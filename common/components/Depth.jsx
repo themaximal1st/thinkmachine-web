@@ -11,7 +11,7 @@ export default class Depth extends React.Component {
     }
 
     componentWillUnmount() {
-        console.log("RESET DEPTH");
+        // console.log("RESET DEPTH");
         this.props.schematic.depth = 0;
         this.props.schematic.maxDepth = 0;
         window.removeEventListener("keydown", this.handleKeyDown);

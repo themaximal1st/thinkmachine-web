@@ -105,8 +105,6 @@ export default class ForceGraph extends React.Component {
             onEngineStop: this.handleEngineStop.bind(this),
         };
 
-        console.log("WIDTH", this.width);
-
         return (
             <div
                 id="force-graph"

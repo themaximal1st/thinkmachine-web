@@ -49,7 +49,7 @@ export default class App extends React.Component {
             graphData: { nodes: [], links: [] },
             dirty: false,
             panes: {
-                editor: false,
+                editor: true,
                 graph: true,
             },
         };
@@ -109,8 +109,8 @@ export default class App extends React.Component {
         }
 
         if (this.schematic.hash !== this.state.dataHash) {
-            // console.log("DATA UPDATE", event);
-            await this.asyncSetState({ dirty: true });
+            console.log("DATA UPDATE", event);
+            // await this.asyncSetState({ dirty: true });
             await this.save();
         }
     }
@@ -134,16 +134,20 @@ export default class App extends React.Component {
     }
 
     async reloadData() {
+        console.log("RELOAD DATA");
+
         const graphData = this.schematic.graphData(this.filters, this.state.graphData);
 
-        await this.asyncSetState({ graphData });
+        await this.asyncSetState({
+            graphData,
+            dataHash: this.schematic.hash,
+        });
 
         document.title = this.title;
     }
 
     async save() {
         await this.settings.hypergraph(this.schematic.export()); // save hypergraph
-        await this.asyncSetState({ dataHash: this.schematic.hash });
         await this.reloadData();
     }
 
