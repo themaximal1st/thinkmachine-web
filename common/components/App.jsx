@@ -102,7 +102,7 @@ export default class App extends React.Component {
     }
 
     async onDataUpdate(event) {
-        console.log("DATA UPDATE", event);
+        if (!this.state) return;
 
         if (this.state.isLoading) {
             return;

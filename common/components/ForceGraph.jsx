@@ -103,11 +103,11 @@ export default class ForceGraph extends React.Component {
             width: this.width,
             graphRef: this.graphRef,
             linkColor: this.linkColor.bind(this),
-            // linkDirectionalArrowLength: this.linkDirectionalArrowLength.bind(this),
-            // setActiveMode: this.setActiveMode.bind(this),
-            // toggleConnectMode: this.toggleConnectMode.bind(this),
-            // onNodeClick: this.handleNodeClick.bind(this),
-            // onEngineStop: this.handleEngineStop.bind(this),
+            linkDirectionalArrowLength: this.linkDirectionalArrowLength.bind(this),
+            setActiveMode: this.setActiveMode.bind(this),
+            toggleConnectMode: this.toggleConnectMode.bind(this),
+            onNodeClick: this.handleNodeClick.bind(this),
+            onEngineStop: this.handleEngineStop.bind(this),
         };
 
         return (

@@ -149,8 +149,8 @@ export default class Hypergraph {
     }
 
     graphData(filter = null, lastData = null) {
-        const nodes = new Map();
-        const links = new Map();
+        let nodes = new Map();
+        let links = new Map();
 
         this.updateIndexes();
 
@@ -163,7 +163,9 @@ export default class Hypergraph {
         }
 
         if (lastData) {
-            restoreData({ nodes, links }, lastData);
+            const data = restoreData({ nodes, links }, lastData);
+            nodes = data.nodes;
+            links = data.links;
         }
 
         if (this.schematic.isFusion) {

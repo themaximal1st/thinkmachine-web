@@ -101,9 +101,7 @@ export default class Node {
         return this.id === node.id;
     }
 
-    equals(symbol) {
-        return this.symbol.toLowerCase() === symbol.toLowerCase();
-    }
+    equals(symbol) { return this.symbol.toLowerCase() === symbol.toLowerCase(); }
 
     connect(node) {
         const symbols = [
@@ -120,6 +118,7 @@ export default class Node {
 
         nodes.set(node.id, {
             id: node.id,
+            uid: node.uid,
             uuid: node.uuid,
             name: node.symbol,
             color: this.hyperedge.color,

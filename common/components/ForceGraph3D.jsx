@@ -24,7 +24,6 @@ export default class ForceGraph3D extends React.Component {
             chats: new Map(),
             distances: {},
             isDragging: false,
-            graphData: { nodes: [], links: [] },
             dataHash: null,
         };
 
@@ -55,16 +54,6 @@ export default class ForceGraph3D extends React.Component {
         this.props.graphRef.current.controls().addEventListener("change", () => {
             this.updateDistances();
         });
-    }
-
-    componentDidUpdate(prevProps, prevState) {
-        if (prevState.dataHash !== this.props.schematic.hash) {
-            console.log("🔒 GRAPH DATA CHANGED");
-            this.setState({
-                graphData: this.props.graphData,
-                dataHash: this.props.schematic.hash,
-            });
-        }
     }
 
     updateDistances(e) {
@@ -189,7 +178,6 @@ export default class ForceGraph3D extends React.Component {
                 extraRenderers={[new CSS2DRenderer()]}
                 onEngineTick={this.updateDistances}
                 {...this.props}
-                graphData={this.state.graphData}
             />
         );
     }
@@ -260,8 +248,6 @@ export default class ForceGraph3D extends React.Component {
             return title;
         }
 
-        return title;
-
         /*
         // console.log("NODE DISTANCE", this.state.distances[node.uuid]);
         const existingNodePanel = this.nodePanels.get(node.uuid);
@@ -270,6 +256,7 @@ export default class ForceGraph3D extends React.Component {
             console.log(existingNodePanel);
             return existingNodePanel.render();
         }
+            */
 
         // leaving react here...
         const nodePanel = new NodePanel({
@@ -288,6 +275,7 @@ export default class ForceGraph3D extends React.Component {
 
         return nodePanel.render();
 
+        /*
         // this.activeNodeUI = new ActiveNode({
         //     ...this.state,
         //     ...this.props,

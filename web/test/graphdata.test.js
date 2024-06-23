@@ -528,5 +528,104 @@ test("restore node positions with parse", () => {
     expect(newData.nodes[0].vz).toBe(100);
 });
 
+test("restore entire node", () => {
+    const schematic = new GeneralSchematics("A -> B -> C");
+    let graphData;
 
-// We're gonna lose uuids on interwingle isolated here....
+    graphData = schematic.graphData();
+    const [A, B, C] = graphData.nodes;
+
+    expect(A === A).toBeTruthy();
+    expect(B === B).toBeTruthy();
+    expect(C === C).toBeTruthy();
+
+    graphData = schematic.graphData(null, graphData);
+    const [A1, B1, C1] = graphData.nodes;
+
+    expect(A === A1).toBeTruthy();
+    expect(B === B1).toBeTruthy();
+    expect(C === C1).toBeTruthy();
+
+});
+
+test("restore entire node with parse", () => {
+    const schematic = new GeneralSchematics("A -> B -> C");
+    let graphData;
+
+    graphData = schematic.graphData();
+    const [A, B, C] = graphData.nodes;
+
+    expect(A === A).toBeTruthy();
+    expect(B === B).toBeTruthy();
+    expect(C === C).toBeTruthy();
+
+    schematic.parse("A -> B -> C");
+
+    graphData = schematic.graphData(null, graphData);
+    const [A1, B1, C1] = graphData.nodes;
+
+    console.log(A, A1);
+
+    expect(A === A1).toBeTruthy();
+    expect(B === B1).toBeTruthy();
+    expect(C === C1).toBeTruthy();
+});
+
+test("restore entire node with new information", () => {
+    const schematic = new GeneralSchematics("A -> B -> C\nHypertext for A");
+    let graphData;
+
+    graphData = schematic.graphData();
+    const [A, B, C] = graphData.nodes;
+
+    expect(A === A).toBeTruthy();
+    expect(B === B).toBeTruthy();
+    expect(C === C).toBeTruthy();
+    expect(schematic.nodes[0].hypertexts.length).toBe(1);
+
+    schematic.parse("A -> B -> C");
+
+    graphData = schematic.graphData(null, graphData);
+    const [A1, B1, C1] = graphData.nodes;
+
+    console.log(A, A1);
+
+    expect(A === A1).toBeTruthy();
+    expect(B === B1).toBeTruthy();
+    expect(C === C1).toBeTruthy();
+    expect(schematic.nodes[0].hypertexts.length).toBe(0);
+});
+
+test("restore node positions with parse and interwingle change", () => {
+    const schematic = new GeneralSchematics("A -> B -> C");
+
+    let oldData = schematic.graphData();
+    oldData.nodes[0].x = 100;
+    oldData.nodes[0].y = 100;
+    oldData.nodes[0].z = 100;
+    oldData.nodes[0].vx = 100;
+    oldData.nodes[0].vy = 100;
+    oldData.nodes[0].vz = 100;
+
+    schematic.interwingle = GeneralSchematics.INTERWINGLE.FUSION;
+
+    let newData = schematic.graphData(null, oldData);
+
+    expect(oldData.nodes[0].uid).toBe(newData.nodes[0].uid);
+    expect(newData.nodes[0].uuid).toBe(oldData.nodes[0].uuid);
+    expect(newData.nodes[1].uuid).toBe(oldData.nodes[1].uuid);
+    expect(newData.nodes[2].uuid).toBe(oldData.nodes[2].uuid);
+    expect(newData.nodes[0].x).toBe(100);
+    expect(newData.nodes[0].y).toBe(100);
+    expect(newData.nodes[0].z).toBe(100);
+    expect(newData.nodes[0].vx).toBe(100);
+    expect(newData.nodes[0].vy).toBe(100);
+    expect(newData.nodes[0].vz).toBe(100);
+});
+
+
+// Interwingle change should not affect graphData
+
+
+// TODO: restore entire node, with new data
+// TODO: do links need to be restored as well?

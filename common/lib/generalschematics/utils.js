@@ -92,23 +92,23 @@ export function verifyGraphData(nodes, links) {
     }
 }
 
-export function restoreData(data, old) {
-    const uuidIndex = createUUIDIndex(old.nodes.values());
-    const idIndex = createIndex(old.nodes.values());
+export function restoreData(data, oldData) {
+    const uuidIndex = createUUIDIndex(oldData.nodes.values());
+    const idIndex = createIndex(oldData.nodes.values());
+    const uidIndex = createUIDIndex(oldData.nodes.values());
+    const updates = new Map();
+
     for (const node of data.nodes.values()) {
-        const old = uuidIndex.get(node.uuid) || idIndex.get(node.id);
-        if (!old) continue;
-        if (old.uuid !== node.uuid) node.uuid = old.uuid;
-        if (typeof old.x === 'number') node.x = old.x;
-        if (typeof old.y === 'number') node.y = old.y;
-        if (typeof old.z === 'number') node.z = old.z;
-        if (typeof old.vx === 'number') node.vx = old.vx;
-        if (typeof old.vy === 'number') node.vy = old.vy;
-        if (typeof old.vz === 'number') node.vz = old.vz;
-        if (typeof old.fx === 'number') node.fx = old.fx;
-        if (typeof old.fy === 'number') node.fy = old.fy;
-        if (typeof old.fz === 'number') node.fz = old.fz;
+        const oldNode = uidIndex.get(node.uid) || uuidIndex.get(node.uuid) || idIndex.get(node.id);
+        if (!oldNode) continue;
+        updates.set(node.id, oldNode);
     }
+
+    for (const [id, node] of updates) {
+        data.nodes.set(id, node);
+    }
+
+    return data;
 }
 
 export function sha256(str) {
