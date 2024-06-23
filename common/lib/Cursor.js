@@ -2,26 +2,37 @@ export default class Cursor {
 
     constructor(id) {
         this.id = id;
+        this.position = { start: 0, end: 0 };
     }
 
     get element() {
         return document.getElementById(this.id);
     }
 
-    get() {
-        console.log("GETTING CURSOR POSITION")
-        if (!this.element) return { start: 0, end: 0 }
-
-        const start = this.element.selectionStart
-        const end = this.element.selectionEnd
-        return { start, end }
+    save() {
+        this.position = Cursor.get(this.element);
     }
 
-    set(pos) {
-        if (!this.element) return
-        console.log("!!!! SETTING CURSOR POSITION", this.element.selectionStart)
-        this.element.focus();
-        this.element.selectionStart = pos.start;
-        this.element.selectionEnd = pos.end;
+    restore() {
+        Cursor.set(this.element, this.position);
+    }
+
+    static get(element) {
+        if (!element) return;
+
+        return {
+            start: element.selectionStart,
+            end: element.selectionEnd,
+        };
+    }
+
+    static set(element, position = {}) {
+        if (!element) return
+        if (!position.start) return;
+        if (!position.end) return;
+
+        element.focus();
+        element.selectionStart = position.start;
+        element.selectionEnd = position.end;
     }
 }

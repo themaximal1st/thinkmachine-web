@@ -8,11 +8,10 @@ export default class WYSIWYG extends React.Component {
             level: 0,
         };
         this.cursor = new Cursor("wysiwyg");
-        this.position = { start: 0, end: 0 };
     }
 
     componentDidUpdate() {
-        this.cursor.set(this.position);
+        this.cursor.restore();
     }
 
     children() {
@@ -20,7 +19,7 @@ export default class WYSIWYG extends React.Component {
     }
 
     onChange(e) {
-        this.position = this.cursor.get();
+        this.cursor.save();
         this.props.schematic.parse(e.target.value);
     }
 

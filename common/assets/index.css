@@ -454,11 +454,3 @@ canvas {
         @apply font-medium italic;
     }
 }
-
-#editor {
-    @apply w-full min-h-full text-white outline-none;
-
-    #editable {
-        @apply w-full h-full p-8 text-xl outline-none;
-    }
-}
