@@ -78,17 +78,15 @@ test("hypertext section and symbols with spaces", async () => {
     expect(schematic.hypertexts.get("This is A").length).toEqual(1);
 });
 
-test.skip("symbolify section until double break", () => {
-    const schematic = new GeneralSchematics(`
-Hello World
-And more
-
-And more1
-
-
-And even more2`);
-
-    // schematic.debug();
-
-    // expect(schematic.hypertexts.get("A").length).toEqual(2);
+test("hypertext encoding ending space", async () => {
+    const schematic = new GeneralSchematics("A -> B -> C\nThis is some A hypertext");
+    expect(schematic.hypertexts.global.length).toEqual(0);
+    const hypertexts = schematic.hypertexts.get("A");
+    expect(hypertexts.length).toEqual(1);
+    const hypertext = hypertexts[0];
+    hypertext.value = "This is some A hypertext ";
+    expect(schematic.export()).toBe("A -> B -> C\nThis is some A hypertext ");
 });
+
+
+// TODO: Convert hypertext to sectionized hypertext if no symbol

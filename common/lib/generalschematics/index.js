@@ -182,8 +182,8 @@ export default class GeneralSchematics {
         this.listeners.push(listener);
     }
 
-    removeEventListener(handler) {
-        this.listeners = this.listeners.filter(h => h !== handler);
+    removeEventListener(listener) {
+        this.listeners = this.listeners.filter(l => l !== listener);
     }
 }
 

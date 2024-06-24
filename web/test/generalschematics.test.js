@@ -427,8 +427,6 @@ test("export symbols as unicode", async () => {
     expect(schematic.symbols).toEqual(schematic2.symbols);
 });
 
-
-
 // A -> B -> A will break....
 
 // A -> 1 -> 2

@@ -57,12 +57,13 @@ export default class NodePanel extends Component {
                     style={{ transform: `scale(${100 / this.props.distance})` }}
                     id={this.node.uuid}>
                     {this.node.hypertexts.map((h, idx) => (
-                        <textarea
+                        <input
                             key={`hypertext-${this.node.uuid}-${idx}`}
                             id={`hypertext-${this.node.uuid}-${idx}`}
                             data-index={idx}
                             onChange={() => ""}
-                            value={h.value}></textarea>
+                            value={h.value}
+                        />
                     ))}
                 </div>
             </div>

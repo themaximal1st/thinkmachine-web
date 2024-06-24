@@ -108,8 +108,10 @@ export function restoreData(data, oldData) {
 
     for (const [id, oldNode] of updates) {
         const shadow = nodeUUIDIndex.get(oldNode.uuid);
-        for (const key of Object.keys(shadow)) {
-            oldNode[key] = shadow[key];
+        if (shadow) {
+            for (const key of Object.keys(shadow)) {
+                oldNode[key] = shadow[key];
+            }
         }
         data.nodes.set(id, oldNode);
     }
@@ -156,4 +158,26 @@ export function trackUUID(uuid, graphData) {
     }
 
     return node.uuid;
+}
+
+
+export function decodeHTMLEntities(text) {
+    var entities = [
+        ['amp', '&'],
+        ['apos', '\''],
+        ['#x27', '\''],
+        ['#x2F', '/'],
+        ['#39', '\''],
+        ['#47', '/'],
+        ["#x20", " "],
+        ['lt', '<'],
+        ['gt', '>'],
+        ['nbsp', ' '],
+        ['quot', '"']
+    ];
+
+    for (var i = 0, max = entities.length; i < max; ++i)
+        text = text.replace(new RegExp('&' + entities[i][0] + ';', 'g'), entities[i][1]);
+
+    return text;
 }

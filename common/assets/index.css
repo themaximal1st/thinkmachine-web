@@ -464,9 +464,9 @@ canvas {
 }
 
 .node-panel {
-    @apply dark:text-white dark:bg-gray-1000 py-2 px-4 pointer-events-auto w-full;
+    @apply dark:text-white dark:bg-gray-1000 p-4 px-2 pointer-events-auto w-full absolute flex flex-col gap-3 rounded-xl;
 
     textarea {
-        @apply resize-none w-full h-full bg-gray-900/50 p-2;
+        @apply resize-none w-full bg-gray-900/20 p-2 px-4 h-8 overflow-hidden rounded-xl;
     }
 }

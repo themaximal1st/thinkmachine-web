@@ -18,6 +18,7 @@ import { inspect } from "unist-util-inspect"
 import { selectAll } from 'unist-util-select'
 import { find } from 'unist-util-find'
 // import { serialize } from "remark-slate";
+import { decodeHTMLEntities } from './utils.js'
 
 export default class Parser {
     ARROW = /-+>|→/;
@@ -259,10 +260,11 @@ export default class Parser {
             .use(() => this.unhypertextify(opts))
             .runSync(clonedTree)
 
-        return unified()
-            .use(remarkStringify)
-            .stringify(tree)
-            .replace(/\\\n/g, "\n") // hack: soft breaks...not clear how to force stringify to not escape them
-            .replace(/\n?$/, "") // ensure newline at end
+        return decodeHTMLEntities(
+            unified()
+                .use(remarkStringify)
+                .stringify(tree)
+                .replace(/\\\n/g, "\n") // hack: soft breaks...not clear how to force stringify to not escape them
+                .replace(/\n?$/, "")) // ensure newline at end
     }
 }

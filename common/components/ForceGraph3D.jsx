@@ -1,5 +1,6 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { CSS2DObject } from "three/addons/renderers/CSS2DRenderer.js";
+import classNames from "classnames";
 // import * as Three from "three";
 
 import { CSS2DRenderer } from "three/addons/renderers/CSS2DRenderer.js";
@@ -20,33 +21,66 @@ import ActiveNode from "./active/ActiveNode";
 class NodePanel extends React.Component {
     constructor(props) {
         super(props);
+
+        this.node = this.props.schematic.nodeByUUID(this.props.node.uuid);
+
+        this.state = {
+            hypertexts: [],
+            dataHash: null,
+        };
     }
 
-    componentDidMount() {}
+    componentDidMount() {
+        this.props.schematic.addEventListener((data) => {
+            this.update();
+        });
+    }
 
-    componentWillUnmount() {}
+    componentDidUpdate() {
+        console.log("NODE UPDATE");
+        this.update();
+    }
+
+    update() {
+        if (this.state.dataHash === this.props.schematic.hash) return;
+        this.setState({
+            dataHash: this.props.schematic.hash,
+            hypertexts: this.node.hypertexts,
+        });
+    }
+
+    onChange(e, idx) {
+        const hypertexts = this.state.hypertexts;
+        hypertexts[idx].value = e.target.value;
+        this.setState({ hypertexts });
+    }
+
+    componentWillUnmount() {
+        const wrapper = document.getElementById(`node-panel-wrapper-${this.node.uuid}`);
+        console.log("WILL UNMOUNT", this.node.uuid);
+        console.log(wrapper);
+    }
 
     get distance() {
-        return this.props.distances[this.props.node.uuid] || Infinity;
+        return this.props.distances[this.node.uuid] || Infinity;
     }
 
     render() {
-        const node = this.props.schematic.nodeByUUID(this.props.node.uuid);
-        const hypertexts = node.hypertexts.map((h) => h.value).join("\n");
-
         return (
-            <div id={`node-panel-${this.props.node.uuid}`} className="node-panel-wrapper">
+            <div
+                id={`node-panel-${this.node.uuid}`}
+                className={classNames("node-panel-wrapper", {
+                    hidden: this.distance > 150 || this.state.hypertexts.length === 0,
+                })}>
                 <div
                     style={{ transform: `scale(${100 / this.distance})` }}
                     className="node-panel">
-                    {this.props.node.name}
-                    <br />
-                    {node.hypertexts.map((h, idx) => {
+                    {this.state.hypertexts.map((h, idx) => {
                         return (
                             <textarea
-                                onChange={(e) => (h.value = e.target.value)}
-                                key={`hypertext-${node.uuid}-${idx}`}
-                                defaultValue={h.value}></textarea>
+                                onChange={(e) => this.onChange(e, idx)}
+                                key={`hypertext-${this.node.uuid}-${idx}`}
+                                value={h.value}></textarea>
                         );
                     })}
                 </div>
@@ -221,12 +255,16 @@ export default class ForceGraph3D extends React.Component {
                 <div id="node-panels">
                     {this.props.graphData.nodes.map((node) => {
                         return (
-                            <NodePanel
-                                node={node}
-                                schematic={this.props.schematic}
-                                distances={this.state.distances}
-                                key={`node-panel-${node.uuid}`}
-                            />
+                            <div
+                                key={`node-panel-wrapper-${node.uuid}`}
+                                id={`node-panel-wrapper-${node.uuid}`}>
+                                <NodePanel
+                                    node={node}
+                                    schematic={this.props.schematic}
+                                    distances={this.state.distances}
+                                    key={`node-panel-${node.uuid}`}
+                                />
+                            </div>
                         );
                     })}
                 </div>

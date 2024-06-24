@@ -9,7 +9,6 @@ export default class Editor extends React.Component {
         this.importRef = React.createRef();
         this.state = {
             activeUUID: null,
-            lastDataHash: null,
             value: [],
         };
 
