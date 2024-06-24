@@ -185,3 +185,71 @@ test("update local hypertext", () => new Promise(done => {
     const hypertext = schematic.hypertexts.get("A")[0];
     hypertext.value = "Updated A";
 }));
+
+test("add on update", () => new Promise(done => {
+    const schematic = new GeneralSchematics("A -> B -> C\nThis belongs to A", {
+        interwingle: GeneralSchematics.INTERWINGLE.CONFLUENCE,
+    });
+
+    schematic.addEventListener(({ event, data }) => {
+        if (event === "hypertext.update" && data.value === "Updated A") {
+            done();
+        }
+    });
+
+    const hypertext = schematic.hypertexts.get("A")[0];
+    hypertext.value = "Updated A";
+}));
+
+test("remove event listener", () => new Promise(done => {
+    const schematic = new GeneralSchematics("A -> B -> C\nThis belongs to A", {
+        interwingle: GeneralSchematics.INTERWINGLE.CONFLUENCE,
+    });
+
+    let i = 0;
+
+    function onUpdate({ event, data }) {
+        if (event === "hypertext.update" && data.value === "Updated A") {
+            i += 1;
+
+            if (i === 2) {
+                throw new Error("Should not be called twice");
+            }
+
+            setTimeout(() => {
+                done();
+            }, 100)
+        }
+    }
+
+    schematic.addEventListener(onUpdate);
+    schematic.removeEventListener(onUpdate);
+    schematic.addEventListener(onUpdate);
+
+    const hypertext = schematic.hypertexts.get("A")[0];
+    hypertext.value = "Updated A";
+}));
+
+test("multiple event handlers", () => new Promise(done => {
+    const schematic = new GeneralSchematics("A -> B -> C\nThis belongs to A", {
+        interwingle: GeneralSchematics.INTERWINGLE.CONFLUENCE,
+    });
+
+    let i = 0;
+
+    function onUpdate1({ event, data }) {
+        i += 1;
+        if (i === 2) { done() }
+    }
+
+    function onUpdate2({ event, data }) {
+        i += 1;
+        if (i === 2) { done() }
+    }
+
+    schematic.addEventListener(onUpdate1);
+    schematic.addEventListener(onUpdate2);
+
+    const hypertext = schematic.hypertexts.get("A")[0];
+    hypertext.value = "Updated A";
+}));

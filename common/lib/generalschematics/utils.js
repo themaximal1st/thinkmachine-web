@@ -25,7 +25,6 @@ export function createIndex(items) {
 
 export function createUIDIndex(items) {
     const index = new Map();
-    console.log("ITEMS", items);
     for (const item of items) { index.set(item.uid, item) }
     return index;
 }
@@ -92,7 +91,10 @@ export function verifyGraphData(nodes, links) {
     }
 }
 
+// Force Graph expects the same exact object or it re-triggers a full update.... :(
 export function restoreData(data, oldData) {
+    const nodeUUIDIndex = createUUIDIndex(data.nodes.values());
+
     const uuidIndex = createUUIDIndex(oldData.nodes.values());
     const idIndex = createIndex(oldData.nodes.values());
     const uidIndex = createUIDIndex(oldData.nodes.values());
@@ -104,8 +106,12 @@ export function restoreData(data, oldData) {
         updates.set(node.id, oldNode);
     }
 
-    for (const [id, node] of updates) {
-        data.nodes.set(id, node);
+    for (const [id, oldNode] of updates) {
+        const shadow = nodeUUIDIndex.get(oldNode.uuid);
+        for (const key of Object.keys(shadow)) {
+            oldNode[key] = shadow[key];
+        }
+        data.nodes.set(id, oldNode);
     }
 
     return data;

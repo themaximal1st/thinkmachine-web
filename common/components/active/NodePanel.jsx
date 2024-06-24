@@ -3,7 +3,7 @@ import Cursor from "@lib/Cursor";
 
 export default class NodePanel extends Component {
     constructor(props) {
-        console.log("NEW NODE PANEL");
+        console.log("NEW NODE PANEL", props);
 
         super(props);
 
@@ -47,20 +47,24 @@ export default class NodePanel extends Component {
     }
 
     code() {
+        console.log("NODE", this.node.uuid);
+
         return (
-            <div
-                className="node-panel"
-                key={`panel-${this.node.uuid}`}
-                style={{ transform: `scale(${100 / this.props.distance})` }}
-                id={this.node.uuid}>
-                {this.node.hypertexts.map((h, idx) => (
-                    <textarea
-                        key={`hypertext-${this.node.uuid}-${idx}`}
-                        id={`hypertext-${this.node.uuid}-${idx}`}
-                        data-index={idx}
-                        onChange={() => ""}
-                        value={h.value}></textarea>
-                ))}
+            <div className="node-panel-wrapper">
+                <div
+                    className="node-panel"
+                    key={`panel-${this.node.uuid}`}
+                    style={{ transform: `scale(${100 / this.props.distance})` }}
+                    id={this.node.uuid}>
+                    {this.node.hypertexts.map((h, idx) => (
+                        <textarea
+                            key={`hypertext-${this.node.uuid}-${idx}`}
+                            id={`hypertext-${this.node.uuid}-${idx}`}
+                            data-index={idx}
+                            onChange={() => ""}
+                            value={h.value}></textarea>
+                    ))}
+                </div>
             </div>
         );
     }

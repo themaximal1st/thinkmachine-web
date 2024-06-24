@@ -109,7 +109,7 @@ export default class App extends React.Component {
         }
 
         if (this.schematic.hash !== this.state.dataHash) {
-            console.log("📀 DATA UPDATE", this.schematic.hash, this.state.dataHash);
+            console.log("📀 DATA UPDATE HASH CHANGED", event.event);
             // await this.asyncSetState({ dirty: true });
             await this.save();
         }
@@ -119,9 +119,9 @@ export default class App extends React.Component {
         Client.setup();
         await this.reset();
 
-        // setTimeout(() => {
-        //     this.setActiveNodeUUID(this.schematic.nodes[0].uuid);
-        // }, 1000);
+        setTimeout(() => {
+            this.setActiveNodeUUID(this.schematic.nodes[0].uuid);
+        }, 1000);
     }
 
     async reset() {
@@ -283,7 +283,7 @@ export default class App extends React.Component {
     // utils
 
     async asyncSetState(state = {}) {
-        console.log("🚀 SET STATE", state);
+        // console.log("🚀 SET STATE", state);
         return new Promise((resolve, reject) => {
             this.setState(state, () => {
                 resolve();

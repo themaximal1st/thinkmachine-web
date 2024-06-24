@@ -6,29 +6,44 @@ export default class WYSIWYG extends React.Component {
         super(props);
         this.state = {
             level: 0,
+            input: "",
         };
         this.cursor = new Cursor("wysiwyg");
     }
 
-    componentDidUpdate() {
-        this.cursor.restore();
-        // console.log("WYSIWYG DID UPDATE");
+    componentDidMount() {
+        this.props.schematic.addEventListener((data) => {
+            this.update();
+        });
+
+        this.update();
     }
 
-    children() {
-        return this.props.schematic.tree.children;
+    update() {
+        this.setState({ input: this.props.schematic.export() });
     }
+
+    // componentDidUpdate() {
+    //     this.cursor.restore();
+
+    //     if (this.props.schematic.input !== this.state.input) {
+    //         this.setState({ input: this.props.schematic.input });
+    //     }
+
+    //     // console.log("WYSIWYG DID UPDATE");
+    // }
 
     onChange(e) {
         this.cursor.save();
         this.props.schematic.parse(e.target.value);
+        this.update();
     }
 
     render() {
         return (
             <textarea
                 id="wysiwyg"
-                value={this.props.schematic.input}
+                defaultValue={this.state.input}
                 onChange={this.onChange.bind(this)}
             />
         );

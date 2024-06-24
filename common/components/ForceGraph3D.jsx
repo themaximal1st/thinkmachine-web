@@ -1,3 +1,7 @@
+import { renderToStaticMarkup } from "react-dom/server";
+import { CSS2DObject } from "three/addons/renderers/CSS2DRenderer.js";
+// import * as Three from "three";
+
 import { CSS2DRenderer } from "three/addons/renderers/CSS2DRenderer.js";
 import SpriteText from "three-spritetext";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
@@ -11,7 +15,45 @@ import React from "react";
 import { useCallback } from "react";
 
 import ActiveNode from "./active/ActiveNode";
-import NodePanel from "./active/NodePanel";
+// import NodePanel from "./active/NodePanel";
+
+class NodePanel extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+
+    componentDidMount() {}
+
+    componentWillUnmount() {}
+
+    get distance() {
+        return this.props.distances[this.props.node.uuid] || Infinity;
+    }
+
+    render() {
+        const node = this.props.schematic.nodeByUUID(this.props.node.uuid);
+        const hypertexts = node.hypertexts.map((h) => h.value).join("\n");
+
+        return (
+            <div id={`node-panel-${this.props.node.uuid}`} className="node-panel-wrapper">
+                <div
+                    style={{ transform: `scale(${100 / this.distance})` }}
+                    className="node-panel">
+                    {this.props.node.name}
+                    <br />
+                    {node.hypertexts.map((h, idx) => {
+                        return (
+                            <textarea
+                                onChange={(e) => (h.value = e.target.value)}
+                                key={`hypertext-${node.uuid}-${idx}`}
+                                defaultValue={h.value}></textarea>
+                        );
+                    })}
+                </div>
+            </div>
+        );
+    }
+}
 
 export default class ForceGraph3D extends React.Component {
     constructor(props) {
@@ -28,8 +70,8 @@ export default class ForceGraph3D extends React.Component {
         };
 
         this.handleKeyDown = this.handleKeyDown.bind(this);
-        // this.nodeThreeObject = this.nodeThreeObject.bind(this);
-        this.updateDistances = this.updateDistances.bind(this);
+        this.nodeThreeObject = this.nodeThreeObject.bind(this);
+        // this.updateDistances = this.updateDistances.bind(this);
     }
 
     // TODO: Check if component is off screen...then bail
@@ -57,10 +99,11 @@ export default class ForceGraph3D extends React.Component {
     }
 
     updateDistances(e) {
+        if (!this.props) return;
         if (!this.props.graphRef) return;
         if (!this.props.graphRef.current) return;
 
-        const distances = {};
+        const distances = this.state.distances;
 
         for (const node of this.props.graphData.nodes) {
             if (!node.__threeObj) continue;
@@ -76,11 +119,12 @@ export default class ForceGraph3D extends React.Component {
             distances[node.uuid] = distance;
         }
 
-        for (const panel of this.nodePanels.values()) {
-            panel.updateDistance(distances[panel.props.node.uuid]);
-        }
+        // for (const panel of this.nodePanels.values()) {
+        //     panel.updateDistance(distances[panel.props.node.uuid]);
+        // }
 
-        this.state.distances = distances;
+        this.setState({ distances });
+        // this.state.distances = distances;
     }
 
     componentWillUnmount() {
@@ -158,27 +202,35 @@ export default class ForceGraph3D extends React.Component {
             return null;
         }
 
-        console.log("UUID", this.props.activeNodeUUID);
         const node = this.props.schematic.nodeByUUID(this.props.activeNodeUUID);
-        console.log("NODE", node);
-        console.log("GRAPH DATA", this.props.graphData);
-
         return node.context(this.props.graphData);
     }
-
-    nodeThreeObjectProp = this.nodeThreeObject.bind(this);
 
     render() {
         console.log("🎄 FORCE GRAPH 3D RENDER");
         return (
-            <ForceGraph3DComponent
-                ref={this.props.graphRef} // won't allow in prop?
-                controlType={Settings.controlType}
-                nodeThreeObject={this.nodeThreeObjectProp}
-                extraRenderers={[new CSS2DRenderer()]}
-                onEngineTick={this.updateDistances}
-                {...this.props}
-            />
+            <div>
+                <ForceGraph3DComponent
+                    ref={this.props.graphRef} // won't allow in prop?
+                    controlType={Settings.controlType}
+                    nodeThreeObject={this.nodeThreeObject}
+                    extraRenderers={[new CSS2DRenderer()]}
+                    onEngineTick={this.updateDistances}
+                    {...this.props}
+                />
+                <div id="node-panels">
+                    {this.props.graphData.nodes.map((node) => {
+                        return (
+                            <NodePanel
+                                node={node}
+                                schematic={this.props.schematic}
+                                distances={this.state.distances}
+                                key={`node-panel-${node.uuid}`}
+                            />
+                        );
+                    })}
+                </div>
+            </div>
         );
     }
 
@@ -224,6 +276,31 @@ export default class ForceGraph3D extends React.Component {
         return title;
     }
 
+    static calculateTextSize(obj = null) {
+        if (!obj) return new THREE.Vector3(0, 0, 0);
+        const bounds = new THREE.Box3().setFromObject(obj);
+        const size = new THREE.Vector3();
+        bounds.getSize(size);
+        return size;
+    }
+
+    wrap(div, title) {
+        const obj = new CSS2DObject(div);
+        const group = new Three.Group();
+        if (title) {
+            group.add(title);
+        }
+        group.add(obj);
+
+        const titleSize = ForceGraph3D.calculateTextSize(title);
+        const objSize = ForceGraph3D.calculateTextSize(obj);
+
+        const contentY = -titleSize.y - objSize.y / 2 + 2;
+
+        obj.position.copy(new THREE.Vector3(0, contentY, -1));
+        return group;
+    }
+
     nodeThreeObject(node) {
         console.log("🤘 NODE THREE OBJECT");
         // if (this.activeNodeUI && this.activeNodeUI.props.node.uuid === node.uuid) {
@@ -241,12 +318,21 @@ export default class ForceGraph3D extends React.Component {
 
         const title = this.nodeThreeTitleObject(node);
 
-        if (
-            !this.props.trackedActiveNodeUUID ||
-            this.props.trackedActiveNodeUUID !== node.uuid
-        ) {
-            return title;
-        }
+        // const div = document.createElement("div");
+        // div.innerHTML = "BOOM TOWN";
+        // div.className = "bg-red-500 text-white absolute top-0 left-0 p-4";
+
+        const div = document.getElementById(`node-panel-${node.uuid}`);
+        if (!div) return title;
+
+        return this.wrap(div, title);
+
+        // if (
+        //     !this.props.trackedActiveNodeUUID ||
+        //     this.props.trackedActiveNodeUUID !== node.uuid
+        // ) {
+        //     return title;
+        // }
 
         /*
         // console.log("NODE DISTANCE", this.state.distances[node.uuid]);
@@ -259,6 +345,7 @@ export default class ForceGraph3D extends React.Component {
             */
 
         // leaving react here...
+        /*
         const nodePanel = new NodePanel({
             ...this.state,
             ...this.props,
@@ -274,6 +361,7 @@ export default class ForceGraph3D extends React.Component {
         this.nodePanels.set(node.uuid, nodePanel);
 
         return nodePanel.render();
+        */
 
         /*
         // this.activeNodeUI = new ActiveNode({

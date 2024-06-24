@@ -43,7 +43,13 @@ export default class GeneralSchematics {
         options.depth = options.depth || GeneralSchematics.DEPTH.SHALLOW;
         options.colors = options.colors || Colors;
 
+        const onUpdate = options.onUpdate;
+        delete options.onUpdate;
+
         this.options = options;
+        this.listeners = [];
+
+        if (onUpdate) this.addEventListener(onUpdate);
 
         this.hypertexts = null;
         this.hypergraph = null;
@@ -56,8 +62,8 @@ export default class GeneralSchematics {
         this.parse();
     }
 
-    get onUpdate() { return this.options.onUpdate || function () { } }
-    set onUpdate(value) { this.options.onUpdate = value }
+    onUpdate(e) { for (const listener of this.listeners) { listener(e) } }
+
     get interwingle() { return this.options.interwingle }
     set interwingle(value) { this.options.interwingle = value }
     get depth() { return this.options.depth }
@@ -172,6 +178,13 @@ export default class GeneralSchematics {
         return this.hypergraph.filter(...arguments);
     }
 
+    addEventListener(listener) {
+        this.listeners.push(listener);
+    }
+
+    removeEventListener(handler) {
+        this.listeners = this.listeners.filter(h => h !== handler);
+    }
 }
 
 GeneralSchematics.Hypergraph = Hypergraph;

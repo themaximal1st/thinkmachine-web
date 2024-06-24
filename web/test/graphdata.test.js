@@ -599,28 +599,62 @@ test("restore entire node with new information", () => {
 test("restore node positions with parse and interwingle change", () => {
     const schematic = new GeneralSchematics("A -> B -> C");
 
-    let oldData = schematic.graphData();
-    oldData.nodes[0].x = 100;
-    oldData.nodes[0].y = 100;
-    oldData.nodes[0].z = 100;
-    oldData.nodes[0].vx = 100;
-    oldData.nodes[0].vy = 100;
-    oldData.nodes[0].vz = 100;
+    let data, oldData;
 
-    schematic.interwingle = GeneralSchematics.INTERWINGLE.FUSION;
+    data = schematic.graphData();
+    data.nodes[0].x = 100;
+    data.nodes[0].y = 100;
+    data.nodes[0].z = 100;
+    data.nodes[0].vx = 100;
+    data.nodes[0].vy = 100;
+    data.nodes[0].vz = 100;
+    expect(data.nodes[0].id).toBe("0:A");
+    expect(data.nodes[1].id).toBe("0:A.B");
+    expect(data.nodes[2].id).toBe("0:A.B.C");
 
-    let newData = schematic.graphData(null, oldData);
+    expect(data.nodes[0].uid).toBe("0:A");
+    expect(data.nodes[1].uid).toBe("0:A.B");
+    expect(data.nodes[2].uid).toBe("0:A.B.C");
 
-    expect(oldData.nodes[0].uid).toBe(newData.nodes[0].uid);
-    expect(newData.nodes[0].uuid).toBe(oldData.nodes[0].uuid);
-    expect(newData.nodes[1].uuid).toBe(oldData.nodes[1].uuid);
-    expect(newData.nodes[2].uuid).toBe(oldData.nodes[2].uuid);
-    expect(newData.nodes[0].x).toBe(100);
-    expect(newData.nodes[0].y).toBe(100);
-    expect(newData.nodes[0].z).toBe(100);
-    expect(newData.nodes[0].vx).toBe(100);
-    expect(newData.nodes[0].vy).toBe(100);
-    expect(newData.nodes[0].vz).toBe(100);
+    oldData = data;
+    schematic.interwingle = GeneralSchematics.INTERWINGLE.CONFLUENCE;
+    data = schematic.graphData(null, oldData);
+    expect(oldData.nodes[0].uid).toBe(data.nodes[0].uid);
+    expect(data.nodes[0].uuid).toBe(oldData.nodes[0].uuid);
+    expect(data.nodes[1].uuid).toBe(oldData.nodes[1].uuid);
+    expect(data.nodes[2].uuid).toBe(oldData.nodes[2].uuid);
+    expect(data.nodes[0].x).toBe(100);
+    expect(data.nodes[0].y).toBe(100);
+    expect(data.nodes[0].z).toBe(100);
+    expect(data.nodes[0].vx).toBe(100);
+    expect(data.nodes[0].vy).toBe(100);
+    expect(data.nodes[0].vz).toBe(100);
+    expect(data.nodes[0].uid).toBe("0:A");
+    expect(data.nodes[1].uid).toBe("0:A.B");
+    expect(data.nodes[2].uid).toBe("0:A.B.C");
+    expect(data.nodes[0].id).toBe("A");
+    expect(data.nodes[1].id).toBe("A.B");
+    expect(data.nodes[2].id).toBe("A.B.C");
+
+    oldData = data;
+    schematic.interwingle = GeneralSchematics.INTERWINGLE.ISOLATED;
+    data = schematic.graphData(null, oldData);
+    expect(oldData.nodes[0].uid).toBe(data.nodes[0].uid);
+    expect(data.nodes[0].uuid).toBe(oldData.nodes[0].uuid);
+    expect(data.nodes[1].uuid).toBe(oldData.nodes[1].uuid);
+    expect(data.nodes[2].uuid).toBe(oldData.nodes[2].uuid);
+    expect(data.nodes[0].x).toBe(100);
+    expect(data.nodes[0].y).toBe(100);
+    expect(data.nodes[0].z).toBe(100);
+    expect(data.nodes[0].vx).toBe(100);
+    expect(data.nodes[0].vy).toBe(100);
+    expect(data.nodes[0].vz).toBe(100);
+    expect(data.nodes[0].uid).toBe("0:A");
+    expect(data.nodes[1].uid).toBe("0:A.B");
+    expect(data.nodes[2].uid).toBe("0:A.B.C");
+    expect(data.nodes[0].id).toBe("0:A");
+    expect(data.nodes[1].id).toBe("0:A.B");
+    expect(data.nodes[2].id).toBe("0:A.B.C");
 });
 
 

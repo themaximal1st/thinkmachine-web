@@ -458,3 +458,15 @@ canvas {
         @apply font-medium italic;
     }
 }
+
+.node-panel-wrapper {
+    @apply pointer-events-none w-full max-w-[600px];
+}
+
+.node-panel {
+    @apply dark:text-white dark:bg-gray-1000 py-2 px-4 pointer-events-auto w-full;
+
+    textarea {
+        @apply resize-none w-full h-full bg-gray-900/50 p-2;
+    }
+}

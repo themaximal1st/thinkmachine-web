@@ -55,7 +55,7 @@ export default class ForceGraph extends React.Component {
 
     componentDidUpdate(prevProps, prevState) {
         // difference between prevProps and this.props
-        console.log("😇 ForceGraph componentDidUpdate", this.props);
+        // console.log("😇 ForceGraph componentDidUpdate", this.props);
 
         let delay = 100;
         if (prevProps.trackedActiveNodeUUID !== this.props.trackedActiveNodeUUID) {
@@ -96,6 +96,7 @@ export default class ForceGraph extends React.Component {
 
     render() {
         console.log("😇 ForceGraph render");
+
         const props = {
             ...defaultProps,
             ...this.props,
