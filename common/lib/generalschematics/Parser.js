@@ -32,7 +32,6 @@ export default class Parser {
     }
 
     get hypertexts() {
-        console.log("HYPERTEXST", this.arrayLines);
         return this.arrayLines.filter(line => line instanceof Hypertext);
     }
 

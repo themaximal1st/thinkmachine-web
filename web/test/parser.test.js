@@ -1,18 +1,17 @@
-import Parser from "../src/common/lib/generalschematics/Parser.js"
+import Parser from "@generalschematics/Parser.js"
 import { expect, test } from "vitest";
 // import WebBridge from "src/server/WebBridge"
 
 test.only("parse simple doc", async () => {
     const parser = new Parser("hello world");
     expect(parser.lines.size).toBe(1);
-    // expect(parser.arrayLines[0].line).toEqual("hello world");
-    console.log(parser.arrayLines[0])
-    // expect(parser.arrayLines[0].hypertext).toEqual("hello world");
-    // expect(parser.output).toEqual("hello world");
-    // expect(parser.hyperedges.length).toBe(0);
-    // expect(parser.symbols.length).toBe(0);
-    // console.log("BOOM", parser.hypertexts);
-    // expect(parser.hypertexts.length).toBe(1);
+    expect(parser.arrayLines[0].line).toEqual("hello world");
+    expect(parser.arrayLines[0].hypertext).toEqual("hello world");
+    expect(parser.output).toEqual("hello world");
+    expect(parser.hyperedges.length).toBe(0);
+    expect(parser.symbols.length).toBe(0);
+    expect(parser.hypertexts.length).toBe(1);
+    expect(parser.hypertexts[0].hypertext).toBe("hello world");
 });
 
 test("parse multiline doc", async () => {
