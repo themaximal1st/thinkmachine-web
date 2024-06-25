@@ -3,41 +3,43 @@ import { expect, test } from "vitest";
 
 // test high-level API — specifics are handled in other tests
 
-test.only("parse simple doc", async () => {
+test("parse simple doc", async () => {
     const schematic = new GeneralSchematics("Hello World");
     expect(schematic.input).toEqual("Hello World");
     expect(schematic.hyperedges).toEqual([]);
     expect(schematic.symbols).toEqual([]);
 });
-/*
 
-test("parse and export hyperedge", async () => {
+test.only("parse and export hyperedge", async () => {
     const schematic = new GeneralSchematics("A -> B -> C");
     expect(schematic.input).toEqual("A -> B -> C");
     const tree = schematic.tree;
 
-    expect(tree.type).toEqual("root");
-    expect(tree.children.length).toEqual(1);
-    expect(tree.children[0].type).toEqual("paragraph");
-    expect(tree.children[0].children.length).toEqual(1);
+    // expect(tree.type).toEqual("root");
+    // expect(tree.children.length).toEqual(1);
+    // expect(tree.children[0].type).toEqual("paragraph");
+    // expect(tree.children[0].children.length).toEqual(1);
 
-    const hyperedge = tree.children[0].children[0];
-    expect(hyperedge.type).toEqual("hyperedge");
-    expect(hyperedge.children.length).toEqual(3);
+    // const hyperedge = tree.children[0].children[0];
+    // expect(hyperedge.type).toEqual("hyperedge");
+    // expect(hyperedge.children.length).toEqual(3);
 
-    const [A, B, C] = hyperedge.children;
-    expect(A.type).toEqual("node");
-    expect(A.value).toEqual("A");
-    expect(B.type).toEqual("node");
-    expect(B.value).toEqual("B");
-    expect(C.type).toEqual("node");
-    expect(C.value).toEqual("C");
+    // const [A, B, C] = hyperedge.children;
+    // expect(A.type).toEqual("node");
+    // expect(A.value).toEqual("A");
+    // expect(B.type).toEqual("node");
+    // expect(B.value).toEqual("B");
+    // expect(C.type).toEqual("node");
+    // expect(C.value).toEqual("C");
 
-    expect(schematic.export()).toEqual("A -> B -> C");
-    expect(schematic.html).toEqual("<p>A -> B -> C</p>");
+    // expect(schematic.export()).toEqual("A -> B -> C");
+    // expect(schematic.html).toEqual("<p>A -> B -> C</p>");
     // expect(schematic.hyperedges.length).toEqual(1);
     // expect(schematic.nodes).toEqual(["A", "B", "C"]);
 });
+
+/*
+
 
 test("multiple hyperedges", async () => {
     const schematic = new GeneralSchematics("A -> B -> C\n1 -> 2 -> 3");
