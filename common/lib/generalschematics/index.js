@@ -1,3 +1,33 @@
+import { getInputOptions } from './utils.js';
+import Parser from './Parser.js';
+
+export default class GeneralSchematics {
+    static Parser = Parser
+
+    constructor() {
+        const { input, options } = getInputOptions(...arguments);
+        this.options = options;
+
+        this.parser = new Parser();
+        this.parse(input);
+        /*
+
+        const onUpdate = options.onUpdate;
+        delete options.onUpdate;
+        this.listeners = [];
+        if (onUpdate) this.addEventListener(onUpdate);
+        */
+    }
+
+    get input() { return this.parser.input }
+    get hyperedges() { return this.parser.hyperedges }
+    get symbols() { return this.parser.symbols }
+
+    parse(input) {
+        this.parser.parse(input);
+    }
+}
+/*
 import Hypergraph from './Hypergraph.js';
 import Hypertexts from './Hypertexts.js';
 import Parser from './Parser.js';
@@ -193,3 +223,5 @@ GeneralSchematics.Node = Hypergraph.Node;
 GeneralSchematics.BridgeNode = Hypergraph.BridgeNode;
 GeneralSchematics.trackUUID = Hypergraph.trackUUID;
 GeneralSchematics.Parser = Parser;
+
+*/

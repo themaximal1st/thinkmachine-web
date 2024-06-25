@@ -1,5 +1,6 @@
 import Colors from "./colors.js";
 import sha256lib from "@lib/sha256"
+import Colors from './colors.js';
 
 export function addIndex(index, key, val) {
     if (!index.has(key)) {
@@ -180,4 +181,28 @@ export function decodeHTMLEntities(text) {
         text = text.replace(new RegExp('&' + entities[i][0] + ';', 'g'), entities[i][1]);
 
     return text;
+}
+
+export function getInputOptions(input = "", options = {}) {
+    if (typeof input === "object" && !Array.isArray(input) && Object.keys(options).length === 0) {
+        options = input;
+        input = "";
+
+        if (options.hyperedges && Array.isArray(options.hyperedges)) {
+            input = options.hyperedges;
+            delete options.hyperedges;
+        }
+    }
+
+    if (Array.isArray(input)) {
+        input = input.map(hyperedge => hyperedge.join(" -> ")).join("\n");
+    }
+
+    if (typeof input !== "string") throw new Error("Input must be a string");
+
+    options.interwingle = options.interwingle || 0;
+    options.depth = options.depth || 0;
+    options.colors = options.colors || Colors;
+
+    return { input, options };
 }

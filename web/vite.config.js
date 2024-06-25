@@ -14,4 +14,11 @@ export default defineConfig({
     },
   },
   plugins: [react()],
+  test: {
+    watch: {
+      include: [
+        '/Users/brad/Projects/thinkmachine/common/lib/generalschematics/Parser.js',
+      ],
+    },
+  }
 });

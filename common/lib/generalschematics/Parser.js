@@ -1,3 +1,99 @@
+import { v4 as uuidv4 } from 'uuid';
+
+class LineABC {
+    constructor(line) {
+        this.line = line;
+        this.uuid = uuidv4();
+    }
+}
+
+class Hypertext extends LineABC {
+    constructor(line) {
+        // super(line);
+        this.hypertext = this.line;
+    }
+}
+
+class Hyperedge {
+    constructor(line) {
+        this.symbols = this.line.split("->").map(s => s.trim());
+    }
+}
+
+export default class Parser {
+    constructor(input = "") {
+        this.input = "";
+        this.lines = new Map();
+        this.parse(input);
+    }
+
+    get arrayLines() {
+        return Array.from(this.lines.values());
+    }
+
+    get hypertexts() {
+        console.log("HYPERTEXST", this.arrayLines);
+        return this.arrayLines.filter(line => line instanceof Hypertext);
+    }
+
+    get hyperedges() {
+        return this.arrayLines.filter(line => line instanceof Hyperedge);
+    }
+
+    get nodes() {
+        return this.arrayLines.filter(line => line instanceof Node);
+    }
+
+    get symbols() {
+        return this.hyperedges.flatMap(line => line.symbols);
+    }
+
+    get output() {
+        const output = [];
+        for (const line of this.lines.values()) {
+            output.push(line.line);
+        }
+        return output.join("\n");
+    }
+
+    parse(input) {
+        this.input = input;
+        this.oldLines = this.lines;
+        this.lines = new Map();
+        for (const line of input.split("\n")) {
+            this.parseLine(line);
+        }
+
+        return this.lines;
+    }
+
+    parseLine(line) {
+        // const oldLine = this.oldLines.get(line);
+        // if (oldLine) {
+        //     this.lines.set(line, oldLine);
+        //     return;
+        // }
+
+        this.lines.set(line, new Hypertext(line));
+    }
+
+    update() {
+
+    }
+
+    updateLine() {
+
+    }
+
+    debug() {
+        console.log("LINES", this.arrayLines);
+        for (const line of this.lines.values()) {
+            console.log("LINE", line);
+        }
+    }
+}
+
+/*
 import rehypeSanitize from 'rehype-sanitize'
 import rehypeStringify from 'rehype-stringify'
 import remarkParse from 'remark-parse'
@@ -248,3 +344,5 @@ export default class Parser {
                 .replace(/\n?$/, "")) // ensure newline at end
     }
 }
+
+*/
