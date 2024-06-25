@@ -192,3 +192,4 @@ GeneralSchematics.Hyperedge = Hypergraph.Hyperedge;
 GeneralSchematics.Node = Hypergraph.Node;
 GeneralSchematics.BridgeNode = Hypergraph.BridgeNode;
 GeneralSchematics.trackUUID = Hypergraph.trackUUID;
+GeneralSchematics.Parser = Parser;

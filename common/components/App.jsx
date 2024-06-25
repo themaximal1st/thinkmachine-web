@@ -1,3 +1,8 @@
+// If you store positions on nodes...when you edit...you should be able to grab the object from the current position, and just modify that. Is that doable?
+//  This would let you keep the textarea and only update parts of it
+//  Other option—diffing tree? Cache?
+// Then use clever LDS trick...BOOM. WYSIWYG!
+
 import React from "react";
 import GeneralSchematics from "@lib/generalschematics";
 import { Toaster } from "react-hot-toast";
@@ -272,7 +277,7 @@ export default class App extends React.Component {
                 </div>
 
                 <button
-                    className="absolute top-0 right-0 bg-blue-500 text-white"
+                    className="absolute top-0 right-0 bg-blue-500 text-white hidden"
                     onClick={this.reloadData.bind(this)}>
                     Reload
                 </button>

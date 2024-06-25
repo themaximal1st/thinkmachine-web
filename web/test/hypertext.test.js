@@ -88,5 +88,14 @@ test("hypertext encoding ending space", async () => {
     expect(schematic.export()).toBe("A -> B -> C\nThis is some A hypertext ");
 });
 
+test.skip("ignore formatting", async () => {
+    const schematic = new GeneralSchematics("A -> B -> C\n\nThis is *some* A **hypertext**");
+    schematic.debug();
+    expect(schematic.hypertexts.global.length).toEqual(0);
+    const hypertexts = schematic.hypertexts.get("A");
+    expect(hypertexts.length).toEqual(1);
+    expect(schematic.export()).toBe("A -> B -> C\nThis is *some* A **hypertext**");
+});
+
 
 // TODO: Convert hypertext to sectionized hypertext if no symbol

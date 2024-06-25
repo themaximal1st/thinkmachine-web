@@ -37,9 +37,6 @@ export default class Parser {
 
         const processor = unified()
             .use(remarkParse)
-            .use(remarkFrontmatter, ['yaml', 'toml'])
-            .use(remarkGfm)
-            .use(remarkMath)
             .use(remarkBreaks)
             .use(remarkSectionize)
             .use(this.hyperedgeify.bind(this))
@@ -64,24 +61,6 @@ export default class Parser {
         return processor.stringify(tree);
     }
 
-    // slate() {
-    //     const clonedTree = JSON.parse(JSON.stringify(this.tree));
-
-    //     const processor = unified()
-    //         .use(this.removeSections.bind(this))
-    //         .use(this.unhyperedgeify.bind(this))
-    //         .use(slate)
-
-    //     const tree = processor.runSync(clonedTree);
-
-    //     return processor.stringify(tree);
-
-    // }
-
-    // parseSlate(slate) {
-    //     return slate.map(child => serialize(child)).join("").replace(/<br>\n/g, "\n");
-    // }
-
     parseHTML(html) {
         console.log("PARSING HTML", html);
 
@@ -93,10 +72,6 @@ export default class Parser {
 
         return file.value.trim();
     }
-
-    // get hyperedges() {
-    //     return selectAll('hyperedge', this.tree);
-    // }
 
     get nodes() {
         return selectAll('node', this.tree);
@@ -124,6 +99,7 @@ export default class Parser {
                 const edgeIndex = this.hyperedges.length - 1;
                 let uid;
 
+
                 node.children = symbols.map((symbol, i) => {
                     if (!uid) {
                         uid = `${edgeIndex}:${symbol}`;
@@ -145,6 +121,7 @@ export default class Parser {
                         uuid,
                     }
                 });
+
                 delete node.value;
             });
         }
@@ -187,6 +164,9 @@ export default class Parser {
             visitParents(tree, 'text', (node, ancestors) => {
                 const parent = ancestors[ancestors.length - 1];
                 if (parent.type === "heading") return;
+
+                // console.log(inspect(node));
+
                 node.type = "hypertext";
             });
         }

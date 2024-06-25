@@ -22,12 +22,14 @@ class NodePanel extends React.Component {
     constructor(props) {
         super(props);
 
-        this.node = this.props.schematic.nodeByUUID(this.props.node.uuid);
-
         this.state = {
             hypertexts: [],
             dataHash: null,
         };
+    }
+
+    get node() {
+        return this.props.schematic.nodeByUUID(this.props.node.uuid);
     }
 
     componentDidMount() {
@@ -42,6 +44,8 @@ class NodePanel extends React.Component {
     }
 
     update() {
+        if (!this.node) return;
+
         if (this.state.dataHash === this.props.schematic.hash) return;
         this.setState({
             dataHash: this.props.schematic.hash,
@@ -56,6 +60,7 @@ class NodePanel extends React.Component {
     }
 
     componentWillUnmount() {
+        if (!this.node) return;
         const wrapper = document.getElementById(`node-panel-wrapper-${this.node.uuid}`);
         console.log("WILL UNMOUNT", this.node.uuid);
         console.log(wrapper);
@@ -66,11 +71,14 @@ class NodePanel extends React.Component {
     }
 
     render() {
+        if (!this.node) return null;
+        console.log("NODE", this.node.hypertexts);
+
         return (
             <div
                 id={`node-panel-${this.node.uuid}`}
                 className={classNames("node-panel-wrapper", {
-                    hidden: this.distance > 150 || this.state.hypertexts.length === 0,
+                    hidden: this.distance > 150 || this.node.hypertexts.length === 0,
                 })}>
                 <div
                     style={{ transform: `scale(${100 / this.distance})` }}
@@ -361,6 +369,7 @@ export default class ForceGraph3D extends React.Component {
         // div.className = "bg-red-500 text-white absolute top-0 left-0 p-4";
 
         const div = document.getElementById(`node-panel-${node.uuid}`);
+        console.log("DIV", div);
         if (!div) return title;
 
         return this.wrap(div, title);
