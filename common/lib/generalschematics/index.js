@@ -20,7 +20,10 @@ export default class GeneralSchematics {
     }
 
     get input() { return this.parser.input }
+    get output() { return this.parser.output }
+    get tree() { return this.parser.tree }
     get hyperedges() { return this.parser.hyperedges }
+    get nodes() { return this.parser.nodes }
     get symbols() { return this.parser.symbols }
 
     parse(input) {

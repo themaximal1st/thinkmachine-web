@@ -1,4 +1,45 @@
-import Node from './Node.js';
+import Line from './Line';
+import Node from './Node';
+
+export default class Hyperedge extends Line {
+    static ARROW = /-+>|→/;
+
+    constructor() {
+        super(...arguments);
+        this.nodes = [];
+        this.add(Hyperedge.parse(this.line));
+    }
+
+    get length() { return this.nodes.length }
+    get symbols() { return this.nodes.map(node => node.symbol) }
+    get firstNode() { return this.nodes[0] }
+    get secondNode() { return this.nodes[1] }
+    get lastNode() { return this.nodes[this.nodes.length - 1] }
+    get middleNodes() {
+        if (this.nodes.length < 3) { return [] }
+        return this.nodes.slice(1, this.nodes.length - 1);
+    }
+
+    get output() {
+        return this.nodes.map(node => node.symbol).join(" -> ");
+    }
+
+    add(symbol) {
+        if (Array.isArray(symbol)) { return symbol.map(s => this.add(s)) }
+        this.nodes.push(new Node(symbol, this));
+        return this.lastNode;
+    }
+
+    static matches(line) {
+        return Hyperedge.ARROW.test(line);
+    }
+
+    static parse(line) {
+        return line.split("->").map(s => s.trim());
+    }
+}
+
+/*
 import { v4 as uuidv4 } from 'uuid';
 import { stringToColor, arrayContains } from './utils.js';
 
@@ -261,6 +302,8 @@ export default class Hyperedge {
         };
     }
 }
+    */
+
 /*
 import { v4 as uuidv4 } from 'uuid';
 

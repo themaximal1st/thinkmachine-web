@@ -1,7 +1,5 @@
 import Parser from "@generalschematics/Parser.js"
-const Hypertext = Parser.Hypertext;
-const Hyperedge = Parser.Hyperedge;
-const Node = Parser.Node;
+const { Hypertext, Hyperedge, Node } = Parser;
 
 import { expect, test } from "vitest";
 

@@ -1,5 +1,25 @@
 import { v4 as uuidv4 } from 'uuid';
 
+export default class Node {
+    constructor(symbol, hyperedge) {
+        this.symbol = symbol;
+        this.hyperedge = hyperedge;
+        this.uuid = uuidv4();
+    }
+
+    get index() {
+        return this.hyperedge.nodes.indexOf(this);
+    }
+
+    rename(symbol) {
+        this.symbol = symbol;
+    }
+}
+
+
+/*
+import { v4 as uuidv4 } from 'uuid';
+
 class NodeHypertext {
     constructor(node) {
         this.node = node;
@@ -208,6 +228,7 @@ export default class Node {
         return context;
     }
 }
+    */
 
 /*
 import { v4 as uuidv4 } from 'uuid';

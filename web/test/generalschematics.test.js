@@ -10,36 +10,26 @@ test("parse simple doc", async () => {
     expect(schematic.symbols).toEqual([]);
 });
 
-test.only("parse and export hyperedge", async () => {
+test("parse and export hyperedge", async () => {
     const schematic = new GeneralSchematics("A -> B -> C");
     expect(schematic.input).toEqual("A -> B -> C");
     const tree = schematic.tree;
 
-    // expect(tree.type).toEqual("root");
-    // expect(tree.children.length).toEqual(1);
-    // expect(tree.children[0].type).toEqual("paragraph");
-    // expect(tree.children[0].children.length).toEqual(1);
+    expect(tree.length).toEqual(1);
+    expect(tree.hypertexts.length).toEqual(0);
+    expect(tree.hyperedges.length).toEqual(1);
+    expect(tree.hyperedges[0].length).toEqual(3);
 
-    // const hyperedge = tree.children[0].children[0];
-    // expect(hyperedge.type).toEqual("hyperedge");
-    // expect(hyperedge.children.length).toEqual(3);
+    const [A, B, C] = tree.hyperedges[0].nodes;
+    expect(A.symbol).toEqual("A");
+    expect(B.symbol).toEqual("B");
+    expect(C.symbol).toEqual("C");
 
-    // const [A, B, C] = hyperedge.children;
-    // expect(A.type).toEqual("node");
-    // expect(A.value).toEqual("A");
-    // expect(B.type).toEqual("node");
-    // expect(B.value).toEqual("B");
-    // expect(C.type).toEqual("node");
-    // expect(C.value).toEqual("C");
-
-    // expect(schematic.export()).toEqual("A -> B -> C");
-    // expect(schematic.html).toEqual("<p>A -> B -> C</p>");
-    // expect(schematic.hyperedges.length).toEqual(1);
-    // expect(schematic.nodes).toEqual(["A", "B", "C"]);
+    expect(schematic.output).toEqual("A -> B -> C");
+    expect(schematic.hyperedges.length).toEqual(1);
+    expect(schematic.nodes.length).toEqual(3);
+    expect(schematic.symbols).toEqual(["A", "B", "C"]);
 });
-
-/*
-
 
 test("multiple hyperedges", async () => {
     const schematic = new GeneralSchematics("A -> B -> C\n1 -> 2 -> 3");
@@ -47,24 +37,22 @@ test("multiple hyperedges", async () => {
     expect(hyperedges.length).toEqual(2);
 
     expect(hyperedges[0].nodes.length).toEqual(3);
-    expect(hyperedges[0].nodes[0].value).toEqual("A");
-    expect(hyperedges[0].nodes[1].value).toEqual("B");
-    expect(hyperedges[0].nodes[2].value).toEqual("C");
+    expect(hyperedges[0].nodes[0].symbol).toEqual("A");
+    expect(hyperedges[0].nodes[1].symbol).toEqual("B");
+    expect(hyperedges[0].nodes[2].symbol).toEqual("C");
     expect(hyperedges[1].nodes.length).toEqual(3);
-    expect(hyperedges[1].nodes[0].value).toEqual("1");
-    expect(hyperedges[1].nodes[1].value).toEqual("2");
-    expect(hyperedges[1].nodes[2].value).toEqual("3");
+    expect(hyperedges[1].nodes[0].symbol).toEqual("1");
+    expect(hyperedges[1].nodes[1].symbol).toEqual("2");
+    expect(hyperedges[1].nodes[2].symbol).toEqual("3");
 
-    expect(schematic.export()).toEqual("A -> B -> C\n1 -> 2 -> 3");
-    expect(schematic.html).toEqual("<p>A -> B -> C<br>\n1 -> 2 -> 3</p>");
+    expect(schematic.output).toEqual("A -> B -> C\n1 -> 2 -> 3");
 });
 
 test("soft breaks", async () => {
     const schematic = new GeneralSchematics("Hello\nWorld");
     expect(schematic.input).toEqual("Hello\nWorld");
-    expect(schematic.html).toEqual("<p>Hello<br>\nWorld</p>");
     expect(schematic.hyperedges).toEqual([]);
-    expect(schematic.export()).toEqual("Hello\nWorld");
+    expect(schematic.output).toEqual("Hello\nWorld");
 });
 
 test("custom node object", async () => {
@@ -76,32 +64,31 @@ test("custom node object", async () => {
     B.rename("B1");
     C.rename("C1");
 
-    expect(schematic.export()).toEqual("A1 -> B1 -> C1");
-    expect(schematic.hyperedges[0].nodes[0].value).toEqual("A1");
-
-    expect(schematic.html).toEqual("<p>A1 -> B1 -> C1</p>");
+    expect(schematic.output).toEqual("A1 -> B1 -> C1");
+    expect(schematic.hyperedges[0].nodes[0].symbol).toEqual("A1");
 });
 
-test("add node", async () => {
+test.only("add node", async () => {
     const schematic = new GeneralSchematics("A -> B -> C");
     const [A, B, C] = schematic.hyperedges[0].nodes;
 
     C.add("D");
-    expect(schematic.export()).toEqual("A -> B -> C -> D");
+    expect(schematic.output).toEqual("A -> B -> C -> D");
 
     A.add("A1");
-    expect(schematic.export()).toEqual("A -> A1 -> B -> C -> D");
+    expect(schematic.output).toEqual("A -> A1 -> B -> C -> D");
 });
 
+/*
 test("insert node", async () => {
     const schematic = new GeneralSchematics("A -> B -> C");
     const [A, B, C] = schematic.hyperedges[0].nodes;
 
     C.insert("D");
-    expect(schematic.export()).toEqual("A -> B -> D -> C");
+    expect(schematic.output).toEqual("A -> B -> D -> C");
 
     A.insert("A1");
-    expect(schematic.export()).toEqual("A1 -> A -> B -> D -> C");
+    expect(schematic.output).toEqual("A1 -> A -> B -> D -> C");
 });
 
 test("remove node", async () => {
@@ -109,10 +96,10 @@ test("remove node", async () => {
     const [A, B, C] = schematic.hyperedges[0].nodes;
 
     B.remove();
-    expect(schematic.export()).toEqual("A -> C");
+    expect(schematic.output).toEqual("A -> C");
 
     A.remove();
-    expect(schematic.export()).toEqual("C");
+    expect(schematic.output).toEqual("C");
 });
 
 test("node UUID", async () => {
@@ -130,7 +117,7 @@ test("add hyperedge", async () => {
     expect(D.value).toEqual("D");
     expect(E.value).toEqual("E");
     expect(F.value).toEqual("F");
-    expect(schematic.export()).toEqual("A -> B -> C\n\nD -> E -> F");
+    expect(schematic.output).toEqual("A -> B -> C\n\nD -> E -> F");
     expect(schematic.hyperedges.length).toEqual(2);
 });
 
@@ -140,11 +127,11 @@ test("remove hyperedge", async () => {
     const [ABC, DEF] = hyperedges;
     ABC.remove();
     expect(schematic.hyperedges.length).toEqual(1);
-    expect(schematic.export()).toEqual("D -> E -> F");
+    expect(schematic.output).toEqual("D -> E -> F");
 
     DEF.remove();
     expect(schematic.hyperedges.length).toEqual(0);
-    expect(schematic.export()).toEqual("");
+    expect(schematic.output).toEqual("");
 
     expect(schematic.tree.children.length).toEqual(0);
 });
@@ -171,14 +158,14 @@ test("modify global hypertext", async () => {
     const [hypertext] = schematic.hypertexts.global;
     hypertext.value = "This is new global hypertext";
     expect(hypertext.owners).toEqual(["global"]);
-    expect(schematic.export()).toEqual("This is new global hypertext");
+    expect(schematic.output).toEqual("This is new global hypertext");
 });
 
 test("remove global hypertext", async () => {
     const schematic = new GeneralSchematics("This is global hypertext");
     const [hypertext] = schematic.hypertexts.global;
     hypertext.remove();
-    expect(schematic.export()).toEqual("");
+    expect(schematic.output).toEqual("");
 });
 
 test("add non-local hypertext", async () => {
@@ -226,7 +213,7 @@ test("simple hypertext attaches to two symbols", async () => {
     B.hypertexts[0].value = "This is attached to B";
     expect(B.hypertexts.length).toEqual(1);
     expect(A.hypertexts.length).toEqual(0);
-    expect(schematic.export()).toEqual("A -> B -> C\n\nThis is attached to B");
+    expect(schematic.output).toEqual("A -> B -> C\n\nThis is attached to B");
 });
 
 test("complex hypertext attaches to two symbols", async () => {
@@ -240,7 +227,7 @@ test("complex hypertext attaches to two symbols", async () => {
     hypertext.remove();
     expect(B.hypertexts.length).toEqual(0);
     expect(A.hypertexts.length).toEqual(0);
-    expect(schematic.export()).toEqual("A -> B -> C");
+    expect(schematic.output).toEqual("A -> B -> C");
 });
 
 
@@ -256,7 +243,7 @@ test("add symbol hypertext", async () => {
 
     expect(A.hypertexts.length).toEqual(1);
     expect(B.hypertexts.length).toEqual(1);
-    expect(schematic.export()).toEqual("A -> B -> C\n\n## A\n\nNew hypertext for B");
+    expect(schematic.output).toEqual("A -> B -> C\n\n## A\n\nNew hypertext for B");
 });
 
 test("modifying hypertext", async () => {
@@ -300,7 +287,7 @@ test("modifying hypertext", async () => {
 test("add global hypertext", async () => {
     const schematic = new GeneralSchematics();
     schematic.hypertexts.add("This is some hypertext")
-    expect(schematic.export()).toEqual("This is some hypertext");
+    expect(schematic.output).toEqual("This is some hypertext");
     expect(schematic.hypertexts.global.length).toEqual(1);
 });
 
@@ -308,10 +295,10 @@ test("add node hypertext", async () => {
     const schematic = new GeneralSchematics();
     schematic.hypertexts.add("A", "This is some hypertext")
 
-    expect(schematic.export()).toEqual("## A\n\nThis is some hypertext");
+    expect(schematic.output).toEqual("## A\n\nThis is some hypertext");
 
     schematic.hypertexts.add("A", "This is some more hypertext")
-    expect(schematic.export()).toEqual("## A\n\nThis is some hypertext\nThis is some more hypertext");
+    expect(schematic.output).toEqual("## A\n\nThis is some hypertext\nThis is some more hypertext");
 });
 
 test("adding node localized hypertext", async () => {
@@ -337,7 +324,7 @@ test("hyperedges before hypertext", async () => {
     hypertext.remove();
     expect(B.hypertexts.length).toEqual(0);
     expect(A.hypertexts.length).toEqual(0);
-    expect(schematic.export()).toEqual("A -> B -> C");
+    expect(schematic.output).toEqual("A -> B -> C");
 });
 
 
@@ -371,7 +358,7 @@ test("hypertext import modify export import", async () => {
     expect(schematic.hypertexts.get("B").length).toEqual(1);
     expect(schematic.hypertexts.get("C").length).toEqual(1);
 
-    const exported = schematic.export();
+    const exported = schematic.output;
     expect(exported).toEqual("## A\n\nModified with B\nModified with C\n\nA -> B -> C");
 
     const schematic2 = new GeneralSchematics(exported);
@@ -416,7 +403,7 @@ test("symbols with spaces", async () => {
     expect(schematic.nodes[0].value).toEqual("This is A");
     expect(schematic.nodes[1].value).toEqual("This is B");
     expect(schematic.nodes[2].value).toEqual("This is C");
-    expect(schematic.export()).toEqual("This is A -> This is B -> This is C");
+    expect(schematic.output).toEqual("This is A -> This is B -> This is C");
 });
 
 test("export symbols as unicode", async () => {

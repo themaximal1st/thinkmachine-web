@@ -1,3 +1,21 @@
+import Line from './Line';
+
+export default class Hypertext extends Line {
+    constructor() {
+        super(...arguments);
+    }
+
+    get hypertext() {
+        return this.line;
+    }
+
+    set hypertext(value) {
+        this.line = value;
+    }
+}
+
+
+/*
 import { visitParents } from 'unist-util-visit-parents'
 
 export default class Hypertext {
@@ -41,3 +59,4 @@ export default class Hypertext {
         this.schematic.removeEmptySections(owners);
     }
 }
+    */
