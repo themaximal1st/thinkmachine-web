@@ -1,6 +1,6 @@
-import Parser from "../common/lib/generalschematics/parser"
+import Parser from "../src/common/lib/generalschematics/Parser.js"
 import { expect, test } from "vitest";
-import WebBridge from "src/server/WebBridge"
+// import WebBridge from "src/server/WebBridge"
 
 test.only("parse simple doc", async () => {
     const parser = new Parser("hello world");

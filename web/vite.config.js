@@ -3,22 +3,24 @@ import react from "@vitejs/plugin-react";
 import path from "path";
 
 export default defineConfig({
-  resolve: {
-    preserveSymlinks: true,
-    alias: {
-      // "@src": path.resolve(__dirname, "src/client"),
-      "@common": path.resolve(__dirname, "src/common"),
-      "@components": path.resolve(__dirname, "src/common/components"),
-      "@assets": path.resolve(__dirname, "src/common/assets"),
-      "@lib": path.resolve(__dirname, "src/common/lib"),
+  // resolve: {
+  //   preserveSymlinks: true,
+  //   alias: {
+  //     // "@src": path.resolve(__dirname, "src/client"),
+  //     "@common": path.resolve(__dirname, "src/common"),
+  //     "@components": path.resolve(__dirname, "src/common/components"),
+  //     "@assets": path.resolve(__dirname, "src/common/assets"),
+  //     "@lib": path.resolve(__dirname, "src/common/lib"),
+  //   },
+  // },
+  test: {
+    watch: {
+      ignored: ['**/node_modules/**', '**/dist/**'],
+      include: [
+        '../src/**/*.{js,ts,jsx,tsx}',
+        'test/**/*.{js,ts,jsx,tsx}'
+      ],
     },
   },
   plugins: [react()],
-  test: {
-    watch: {
-      include: [
-        '/Users/brad/Projects/thinkmachine/common/lib/generalschematics/Parser.js',
-      ],
-    },
-  }
 });

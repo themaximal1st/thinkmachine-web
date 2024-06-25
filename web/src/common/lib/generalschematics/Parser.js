@@ -9,7 +9,7 @@ class LineABC {
 
 class Hypertext extends LineABC {
     constructor(line) {
-        // super(line);
+        super(line);
         this.hypertext = this.line;
     }
 }
