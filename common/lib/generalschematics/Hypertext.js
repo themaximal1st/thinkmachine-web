@@ -7,26 +7,15 @@ export default class Hypertext extends Line {
         super(...arguments);
     }
 
-    get hypertext() {
-        return this.line;
+    get hypertext() { return this.line }
+    set hypertext(value) { this.line = value }
+    matches(symbol) { return this.hypertext.includes(symbol) }
+    get owners() { return this.tree.nodes.filter(node => this.matches(node.symbol)) }
+    get ownerSymbols() { return this.owners.map(node => node.symbol) }
+
+    get str() {
+        return `${this.index}:hypertext [${this.uuid}]\n    ${this.line}`
     }
-
-    set hypertext(value) {
-        this.line = value;
-    }
-
-    matches(hyperedge) {
-        for (const symbol of hyperedge.symbols) {
-            if (this.hypertext.includes(symbol)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    get owners() { return this.tree.hyperedges.filter(hyperedge => this.matches(hyperedge)) }
-    get ownerSymbols() { return this.owners.flatMap(hyperedge => hyperedge.symbols) }
 }
 
 

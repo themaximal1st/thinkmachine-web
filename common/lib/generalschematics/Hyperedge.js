@@ -58,12 +58,16 @@ export default class Hyperedge extends Line {
     //     // this.schematic.update();
     // }
 
+
     removeAt(index) {
         this.nodes.splice(index, 1);
         // this.schematic.onUpdate({ event: "node.remove", data: node });
         // this.updateNodeIndexes();
     }
 
+    get str() {
+        return `${this.index}:hyperedge [${this.uuid}]\n    ${this.nodes.map(node => node.str).join("\n    ")}`;
+    }
 
     static matches(line) {
         return Hyperedge.ARROW.test(line);

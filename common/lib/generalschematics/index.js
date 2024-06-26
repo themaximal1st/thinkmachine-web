@@ -19,13 +19,19 @@ export default class GeneralSchematics {
         */
     }
 
-    get input() { return this.parser.input }
-    get output() { return this.parser.output }
     get tree() { return this.parser.tree }
+    get hash() { return this.tree.hash }
+    get input() { return this.tree.input }
+    get output() { return this.tree.output }
+    get lines() { return this.tree.lines }
     get hypertexts() { return this.tree.hypertexts }
-    get hyperedges() { return this.parser.hyperedges }
-    get nodes() { return this.parser.nodes }
-    get symbols() { return this.parser.symbols }
+    get hyperedges() { return this.tree.hyperedges }
+    get nodes() { return this.tree.nodes }
+    get symbols() { return this.tree.symbols }
+    get uniqueSymbols() { return this.tree.uniqueSymbols }
+    get str() { return this.tree.str }
+
+    debug() { this.tree.debug() }
     add() { return this.tree.add(...arguments) }
 
     parse(input) {

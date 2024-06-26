@@ -5,11 +5,12 @@ export default class Node {
         this.symbol = symbol;
         this.hyperedge = hyperedge;
         this.uuid = uuidv4();
+        this.hypertext = new Hypertext(this);
     }
 
-    get index() {
-        return this.hyperedge.nodes.indexOf(this);
-    }
+    get tree() { return this.hyperedge.tree }
+    get index() { return this.hyperedge.nodes.indexOf(this) }
+    get hypertexts() { return this.hypertext.all }
 
     rename(symbol) { this.symbol = symbol }
     add(input) { this.hyperedge.insertAt(input, this.index + 1) }
@@ -21,25 +22,35 @@ export default class Node {
             this.hyperedge.remove();
         }
     }
+
+    get str() {
+        return `${this.index}:node ${this.symbol} [${this.uuid}]`;
+    }
 }
+
+// local Node-only Hypertext
+class Hypertext {
+    constructor(node) {
+        this.node = node;
+    }
+
+    get tree() { return this.node.tree }
+
+    add(input) {
+        // this.node.schematic.hypertexts.add(this.node.value, input);
+    }
+
+    get all() {
+        return this.tree.hypertexts.get(this.node.symbol);
+    }
+}
+
 
 
 /*
 import { v4 as uuidv4 } from 'uuid';
 
-class NodeHypertext {
-    constructor(node) {
-        this.node = node;
-    }
 
-    add(input) {
-        this.node.schematic.hypertexts.add(this.node.value, input);
-    }
-
-    get all() {
-        return this.node.schematic.hypertexts.get(this.node.value);
-    }
-}
 
 export default class Node {
     constructor(hyperedge, index) {

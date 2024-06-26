@@ -4,12 +4,14 @@ export default class Parser {
     static Hypertext = Tree.Hypertext;
     static Hyperedge = Tree.Hyperedge;
     static Node = Tree.Node
+    static EmptyLine = Tree.EmptyLine;
 
     constructor(input = "") {
         this.tree = new Tree();
         this.parse(input);
     }
 
+    get hash() { return this.tree.hash }
     get input() { return this.tree.input }
     get output() { return this.tree.output }
     get lines() { return this.tree.lines }
@@ -18,11 +20,15 @@ export default class Parser {
     get nodes() { return this.tree.nodes }
     get symbols() { return this.tree.symbols }
     get uniqueSymbols() { return this.tree.uniqueSymbols }
+    get str() { return this.tree.str }
 
     parse(input) {
         this.tree.reset();
         this.tree.input = input;
-        const lines = input.split("\n")
+
+        if (this.tree.input === "") return this.tree;
+
+        const lines = input.split(/\r?\n/);
         for (const index in lines) {
             this.tree.parseLine(lines[index], index);
         }
@@ -38,11 +44,6 @@ export default class Parser {
 
     }
 
-    debug() {
-        for (const line of this.lines.values()) {
-            console.log(line);
-        }
-    }
 }
 
 

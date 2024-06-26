@@ -1,5 +1,5 @@
 import Parser from "@generalschematics/Parser.js"
-const { Hypertext, Hyperedge, Node } = Parser;
+const { Hypertext, Hyperedge, Node, EmptyLine } = Parser;
 
 import { expect, test } from "vitest";
 
@@ -124,6 +124,19 @@ test("remove hyperedge", async () => {
     expect(parser.lines.length).toBe(0);
     expect(parser.output).toBe("");
 });
+
+test("parse empty newline", async () => {
+    const parser = new Parser("hello\n\nworld");
+    expect(parser.lines.length).toBe(3);
+    expect(parser.lines[0]).toBeInstanceOf(Hypertext);
+    expect(parser.lines[1]).toBeInstanceOf(EmptyLine);
+    expect(parser.lines[2]).toBeInstanceOf(Hypertext);
+    expect(parser.hyperedges.length).toBe(0);
+    expect(parser.symbols.length).toBe(0);
+    expect(parser.output).toBe("hello\n\nworld");
+});
+
+
 
 
 

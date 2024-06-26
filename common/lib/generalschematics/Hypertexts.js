@@ -6,10 +6,10 @@ export default class Hypertexts {
     }
 
     get all() { return this.tree.lines.filter(line => line instanceof Hypertext) }
-    // get all() { return this.tree.hypertexts }
     get global() { return this.all.filter(h => h.owners.length === 0) }
     get local() { return this.all.filter(h => h.owners.length > 0) }
     get(symbol) { return this.local.filter(h => h.ownerSymbols.includes(symbol)) }
+    add(input) { return this.tree.add(input) }
 }
 
 /*

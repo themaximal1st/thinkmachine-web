@@ -15,6 +15,10 @@ export default class Line {
         return this.line;
     }
 
+    get str() {
+        return `${this.index}:line [${this.uuid}]\n    ${this.line}`;
+    }
+
     static matches(line) {
         return true;
     }
