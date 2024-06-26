@@ -17,6 +17,8 @@ export default class GeneralSchematics {
         this.parser = new Parser(input, options);
     }
 
+    get interwingle() { return this.tree.interwingle }
+    set interwingle(value) { this.tree.interwingle = value }
     get tree() { return this.parser.tree }
     get hash() { return this.tree.hash }
     get input() { return this.tree.input }
