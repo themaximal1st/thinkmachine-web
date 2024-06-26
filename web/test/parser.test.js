@@ -1,5 +1,5 @@
 import Parser from "@generalschematics/Parser.js"
-const { Hypertext, Hyperedge, Node, EmptyLine } = Parser;
+const { Hypertext, Hyperedge, Node, EmptyLine, Header } = Parser;
 
 import { expect, test } from "vitest";
 
@@ -136,6 +136,29 @@ test("parse empty newline", async () => {
     expect(parser.output).toBe("hello\n\nworld");
 });
 
+test("parse header", async () => {
+    const parser = new Parser("# Hello World");
+    expect(parser.lines.length).toBe(1);
+    expect(parser.headers.all.length).toBe(1);
+    expect(parser.headers.global.length).toBe(1);
+    expect(parser.headers.local.length).toBe(0);
+    expect(parser.headers.all[0]).toBeInstanceOf(Header);
+});
+
+test("header owner", async () => {
+    const parser = new Parser("A -> B -> C\n# A");
+    expect(parser.lines.length).toBe(2);
+    expect(parser.headers.all.length).toBe(1);
+    expect(parser.headers.global.length).toBe(0);
+    expect(parser.headers.local.length).toBe(1);
+    expect(parser.hyperedges.length).toBe(1);
+    expect(parser.headers.all[0].ownerSymbols).toEqual(["A"]);
+});
+
+
+
+// Hypertext after header means it belongs to it
+// Section until double new line..then no more
 
 
 
@@ -184,3 +207,5 @@ test("parse empty newline", async () => {
 
 
 // TODO: User adds a new line to hypertext -> returns new hypertext
+
+// We assume symbols cant belong to a header...maybe they could in the future?

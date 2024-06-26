@@ -1,6 +1,4 @@
 import Line from './Line';
-import Hyperedge from './Hyperedge';
-import Node from './Node';
 
 export default class Hypertext extends Line {
     constructor() {

@@ -26,11 +26,11 @@ export default class GeneralSchematics {
     get lines() { return this.tree.lines }
     get hypertexts() { return this.tree.hypertexts }
     get hyperedges() { return this.tree.hyperedges }
+    get headers() { return this.tree.headers }
     get nodes() { return this.tree.nodes }
     get symbols() { return this.tree.symbols }
     get uniqueSymbols() { return this.tree.uniqueSymbols }
     get str() { return this.tree.str }
-
     debug() { this.tree.debug() }
     add() { return this.tree.add(...arguments) }
 

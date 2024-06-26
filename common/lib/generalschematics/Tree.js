@@ -1,8 +1,11 @@
 import Hypertexts from './Hypertexts.js';
+import Headers from "./Headers";
+
 import Hyperedge from "./Hyperedge";
 import Hypertext from "./Hypertext";
 import Node from "./Node";
 import EmptyLine from "./EmptyLine";
+import Header from "./Header";
 
 import { sha256 } from './utils.js';
 
@@ -11,14 +14,16 @@ export default class Tree {
     static Hyperedge = Hyperedge;
     static Node = Node;
     static EmptyLine = EmptyLine;
+    static Header = Header;
 
-    static LineTypes = [EmptyLine, Hyperedge, Hypertext];
+    static LineTypes = [EmptyLine, Header, Hyperedge, Hypertext];
 
     constructor() {
         this.input = "";
         this.lines = [];
         this.lastLines = [];
         this.hypertexts = new Hypertexts(this);
+        this.headers = new Headers(this);
     }
 
     get hash() { return sha256(this.str) }

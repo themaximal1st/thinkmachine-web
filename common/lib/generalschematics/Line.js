@@ -16,7 +16,7 @@ export default class Line {
     }
 
     get str() {
-        return `${this.index}:line [${this.uuid}]\n    ${this.line}`;
+        return `${this.index}:${this.constructor.name.toLowerCase()} [${this.uuid}]\n    ${this.line}`;
     }
 
     static matches(line) {
@@ -27,4 +27,8 @@ export default class Line {
         this.tree.lines.splice(this.index, 1);
         // TODO: trigger update
     }
+
+    matches(symbol) { return this.value === symbol }
+    get owners() { return this.tree.nodes.filter(node => this.matches(node.symbol)) }
+    get ownerSymbols() { return this.owners.map(node => node.symbol) }
 }
