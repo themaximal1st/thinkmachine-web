@@ -10,6 +10,10 @@ export default class Base {
         return this.constructor.name.toLowerCase();
     }
 
+    get header() {
+        return false;
+    }
+
     filter(input) {
         if (typeof input === "string") {
             if (this.name === input) return this;
@@ -25,5 +29,11 @@ export default class Base {
         } else {
             throw new Error("Invalid input type");
         }
+    }
+
+    get isHeaderOwned() {
+        if (this.name === "header") return true;
+        if (this.header) return true;
+        return false;
     }
 }

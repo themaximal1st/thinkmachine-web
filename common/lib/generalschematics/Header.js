@@ -18,6 +18,7 @@ export default class Header extends Line {
 
         let curr = this, breaks = 0;
         while (curr = curr.child) {
+            console.log("CURR", curr.name);
             if (curr.name === "hyperedge") continue;
             if (curr.name === "emptyline") breaks++;
             else breaks = 0;
@@ -28,15 +29,11 @@ export default class Header extends Line {
         return children;
     }
 
-    get hypertexts() {
-        return [];
-    }
-
     remove(removeChildren = false) {
         if (removeChildren) {
             const children = this.children;
             let child;
-            while (child = children.pop()) child.remove()
+            while (child = children.pop()) { child.remove(false) }
         }
 
         this.tree.lines.splice(this.index, 1);

@@ -42,7 +42,9 @@ export default class Tree {
         console.log("");
     }
 
-    parseLine(line, index) {
+    parseLine(line, index = null) {
+        if (index === null) index = this.lines.length;
+
         const match = this.matches(line, index)
         if (match) {
             this.lines.splice(index, 0, match);
@@ -86,10 +88,6 @@ export default class Tree {
         this.lines = [];
     }
 
-    get lastLineIsHeaderSection() {
-
-    }
-
     add() {
         let input;
 
@@ -104,9 +102,13 @@ export default class Tree {
         if (Array.isArray(input)) { input = input.join(" ->  ") }
 
         if (typeof input === "string") {
-            // would placing this line put me in a header?
             const lastLine = this.lines[this.lines.length - 1];
-            return this.parseLine(input, this.lines.length);
+            if (lastLine && lastLine.isHeaderOwned) {
+                this.parseLine("\n");
+                this.parseLine("\n");
+            }
+
+            return this.parseLine(input);
         }
 
         throw new Error("Input must be a string or an array of strings");
@@ -117,8 +119,8 @@ export default class Tree {
         if (header) {
             return header.add(hypertext);
         } else {
-            this.parseLine(`# ${symbol}`, this.lines.length);
-            return this.parseLine(arguments[1], this.lines.length);
+            this.parseLine(`# ${symbol}`);
+            return this.parseLine(arguments[1]);
         }
     }
 

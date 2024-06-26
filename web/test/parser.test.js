@@ -276,10 +276,6 @@ test("hypertext that belongs to header", async () => {
 
     expect(header.children.length).toBe(1);
     header.children[0].remove();
-    expect(header.children.length).toBe(0);
-    expect(parser.lines.length).toBe(2);
-
-    header.remove();
     expect(parser.lines.length).toBe(1);
 });
 
