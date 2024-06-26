@@ -3,13 +3,18 @@ import Parser from './Parser.js';
 
 export default class GeneralSchematics {
     static Parser = Parser
+    static Tree = Parser.Tree;
+    static Hypertext = Parser.Tree.Hypertext;
+    static Hyperedge = Parser.Tree.Hyperedge;
+    static Node = Parser.Tree.Node
+    static EmptyLine = Parser.Tree.EmptyLine;
+    static Header = Parser.Tree.Header;
+    static INTERWINGLE = Parser.Tree.INTERWINGLE;
+    static DEPTH = Parser.Tree.DEPTH;
 
     constructor() {
         const { input, options } = getInputOptions(...arguments);
-        this.options = options;
-
-        this.parser = new Parser();
-        this.parse(input);
+        this.parser = new Parser(input, options);
         /*
 
         const onUpdate = options.onUpdate;
@@ -31,12 +36,20 @@ export default class GeneralSchematics {
     get symbols() { return this.tree.symbols }
     get uniqueSymbols() { return this.tree.uniqueSymbols }
     get str() { return this.tree.str }
-    debug() { this.tree.debug() }
-    add() { return this.tree.add(...arguments) }
 
-    parse(input) {
-        this.parser.parse(input);
-    }
+    get() { return this.tree.get(...arguments) }
+    has() { return this.tree.has(...arguments) }
+    debug() { this.tree.debug() }
+
+    reset() { this.tree.reset() }
+    parse(input) { this.parser.parse(input) }
+
+    add() { return this.tree.add(...arguments) }
+    nodeByUUID() { return this.tree.nodeByUUID(...arguments) }
+    nodeByID() { return this.tree.nodeByID(...arguments) }
+    nodeByUID() { return this.tree.nodeByUID(...arguments) }
+    edgeByUUID() { return this.tree.edgeByUUID(...arguments) }
+
 }
 /*
 import Hypergraph from './Hypergraph.js';
@@ -203,12 +216,6 @@ export default class GeneralSchematics {
         } else {
             throw new Error("Input must be a string or an array of strings");
         }
-    }
-
-    reset() {
-        this.input = "";
-        this.tree = null;
-        this.hypergraph.reset();
     }
 
     graphData() {

@@ -1,5 +1,6 @@
 import Line from './Line';
 import Node from './Node';
+import { arrayContains } from './utils';
 
 export default class Hyperedge extends Line {
     static ARROW = /-+>|→/;
@@ -10,6 +11,13 @@ export default class Hyperedge extends Line {
         this.add(Hyperedge.parse(this.line));
     }
 
+    get id() {
+        const id = this.symbols.join(".");
+        if (this.tree.isIsolated) { return `${this.index}:${id}` }
+        return id;
+    }
+
+    equal(edge) { return this.id === edge.id }
     get length() { return this.nodes.length }
     get symbols() { return this.nodes.map(node => node.symbol) }
     get firstNode() { return this.nodes[0] }
@@ -24,11 +32,19 @@ export default class Hyperedge extends Line {
         return this.nodes.map(node => node.symbol).join(" -> ");
     }
 
-    // add(symbol) {
-    //     if (Array.isArray(symbol)) { return symbol.map(s => this.add(s)) }
-    //     this.nodes.push(new Node(symbol, this));
-    //     return this.lastNode;
-    // }
+    nodeId(index) {
+        const id = this.symbols.slice(0, index + 1).join(".");
+        if (this.tree.isIsolated) {
+            return `${this.index}:${id}`;
+        }
+
+        return id;
+    }
+
+    uniqueNodeId(index) {
+        const id = this.symbols.slice(0, index + 1).join(".");
+        return `${this.index}:${id}`;
+    }
 
     add(symbol) {
         if (Array.isArray(symbol)) {
@@ -63,11 +79,13 @@ export default class Hyperedge extends Line {
         return false;
     }
 
-    // remove() {
-    //     // this.hypergraph.remove(this);
-    //     // this.schematic.update();
-    // }
-
+    has(symbol) {
+        if (Array.isArray(symbol)) {
+            return arrayContains(this.symbols, symbol);
+        } else {
+            return this.symbols.includes(symbol);
+        }
+    }
 
     removeAt(index) {
         this.nodes.splice(index, 1);
@@ -113,38 +131,6 @@ export default class Hyperedge {
         this.hypergraph = hypergraph;
         this.nodes = [];
         this.build();
-    }
-
-    get schematic() {
-        return this.hypergraph.schematic;
-    }
-
-    get id() {
-        const id = this.symbols.join(".");
-        if (this.schematic.isIsolated) {
-            return `${this.index}:${id}`;
-        }
-        return id;
-    }
-
-    equal(edge) {
-        return this.id === edge.id;
-    }
-
-    get uuid() {
-        return this.data.uuid;
-    }
-
-    set uuid(value) {
-        this.data.uuid = value;
-    }
-
-    get values() {
-        return this.nodes.map(node => node.value);
-    }
-
-    get symbols() {
-        return this.values;
     }
 
     get color() {
@@ -201,20 +187,6 @@ export default class Hyperedge {
         }
     }
 
-    nodeId(index) {
-        const id = this.values.slice(0, index + 1).join(".");
-        if (this.schematic.isIsolated) {
-            return `${this.index}:${id}`;
-        }
-
-        return id;
-    }
-
-    uniqueNodeId(index) {
-        const id = this.values.slice(0, index + 1).join(".");
-        return `${this.index}:${id}`;
-    }
-
     rename(input, index) {
         this.data.children[index].value = input;
         this.schematic.update();
@@ -228,14 +200,6 @@ export default class Hyperedge {
         }
 
         this.schematic.update();
-    }
-
-    has(symbol) {
-        if (Array.isArray(symbol)) {
-            return arrayContains(this.symbols, symbol);
-        } else {
-            return this.symbols.includes(symbol);
-        }
     }
 
     updateGraphData(nodes, links) {

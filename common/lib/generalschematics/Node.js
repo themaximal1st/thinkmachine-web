@@ -10,9 +10,19 @@ export default class Node extends Base {
     }
 
     get name() { return this.constructor.name.toLowerCase() }
-    get tree() { return this.hyperedge.tree }
     get index() { return this.hyperedge.nodes.indexOf(this) }
+    get id() { return this.hyperedge.nodeId(this.index) }
+    get uid() { return this.hyperedge.uniqueNodeId(this.index) }
+    get tree() { return this.hyperedge.tree }
     get hypertexts() { return this.hypertext.all }
+    get isFirst() { return this.index === 0 }
+    get isLast() { return this.index === this.hyperedge.length - 1 }
+    get isMiddle() { return !this.isFirst && !this.isLast }
+
+    equal(node) { return this.id === node.id }
+    equals(symbol) { return this.symbol.toLowerCase() === symbol.toLowerCase(); }
+
+
 
     rename(symbol) { this.symbol = symbol }
     add(input) { this.hyperedge.insertAt(input, this.index + 1) }
@@ -27,6 +37,10 @@ export default class Node extends Base {
 
     get str() {
         return `${this.index}:node ${this.symbol} [${this.uuid}]`;
+    }
+
+    connect(node) {
+        return this.tree.add([this.symbol, node.symbol]);
     }
 }
 
@@ -63,80 +77,6 @@ export default class Node {
         if (!this.data.uuid) {
             this.data.uuid = uuidv4();
         }
-    }
-
-    get id() {
-        return this.hyperedge.nodeId(this.index);
-    }
-
-    get uid() {
-        return this.hyperedge.uniqueNodeId(this.index);
-    }
-
-    get data() {
-        return this.hyperedge.data.children[this.index];
-    }
-
-    get uuid() {
-        return this.data.uuid;
-    }
-
-    set uuid(uuid) {
-        this.data.uuid = uuid;
-    }
-
-    get value() {
-        return this.data.value;
-    }
-
-    get symbol() {
-        return this.value;
-    }
-
-    get isFirst() {
-        return this.index === 0;
-    }
-
-    get isLast() {
-        return this.index === this.hyperedge.nodes.length - 1;
-    }
-
-    get isMiddle() {
-        return !this.isFirst && !this.isLast;
-    }
-
-    get hypergraph() {
-        return this.hyperedge.hypergraph;
-    }
-
-    get schematic() {
-        return this.hypergraph.schematic;
-    }
-
-    get hypertexts() {
-        return this.hypertext.all
-    }
-
-    rename(input) {
-        this.hyperedge.rename(input, this.index);
-    }
-
-
-
-
-    equal(node) {
-        return this.id === node.id;
-    }
-
-    equals(symbol) { return this.symbol.toLowerCase() === symbol.toLowerCase(); }
-
-    connect(node) {
-        const symbols = [
-            this.symbol,
-            node.symbol,
-        ]
-
-        return this.hypergraph.add(symbols);
     }
 
     updateGraphData(nodes, links) {

@@ -1,26 +1,37 @@
 import GeneralSchematics from "@lib/generalschematics"
-const Hyperedge = GeneralSchematics.Hypergraph.Hyperedge;
+const { Hyperedge } = GeneralSchematics;
 
 import { expect, test } from "vitest";
 
-test("parse interwingle isolated", async () => {
+test("parse hyperedge", async () => {
+    const schematic = new GeneralSchematics("A -> B -> C");
+    expect(schematic.hyperedges.length).toBe(1);
+    const edge = schematic.hyperedges[0];
+    expect(edge.symbols).toEqual(["A", "B", "C"]);
+    expect(edge.nodes.length).toBe(3);
+    expect(edge.index).toBe(0);
+    expect(edge.uuid).toMatch(/^[0-9a-f-]{36}$/);
+});
+
+
+test("parse nodes", async () => {
     const schematic = new GeneralSchematics("A -> B -> C");
     expect(schematic.hyperedges.length).toBe(1);
     const [A, B, C] = schematic.hyperedges[0].nodes;
-    expect(A.value).toBe("A");
+    expect(A.symbol).toBe("A");
     expect(A.id).toBe("0:A");
-    expect(B.value).toBe("B");
+    expect(B.symbol).toBe("B");
     expect(B.id).toBe("0:A.B");
-    expect(C.value).toBe("C");
+    expect(C.symbol).toBe("C");
     expect(C.id).toBe("0:A.B.C");
 
-    schematic.hypergraph.add(["D", "E", "F"]);
+    schematic.add(["D", "E", "F"]);
     const [D, E, F] = schematic.hyperedges[1].nodes;
-    expect(D.value).toBe("D");
+    expect(D.symbol).toBe("D");
     expect(D.id).toBe("1:D");
-    expect(E.value).toBe("E");
+    expect(E.symbol).toBe("E");
     expect(E.id).toBe("1:D.E");
-    expect(F.value).toBe("F");
+    expect(F.symbol).toBe("F");
     expect(F.id).toBe("1:D.E.F");
 });
 
@@ -28,20 +39,20 @@ test("parse interwingle confluence", async () => {
     const schematic = new GeneralSchematics("A -> B -> C", { interwingle: GeneralSchematics.INTERWINGLE.CONFLUENCE });
     expect(schematic.hyperedges.length).toBe(1);
     const [A, B, C] = schematic.hyperedges[0].nodes;
-    expect(A.value).toBe("A");
+    expect(A.symbol).toBe("A");
     expect(A.id).toBe("A");
-    expect(B.value).toBe("B");
+    expect(B.symbol).toBe("B");
     expect(B.id).toBe("A.B");
-    expect(C.value).toBe("C");
+    expect(C.symbol).toBe("C");
     expect(C.id).toBe("A.B.C");
 
-    schematic.hypergraph.add(["A", "1", "2"]);
+    schematic.add(["A", "1", "2"]);
     const [A1, One, Two] = schematic.hyperedges[1].nodes;
-    expect(A1.value).toBe("A");
+    expect(A1.symbol).toBe("A");
     expect(A1.id).toBe("A");
-    expect(One.value).toBe("1");
+    expect(One.symbol).toBe("1");
     expect(One.id).toBe("A.1");
-    expect(Two.value).toBe("2");
+    expect(Two.symbol).toBe("2");
     expect(Two.id).toBe("A.1.2");
 });
 
@@ -54,7 +65,6 @@ test("initialize with hyperedge", () => {
     expect(schematic.hyperedges[0].symbols).toEqual(["A", "B", "C"]);
     expect(schematic.hyperedges[0].nodes.length).toBe(3);
 });
-
 
 test("initialize with hyperedges", () => {
     const schematic = new GeneralSchematics([
@@ -163,7 +173,7 @@ test("empty schematic", () => {
 test("build edge (isolated)", () => {
     const schematic = new GeneralSchematics();
     const edge = schematic.add(["A", "B"]);
-    expect(edge).instanceOf(Hyperedge);
+    expect(edge).toBeInstanceOf(Hyperedge);
     expect(edge.symbols).toEqual(["A", "B"]);
     expect(edge.id).toEqual("0:A.B");
     expect(schematic.uniqueSymbols).toEqual(new Set(["A", "B"]));
@@ -339,10 +349,9 @@ test("export", async function () {
     expect(schematic.uniqueSymbols.size).toBe(10);
     expect(schematic.hyperedges.length).toBe(2);
 
-    const output = schematic.export();
-    expect(input).toBe(output);
+    expect(input).toBe(schematic.output);
 
-    schematic.parse(output);
+    schematic.parse(schematic.output);
     expect(schematic.uniqueSymbols.size).toBe(10);
     expect(schematic.hyperedges.length).toBe(2);
 });
@@ -358,7 +367,8 @@ test("parse on existing hypergraph", async function () {
     expect(schematic.has("tagline")).toBeTruthy();
     expect(schematic.has("Turning C,S,V,s into Hypergraphs.")).toBeTruthy();
 
-    schematic.add(`A->B->C\n1->2->3`); // don't reset
+    schematic.add(`A->B->C`); // don't reset
+    schematic.add(`1->2->3`);
 
     expect(schematic.uniqueSymbols.size).toBe(13);
     expect(schematic.hyperedges.length).toBe(4);
@@ -408,7 +418,7 @@ test("insert node at index", () => {
     edge.insertAt("5", 10);
     expect(edge.symbols).toEqual(["1", "A", "2", "B", "3", "C", "4", "5"]);
 
-    expect(edge.nodes[7].value).toBe("5");
+    expect(edge.nodes[7].symbol).toBe("5");
     expect(edge.nodes[7].index).toBe(7);
 });
 

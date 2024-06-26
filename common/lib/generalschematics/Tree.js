@@ -6,8 +6,9 @@ import Hypertext from "./Hypertext";
 import Node from "./Node";
 import EmptyLine from "./EmptyLine";
 import Header from "./Header";
+import Colors from './colors.js';
 
-import { sha256 } from './utils.js';
+import { sha256, arrayContains } from './utils.js';
 
 export default class Tree {
     static Hypertext = Hypertext;
@@ -18,13 +19,44 @@ export default class Tree {
 
     static LineTypes = [EmptyLine, Header, Hyperedge, Hypertext];
 
-    constructor() {
+    static INTERWINGLE = {
+        ISOLATED: 0,        // only explicit connections you've added
+        CONFLUENCE: 1,      // shared parents
+        FUSION: 2,          // shared children
+        BRIDGE: 3           // shared symbols
+    };
+
+    static DEPTH = {
+        SHALLOW: 0,         // don't connect
+        // any number between 1 and Infinity is valid, up to maxDepth
+        DEEP: Infinity,     // infinitely connect
+    };
+
+
+    constructor(options = {}) {
         this.input = "";
+        this.options = options || {};
+        if (typeof this.options.interwingle === "undefined") this.options.interwingle = Tree.INTERWINGLE.ISOLATED;
+        if (typeof this.options.depth === "undefined") this.options.depth = Tree.DEPTH.SHALLOW;
+        if (typeof this.options.colors === "undefined") this.options.colors = Colors;
+
         this.lines = [];
         this.lastLines = [];
+
         this.hypertexts = new Hypertexts(this);
         this.headers = new Headers(this);
     }
+
+    get interwingle() { return this.options.interwingle }
+    set interwingle(value) { this.options.interwingle = value }
+    get depth() { return this.options.depth }
+    set depth(value) { this.options.depth = value }
+    get colors() { return this.options.colors }
+    set colors(value) { this.options.colors = value }
+    get isIsolated() { return this.interwingle === Tree.INTERWINGLE.ISOLATED }
+    get isConfluence() { return this.interwingle >= Tree.INTERWINGLE.CONFLUENCE }
+    get isFusion() { return this.interwingle >= Tree.INTERWINGLE.FUSION }
+    get isBridge() { return this.interwingle >= Tree.INTERWINGLE.BRIDGE }
 
     get hash() { return sha256(this.str) }
     get length() { return this.lines.length }
@@ -41,6 +73,28 @@ export default class Tree {
         console.log(`"${this.output}"`)
         console.log("");
     }
+
+
+    get(symbols) {
+        for (const hyperedge of this.hyperedges) {
+            if (arrayContains(hyperedge.symbols, symbols)) { return hyperedge }
+        }
+
+        return null;
+    }
+
+    has(symbol) {
+        if (Array.isArray(symbol)) {
+            return !!this.get(symbol);
+        } else {
+            return this.uniqueSymbols.has(symbol);
+        }
+    }
+
+    nodeByUUID(uuid) { for (const node of this.nodes) { if (node.uuid === uuid) return node } }
+    nodeByID(id) { for (const node of this.nodes) { if (node.id === id) return node } }
+    nodeByUID(uid) { for (const node of this.nodes) { if (node.uid === uid) return node } }
+    edgeByUUID(uuid) { for (const hyperedge of this.hyperedges) { if (hyperedge.uuid === uuid) return hyperedge } }
 
     parseLine(line, index = null) {
         if (index === null) index = this.lines.length;

@@ -1,17 +1,19 @@
 import Tree from './Tree';
 
 export default class Parser {
+    static Tree = Tree;
     static Hypertext = Tree.Hypertext;
     static Hyperedge = Tree.Hyperedge;
     static Node = Tree.Node
     static EmptyLine = Tree.EmptyLine;
     static Header = Tree.Header;
 
-    constructor(input = "") {
-        this.tree = new Tree();
+    constructor(input = "", options = {}) {
+        this.tree = new Tree(options);
         this.parse(input);
     }
 
+    get options() { return this.tree.options }
     get hash() { return this.tree.hash }
     get input() { return this.tree.input }
     get output() { return this.tree.output }
@@ -43,18 +45,7 @@ export default class Parser {
 
         return this.tree;
     }
-
-    update() {
-
-    }
-
-    updateLine() {
-
-    }
-
 }
-
-
 
 
 /*
