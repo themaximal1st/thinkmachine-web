@@ -64,7 +64,7 @@ export default class Hyperedge extends Line {
 
         // this.updateNodeIndexes();
 
-        // this.schematic.onUpdate({ event: "node.add", data: node });
+        this.tree.onUpdate({ event: "node.add", data: node });
 
         return node;
     }
@@ -87,9 +87,17 @@ export default class Hyperedge extends Line {
         }
     }
 
+    remove() {
+        const data = this;
+        super.remove();
+        this.tree.onUpdate({ event: "hyperedge.remove", data });
+    }
+
+
     removeAt(index) {
+        const node = this.nodes[index];
         this.nodes.splice(index, 1);
-        // this.schematic.onUpdate({ event: "node.remove", data: node });
+        this.tree.onUpdate({ event: "node.remove", data: node });
         // this.updateNodeIndexes();
     }
 
@@ -296,11 +304,6 @@ export default class Hyperedge {
         this.hypergraph = hypergraph;
         this.add(symbols);
         this.uuid = uuidv4();
-    }
-
-    remove() {
-        this.hypergraph.hyperedges.splice(this.index, 1);
-        this.hypergraph.onUpdate({ event: "hyperedge.remove", data: this });
     }
 
     prev() {

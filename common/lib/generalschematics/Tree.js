@@ -40,6 +40,8 @@ export default class Tree {
         if (typeof this.options.depth === "undefined") this.options.depth = Tree.DEPTH.SHALLOW;
         if (typeof this.options.colors === "undefined") this.options.colors = Colors;
 
+        this.listeners = this.options.listener ? [this.options.listener] : [];
+
         this.lines = [];
         this.lastLines = [];
 
@@ -96,6 +98,10 @@ export default class Tree {
     nodeByUID(uid) { for (const node of this.nodes) { if (node.uid === uid) return node } }
     edgeByUUID(uuid) { for (const hyperedge of this.hyperedges) { if (hyperedge.uuid === uuid) return hyperedge } }
 
+    onUpdate(e) { for (const listener of this.listeners) { listener(e) } }
+    addEventListener(listener) { this.listeners.push(listener) }
+    removeEventListener(listener) { this.listeners = this.listeners.filter(l => l !== listener) }
+
     parseLine(line, index = null) {
         if (index === null) index = this.lines.length;
 
@@ -108,7 +114,10 @@ export default class Tree {
         for (const LineType of Tree.LineTypes) {
             if (LineType.matches(line)) {
                 const lineType = new LineType(line, this)
+
                 this.lines.splice(index, 0, lineType);
+                this.onUpdate({ event: "parse.line", name: lineType.name, data: lineType });
+
                 return lineType;
             }
         }

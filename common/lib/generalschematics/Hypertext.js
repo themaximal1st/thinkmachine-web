@@ -8,7 +8,10 @@ export default class Hypertext extends Line {
     get isHypertext() { return true }
 
     get hypertext() { return this.line }
-    set hypertext(value) { this.line = value }
+    set hypertext(value) {
+        this.line = value;
+        this.tree.onUpdate({ event: "hypertext.update", data: this });
+    }
     matches(symbol) {
         const token = new RegExp(`\\b${symbol}\\b`, "g");
         return token.test(this.hypertext);
@@ -78,6 +81,8 @@ export default class Hypertext extends Line {
         const header = this.header;
         super.remove();
 
+        this.tree.onUpdate({ event: "hypertext.remove", data: this });
+
         if (removeEmptyHeader && header) {
             const isEmpty = header.children.length === 0 || header.children.every(child => child.name === "emptyline");
             if (isEmpty) {
@@ -101,15 +106,6 @@ export default class Hypertext {
         this.hypertexts = hypertexts;
     }
 
-    get value() {
-        return this.data.value;
-    }
-
-    set value(value) {
-        this.data.value = value;
-        this.hypertexts.schematic.update();
-        this.schematic.onUpdate({ event: "hypertext.update", data: this });
-    }
 
     get owners() {
         return this.data.owners;

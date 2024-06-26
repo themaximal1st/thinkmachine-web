@@ -22,9 +22,12 @@ export default class Node extends Base {
     equal(node) { return this.id === node.id }
     equals(symbol) { return this.symbol.toLowerCase() === symbol.toLowerCase(); }
 
+    rename(symbol) {
+        this.symbol = symbol;
+        this.tree.onUpdate({ event: "node.rename", data: this });
+        return this.id;
+    }
 
-
-    rename(symbol) { this.symbol = symbol }
     add(input) { this.hyperedge.insertAt(input, this.index + 1) }
     insert(input) { this.hyperedge.insertAt(input, this.index) }
     remove() {
@@ -204,11 +207,6 @@ export default class Node {
         return !this.isFirst && !this.isLast;
     }
 
-    rename(symbol) {
-        this.symbol = symbol;
-        this.hypergraph.onUpdate({ event: "node.rename", data: this });
-        return this.id;
-    }
 
     remove() {
         this.hyperedge.nodes.splice(this.index, 1);

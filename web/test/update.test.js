@@ -7,8 +7,8 @@ test("hypergraph add", () => new Promise(done => {
         ["A", "B", "C"],
     ], {
         interwingle: GeneralSchematics.INTERWINGLE.CONFLUENCE,
-        onUpdate: ({ event, data }) => {
-            if (event === "hyperedge.add" && data.symbols.includes("1")) {
+        listener: ({ event, name, data }) => {
+            if (event === "parse.line" && name === "hyperedge" && data.symbols.includes("1")) {
                 expect(schematic.hash).not.toBe(hash);
                 done();
             }
@@ -24,7 +24,7 @@ test("node add", () => new Promise(done => {
         ["A", "B", "C"],
     ], {
         interwingle: GeneralSchematics.INTERWINGLE.CONFLUENCE,
-        onUpdate: ({ event, data }) => {
+        listener: ({ event, data }) => {
             if (event === "node.add" && data.symbol === "D") {
                 expect(schematic.hash).not.toBe(hash);
                 done();
@@ -40,7 +40,7 @@ test("hyperedge remove", () => new Promise(done => {
         ["A", "B", "C"],
     ], {
         interwingle: GeneralSchematics.INTERWINGLE.CONFLUENCE,
-        onUpdate: (event) => {
+        listener: (event) => {
             if (event.event === "hyperedge.remove") {
                 expect(schematic.hash).not.toBe(hash);
                 done();
@@ -58,7 +58,7 @@ test("node rename", () => new Promise(done => {
         ["A", "B", "C"],
     ], {
         interwingle: GeneralSchematics.INTERWINGLE.CONFLUENCE,
-        onUpdate: ({ event, data }) => {
+        listener: ({ event, data }) => {
             if (event === "node.rename" && data.symbol === "3") {
                 expect(schematic.hash).not.toBe(hash);
                 done();
@@ -75,25 +75,8 @@ test("node remove", () => new Promise(done => {
         ["A", "B", "C"],
     ], {
         interwingle: GeneralSchematics.INTERWINGLE.CONFLUENCE,
-        onUpdate: ({ event, data }) => {
-            if (event === "node.remove" && data.data.value === "C") {
-                expect(schematic.hash).not.toBe(hash);
-                done();
-            }
-        }
-    });
-
-    const hash = schematic.hash;
-    schematic.hyperedges[0].lastNode.remove();
-}));
-
-test("node remove", () => new Promise(done => {
-    const schematic = new GeneralSchematics([
-        ["A", "B", "C"],
-    ], {
-        interwingle: GeneralSchematics.INTERWINGLE.CONFLUENCE,
-        onUpdate: ({ event, data }) => {
-            if (event === "node.remove" && data.data.value === "C") {
+        listener: ({ event, data }) => {
+            if (event === "node.remove" && data.symbol === "C") {
                 expect(schematic.hash).not.toBe(hash);
                 done();
             }
@@ -107,8 +90,8 @@ test("node remove", () => new Promise(done => {
 test("hypertext add global", () => new Promise(done => {
     const schematic = new GeneralSchematics({
         interwingle: GeneralSchematics.INTERWINGLE.CONFLUENCE,
-        onUpdate: ({ event, data }) => {
-            if (event === "hypertext.add" && data.value === "Hello World") {
+        listener: ({ event, name, data }) => {
+            if (event === "parse.line" && name === "hypertext" && data.hypertext === "Hello World") {
                 done();
             }
         }
@@ -120,8 +103,8 @@ test("hypertext add global", () => new Promise(done => {
 test("hypertext add local", () => new Promise(done => {
     const schematic = new GeneralSchematics("A -> B -> C", {
         interwingle: GeneralSchematics.INTERWINGLE.CONFLUENCE,
-        onUpdate: ({ event, data }) => {
-            if (event === "hypertext.add" && data.value === "Hello World" && data.owners.includes("A")) {
+        listener: ({ event, name, data }) => {
+            if (event === "parse.line" && name === "hypertext" && data.hypertext === "Hello World" && data.ownerSymbols.includes("A")) {
                 done();
             }
         }
@@ -133,8 +116,8 @@ test("hypertext add local", () => new Promise(done => {
 test("remove global hypertext", () => new Promise(done => {
     const schematic = new GeneralSchematics("Hello World", {
         interwingle: GeneralSchematics.INTERWINGLE.CONFLUENCE,
-        onUpdate: ({ event, data }) => {
-            if (event === "hypertext.remove" && data.value === "Hello World") {
+        listener: ({ event, data }) => {
+            if (event === "hypertext.remove" && data.hypertext === "Hello World") {
                 done();
             }
         }
@@ -147,8 +130,8 @@ test("remove global hypertext", () => new Promise(done => {
 test("remove local hypertext", () => new Promise(done => {
     const schematic = new GeneralSchematics("A -> B -> C\nHello World for A", {
         interwingle: GeneralSchematics.INTERWINGLE.CONFLUENCE,
-        onUpdate: ({ event, data }) => {
-            if (event === "hypertext.remove" && data.value === "Hello World for A") {
+        listener: ({ event, data }) => {
+            if (event === "hypertext.remove" && data.hypertext === "Hello World for A") {
                 done();
             }
         }
@@ -161,29 +144,29 @@ test("remove local hypertext", () => new Promise(done => {
 test("update global hypertext", () => new Promise(done => {
     const schematic = new GeneralSchematics("Hello World", {
         interwingle: GeneralSchematics.INTERWINGLE.CONFLUENCE,
-        onUpdate: ({ event, data }) => {
-            if (event === "hypertext.update" && data.value === "Hello World Updated") {
+        listener: ({ event, data }) => {
+            if (event === "hypertext.update" && data.hypertext === "Hello World Updated") {
                 done();
             }
         }
     });
 
     const hypertext = schematic.hypertexts.global[0];
-    hypertext.value = "Hello World Updated";
+    hypertext.hypertext = "Hello World Updated";
 }));
 
 test("update local hypertext", () => new Promise(done => {
     const schematic = new GeneralSchematics("A -> B -> C\nThis belongs to A", {
         interwingle: GeneralSchematics.INTERWINGLE.CONFLUENCE,
-        onUpdate: ({ event, data }) => {
-            if (event === "hypertext.update" && data.value === "Updated A") {
+        listener: ({ event, data }) => {
+            if (event === "hypertext.update" && data.hypertext === "Updated A") {
                 done();
             }
         }
     });
 
     const hypertext = schematic.hypertexts.get("A")[0];
-    hypertext.value = "Updated A";
+    hypertext.hypertext = "Updated A";
 }));
 
 test("add on update", () => new Promise(done => {
@@ -192,13 +175,13 @@ test("add on update", () => new Promise(done => {
     });
 
     schematic.addEventListener(({ event, data }) => {
-        if (event === "hypertext.update" && data.value === "Updated A") {
+        if (event === "hypertext.update" && data.hypertext === "Updated A") {
             done();
         }
     });
 
     const hypertext = schematic.hypertexts.get("A")[0];
-    hypertext.value = "Updated A";
+    hypertext.hypertext = "Updated A";
 }));
 
 test("remove event listener", () => new Promise(done => {
@@ -208,8 +191,8 @@ test("remove event listener", () => new Promise(done => {
 
     let i = 0;
 
-    function onUpdate({ event, data }) {
-        if (event === "hypertext.update" && data.value === "Updated A") {
+    function listener({ event, data }) {
+        if (event === "hypertext.update" && data.hypertext === "Updated A") {
             i += 1;
 
             if (i === 2) {
@@ -222,12 +205,12 @@ test("remove event listener", () => new Promise(done => {
         }
     }
 
-    schematic.addEventListener(onUpdate);
-    schematic.removeEventListener(onUpdate);
-    schematic.addEventListener(onUpdate);
+    schematic.addEventListener(listener);
+    schematic.removeEventListener(listener);
+    schematic.addEventListener(listener);
 
     const hypertext = schematic.hypertexts.get("A")[0];
-    hypertext.value = "Updated A";
+    hypertext.hypertext = "Updated A";
 }));
 
 test("multiple event handlers", () => new Promise(done => {
@@ -251,5 +234,5 @@ test("multiple event handlers", () => new Promise(done => {
     schematic.addEventListener(onUpdate2);
 
     const hypertext = schematic.hypertexts.get("A")[0];
-    hypertext.value = "Updated A";
+    hypertext.hypertext = "Updated A";
 }));

@@ -15,13 +15,6 @@ export default class GeneralSchematics {
     constructor() {
         const { input, options } = getInputOptions(...arguments);
         this.parser = new Parser(input, options);
-        /*
-
-        const onUpdate = options.onUpdate;
-        delete options.onUpdate;
-        this.listeners = [];
-        if (onUpdate) this.addEventListener(onUpdate);
-        */
     }
 
     get tree() { return this.parser.tree }
@@ -43,12 +36,14 @@ export default class GeneralSchematics {
 
     reset() { this.tree.reset() }
     parse(input) { this.parser.parse(input) }
-
     add() { return this.tree.add(...arguments) }
     nodeByUUID() { return this.tree.nodeByUUID(...arguments) }
     nodeByID() { return this.tree.nodeByID(...arguments) }
     nodeByUID() { return this.tree.nodeByUID(...arguments) }
     edgeByUUID() { return this.tree.edgeByUUID(...arguments) }
+
+    addEventListener() { return this.tree.addEventListener(...arguments) }
+    removeEventListener() { return this.tree.removeEventListener(...arguments) }
 
 }
 /*
@@ -116,7 +111,6 @@ export default class GeneralSchematics {
         this.parse();
     }
 
-    onUpdate(e) { for (const listener of this.listeners) { listener(e) } }
 
     get interwingle() { return this.options.interwingle }
     set interwingle(value) { this.options.interwingle = value }
@@ -226,13 +220,6 @@ export default class GeneralSchematics {
         return this.hypergraph.filter(...arguments);
     }
 
-    addEventListener(listener) {
-        this.listeners.push(listener);
-    }
-
-    removeEventListener(listener) {
-        this.listeners = this.listeners.filter(l => l !== listener);
-    }
 }
 
 GeneralSchematics.Hypergraph = Hypergraph;
