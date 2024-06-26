@@ -2,6 +2,12 @@ import GeneralSchematics from "@lib/generalschematics";
 
 import { expect, test } from "vitest";
 
+// TODO: Is there a smarter way to do indexes? Perhaps what we should do...is make them liveObjects...since we have to restore them anyway
+//         is it possible to have live objects as graphData?
+// TODO: Kinda of need to rethink General Schematic <-> Tree relationship. A lot of overlap. And pushing everything to tree
+//        means we have to push graphData stuff there (unless we can do the above)
+
+
 // ISOLATED
 
 test("graph data (interwingle)", () => {
@@ -20,7 +26,7 @@ test("graph data (interwingle)", () => {
     expect(data.links[1].id).toBe("0:A.B->0:A.B.C");
 });
 
-test("single hyperedge (isolate)", () => {
+test.only("single hyperedge (isolate)", () => {
     const schematic = new GeneralSchematics([["A", "B", "C"]]);
     expect(schematic).toBeInstanceOf(GeneralSchematics);
     expect(schematic.hyperedges[0].symbols).toEqual(["A", "B", "C"]);

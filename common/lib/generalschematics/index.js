@@ -1,5 +1,6 @@
-import { getInputOptions } from './utils.js';
+import { getInputOptions, verifyGraphData } from './utils.js';
 import Parser from './Parser.js';
+// How much of Tree / GeneralSchematics should be the same thing?
 
 export default class GeneralSchematics {
     static Parser = Parser
@@ -19,6 +20,11 @@ export default class GeneralSchematics {
 
     get interwingle() { return this.tree.interwingle }
     set interwingle(value) { this.tree.interwingle = value }
+    get isIsolated() { return this.tree.isIsolated }
+    get isConfluence() { return this.tree.isConfluence }
+    get isFusion() { return this.tree.isFusion }
+    get isBridge() { return this.tree.isBridge }
+
     get tree() { return this.parser.tree }
     get hash() { return this.tree.hash }
     get input() { return this.tree.input }
@@ -46,6 +52,86 @@ export default class GeneralSchematics {
 
     addEventListener() { return this.tree.addEventListener(...arguments) }
     removeEventListener() { return this.tree.removeEventListener(...arguments) }
+
+    graphData(filter = null, lastData = null) {
+        let nodes = new Map();
+        let links = new Map();
+
+        this.updateIndexes();
+
+        for (const hyperedge of this.hyperedges) {
+            if (this.isFusion && hyperedge.isFusionBridge) {
+                // hyperedge.updateIndexes(nodes, links);
+            } else {
+                hyperedge.updateGraphData(nodes, links);
+            }
+        }
+
+        // if (lastData) {
+        //     const data = restoreData({ nodes, links }, lastData);
+        //     nodes = data.nodes;
+        //     links = data.links;
+        // }
+
+        // if (this.schematic.isFusion) {
+        //     this.updateFusionData(nodes, links);
+        // }
+
+        // if (this.schematic.isBridge) {
+        //     this.updateBridgeData(nodes, links);
+        // }
+
+        verifyGraphData(nodes, links);
+
+        // if (Array.isArray(filter) && filter.length > 0) {
+        //     return FilterGraph({
+        //         filter,
+        //         hyperedges: this.hyperedges,
+        //         graphData: { nodes, links },
+        //         depth: this.schematic.depth
+        //     });
+        // }
+
+        return {
+            nodes: Array.from(nodes.values()),
+            links: Array.from(links.values()),
+        };
+    }
+
+    updateIndexes() {
+        this.symbolIndex = new Map();
+        this.startSymbolIndex = new Map();
+        this.endSymbolIndex = new Map();
+
+        // this.fusionIndex = new Map();
+
+        // for (const edge of this.hyperedges) {
+        //     for (const node of edge.nodes) {
+        //         addIndex(this.symbolIndex, node.symbol, node);
+        //     }
+
+        //     addIndex(this.startSymbolIndex, edge.firstNode.symbol, edge.firstNode);
+        //     addIndex(this.endSymbolIndex, edge.lastNode.symbol, edge.lastNode);
+        // }
+
+        // if (!this.schematic.isFusion) { return }
+
+        // for (const edge of this.hyperedges) {
+        //     let nodes;
+
+        //     // start fusion
+        //     nodes = this.endSymbolIndex.get(edge.firstNode.symbol) || [];
+        //     if (nodes.length > 0) {
+        //         this.fusionIndex.set(edge.firstNode.id, nodes[0]); // should this crawl to edge and lastNode?
+        //     }
+
+        //     // end fusion
+        //     nodes = this.endSymbolIndex.get(edge.lastNode.symbol) || [];
+        //     if (nodes.length > 0) {
+        //         this.fusionIndex.set(edge.lastNode.id, nodes[0]);
+        //     }
+        // }
+    }
 
 }
 /*

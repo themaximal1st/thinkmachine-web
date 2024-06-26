@@ -1,6 +1,6 @@
 import Line from './Line';
 import Node from './Node';
-import { arrayContains } from './utils';
+import { arrayContains, stringToColor } from './utils';
 
 export default class Hyperedge extends Line {
     static ARROW = /-+>|→/;
@@ -23,13 +23,16 @@ export default class Hyperedge extends Line {
     get firstNode() { return this.nodes[0] }
     get secondNode() { return this.nodes[1] }
     get lastNode() { return this.nodes[this.nodes.length - 1] }
+    get firstNodes() { return this.nodes.slice(0, -1) }
+    get lastNodes() { return this.nodes.slice(1) }
     get middleNodes() {
         if (this.nodes.length < 3) { return [] }
         return this.nodes.slice(1, this.nodes.length - 1);
     }
-
-    get output() {
-        return this.nodes.map(node => node.symbol).join(" -> ");
+    get isFusionBridge() { return this.length === 2 }
+    get nodeIds() { return this.nodes.map(node => node.id) }
+    get color() {
+        return stringToColor(this.firstNode.symbol, this.tree.colors);
     }
 
     nodeId(index) {
@@ -110,6 +113,78 @@ export default class Hyperedge extends Line {
         return matches;
     }
 
+    updateGraphData(nodes, links) {
+        let parent = null;
+
+        for (const node of this.nodes) {
+            node.updateGraphData(nodes, links)
+
+            if (parent) {
+                const link = this.linkData(parent, node);
+                links.set(link.id, link);
+            }
+
+            parent = node;
+        }
+    }
+
+    linkData(parent, child) {
+        // const edgeIDs = new Set();
+        // const edgeUUIDs = new Set();
+
+        // const nodeIDs = new Set();
+        // const nodeUUIDs = new Set();
+
+        // function updateIDs(node) {
+        //     nodeIDs.add(node.id);
+        //     nodeUUIDs.add(node.uuid);
+
+        //     if (node.bridge) {
+        //         for (const edge of node.hyperedges) {
+        //             edgeIDs.add(edge.id);
+        //             edgeUUIDs.add(edge.uuid);
+        //         }
+        //     } else {
+        //         edgeIDs.add(node.hyperedge.id);
+        //         edgeUUIDs.add(node.hyperedge.uuid);
+        //     }
+        // }
+
+        // updateIDs(parent);
+        // updateIDs(child);
+        // parent = this.hypergraph.masqueradeNode(parent);
+        // child = this.hypergraph.masqueradeNode(child);
+        // updateIDs(parent);
+        // updateIDs(child);
+
+        const link = {
+            id: `${parent.id}->${child.id}`,
+            source: parent.id,
+            target: child.id,
+            // edgeIDs,
+            // edgeUUIDs,
+            // nodeIDs,
+            // nodeUUIDs,
+            color: this.color,
+        };
+
+        // if (parent.bridge || child.bridge) {
+        //     link.bridge = true;
+        // }
+
+        return link;
+    }
+
+
+    // updateIndexes(nodes, links) {
+    //     if (!this.isFusionBridge) return;
+
+    //     for (const node of this.nodes) {
+    //         node.updateIndexes(nodes, links);
+    //     }
+    // }
+
+
 
     get str() {
         return `${this.index}:hyperedge [${this.uuid}]\n    ${this.nodes.map(node => node.str).join("\n    ")}`;
@@ -141,54 +216,6 @@ export default class Hyperedge {
         this.build();
     }
 
-    get color() {
-        return stringToColor(this.firstNode.symbol, this.schematic.colors);
-    }
-
-    get nodeIds() {
-        return new Set(this.nodes.map(node => node.id));
-    }
-
-    get length() {
-        return this.nodes.length;
-    }
-
-    get index() {
-        return this.hypergraph.hyperedges.indexOf(this);
-    }
-
-    get firstNode() {
-        return this.nodes[0];
-    }
-
-    get secondNode() {
-        return this.nodes[1];
-    }
-
-    get lastNode() {
-        return this.nodes[this.nodes.length - 1];
-    }
-
-    get middleNodes() {
-        if (this.nodes.length < 3) {
-            return [];
-        }
-
-        return this.nodes.slice(1, this.nodes.length - 1);
-    }
-
-    get firstNodes() {
-        return this.nodes.slice(0, -1);
-    }
-
-    get lastNodes() {
-        return this.nodes.slice(1);
-    }
-
-    get isFusionBridge() {
-        return this.length === 2;
-    }
-
     build() {
         for (const i in this.data.children) {
             this.nodes.push(new Node(this, i));
@@ -208,77 +235,6 @@ export default class Hyperedge {
         }
 
         this.schematic.update();
-    }
-
-    updateGraphData(nodes, links) {
-        let parent = null;
-
-        for (const node of this.nodes) {
-            node.updateGraphData(nodes, links)
-
-            if (parent) {
-                const link = this.linkData(parent, node);
-                links.set(link.id, link);
-            }
-
-            parent = node;
-        }
-    }
-
-    linkData(parent, child) {
-        const edgeIDs = new Set();
-        const edgeUUIDs = new Set();
-
-        const nodeIDs = new Set();
-        const nodeUUIDs = new Set();
-
-        function updateIDs(node) {
-            nodeIDs.add(node.id);
-            nodeUUIDs.add(node.uuid);
-
-            if (node.bridge) {
-                for (const edge of node.hyperedges) {
-                    edgeIDs.add(edge.id);
-                    edgeUUIDs.add(edge.uuid);
-                }
-            } else {
-                edgeIDs.add(node.hyperedge.id);
-                edgeUUIDs.add(node.hyperedge.uuid);
-            }
-        }
-
-        updateIDs(parent);
-        updateIDs(child);
-        parent = this.hypergraph.masqueradeNode(parent);
-        child = this.hypergraph.masqueradeNode(child);
-        updateIDs(parent);
-        updateIDs(child);
-
-        const link = {
-            id: `${parent.id}->${child.id}`,
-            source: parent.id,
-            target: child.id,
-            edgeIDs,
-            edgeUUIDs,
-            nodeIDs,
-            nodeUUIDs,
-            color: this.color,
-        };
-
-        if (parent.bridge || child.bridge) {
-            link.bridge = true;
-        }
-
-        return link;
-    }
-
-
-    updateIndexes(nodes, links) {
-        if (!this.isFusionBridge) return;
-
-        for (const node of this.nodes) {
-            node.updateIndexes(nodes, links);
-        }
     }
 
     static make(hyperedge) {
