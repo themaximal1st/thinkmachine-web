@@ -332,11 +332,41 @@ test("find by owner", async () => {
     expect(parser.findOne(n => n.ownerSymbols && n.ownerSymbols.includes("A")).hypertext).toBe("This hypertext belongs to A");
 });
 
+test("add paragraph to header", async () => {
+    const parser = new Parser("# This is a header\nThis is a paragraph\nThis is another paragraph");
+    const header = parser.headers.all[0];
+    expect(header.children.length).toBe(2);
+    header.add("This is a new paragraph");
+    expect(header.children.length).toBe(3);
+    expect(parser.output).toBe("# This is a header\nThis is a paragraph\nThis is another paragraph\nThis is a new paragraph");
+});
 
-// find while for walking until condition?
-// find parent
-// find child
+test("insert paragraph at index for header", async () => {
+    const parser = new Parser("## This is a header\nThis is a paragraph\nThis is another paragraph");
+    const header = parser.findOne("header");
+    expect(header.children.length).toBe(2);
+    header.insertAt(0, "1");
+    expect(header.children.length).toBe(3);
+    header.insertAt(2, "2");
+    expect(header.children.length).toBe(4);
+    expect(parser.output).toBe("## This is a header\n1\nThis is a paragraph\n2\nThis is another paragraph");
+});
 
+test("create header if doesn't exist", async () => {
+    const parser = new Parser("");
+    let header = parser.findOne("header");
+    expect(header).toBe(null)
+
+    header = parser.add("# This is a header");
+    expect(header).toBeInstanceOf(Header);
+    expect(parser.output).toBe("# This is a header");
+
+    header.add("This is a paragraph");
+    expect(parser.output).toBe("# This is a header\nThis is a paragraph");
+
+    header = parser.findOne("header");
+    expect(header).not.toBe(null)
+});
 
 // TODO: very quickly we need to start building the hypergraph, and building up references + graphData!
 

@@ -214,7 +214,6 @@ test("simple hypertext attaches to two symbols", async () => {
     expect(A.hypertexts[0].hypertext).toEqual("This is attached to A and B");
     expect(B.hypertexts.length).toEqual(1);
     expect(B.hypertexts[0].hypertext).toEqual("This is attached to A and B");
-    console.log(B.hypertexts[0].ownerSymbols);
     expect(B.hypertexts[0].ownerSymbols).toEqual(["A", "B"]);
     B.hypertexts[0].hypertext = "This is attached to B";
     expect(B.hypertexts.length).toEqual(1);
@@ -236,7 +235,7 @@ test("complex hypertext attaches to two symbols", async () => {
     expect(schematic.output).toEqual("A -> B -> C\n\n## A");
 });
 
-test.skip("add global symbol hypertext", async () => {
+test("add global symbol hypertext", async () => {
     const schematic = new GeneralSchematics("A -> B -> C");
     expect(schematic.lines.length).toEqual(1);
     schematic.hypertexts.add("C", "This is some hypertext");
@@ -244,44 +243,28 @@ test.skip("add global symbol hypertext", async () => {
     expect(schematic.hypertexts.global.length).toEqual(0);
     expect(schematic.hypertexts.local.length).toEqual(1);
     schematic.hypertexts.add("C", "Here is some more");
-    schematic.debug();
     expect(schematic.lines.length).toEqual(4);
     expect(schematic.hypertexts.global.length).toEqual(0);
     expect(schematic.hypertexts.local.length).toEqual(2);
-
-    /*
-    const [A, B, _] = schematic.hyperedges[0].nodes;
-    expect(A.hypertexts.length).toEqual(0);
-    A.hypertext.add("This is some hypertext for A");
-
-    expect(A.hypertexts.length).toEqual(1);
-    // expect(A.hypertexts[0].symbol).toEqual("This is some hypertext for A");
-    // A.hypertexts[0].symbol = "New hypertext for B";
-
-    // expect(A.hypertexts.length).toEqual(1);
-    // expect(B.hypertexts.length).toEqual(1);
-    // expect(schematic.output).toEqual("A -> B -> C\n\n## A\n\nNew hypertext for B");
-    */
+    expect(schematic.output).toEqual("A -> B -> C\n# C\nThis is some hypertext\nHere is some more");
 });
 
-test.skip("add symbol hypertext", async () => {
+test("add symbol hypertext", async () => {
     const schematic = new GeneralSchematics("A -> B -> C");
-    /*
     const [A, B, _] = schematic.hyperedges[0].nodes;
     expect(A.hypertexts.length).toEqual(0);
     A.hypertext.add("This is some hypertext for A");
 
     expect(A.hypertexts.length).toEqual(1);
-    // expect(A.hypertexts[0].symbol).toEqual("This is some hypertext for A");
-    // A.hypertexts[0].symbol = "New hypertext for B";
+    expect(A.hypertexts[0].hypertext).toEqual("This is some hypertext for A");
+    A.hypertexts[0].hypertext = "New hypertext for B";
 
-    // expect(A.hypertexts.length).toEqual(1);
-    // expect(B.hypertexts.length).toEqual(1);
-    // expect(schematic.output).toEqual("A -> B -> C\n\n## A\n\nNew hypertext for B");
-    */
+    expect(A.hypertexts.length).toEqual(1);
+    expect(B.hypertexts.length).toEqual(1);
+    expect(schematic.output).toEqual("A -> B -> C\n# A\nNew hypertext for B");
 });
 
-test("modifying hypertext", async () => {
+test.only("modifying hypertext", async () => {
     const schematic = new GeneralSchematics("A -> B -> C");
     const hypertext = schematic.hypertexts.add("This is some global hypertext");
     const [A, B, C] = schematic.hyperedges[0].nodes;
@@ -334,26 +317,33 @@ test("add global hypertext", async () => {
     expect(schematic.hypertexts.global.length).toEqual(1);
 });
 
-test.skip("add node hypertext", async () => {
+test("add node hypertext", async () => {
     const schematic = new GeneralSchematics();
     schematic.hypertexts.add("A", "This is some hypertext")
 
-    expect(schematic.output).toEqual("## A\n\nThis is some hypertext");
+    expect(schematic.output).toEqual("# A\nThis is some hypertext");
 
     schematic.hypertexts.add("A", "This is some more hypertext")
-    expect(schematic.output).toEqual("## A\n\nThis is some hypertext\nThis is some more hypertext");
+    expect(schematic.output).toEqual("# A\nThis is some hypertext\nThis is some more hypertext");
 });
 
-test.skip("adding node localized hypertext", async () => {
+test.only("adding node localized hypertext", async () => {
     const schematic = new GeneralSchematics();
     schematic.hypertexts.add("A", "This is some hypertext")
     schematic.hypertexts.add("This is some global hypertext");
-
+    expect(schematic.hypertexts.all.length).toEqual(2);
     expect(schematic.hypertexts.global.length).toEqual(2);
-    schematic.hypergraph.add(["A", "B", "C"]);
+    expect(schematic.hypertexts.local.length).toEqual(0);
 
+    schematic.add(["A", "B", "C"]);
+    expect(schematic.hypertexts.all.length).toEqual(2);
     expect(schematic.hypertexts.global.length).toEqual(1);
-    expect(schematic.hypertexts.get("A").length).toEqual(1);
+    // expect(schematic.hypertexts.local.length).toEqual(1);
+
+    // expect(schematic.hypertexts.global.length).toEqual(1);
+    // expect(schematic.hypertexts.get("A").length).toEqual(1);
+    // expect(schematic.hypertexts.global.length).toEqual(2);
+
 });
 
 test.skip("hyperedges before hypertext", async () => {

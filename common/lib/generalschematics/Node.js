@@ -39,7 +39,7 @@ class Hypertext {
     get tree() { return this.node.tree }
 
     add(input) {
-        return this.tree.hypertexts.add(this.node.value, input);
+        return this.tree.hypertexts.add(this.node.symbol, input);
     }
 
     get all() {

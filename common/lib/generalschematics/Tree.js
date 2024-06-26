@@ -45,14 +45,14 @@ export default class Tree {
     parseLine(line, index) {
         const match = this.matches(line, index)
         if (match) {
-            this.lines.push(match);
+            this.lines.splice(index, 0, match);
             return match;
         }
 
         for (const LineType of Tree.LineTypes) {
             if (LineType.matches(line)) {
                 const lineType = new LineType(line, this)
-                this.lines.push(lineType);
+                this.lines.splice(index, 0, lineType);
                 return lineType;
             }
         }
@@ -86,16 +86,17 @@ export default class Tree {
         this.lines = [];
     }
 
+    get lastLineIsHeaderSection() {
+
+    }
+
     add() {
         let input;
 
         if (arguments.length === 2) {
             const symbol = arguments[0];
             if (typeof symbol !== "string") throw new Error("Symbol must be a string");
-
-            this.parseLine(`# ${symbol}`, this.lines.length);
-            this.parseLine(arguments[1], this.lines.length);
-            return;
+            return this.addHypertextForSymbol(symbol, arguments[1]);
         } else {
             input = arguments[0];
         }
@@ -103,10 +104,22 @@ export default class Tree {
         if (Array.isArray(input)) { input = input.join(" ->  ") }
 
         if (typeof input === "string") {
+            // would placing this line put me in a header?
+            const lastLine = this.lines[this.lines.length - 1];
             return this.parseLine(input, this.lines.length);
         }
 
         throw new Error("Input must be a string or an array of strings");
+    }
+
+    addHypertextForSymbol(symbol, hypertext) {
+        const header = this.findAny({ header: symbol });
+        if (header) {
+            return header.add(hypertext);
+        } else {
+            this.parseLine(`# ${symbol}`, this.lines.length);
+            return this.parseLine(arguments[1], this.lines.length);
+        }
     }
 
     find(input = null) {
@@ -115,9 +128,14 @@ export default class Tree {
 
     findOne(input = null) {
         const matches = this.find(input);
-        if (matches === 0) return null;
-        if (matches > 1) throw new Error("Multiple matches found");
+        if (matches.length === 0) return null;
+        if (matches.length > 1) throw new Error("Multiple matches found");
         return matches[0];
     }
 
+    findAny(input = null) {
+        const matches = this.find(input);
+        if (matches.length === 0) return null;
+        return matches[0];
+    }
 }

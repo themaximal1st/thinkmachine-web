@@ -42,4 +42,12 @@ export default class Header extends Line {
         this.tree.lines.splice(this.index, 1);
         // TODO: trigger update
     }
+
+    add(input) {
+        this.insertAt(this.children.length, input);
+    }
+
+    insertAt(index, input) {
+        this.tree.parseLine(input, this.index + index + 1);
+    }
 }

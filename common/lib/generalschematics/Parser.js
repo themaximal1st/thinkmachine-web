@@ -26,6 +26,8 @@ export default class Parser {
     debug() { this.tree.debug() }
     find() { return this.tree.find(...arguments) }
     findOne() { return this.tree.findOne(...arguments) }
+    walk() { return this.tree.walk(...arguments) }
+    add() { return this.tree.add(...arguments) }
 
     parse(input) {
         this.tree.reset();
