@@ -9,7 +9,7 @@ export default class Hypertexts {
     get global() { return this.all.filter(h => h.owners.length === 0) }
     get local() { return this.all.filter(h => h.owners.length > 0) }
     get(symbol) { return this.local.filter(h => h.ownerSymbols.includes(symbol)) }
-    add(input) { return this.tree.add(input) }
+    add() { return this.tree.add(...arguments) }
 }
 
 /*

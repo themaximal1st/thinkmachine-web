@@ -1,14 +1,10 @@
-import { v4 as uuidv4 } from 'uuid';
+import Base from './Base';
 
-export default class Line {
+export default class Line extends Base {
     constructor(line, tree) {
+        super(...arguments);
         this.line = line;
         this.tree = tree;
-        this.uuid = uuidv4();
-    }
-
-    get name() {
-        return this.constructor.name.toLowerCase();
     }
 
     get index() {
@@ -29,6 +25,10 @@ export default class Line {
 
     get parent() {
         return this.ancestorAt(this.index - 1)
+    }
+
+    get child() {
+        return this.ancestorAt(this.index + 1)
     }
 
     ancestorAt(index) {

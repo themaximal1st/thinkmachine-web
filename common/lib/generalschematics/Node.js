@@ -1,13 +1,15 @@
-import { v4 as uuidv4 } from 'uuid';
+import Base from './Base';
 
-export default class Node {
+export default class Node extends Base {
     constructor(symbol, hyperedge) {
+        super(...arguments);
+
         this.symbol = symbol;
         this.hyperedge = hyperedge;
-        this.uuid = uuidv4();
         this.hypertext = new Hypertext(this);
     }
 
+    get name() { return this.constructor.name.toLowerCase() }
     get tree() { return this.hyperedge.tree }
     get index() { return this.hyperedge.nodes.indexOf(this) }
     get hypertexts() { return this.hypertext.all }
@@ -37,7 +39,7 @@ class Hypertext {
     get tree() { return this.node.tree }
 
     add(input) {
-        // this.node.schematic.hypertexts.add(this.node.value, input);
+        return this.tree.hypertexts.add(this.node.value, input);
     }
 
     get all() {

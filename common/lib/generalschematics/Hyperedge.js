@@ -53,6 +53,16 @@ export default class Hyperedge extends Line {
         return node;
     }
 
+    equals(edge) {
+        if (Array.isArray(edge)) {
+            return edge.every((symbol, i) => this.nodes[i].symbol === symbol);
+        } else if (edge instanceof Hyperedge) {
+            return edge.symbols.every((symbol, i) => this.nodes[i].symbol === symbol);
+        }
+
+        return false;
+    }
+
     // remove() {
     //     // this.hypergraph.remove(this);
     //     // this.schematic.update();
@@ -64,6 +74,16 @@ export default class Hyperedge extends Line {
         // this.schematic.onUpdate({ event: "node.remove", data: node });
         // this.updateNodeIndexes();
     }
+
+    filter(input) {
+        const matches = this.nodes.map(node => node.filter(input)).filter(l => l);
+
+        const match = super.filter(input);
+        if (match) matches.push(match);
+
+        return matches;
+    }
+
 
     get str() {
         return `${this.index}:hyperedge [${this.uuid}]\n    ${this.nodes.map(node => node.str).join("\n    ")}`;

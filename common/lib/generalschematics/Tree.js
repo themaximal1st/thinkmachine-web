@@ -86,7 +86,20 @@ export default class Tree {
         this.lines = [];
     }
 
-    add(input) {
+    add() {
+        let input;
+
+        if (arguments.length === 2) {
+            const symbol = arguments[0];
+            if (typeof symbol !== "string") throw new Error("Symbol must be a string");
+
+            this.parseLine(`# ${symbol}`, this.lines.length);
+            this.parseLine(arguments[1], this.lines.length);
+            return;
+        } else {
+            input = arguments[0];
+        }
+
         if (Array.isArray(input)) { input = input.join(" ->  ") }
 
         if (typeof input === "string") {
@@ -94,6 +107,17 @@ export default class Tree {
         }
 
         throw new Error("Input must be a string or an array of strings");
+    }
+
+    find(input = null) {
+        return this.lines.map(line => line.filter(input)).filter(line => line).flat();
+    }
+
+    findOne(input = null) {
+        const matches = this.find(input);
+        if (matches === 0) return null;
+        if (matches > 1) throw new Error("Multiple matches found");
+        return matches[0];
     }
 
 }

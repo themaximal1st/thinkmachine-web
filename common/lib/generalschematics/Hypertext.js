@@ -12,18 +12,39 @@ export default class Hypertext extends Line {
         return token.test(this.hypertext);
     }
 
-    get owners() {
-        const owners = this.tree.nodes.filter(node => this.matches(node.symbol));
+    get headerOwners() {
+        const owners = [];
 
-        const parent = this.parent;
-        if (parent && parent.name === "header") {
-            const nodes = this.tree.nodes.filter(node => parent.matches(node.symbol));
+        let curr = this, breaks = 0;
+        while (curr = curr.parent) {
+            if (curr.name === "emptyline") breaks++;
+            else breaks = 0;
+
+            if (curr.name !== "header") {
+                if (curr.name === "hypertext") continue;
+                if (breaks > 1) break;
+            }
+
+            const nodes = this.tree.nodes.filter(node => curr.matches(node.symbol));
             for (const node of nodes) {
                 if (!owners.includes(node)) owners.push(node);
             }
         }
 
         return owners;
+    }
+
+    get hypertextOwners() {
+        return this.tree.nodes.filter(node => this.matches(node.symbol)).flat();
+    }
+
+    get owners() {
+        const owners = [...this.headerOwners, ...this.hypertextOwners];
+        const uniq = [];
+        for (const o of owners) {
+            if (!uniq.includes(o)) uniq.push(o);
+        }
+        return uniq;
     }
 
     get ownerSymbols() { return this.owners.map(node => node.symbol) }

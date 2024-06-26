@@ -24,6 +24,8 @@ export default class Parser {
     get uniqueSymbols() { return this.tree.uniqueSymbols }
     get str() { return this.tree.str }
     debug() { this.tree.debug() }
+    find() { return this.tree.find(...arguments) }
+    findOne() { return this.tree.findOne(...arguments) }
 
     parse(input) {
         this.tree.reset();

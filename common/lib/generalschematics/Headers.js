@@ -9,6 +9,7 @@ export default class Headers {
     get global() { return this.all.filter(h => h.owners.length === 0) }
     get local() { return this.all.filter(h => h.owners.length > 0) }
     get(symbol) { return this.local.filter(h => h.ownerSymbols.includes(symbol)) }
+
     // TODO
     // add(input) { return this.tree.add(input) }
 }
