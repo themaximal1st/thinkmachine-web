@@ -7,6 +7,10 @@ export default class Line {
         this.uuid = uuidv4();
     }
 
+    get name() {
+        return this.constructor.name.toLowerCase();
+    }
+
     get index() {
         return this.tree.lines.indexOf(this);
     }
@@ -16,11 +20,21 @@ export default class Line {
     }
 
     get str() {
-        return `${this.index}:${this.constructor.name.toLowerCase()} [${this.uuid}]\n    ${this.line}`;
+        return `${this.index}:${this.name} [${this.uuid}]\n    ${this.line}`;
     }
 
     static matches(line) {
         return true;
+    }
+
+    get parent() {
+        return this.ancestorAt(this.index - 1)
+    }
+
+    ancestorAt(index) {
+        if (index < 0) return null;
+        if (index > this.tree.lines.length) return null;
+        return this.tree.lines[index];
     }
 
     remove() {

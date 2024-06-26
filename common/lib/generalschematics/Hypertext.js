@@ -7,8 +7,25 @@ export default class Hypertext extends Line {
 
     get hypertext() { return this.line }
     set hypertext(value) { this.line = value }
-    matches(symbol) { return this.hypertext.includes(symbol) }
-    get owners() { return this.tree.nodes.filter(node => this.matches(node.symbol)) }
+    matches(symbol) {
+        const token = new RegExp(`\\b${symbol}\\b`, "g");
+        return token.test(this.hypertext);
+    }
+
+    get owners() {
+        const owners = this.tree.nodes.filter(node => this.matches(node.symbol));
+
+        const parent = this.parent;
+        if (parent && parent.name === "header") {
+            const nodes = this.tree.nodes.filter(node => parent.matches(node.symbol));
+            for (const node of nodes) {
+                if (!owners.includes(node)) owners.push(node);
+            }
+        }
+
+        return owners;
+    }
+
     get ownerSymbols() { return this.owners.map(node => node.symbol) }
 
     get str() {

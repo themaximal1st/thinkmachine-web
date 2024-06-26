@@ -155,6 +155,57 @@ test("header owner", async () => {
     expect(parser.headers.all[0].ownerSymbols).toEqual(["A"]);
 });
 
+test("hypertext owned by header", async () => {
+    const parser = new Parser("A -> B -> C\n# A\nThis is some hypertext");
+    expect(parser.lines.length).toBe(3);
+    expect(parser.headers.all.length).toBe(1);
+    expect(parser.headers.global.length).toBe(0);
+    expect(parser.headers.local.length).toBe(1);
+    expect(parser.hyperedges.length).toBe(1);
+    expect(parser.hypertexts.all.length).toBe(1);
+    expect(parser.hypertexts.global.length).toBe(0);
+    expect(parser.hypertexts.local.length).toBe(1);
+    expect(parser.headers.all[0].ownerSymbols).toEqual(["A"]);
+    expect(parser.hypertexts.all[0].ownerSymbols).toEqual(["A"]);
+});
+
+test("assert index", async () => {
+    const parser = new Parser("A -> B -> C\n# A\nThis is some hypertext\nAnd some more");
+    expect(parser.lines.length).toBe(4);
+    expect(parser.lines[0].index).toBe(0);
+    expect(parser.lines[1].index).toBe(1);
+    expect(parser.lines[2].index).toBe(2);
+    expect(parser.lines[3].index).toBe(3);
+    expect(parser.hyperedges[0].index).toBe(0);
+    expect(parser.headers.local[0].index).toBe(1);
+    expect(parser.hypertexts.local[0].index).toBe(2);
+    expect(parser.hypertexts.local[1].index).toBe(3);
+});
+
+test("should not match on characters", async () => {
+    const parser = new Parser("A -> B -> C\nAwesome Global Hypertext");
+    expect(parser.hypertexts.all.length).toBe(1);
+    expect(parser.hypertexts.global.length).toBe(1);
+    expect(parser.hypertexts.local.length).toBe(0);
+});
+
+test.only("multiple hypertext owned by header", async () => {
+    const parser = new Parser("A -> B -> C\n# A\nThis is some hypertext\nAnd some more");
+    expect(parser.lines.length).toBe(4);
+    expect(parser.headers.all.length).toBe(1);
+    expect(parser.headers.global.length).toBe(0);
+    expect(parser.headers.local.length).toBe(1);
+    expect(parser.hyperedges.length).toBe(1);
+    expect(parser.hypertexts.all.length).toBe(2);
+    // expect(parser.hypertexts.global.length).toBe(0);
+    // expect(parser.hypertexts.local.length).toBe(1);
+    // console.log(parser.hypertexts.local[0].owners);
+    // console.log(parser.hypertexts.local[1].owners);
+    // expect(parser.headers.all[0].ownerSymbols).toEqual(["A"]);
+    // expect(parser.hypertexts.all[0].ownerSymbols).toEqual(["A"]);
+});
+
+
 
 
 // Hypertext after header means it belongs to it
