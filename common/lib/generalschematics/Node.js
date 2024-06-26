@@ -11,8 +11,15 @@ export default class Node {
         return this.hyperedge.nodes.indexOf(this);
     }
 
-    rename(symbol) {
-        this.symbol = symbol;
+    rename(symbol) { this.symbol = symbol }
+    add(input) { this.hyperedge.insertAt(input, this.index + 1) }
+    insert(input) { this.hyperedge.insertAt(input, this.index) }
+    remove() {
+        this.hyperedge.removeAt(this.index);
+
+        if (this.hyperedge.length === 0) {
+            this.hyperedge.remove();
+        }
     }
 }
 
@@ -101,21 +108,8 @@ export default class Node {
         this.hyperedge.rename(input, this.index);
     }
 
-    add(input) {
-        this.hyperedge.insertAt(input, this.index + 1);
-    }
 
-    insert(input) {
-        this.hyperedge.insertAt(input, this.index);
-    }
 
-    remove() {
-        this.hyperedge.removeAt(this.index);
-
-        if (this.hyperedge.length === 0) {
-            this.hyperedge.remove();
-        }
-    }
 
     equal(node) {
         return this.id === node.id;

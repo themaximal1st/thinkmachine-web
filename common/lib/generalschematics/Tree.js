@@ -1,3 +1,4 @@
+import Hypertexts from './Hypertexts.js';
 import Hyperedge from "./Hyperedge";
 import Hypertext from "./Hypertext";
 import Node from "./Node";
@@ -13,6 +14,7 @@ export default class Tree {
         this.input = "";
         this.lines = [];
         this.lastLines = [];
+        this.hypertexts = new Hypertexts(this);
     }
 
     get length() {
@@ -23,9 +25,9 @@ export default class Tree {
         return this.lines.map(line => line.output).join("\n");
     }
 
-    get hypertexts() {
-        return this.lines.filter(line => line instanceof Hypertext);
-    }
+    // get hypertexts() {
+    //     return this.lines.filter(line => line instanceof Hypertext);
+    // }
 
     get hyperedges() {
         return this.lines.filter(line => line instanceof Hyperedge);
@@ -52,7 +54,7 @@ export default class Tree {
 
         for (const LineType of Tree.LineTypes) {
             if (LineType.matches(line)) {
-                const lineType = new LineType(line, index)
+                const lineType = new LineType(line, this)
                 this.lines.push(lineType);
                 return lineType;
             }
@@ -78,8 +80,23 @@ export default class Tree {
         }
     }
 
+    removeAt(index) {
+        this.lines.splice(index, 1);
+    }
+
     reset() {
         this.lastLines = this.lines;
         this.lines = [];
     }
+
+    add(input) {
+        if (Array.isArray(input)) { input = input.join(" ->  ") }
+
+        if (typeof input === "string") {
+            return this.parseLine(input, this.lines.length);
+        }
+
+        throw new Error("Input must be a string or an array of strings");
+    }
+
 }

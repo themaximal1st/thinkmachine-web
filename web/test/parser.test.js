@@ -11,8 +11,8 @@ test("parse simple doc", async () => {
     expect(parser.output).toEqual("hello world");
     expect(parser.hyperedges.length).toBe(0);
     expect(parser.symbols.length).toBe(0);
-    expect(parser.hypertexts.length).toBe(1);
-    expect(parser.hypertexts[0].hypertext).toBe("hello world");
+    expect(parser.hypertexts.all.length).toBe(1);
+    expect(parser.hypertexts.all[0].hypertext).toBe("hello world");
 });
 
 test("parse multiline doc", async () => {
@@ -31,11 +31,11 @@ test("parse same line twice", async () => {
     expect(parser.lines[0].line).toEqual("hello world");
     expect(parser.lines[1].line).toEqual("hello world");
     expect(parser.output).toEqual("hello world\nhello world");
-    expect(parser.hypertexts[0].uuid).not.toBe(parser.hypertexts[1].uuid);
+    expect(parser.hypertexts.all[0].uuid).not.toBe(parser.hypertexts.all[1].uuid);
 
-    const uuids = parser.hypertexts.map(h => h.uuid);
+    const uuids = parser.hypertexts.all.map(h => h.uuid);
     parser.parse("hello world\nhello world");
-    const nuuids = parser.hypertexts.map(h => h.uuid);
+    const nuuids = parser.hypertexts.all.map(h => h.uuid);
 
     expect(nuuids[0]).toBe(uuids[0]);
     expect(nuuids[1]).toBe(uuids[1]);
@@ -102,7 +102,7 @@ test("consistent node uuids", async () => {
 
 test("modify hypertext", async () => {
     const parser = new Parser("Hello World");
-    const hypertext = parser.hypertexts[0];
+    const hypertext = parser.hypertexts.all[0];
     expect(hypertext.hypertext).toBe("Hello World");
     hypertext.hypertext = "Hello!";
     expect(parser.output).toBe("Hello!");
@@ -115,6 +115,14 @@ test("modify node", async () => {
     const [A, B, C] = parser.nodes;
     A.symbol = "A1";
     expect(parser.output).toBe("A1 -> B -> C");
+});
+
+test("remove hyperedge", async () => {
+    const parser = new Parser("A -> B -> C");
+    const hyperedge = parser.hyperedges[0];
+    hyperedge.remove();
+    expect(parser.lines.length).toBe(0);
+    expect(parser.output).toBe("");
 });
 
 

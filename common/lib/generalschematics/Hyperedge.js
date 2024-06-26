@@ -24,11 +24,46 @@ export default class Hyperedge extends Line {
         return this.nodes.map(node => node.symbol).join(" -> ");
     }
 
+    // add(symbol) {
+    //     if (Array.isArray(symbol)) { return symbol.map(s => this.add(s)) }
+    //     this.nodes.push(new Node(symbol, this));
+    //     return this.lastNode;
+    // }
+
     add(symbol) {
-        if (Array.isArray(symbol)) { return symbol.map(s => this.add(s)) }
-        this.nodes.push(new Node(symbol, this));
-        return this.lastNode;
+        if (Array.isArray(symbol)) {
+            return symbol.map(s => this.add(s));
+        }
+
+        return this.insertAt(symbol, this.nodes.length);
     }
+
+    insertAt(symbol, index) {
+        if (index > this.nodes.length) {
+            index = this.nodes.length;
+        }
+
+        const node = new Node(symbol, this);
+        this.nodes.splice(index, 0, node);
+
+        // this.updateNodeIndexes();
+
+        // this.schematic.onUpdate({ event: "node.add", data: node });
+
+        return node;
+    }
+
+    // remove() {
+    //     // this.hypergraph.remove(this);
+    //     // this.schematic.update();
+    // }
+
+    removeAt(index) {
+        this.nodes.splice(index, 1);
+        // this.schematic.onUpdate({ event: "node.remove", data: node });
+        // this.updateNodeIndexes();
+    }
+
 
     static matches(line) {
         return Hyperedge.ARROW.test(line);
@@ -162,49 +197,6 @@ export default class Hyperedge {
         this.schematic.onUpdate({ event: "node.rename", data: this.nodes[index] });
     }
 
-    remove() {
-        this.hypergraph.remove(this);
-        this.schematic.update();
-    }
-
-    add(symbol) {
-        if (Array.isArray(symbol)) {
-            return symbol.map(s => this.add(s));
-        }
-
-        return this.insertAt(symbol, this.nodes.length);
-    }
-
-    insertAt(input, index) {
-        const data = { type: "text", value: input };
-        this.data.children.splice(index, 0, data);
-
-        if (index > this.nodes.length) {
-            index = this.nodes.length;
-        }
-
-        const node = new Node(this, index);
-        this.nodes.splice(index, 0, node);
-
-        this.updateNodeIndexes();
-
-        this.schematic.onUpdate({ event: "node.add", data: node });
-
-        return node;
-    }
-
-    removeAt(index) {
-        const node = {
-            id: this.nodes[index].id,
-            data: this.nodes[index].data,
-        };
-
-        this.data.children.splice(index, 1);
-        this.nodes.splice(index, 1);
-
-        this.schematic.onUpdate({ event: "node.remove", data: node });
-        this.updateNodeIndexes();
-    }
 
     updateNodeIndexes() {
         for (let i = 0; i < this.nodes.length; i++) {

@@ -1,4 +1,6 @@
 import Line from './Line';
+import Hyperedge from './Hyperedge';
+import Node from './Node';
 
 export default class Hypertext extends Line {
     constructor() {
@@ -12,6 +14,19 @@ export default class Hypertext extends Line {
     set hypertext(value) {
         this.line = value;
     }
+
+    matches(hyperedge) {
+        for (const symbol of hyperedge.symbols) {
+            if (this.hypertext.includes(symbol)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    get owners() { return this.tree.hyperedges.filter(hyperedge => this.matches(hyperedge)) }
+    get ownerSymbols() { return this.owners.flatMap(hyperedge => hyperedge.symbols) }
 }
 
 

@@ -1,3 +1,18 @@
+import Hypertext from "./Hypertext";
+
+export default class Hypertexts {
+    constructor(tree) {
+        this.tree = tree;
+    }
+
+    get all() { return this.tree.lines.filter(line => line instanceof Hypertext) }
+    // get all() { return this.tree.hypertexts }
+    get global() { return this.all.filter(h => h.owners.length === 0) }
+    get local() { return this.all.filter(h => h.owners.length > 0) }
+    get(symbol) { return this.local.filter(h => h.ownerSymbols.includes(symbol)) }
+}
+
+/*
 import { find } from 'unist-util-find'
 import { selectAll } from 'unist-util-select'
 
@@ -93,3 +108,4 @@ export default class Hypertexts {
         return this.addLocal(symbol, input);
     }
 }
+    */
