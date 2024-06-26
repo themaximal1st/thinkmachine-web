@@ -138,4 +138,23 @@ export default class Tree {
         if (matches.length === 0) return null;
         return matches[0];
     }
+
+    walk(callback) {
+        const results = [];
+        for (const line of this.lines) {
+            if (!callback(line)) return results;
+            results.push(line);
+        }
+        return results;
+    }
+
+    walkBack(callback) {
+        const results = [];
+        for (let i = this.lines.length - 1; i >= 0; i--) {
+            const line = this.lines[i];
+            if (!callback(line)) return results;
+            results.push(line);
+        }
+        return results;
+    }
 }

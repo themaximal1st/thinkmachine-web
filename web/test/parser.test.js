@@ -368,6 +368,46 @@ test("create header if doesn't exist", async () => {
     expect(header).not.toBe(null)
 });
 
+test("walk all", async () => {
+    const parser = new Parser("This is some global hypertext\nA -> B -> C\nThis hypertext belongs to A");
+    const matches = parser.walk(obj => { return true });
+    expect(matches.length).toBe(3);
+});
+
+test("walk none", async () => {
+    const parser = new Parser("This is some global hypertext\nA -> B -> C\nThis hypertext belongs to A");
+    const matches = parser.walk(obj => { return false });
+    expect(matches.length).toBe(0);
+});
+
+test("walk until", async () => {
+    const parser = new Parser("This is some global hypertext\nA -> B -> C\nThis hypertext belongs to A");
+    expect(parser.walk(obj => { return obj.name !== "hyperedge" }).length).toBe(1);
+    expect(parser.walk(obj => {
+        return obj.owners && obj.owners.length == 0
+    }).length).toBe(2);
+});
+
+test("walk back all", async () => {
+    const parser = new Parser("This is some global hypertext\nA -> B -> C\nThis hypertext belongs to A");
+    const matches = parser.walkBack(obj => { return true });
+    expect(matches.length).toBe(3);
+});
+
+test("walk none", async () => {
+    const parser = new Parser("This is some global hypertext\nA -> B -> C\nThis hypertext belongs to A");
+    const matches = parser.walkBack(obj => { return false });
+    expect(matches.length).toBe(0);
+});
+
+test("walk until", async () => {
+    const parser = new Parser("This is some global hypertext\nA -> B -> C\nThis hypertext belongs to A");
+    expect(parser.walkBack(obj => { return obj.name !== "hyperedge" }).length).toBe(1);
+    expect(parser.walkBack(obj => {
+        return obj.owners && obj.owners.length == 0
+    }).length).toBe(0);
+});
+
 // TODO: very quickly we need to start building the hypergraph, and building up references + graphData!
 
 
