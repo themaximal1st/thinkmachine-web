@@ -1,5 +1,6 @@
 import { setIndex, addIndex, verifyGraphData, uniq } from "./utils";
 import BridgeNode from "./BridgeNode";
+import FilterGraph from "./FilterGraph";
 
 export default class Graph {
     constructor(schematic) {
@@ -26,7 +27,7 @@ export default class Graph {
             if (this.schematic.isFusion && hyperedge.isFusionBridge) {
                 // hyperedge.updateIndexes(nodes, links);
             } else {
-                this.updateHyperedgeData(hyperedge, data);
+                this.updateLinkData(hyperedge, data);
             }
         }
 
@@ -46,14 +47,13 @@ export default class Graph {
 
         verifyGraphData(data);
 
-        // if (Array.isArray(filter) && filter.length > 0) {
-        //     return FilterGraph({
-        //         filter,
-        //         hyperedges: this.hyperedges,
-        //         graphData: { nodes, links },
-        //         depth: this.schematic.depth
-        //     });
-        // }
+        if (Array.isArray(filter) && filter.length > 0) {
+            return FilterGraph({
+                data,
+                filter,
+                schematic: this.schematic,
+            });
+        }
 
         return {
             nodes: Array.from(data.nodes.values()),
@@ -95,7 +95,7 @@ export default class Graph {
         }
     }
 
-    updateHyperedgeData(hyperedge, data) {
+    updateLinkData(hyperedge, data) {
         let parent = null;
 
         for (const node of hyperedge.nodes) {
@@ -112,9 +112,12 @@ export default class Graph {
 
     updateNodeData(node, data) {
         const nodes = [node];
+        const hyperedges = [node.hyperedge];
         node = this.masqueradeNode(node);
         nodes.push(node);
+        hyperedges.push(node.hyperedge);
         // const indexes = this.updateIndexes(nodes, links);
+
 
         data.nodes.set(node.id, {
             id: node.id,
@@ -123,56 +126,81 @@ export default class Graph {
             name: node.symbol,
             color: node.hyperedge.color,
             nodes: uniq(nodes),
+            hyperedges: uniq(hyperedges),
             // ...indexes
         });
     }
 
+    // TODO: Figure this out
+    updateNodeIndexes(node, data) {
+        node = this.masqueradeNode(node);
+        const existing = data.nodes.get(node.id);
+    }
+
+    // updateIndexes(nodes) {
+    //     const node = this.hypergraph.masqueradeNode(this);
+
+    //     const existing = nodes.get(node.id);
+
+    //     const edgeIDs = existing ? existing.edgeIDs : new Set();
+    //     edgeIDs.add(this.hyperedge.id);
+    //     edgeIDs.add(node.hyperedge.id);
+
+    //     const edgeUUIDs = existing ? existing.edgeUUIDs : new Set();
+    //     edgeUUIDs.add(this.hyperedge.uuid);
+    //     edgeUUIDs.add(node.hyperedge.uuid);
+
+    //     const nodeIDs = existing ? existing.nodeIDs : new Set();
+    //     nodeIDs.add(this.id);
+    //     nodeIDs.add(node.id);
+
+    //     const nodeUUIDs = existing ? existing.nodeUUIDs : new Set();
+    //     nodeUUIDs.add(this.uuid);
+    //     nodeUUIDs.add(node.uuid);
+
+    //     return {
+    //         edgeIDs,
+    //         edgeUUIDs,
+    //         nodeIDs,
+    //         nodeUUIDs,
+    //     }
+    // }
+
     linkData(parent, child) {
-        // const edgeIDs = new Set();
-        // const edgeUUIDs = new Set();
+        const hyperedges = [];
+        const nodes = [];
 
-        // const nodeIDs = new Set();
-        // const nodeUUIDs = new Set();
+        function updateReferences(node) {
+            nodes.push(node);
 
-        // function updateIDs(node) {
-        //     nodeIDs.add(node.id);
-        //     nodeUUIDs.add(node.uuid);
+            if (node.bridge) {
+                for (const edge of node.hyperedges) {
+                    hyperedges.push(edge);
+                }
+            } else {
+                hyperedges.push(node.hyperedge);
+            }
+        }
 
-        //     if (node.bridge) {
-        //         for (const edge of node.hyperedges) {
-        //             edgeIDs.add(edge.id);
-        //             edgeUUIDs.add(edge.uuid);
-        //         }
-        //     } else {
-        //         edgeIDs.add(node.hyperedge.id);
-        //         edgeUUIDs.add(node.hyperedge.uuid);
-        //     }
-        // }
-
-        // updateIDs(parent);
-        // updateIDs(child);
+        updateReferences(parent);
+        updateReferences(child);
         parent = this.masqueradeNode(parent);
         child = this.masqueradeNode(child);
-        // updateIDs(parent);
-        // updateIDs(child);
-
-        const hyperedges = uniq([parent.hyperedge, child.hyperedge])
+        updateReferences(parent);
+        updateReferences(child);
 
         const link = {
             id: `${parent.id}->${child.id}`,
             source: parent.id,
             target: child.id,
-            hyperedges,
-            // edgeIDs,
-            // edgeUUIDs,
-            // nodeIDs,
-            // nodeUUIDs,
+            hyperedges: uniq(hyperedges),
+            nodes: uniq(nodes),
             color: parent.color,
         };
 
-        // if (parent.bridge || child.bridge) {
-        //     link.bridge = true;
-        // }
+        if (parent.bridge || child.bridge) {
+            link.bridge = true;
+        }
 
         return link;
     }
@@ -210,20 +238,17 @@ export default class Graph {
             // no connections...but ensure the edge exists
             if (fromNodes.length === 0 && toNodes.length === 0) {
                 this.updateHyperedgeData(hyperedge, data);
-                // hyperedge.updateIndexes(nodes, links);
                 continue;
             }
 
             // if one side of the connection doesn't exist, create it
             if (fromNodes.length === 0 && toNodes.length > 0) {
                 this.updateNodeData(hyperedge.firstNode, data);
-                // hyperedge.firstNode.updateGraphData(nodes, links);
                 fromNodes.push(hyperedge.firstNode);
             }
 
             if (fromNodes.length > 0 && toNodes.length === 0) {
                 this.updateNodeData(hyperedge.lastNode, data);
-                // hyperedge.lastNode.updateGraphData(nodes, links);
                 toNodes.push(hyperedge.lastNode);
             }
 
@@ -269,6 +294,8 @@ export default class Graph {
             uuid: bridgeNode.uuid,
             name: bridgeNode.symbol,
             bridge: true,
+            nodes: bridgeNode.nodes,
+            hyperedges: bridgeNode.hyperedges,
         });
 
         for (const node of bridgeNode.nodes) {

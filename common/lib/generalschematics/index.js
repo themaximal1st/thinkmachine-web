@@ -22,6 +22,8 @@ export default class GeneralSchematics {
 
     get interwingle() { return this.tree.interwingle }
     set interwingle(value) { this.tree.interwingle = value }
+    get depth() { return this.tree.depth }
+    set depth(value) { this.tree.depth = value }
     get isIsolated() { return this.tree.isIsolated }
     get isConfluence() { return this.tree.isConfluence }
     get isFusion() { return this.tree.isFusion }
@@ -59,6 +61,20 @@ export default class GeneralSchematics {
 
     graphData() { return this.graph.graphData(...arguments) }
 
+    filter(symbols) {
+        if (symbols.length === 0) return [];
+        if (!Array.isArray(symbols[0])) {
+            symbols = [symbols];
+        }
+
+        return this.hyperedges.filter(hyperedge => {
+            for (const symbol of symbols) {
+                if (hyperedge.has(symbol)) { return true }
+            }
+
+            return false;
+        });
+    }
 
 }
 /*

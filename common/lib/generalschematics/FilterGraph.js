@@ -1,81 +1,93 @@
 import * as utils from "./utils.js";
 
-export default function filterGraphData({ filter, hyperedges, graphData, depth }) {
-    const hyperedgeIDs = hyperedgeIDsForFilter(filter, hyperedges);
+export default function filterGraphData({ filter, schematic, data }) {
+    // const hyperedgeIDs = hyperedgeIDsForFilter(filter, hyperedges);
+    const hyperedges = hyperedgesForFilter(filter, schematic);
+
     const nodeIDs = new Set();
 
-    const nodes = new Map();
-    const links = new Map();
+    const graphData = { nodes: new Map(), links: new Map() };
 
     const updateNodesAndLinks = () => {
-        for (const node of graphData.nodes.values()) {
-            if (Array.from(node.edgeIDs).some(id => hyperedgeIDs.has(id))) {
-                nodes.set(node.id, node);
+        for (const node of data.nodes.values()) {
+            if (!node.hyperedges) {
+                console.log(node);
+                throw new Error("Node has no hyperedges");
+            }
+            console.log("NODE", node.hyperedges.length);
+            if (node.hyperedges.some(hyperedge => hyperedges.includes(hyperedge))) {
+                graphData.nodes.set(node.id, node);
                 nodeIDs.add(node.id);
             }
         }
 
-        for (const link of graphData.links.values()) {
+        for (const link of data.links.values()) {
             if (nodeIDs.has(link.source) && nodeIDs.has(link.target)) {
-                links.set(link.id, link);
+                graphData.links.set(link.id, link);
             }
         }
     }
 
     function updateHyperedges() {
-        for (const node of nodes.values()) {
-            for (const id of node.edgeIDs) {
-                hyperedgeIDs.add(id);
+        for (const node of graphData.nodes.values()) {
+            for (const hyperedge of node.hyperedges) {
+                hyperedges.push(hyperedge);
             }
         }
 
-        for (const link of links.values()) {
-            for (const id of link.edgeIDs) {
-                hyperedgeIDs.add(id);
+        for (const link of graphData.links.values()) {
+            for (const hyperedge of link.hyperedges) {
+                hyperedges.push(hyperedge);
             }
         }
     }
 
     updateNodesAndLinks();
 
-    let finalNodes = new Map(nodes);
-    let finalLinks = new Map(links);
+    let final = {
+        nodes: new Map(graphData.nodes),
+        links: new Map(graphData.links)
+    };
+
     let maxDepth = 0;
+    let depth = schematic.depth;
 
     while (true) {
-        const existingNodeSize = nodes.size;
-        const existingLinkSize = links.size;
+        const existingNodeSize = graphData.nodes.size;
+        const existingLinkSize = graphData.links.size;
 
         updateHyperedges();
         updateNodesAndLinks();
 
         if (maxDepth < depth) {
-            finalNodes = new Map(nodes);
-            finalLinks = new Map(links);
+            final = {
+                nodes: new Map(graphData.nodes),
+                links: new Map(graphData.links)
+            };
         }
 
-        if (existingNodeSize === nodes.size && existingLinkSize === links.size) {
+        if (existingNodeSize === graphData.nodes.size && existingLinkSize === graphData.links.size) {
             break;
         }
 
         maxDepth++;
     }
 
-    utils.verifyGraphData(finalNodes, finalLinks);
+    utils.verifyGraphData(final);
 
     if (maxDepth < 0) { maxDepth = 0 }
     if (depth > maxDepth) { depth = maxDepth }
 
     return {
-        nodes: Array.from(finalNodes.values()),
-        links: Array.from(finalLinks.values()),
+        nodes: Array.from(final.nodes.values()),
+        links: Array.from(final.links.values()),
         depth,
         maxDepth,
     };
 }
 
-function hyperedgeIDsForFilter(filter, hyperedges) {
-    return new Set(hyperedges.filter(hyperedge => {
+function hyperedgesForFilter(filter, schematic) {
+    return schematic.hyperedges.filter(hyperedge => {
         for (const f of filter) {
             if (Array.isArray(f)) {
                 if (utils.arrayContains(hyperedge.symbols, f)) return true;
@@ -88,5 +100,5 @@ function hyperedgeIDsForFilter(filter, hyperedges) {
             }
         }
         return false;
-    }).map(hyperedge => hyperedge.id));
+    });
 }
