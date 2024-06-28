@@ -1,14 +1,56 @@
+import { renderToStaticMarkup } from "react-dom/server";
+import { CSS2DObject } from "three/addons/renderers/CSS2DRenderer.js";
+import * as Three from "three";
 import Component from "./Component";
 
-export default class ActivePanel extends Component {
+import {
+    init,
+    classModule,
+    propsModule,
+    styleModule,
+    eventListenersModule,
+    h,
+} from "snabbdom";
+
+const patch = init([
+    // Init patch function with chosen modules
+    classModule, // makes it easy to toggle classes
+    propsModule, // for setting properties on DOM elements
+    styleModule, // handles styling on elements with support for animations
+    eventListenersModule, // attaches event listeners
+]);
+
+export default class ActivePanel {
+    constructor(props = {}) {
+        this.props = props;
+        this.node = this.props.schematic.nodeByUUID(this.props.activeNodeUUID);
+        this.div = null;
+    }
+
+    render() {
+        const html = this.code();
+        this.div = Component.createElement(html);
+
+        // this.load(div);
+
+        return this.wrap(this.div);
+    }
+
+    update() {
+        this.div.innerHTML = renderToStaticMarkup(this.code());
+    }
+
     code() {
-        console.log("NODE", this.props);
+        // console.log("NODE", this.props);
+        const node = this.props.schematic.nodeByUUID(this.props.activeNodeUUID);
+        const hypertexts = node ? node.hypertexts : [];
         return (
             <div className="active-panel">
-                {this.node.hypertexts.map((h, idx) => (
+                {Math.random()}
+                {hypertexts.map((h, idx) => (
                     <input
-                        key={`hypertext-${this.node.uuid}-${idx}`}
-                        id={`hypertext-${this.node.uuid}-${idx}`}
+                        key={`hypertext-${node.uuid}-${idx}`}
+                        id={`hypertext-${node.uuid}-${idx}`}
                         data-index={idx}
                         onChange={() => ""}
                         value={h.hypertext}
@@ -17,7 +59,83 @@ export default class ActivePanel extends Component {
             </div>
         );
     }
+
+    load() {
+        return;
+    }
+
+    unload() {
+        return;
+    }
+
+    wrap(div) {
+        const obj = new CSS2DObject(div);
+        const group = new Three.Group();
+        if (this.props.title) {
+            group.add(this.props.title);
+        }
+        group.add(obj);
+
+        const titleSize = Component.calculateTextSize(this.props.title);
+        const objSize = Component.calculateTextSize(obj);
+
+        const contentY = -titleSize.y - objSize.y / 2 + 2;
+
+        obj.position.copy(new THREE.Vector3(0, contentY, -1));
+        return group;
+    }
+
+    static calculateTextSize(obj = null) {
+        if (!obj) return new THREE.Vector3(0, 0, 0);
+        const bounds = new THREE.Box3().setFromObject(obj);
+        const size = new THREE.Vector3();
+        bounds.getSize(size);
+        return size;
+    }
+
+    static createElement(html) {
+        const div = document.createElement("div");
+        div.innerHTML = renderToStaticMarkup(html);
+        return div;
+    }
 }
+
+/*
+export default class ActivePanel extends Component {
+    constructor() {
+        super(...arguments);
+        // this.props.schematic.addEventListener((data) => {
+        //     const node = this.props.schematic.nodeByUUID(this.props.node.uuid);
+        //     console.log("ACTIVE PANEL", node);
+        // });
+    }
+
+    // code() {
+    //     console.log("ACTIVE NODE CODE");
+    //     // console.log("NODE", this.props);
+    //     return (
+    //         <div className="active-panel">
+    //             {Math.random()}
+    //             { {this.node.hypertexts.map((h, idx) => (
+    //                 <input
+    //                     key={`hypertext-${this.node.uuid}-${idx}`}
+    //                     id={`hypertext-${this.node.uuid}-${idx}`}
+    //                     data-index={idx}
+    //                     onChange={() => ""}
+    //                     value={h.hypertext}
+    //                 />
+    //             ))} }
+    //         </div>
+    //     );
+    // }
+
+
+    unload() {
+        throw new Error("UNLOADING");
+    }
+}
+
+*/
 
 /*
 class NodePanel extends React.Component {

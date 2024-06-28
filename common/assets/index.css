@@ -472,9 +472,9 @@ canvas {
 } */
 
 .active-panel {
-    @apply bg-gray-100 dark:bg-gray-1000 text-black dark:text-white;
+    @apply bg-gray-100 dark:bg-gray-1000 text-black dark:text-white w-[600px];
 
     input {
-        @apply bg-gray-100 dark:bg-gray-1000 text-black dark:text-white w-full;
+        @apply bg-gray-100 dark:bg-gray-1000 text-black dark:text-white w-full pointer-events-auto;
     }
 }

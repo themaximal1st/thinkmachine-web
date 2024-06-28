@@ -218,3 +218,23 @@ export function uniqAdd(array, value) {
 export function uniq(arr) {
     return [...new Set(arr)];
 }
+
+export function fixNodePosition(uuid, graphData) {
+    for (const node of graphData.nodes) {
+        if (node.uuid === uuid) {
+            node.fx = node.x;
+            node.fy = node.y;
+            node.fz = node.z;
+        }
+    }
+}
+
+export function unfixNodePosition(uuid, graphData) {
+    for (const node of graphData.nodes) {
+        if (node.uuid === uuid) {
+            delete node.fx;
+            delete node.fy;
+            delete node.fz;
+        }
+    }
+}

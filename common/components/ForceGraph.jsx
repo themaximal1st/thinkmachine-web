@@ -56,15 +56,16 @@ export default class ForceGraph extends React.Component {
     componentDidUpdate(prevProps, prevState) {
         // difference between prevProps and this.props
         // console.log("😇 ForceGraph componentDidUpdate", this.props);
-        // if (prevProps.trackedActiveNodeUUID !== this.props.trackedActiveNodeUUID) {
-        //     this.updateCamera(true, 400, prevProps.graphData).then(() => {
-        //         this.emitLinkParticles(prevProps.graphData);
-        //     });
-        // } else if (this.props.trackedActiveNodeUUID) {
-        //     this.updateCamera(true, 400, prevProps.graphData).then(() => {
-        //         // this.emitLinkParticles(prevProps.graphData);
-        //     });
-        // }
+        if (prevProps.trackedActiveNodeUUID !== this.props.trackedActiveNodeUUID) {
+            this.updateCamera(true, 100, prevProps.graphData).then(() => {
+                this.emitLinkParticles(prevProps.graphData);
+            });
+        } else if (this.props.trackedActiveNodeUUID) {
+            // this.updateCamera(true, 400, prevProps.graphData).then(() => {
+            //     // this.emitLinkParticles(prevProps.graphData);
+            // });
+        }
+
         // if (prevProps.graphData !== this.props.graphData) {
         //     this.updateCamera(false, delay, prevProps.graphData).then(() => {
         //         this.emitLinkParticles(prevProps.graphData);
@@ -95,7 +96,7 @@ export default class ForceGraph extends React.Component {
     }
 
     render() {
-        console.log("😇 ForceGraph render");
+        // console.log("😇 ForceGraph render");
 
         const props = {
             ...defaultProps,

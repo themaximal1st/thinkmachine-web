@@ -23,6 +23,7 @@ import SettingsModal from "./SettingsModal";
 import Depth from "./Depth";
 import Filters from "./Filters";
 import ChatModal from "./ChatModal";
+import { fixNodePosition, unfixNodePosition } from "../lib/generalschematics/utils";
 
 // TODO: We have a UUID bug...if there's two nodes with same ID they're going to collide on same UUID
 // TODO: Try to minimize updates to the graph...can we avoid updating the graph if we're just updating hypertext?
@@ -114,7 +115,7 @@ export default class App extends React.Component {
         }
 
         if (this.schematic.hash !== this.state.hash) {
-            console.log("📀 DATA UPDATE HASH CHANGED", this.schematic.hash);
+            // console.log("📀 DATA UPDATE HASH CHANGED", this.schematic.hash);
             // await this.asyncSetState({ dirty: true });
             await this.save();
         }
@@ -158,7 +159,16 @@ export default class App extends React.Component {
     }
 
     async setActiveNodeUUID(activeNodeUUID = null) {
+        if (this.state.activeNodeUUID) {
+            if (this.state.activeNodeUUID === activeNodeUUID) {
+                return;
+            }
+
+            unfixNodePosition(this.state.activeNodeUUID, this.state.graphData);
+        }
+
         await this.asyncSetState({ activeNodeUUID });
+        fixNodePosition(this.state.activeNodeUUID, this.state.graphData);
     }
 
     async setFilters(filters = null) {

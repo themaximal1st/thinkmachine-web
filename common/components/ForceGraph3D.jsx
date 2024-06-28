@@ -32,6 +32,7 @@ export default class ForceGraph3D extends React.Component {
             hash: null,
         };
 
+        this.activePanels = new Map();
         this.handleKeyDown = this.handleKeyDown.bind(this);
         this.nodeThreeObject = this.nodeThreeObject.bind(this);
         // this.updateDistances = this.updateDistances.bind(this);
@@ -100,7 +101,10 @@ export default class ForceGraph3D extends React.Component {
         if (this.props.schematic.hash !== this.state.hash) {
             // console.log("🥸 UPDATER", this.props.schematic.hash, this.state.hash);
             this.setState({ hash: this.props.schematic.hash });
-            // this.props.graphRef.current.refresh();
+
+            this.props.graphRef.current.refresh();
+        } else if (this.props.activeNodeUUID !== prevProps.activeNodeUUID) {
+            this.props.graphRef.current.refresh();
         }
 
         // if (
@@ -187,7 +191,7 @@ export default class ForceGraph3D extends React.Component {
     }
 
     render() {
-        console.log("🎄 FORCE GRAPH 3D RENDER");
+        // console.log("🎄 FORCE GRAPH 3D RENDER");
         return (
             <div>
                 <ForceGraph3DComponent
@@ -270,6 +274,8 @@ export default class ForceGraph3D extends React.Component {
     }
 
     nodeThreeObject(node) {
+        console.log("NODE THREE OBJECT", this.activePanels.size);
+
         // if (this.activeNodeUI && this.activeNodeUI.props.node.uuid === node.uuid) {
         //     this.activeNodeUI.unload();
         //     this.activeNodeUI = null;
@@ -288,14 +294,20 @@ export default class ForceGraph3D extends React.Component {
         // console.log("GOOOOOOOOOOOOOOOD", this.props.activeNodeUUID);
         // console.log("GOOOOOOOOOOOOOOOD", this.props.trackedActiveNodeUUID);
 
-        if (
-            !this.props.trackedActiveNodeUUID ||
-            this.props.trackedActiveNodeUUID !== node.uuid
-        ) {
+        // if (
+        //     !this.props.trackedActiveNodeUUID ||
+        //     this.props.trackedActiveNodeUUID !== node.uuid
+        // ) {
+        //     return title;
+        // }
+
+        console.log("ACTIVE NODE UUID", this.props.activeNodeUUID);
+
+        if (!this.props.activeNodeUUID || this.props.activeNodeUUID !== node.uuid) {
             return title;
         }
 
-        return title;
+        console.log(`nodeThreeObject running ${node.id}`);
 
         /*
         // console.log("NODE DISTANCE", this.state.distances[node.uuid]);
@@ -307,8 +319,14 @@ export default class ForceGraph3D extends React.Component {
         }
             */
 
+        // let activePanel = this.activePanels.get(node.id);
+        // if (activePanel) {
+        //     console.log("RENDERING EXISTING ACTIVE PANEL");
+        //     activePanel.unload();
+        // }
+
         // leaving react here...
-        const nodePanel = new ActiveNode({
+        const activePanel = new ActiveNode({
             // ...this.state,
             ...this.props,
             node,
@@ -322,7 +340,9 @@ export default class ForceGraph3D extends React.Component {
 
         // this.nodePanels.set(node.uuid, nodePanel);
 
-        return nodePanel.render();
+        this.activePanels.set(node.id, activePanel);
+
+        return activePanel.render();
 
         /*
         // this.activeNodeUI = new ActiveNode({

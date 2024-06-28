@@ -123,9 +123,9 @@ export default class Camera {
 
     async zoomToNode(nodeUUID, delay = 0, timing = 800) {
         // if (this.zoomingToNode) return;
-        this.zoomingToNode = nodeUUID;
+        // this.zoomingToNode = nodeUUID;
 
-        console.log("ZOOM TO NODE");
+        // console.log("ZOOM TO NODE");
 
         await utils.delay(delay);
 
@@ -137,12 +137,12 @@ export default class Camera {
             return;
         }
 
-        if (node.uuid !== this.zoomingToNode) {
-            console.log("BAILING!");
-            return;
-        }
+        // if (node.uuid !== this.zoomingToNode) {
+        //     console.log("BAILING!");
+        //     return;
+        // }
 
-        this.fixNodePosition(node);
+        // this.fixNodePosition(node);
 
         // Define a fixed "up" vector (world up)
         const worldUp = { x: 0, y: 1, z: 0 };
@@ -179,10 +179,10 @@ export default class Camera {
             };
         }
 
-        if (node.uuid !== this.zoomingToNode) {
-            console.log("BAILING!");
-            return;
-        }
+        // if (node.uuid !== this.zoomingToNode) {
+        //     console.log("BAILING!");
+        //     return;
+        // }
 
         // Update camera position and target
         this.graph.cameraPosition(
@@ -191,15 +191,15 @@ export default class Camera {
             timing // transition duration in milliseconds
         );
 
-        setTimeout(() => {
-            // this.zoomingToNode = false;
+        // setTimeout(() => {
+        //     // this.zoomingToNode = false;
 
-            if (node.uuid !== this.zoomingToNode) {
-                console.log("BAILING!");
-                return;
-            }
-            this.zoomingToNode = null;
-        }, timing);
+        //     if (node.uuid !== this.zoomingToNode) {
+        //         console.log("BAILING!");
+        //         return;
+        //     }
+        //     this.zoomingToNode = null;
+        // }, timing);
     }
 
     fixNodePosition(node, reset = true) {
