@@ -25,11 +25,11 @@ export default class WYSIWYG extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        if (this.props.schematic.input !== this.state.input) {
+        if (this.props.schematic.hash !== this.state.hash) {
             console.log("😇 DID UPDATE");
             this.setState({
                 input: this.props.schematic.output,
-                // hash: this.props.schematic.hash,
+                hash: this.props.schematic.hash,
             });
         }
     }

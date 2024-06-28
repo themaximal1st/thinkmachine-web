@@ -62,6 +62,9 @@ export default class Tree {
     get isBridge() { return this.interwingle >= Tree.INTERWINGLE.BRIDGE }
 
     get hash() { return sha256(this.str) }
+    get edgehash() { return sha256(JSON.stringify(this.symbols)) }
+    get texthash() { return sha256(this.text) }
+    get text() { return this.lines.filter(line => !(line instanceof Hyperedge)).map(line => line.output).join("\n") }
     get length() { return this.lines.length }
     get output() { return this.lines.map(line => line.output).join("\n") }
     get hyperedges() { return this.lines.filter(line => line instanceof Hyperedge) }

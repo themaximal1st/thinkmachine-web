@@ -15,6 +15,9 @@ export default class Parser {
 
     get options() { return this.tree.options }
     get hash() { return this.tree.hash }
+    get edgehash() { return this.tree.edgehash }
+    get texthash() { return this.tree.texthash }
+    get text() { return this.tree.text }
     get input() { return this.tree.input }
     get output() { return this.tree.output }
     get lines() { return this.tree.lines }

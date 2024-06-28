@@ -471,8 +471,8 @@ canvas {
     }
 } */
 
-.active-panel {
-    @apply bg-gray-100 dark:bg-gray-1000 text-black dark:text-white w-[600px];
+#active-panel {
+    @apply bg-gray-100 dark:bg-gray-1000 text-black dark:text-white w-[600px] flex flex-col;
 
     input {
         @apply bg-gray-100 dark:bg-gray-1000 text-black dark:text-white w-full pointer-events-auto;

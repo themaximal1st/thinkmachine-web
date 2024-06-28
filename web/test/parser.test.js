@@ -404,44 +404,24 @@ test("walk until", async () => {
     }).length).toBe(0);
 });
 
-// TODO: very quickly we need to start building the hypergraph, and building up references + graphData!
+test("hashes", async () => {
+    const parser = new Parser();
+    expect(parser.text).toBe("");
+    const { hash, edgehash, texthash } = parser;
+    expect(hash).toBe("e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855");
+    expect(edgehash).toBe("4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945");
+    expect(texthash).toBe("e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855");
 
+    parser.parse("A -> B -> C");
+    expect(parser.text).toBe("");
+    expect(parser.hash).not.toBe(hash);
+    expect(parser.edgehash).not.toBe(edgehash);
+    expect(parser.texthash).toBe(texthash)
 
-/*
+    parser.parse("Hello World");
 
-*/
-
-// TODO: Add a node...other nodes should have same uuid...tricky because we need node caching, not just line caching
-
-
-// EXPORT
-// Tree -> Make parser parse into a tree
-// DYNAMIC hyperedge collapse back down -> change node..modify hyperedge
-// split updates into two sets...hypertext and hypergraph
-// leave everything dynamic
-
-
-// PARSER is the source of truth
-// Every hyperedge inherits that uuid
-// Every node gets a uuid
-// Reparsing gets existing UUID!
-// Node re-parsing gets existing UUID
-
-// TODO: UPDATE ALL
-// TODO: UPDATE LINE
-// TODO: hypergraph ..hyperedges? ..built from parser?
-// TODO: graphData ...graphData? ..built from parser?
-
-// CORE IDEAS
-// - parser input never changes except when explicitly changed by user
-// - parsing is line by line
-// - section parsing is punted until next time
-// - no markdown formatting initially
-
-
-// test high-level API — specifics are handled in other tests
-
-
-// TODO: User adds a new line to hypertext -> returns new hypertext
-
-// We assume symbols cant belong to a header...maybe they could in the future?
+    expect(parser.text).toBe("Hello World");
+    expect(parser.hash).not.toBe(hash);
+    expect(parser.edgehash).toBe(edgehash);
+    expect(parser.texthash).not.toBe(texthash)
+});

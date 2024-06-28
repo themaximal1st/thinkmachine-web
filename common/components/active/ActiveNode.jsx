@@ -25,19 +25,19 @@ export default class ActivePanel {
         this.props = props;
         this.node = this.props.schematic.nodeByUUID(this.props.activeNodeUUID);
         this.div = null;
+        this.onChangeHandler = this.onChange.bind(this);
     }
 
     render() {
+        if (this.group) return this.group;
+
         const html = this.code();
         this.div = Component.createElement(html);
 
-        // this.load(div);
+        this.load();
 
-        return this.wrap(this.div);
-    }
-
-    update() {
-        this.div.innerHTML = renderToStaticMarkup(this.code());
+        this.group = this.wrap();
+        return this.group;
     }
 
     code() {
@@ -61,15 +61,39 @@ export default class ActivePanel {
     }
 
     load() {
-        return;
+        const inputs = this.div.querySelectorAll("input");
+        for (const input of inputs) {
+            input.addEventListener("input", this.onChangeHandler);
+        }
     }
 
     unload() {
-        return;
+        throw new Error("should not be unloading");
+        const inputs = this.div.querySelectorAll("input");
+        for (const input of inputs) {
+            input.removeEventListener("input", this.onChangeHandler);
+        }
     }
 
-    wrap(div) {
-        const obj = new CSS2DObject(div);
+    onChange(e) {
+        console.log("ON CHANGE");
+        const target = e.target;
+        if (target.tagName !== "INPUT") return;
+
+        const value = target.value;
+        const index = target.dataset.index;
+
+        const hypertext = this.node.hypertexts[index];
+        hypertext.hypertext = value;
+
+        this.props.schematic.parse(this.props.schematic.output);
+        // this.props.schematic.input = this.props.schematic.export();
+
+        // this.props.schematic.debug();
+    }
+
+    wrap() {
+        const obj = new CSS2DObject(this.div);
         const group = new Three.Group();
         if (this.props.title) {
             group.add(this.props.title);
