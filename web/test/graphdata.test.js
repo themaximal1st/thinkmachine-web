@@ -483,7 +483,7 @@ test("custom colors", () => {
     }
 });
 
-test.skip("restore node position", () => {
+test("restore node position", () => {
     const schematic = new GeneralSchematics([
         ["A", "B", "C"],
     ]);
@@ -509,7 +509,7 @@ test.skip("restore node position", () => {
     expect(newData.nodes[2].uuid).toBe(oldData.nodes[2].uuid);
 });
 
-test.skip("restore node positions with parse", () => {
+test("restore node positions with parse", () => {
     const schematic = new GeneralSchematics("A -> B -> C");
 
     let oldData = schematic.graphData();
@@ -536,7 +536,7 @@ test.skip("restore node positions with parse", () => {
     expect(newData.nodes[0].vz).toBe(100);
 });
 
-test.skip("restore entire node", () => {
+test("restore entire node", () => {
     const schematic = new GeneralSchematics("A -> B -> C");
     let graphData;
 
@@ -556,7 +556,7 @@ test.skip("restore entire node", () => {
 
 });
 
-test.skip("restore entire node with parse", () => {
+test("restore entire node with parse", () => {
     const schematic = new GeneralSchematics("A -> B -> C");
     let graphData;
 
@@ -577,7 +577,7 @@ test.skip("restore entire node with parse", () => {
     expect(C === C1).toBeTruthy();
 });
 
-test.skip("restore entire node with new information", () => {
+test("restore entire node with new information", () => {
     const schematic = new GeneralSchematics("A -> B -> C\nHypertext for A");
     let graphData;
 
@@ -600,7 +600,7 @@ test.skip("restore entire node with new information", () => {
     expect(schematic.nodes[0].hypertexts.length).toBe(0);
 });
 
-test.skip("restore node positions with parse and interwingle change", () => {
+test("restore node positions with parse and interwingle change", () => {
     const schematic = new GeneralSchematics("A -> B -> C");
 
     let data, oldData;

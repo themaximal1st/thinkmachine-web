@@ -1,4 +1,4 @@
-import { setIndex, addIndex, verifyGraphData, uniq } from "./utils";
+import { setIndex, addIndex, verifyGraphData, uniq, restoreData } from "./utils";
 import BridgeNode from "./BridgeNode";
 import FilterGraph from "./FilterGraph";
 
@@ -19,7 +19,7 @@ export default class Graph {
     graphData(filter = null, lastData = null) {
         // let nodes = new Map();
         // let links = new Map();
-        const data = { nodes: new Map(), links: new Map() }
+        let data = { nodes: new Map(), links: new Map() }
 
         this.updateIndexes();
 
@@ -31,11 +31,11 @@ export default class Graph {
             }
         }
 
-        // if (lastData) {
-        //     const data = restoreData({ nodes, links }, lastData);
-        //     nodes = data.nodes;
-        //     links = data.links;
-        // }
+        if (lastData) {
+            data = restoreData(data, lastData);
+            // nodes = data.nodes;
+            // links = data.links;
+        }
 
         if (this.schematic.isFusion) {
             this.updateFusionData(data);
