@@ -1,4 +1,5 @@
 import { setIndex, addIndex, verifyGraphData, uniq } from "./utils";
+import BridgeNode from "./BridgeNode";
 
 export default class Graph {
     constructor(schematic) {
@@ -40,7 +41,7 @@ export default class Graph {
         }
 
         if (this.schematic.isBridge) {
-            // this.updateBridgeData(nodes, links);
+            this.updateBridgeData(data);
         }
 
         verifyGraphData(data);
@@ -244,7 +245,7 @@ export default class Graph {
         }
     }
 
-    _updateBridgeData(nodes, links) {
+    updateBridgeData(data) {
         const bridgeIndex = new Map();
 
         for (const hyperedge of this.schematic.hyperedges) {
@@ -258,8 +259,28 @@ export default class Graph {
         for (let bridgeNodes of bridgeIndex.values()) {
             if (bridgeNodes.size < 2) continue;
             const bridgeNode = new BridgeNode(Array.from(bridgeNodes.values()));
-            bridgeNode.updateGraphData(nodes, links);
+            this.updateBridgeNodeData(bridgeNode, data);
         }
-
     }
+
+    updateBridgeNodeData(bridgeNode, data) {
+        data.nodes.set(bridgeNode.id, {
+            id: bridgeNode.id,
+            uuid: bridgeNode.uuid,
+            name: bridgeNode.symbol,
+            bridge: true,
+        });
+
+        for (const node of bridgeNode.nodes) {
+            // const n = nodes.get(node.id);
+            // n.nodeIDs.add(bridgeNode.id);
+            // link.nodeIDs = bridgeNode.nodeIDs;
+            // link.nodeUUIDs = bridgeNode.nodeUUIDs;
+            // link.edgeIDs = bridgeNode.edgeIDs;
+            // link.edgeUUIDs = bridgeNode.edgeUUIDs;
+            const link = this.linkData(bridgeNode, node);
+            data.links.set(link.id, link);
+        }
+    }
+
 }

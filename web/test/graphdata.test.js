@@ -375,7 +375,7 @@ test("two two-edge connections", () => {
 
 // BRIDGE
 
-test.skip("bridge", () => {
+test("bridge", () => {
     const hyperedges = [
         ["A", "vs", "B"],
         ["1", "vs", "2"],
@@ -400,12 +400,6 @@ test.skip("bridge", () => {
     expect(data.links[5].id).toBe("vs#bridge->1.vs");
 });
 
-test.skip("single node edge", () => { // TODO: this is a bug with new markdown parser. can't tell a single symbol from a hyperedge from a hypertext
-    const schematic = new GeneralSchematics({ interwingle: GeneralSchematics.INTERWINGLE.ISOLATED });
-    schematic.add(["A"]);
-    const data = schematic.graphData();
-    expect(data.nodes.length).toBe(1);
-});
 
 test("two-edge end bridge incoming", () => {
     const schematic = new GeneralSchematics({ interwingle: GeneralSchematics.INTERWINGLE.BRIDGE });
@@ -449,7 +443,7 @@ test("two-edge confluence skip fusion and bridge", () => {
     expect(data.links.length).toBe(4);
 });
 
-test.skip("two-edge fusion bridge", () => {
+test("two-edge fusion bridge", () => {
     const schematic = new GeneralSchematics({ interwingle: GeneralSchematics.INTERWINGLE.BRIDGE });
     schematic.add(["A", "B"]);
     schematic.add(["B", "C"]);
@@ -666,6 +660,16 @@ test.skip("restore node positions with parse and interwingle change", () => {
     expect(data.nodes[1].id).toBe("0:A.B");
     expect(data.nodes[2].id).toBe("0:A.B.C");
 });
+
+// 
+
+test.skip("single node edge", () => { // TODO: this is a bug with new markdown parser. can't tell a single symbol from a hyperedge from a hypertext
+    const schematic = new GeneralSchematics({ interwingle: GeneralSchematics.INTERWINGLE.ISOLATED });
+    schematic.add(["A"]);
+    const data = schematic.graphData();
+    expect(data.nodes.length).toBe(1);
+});
+
 
 
 // Interwingle change should not affect graphData
