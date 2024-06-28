@@ -18,6 +18,7 @@ export default class Node extends Base {
     get isFirst() { return this.index === 0 }
     get isLast() { return this.index === this.hyperedge.length - 1 }
     get isMiddle() { return !this.isFirst && !this.isLast }
+    get output() { return this.symbol }
 
     equal(node) { return this.id === node.id }
     equals(symbol) { return this.symbol.toLowerCase() === symbol.toLowerCase(); }
@@ -44,6 +45,47 @@ export default class Node extends Base {
 
     connect(node) {
         return this.tree.add([this.symbol, node.symbol]);
+    }
+
+    context(data) {
+        const context = {
+            prev: [],
+            next: [],
+            stack: [],
+        };
+
+        for (const link of data.links) {
+            // force 3d graph modifies data...kinda crummy, would be better to store datainternally rather than passing it around
+            let source = link.source.id || link.source;
+            let target = link.target.id || link.target;
+
+            if (source === this.id) {
+                if (link.bridge) {
+                    for (const node of link.nodes) {
+                        if (node !== this) { context.next.push(node) }
+                    }
+                } else {
+                    context.next.push(this.tree.nodeByID(target));
+                }
+            } else if (target === this.id) {
+                if (link.bridge) {
+                    for (const node of link.nodes) {
+                        if (node !== this) { context.prev.push(node) }
+                    }
+                } else {
+                    context.prev.push(this.tree.nodeByID(source));
+                }
+            }
+        }
+
+        for (const node of data.nodes) {
+            if (!node.nodes.includes(this)) continue;
+            for (const n of node.nodes) {
+                context.stack.push(n);
+            }
+        }
+
+        return context;
     }
 
 
@@ -113,58 +155,7 @@ export default class Node {
     }
 
 
-    context(graphData) {
-        const context = {
-            prev: [],
-            next: [],
-            stack: [],
-        };
 
-        const next = (id) => {
-            context.next.push(this.hypergraph.nodeByID(id));
-        }
-
-        const prev = (id) => {
-            context.prev.push(this.hypergraph.nodeByID(id));
-        }
-
-        const stack = (uuid) => {
-            context.stack.push(this.hypergraph.nodeByUUID(uuid));
-        }
-
-        for (const link of graphData.links) {
-            // force 3d graph modifies graphData...kinda crummy, would be better to store graphData internally rather than passing it around
-            let source = link.source.id || link.source;
-            let target = link.target.id || link.target;
-
-            if (source === this.id) {
-                if (link.bridge) {
-                    for (const nodeId of link.nodeIDs) {
-                        if (nodeId !== this.id) { next(nodeId) }
-                    }
-                } else {
-                    next(target);
-                }
-            } else if (target === this.id) {
-                if (link.bridge) {
-                    for (const nodeId of link.nodeIDs) {
-                        if (nodeId !== this.id) { prev(nodeId) }
-                    }
-                } else {
-                    prev(source);
-                }
-            }
-        }
-
-        for (const node of graphData.nodes) {
-            if (!node.nodeUUIDs.has(this.uuid)) continue;
-            for (const uuid of node.nodeUUIDs) {
-                stack(uuid);
-            }
-        }
-
-        return context;
-    }
 }
     */
 

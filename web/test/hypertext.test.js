@@ -3,7 +3,7 @@ import { expect, test } from "vitest";
 
 test("missing hypertext symbol", () => {
     const schematic = new GeneralSchematics("A -> B -> C\nThis is some hypertext");
-    expect(schematic.export()).toEqual("A -> B -> C\nThis is some hypertext");
+    expect(schematic.output).toEqual("A -> B -> C\nThis is some hypertext");
 
     const [A, _] = schematic.get(["A"]).nodes;
     expect(A.hypertexts.length).toEqual(0);
@@ -14,10 +14,10 @@ test("missing hypertext symbol", () => {
 
 test("numeric symbol", () => {
     const schematic = new GeneralSchematics(`1 -> 2 -> 3\nThis is for 1`);
-    expect(schematic.hyperedges[0].nodes[0].value).toEqual("1");
-    expect(schematic.hyperedges[0].nodes[1].value).toEqual("2");
-    expect(schematic.hyperedges[0].nodes[2].value).toEqual("3");
-    expect(schematic.export()).toEqual("1 -> 2 -> 3\nThis is for 1");
+    expect(schematic.hyperedges[0].nodes[0].symbol).toEqual("1");
+    expect(schematic.hyperedges[0].nodes[1].symbol).toEqual("2");
+    expect(schematic.hyperedges[0].nodes[2].symbol).toEqual("3");
+    expect(schematic.output).toEqual("1 -> 2 -> 3\nThis is for 1");
 
     const [one, _] = schematic.get(["1"]).nodes;
     expect(one).toBeDefined();
@@ -55,7 +55,7 @@ test("punctuation", () => {
 });
 
 test("symbolify section", () => {
-    const schematic = new GeneralSchematics("A -> B -> C\n\n## A\nThis is some hypertext.\nIt goes on and on\n\n## C\nThis is some more hypertext.\nIt goes on and on");
+    const schematic = new GeneralSchematics("A -> B -> C\n## A\nThis is some hypertext.\nIt goes on and on\n## C\nThis is some more hypertext.\nIt goes on and on");
     expect(schematic.hypertexts.get("A").length).toEqual(2);
     expect(schematic.hypertexts.get("C").length).toEqual(2);
 });
@@ -84,17 +84,16 @@ test("hypertext encoding ending space", async () => {
     const hypertexts = schematic.hypertexts.get("A");
     expect(hypertexts.length).toEqual(1);
     const hypertext = hypertexts[0];
-    hypertext.value = "This is some A hypertext ";
-    expect(schematic.export()).toBe("A -> B -> C\nThis is some A hypertext ");
+    hypertext.hypertext = "This is some A hypertext ";
+    expect(schematic.output).toBe("A -> B -> C\nThis is some A hypertext ");
 });
 
-test.skip("ignore formatting", async () => {
+test("ignore formatting", async () => {
     const schematic = new GeneralSchematics("A -> B -> C\n\nThis is *some* A **hypertext**");
-    schematic.debug();
     expect(schematic.hypertexts.global.length).toEqual(0);
     const hypertexts = schematic.hypertexts.get("A");
     expect(hypertexts.length).toEqual(1);
-    expect(schematic.export()).toBe("A -> B -> C\nThis is *some* A **hypertext**");
+    expect(schematic.output).toBe("A -> B -> C\n\nThis is *some* A **hypertext**");
 });
 
 

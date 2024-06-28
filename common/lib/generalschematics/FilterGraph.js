@@ -14,7 +14,6 @@ export default function filterGraphData({ filter, schematic, data }) {
                 console.log(node);
                 throw new Error("Node has no hyperedges");
             }
-            console.log("NODE", node.hyperedges.length);
             if (node.hyperedges.some(hyperedge => hyperedges.includes(hyperedge))) {
                 graphData.nodes.set(node.id, node);
                 nodeIDs.add(node.id);

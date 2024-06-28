@@ -299,6 +299,8 @@ export default class Graph {
         });
 
         for (const node of bridgeNode.nodes) {
+            const n = data.nodes.get(node.id);
+            n.nodes.push(bridgeNode);
             // const n = nodes.get(node.id);
             // n.nodeIDs.add(bridgeNode.id);
             // link.nodeIDs = bridgeNode.nodeIDs;

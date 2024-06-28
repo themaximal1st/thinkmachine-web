@@ -118,6 +118,10 @@ export default class Hyperedge extends Line {
         return `${this.index}:hyperedge [${this.uuid}]\n    ${this.nodes.map(node => node.str).join("\n    ")}`;
     }
 
+    get output() {
+        return this.nodes.map(node => node.output).join(" -> ");
+    }
+
     static matches(line) {
         return Hyperedge.ARROW.test(line);
     }

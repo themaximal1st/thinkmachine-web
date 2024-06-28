@@ -25,7 +25,7 @@ test("parse simple doc", async () => {
     expect(elapsed).toBeLessThan(1000);
 });
 
-test.skip("parse complex doc", async () => {
+test("parse complex doc", async () => {
     const filename = path.join(__dirname, "examples/example2.md");
     const data = fs.readFileSync(filename, "utf-8")
 

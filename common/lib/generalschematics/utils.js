@@ -1,4 +1,3 @@
-import Colors from "./colors.js";
 import sha256lib from "@lib/sha256"
 import Colors from './colors.js';
 

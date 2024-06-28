@@ -53,6 +53,8 @@ export default class Hypertext extends Line {
             for (const node of nodes) {
                 if (!owners.includes(node)) owners.push(node);
             }
+
+            break;
         }
 
         return owners;
