@@ -18,7 +18,6 @@ export default class Header extends Line {
 
         let curr = this, breaks = 0;
         while (curr = curr.child) {
-            console.log("CURR", curr.name);
             if (curr.name === "hyperedge") continue;
             if (curr.name === "emptyline") breaks++;
             else breaks = 0;

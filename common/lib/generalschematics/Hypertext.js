@@ -54,7 +54,7 @@ export default class Hypertext extends Line {
                 if (!owners.includes(node)) owners.push(node);
             }
 
-            break;
+            if (curr.name === "header") break;
         }
 
         return owners;

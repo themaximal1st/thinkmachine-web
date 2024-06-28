@@ -237,7 +237,7 @@ export default class Graph {
 
             // no connections...but ensure the edge exists
             if (fromNodes.length === 0 && toNodes.length === 0) {
-                this.updateHyperedgeData(hyperedge, data);
+                this.updateLinkData(hyperedge, data);
                 continue;
             }
 
