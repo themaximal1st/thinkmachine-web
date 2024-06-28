@@ -46,20 +46,6 @@ export default class Node extends Base {
         return this.tree.add([this.symbol, node.symbol]);
     }
 
-    updateGraphData(nodes, links) {
-        // const node = this.hypergraph.masqueradeNode(this);
-        // const indexes = this.updateIndexes(nodes, links);
-        const node = this;
-
-        nodes.set(node.id, {
-            id: node.id,
-            uid: node.uid,
-            uuid: node.uuid,
-            name: node.symbol,
-            color: this.hyperedge.color,
-            // ...indexes
-        });
-    }
 
     // updateIndexes(nodes) {
     //     const node = this.hypergraph.masqueradeNode(this);

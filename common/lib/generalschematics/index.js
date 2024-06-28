@@ -1,5 +1,6 @@
-import { getInputOptions, verifyGraphData } from './utils.js';
+import { getInputOptions, verifyGraphData, addIndex } from './utils.js';
 import Parser from './Parser.js';
+import Graph from './Graph.js';
 // How much of Tree / GeneralSchematics should be the same thing?
 
 export default class GeneralSchematics {
@@ -16,6 +17,7 @@ export default class GeneralSchematics {
     constructor() {
         const { input, options } = getInputOptions(...arguments);
         this.parser = new Parser(input, options);
+        this.graph = new Graph(this);
     }
 
     get interwingle() { return this.tree.interwingle }
@@ -45,6 +47,8 @@ export default class GeneralSchematics {
     reset() { this.tree.reset() }
     parse(input) { this.parser.parse(input) }
     add() { return this.tree.add(...arguments) }
+
+    // TODO: candidates for indexes
     nodeByUUID() { return this.tree.nodeByUUID(...arguments) }
     nodeByID() { return this.tree.nodeByID(...arguments) }
     nodeByUID() { return this.tree.nodeByUID(...arguments) }
@@ -53,85 +57,8 @@ export default class GeneralSchematics {
     addEventListener() { return this.tree.addEventListener(...arguments) }
     removeEventListener() { return this.tree.removeEventListener(...arguments) }
 
-    graphData(filter = null, lastData = null) {
-        let nodes = new Map();
-        let links = new Map();
+    graphData() { return this.graph.graphData(...arguments) }
 
-        this.updateIndexes();
-
-        for (const hyperedge of this.hyperedges) {
-            if (this.isFusion && hyperedge.isFusionBridge) {
-                // hyperedge.updateIndexes(nodes, links);
-            } else {
-                hyperedge.updateGraphData(nodes, links);
-            }
-        }
-
-        // if (lastData) {
-        //     const data = restoreData({ nodes, links }, lastData);
-        //     nodes = data.nodes;
-        //     links = data.links;
-        // }
-
-        // if (this.schematic.isFusion) {
-        //     this.updateFusionData(nodes, links);
-        // }
-
-        // if (this.schematic.isBridge) {
-        //     this.updateBridgeData(nodes, links);
-        // }
-
-        verifyGraphData(nodes, links);
-
-        // if (Array.isArray(filter) && filter.length > 0) {
-        //     return FilterGraph({
-        //         filter,
-        //         hyperedges: this.hyperedges,
-        //         graphData: { nodes, links },
-        //         depth: this.schematic.depth
-        //     });
-        // }
-
-        return {
-            nodes: Array.from(nodes.values()),
-            links: Array.from(links.values()),
-        };
-    }
-
-    updateIndexes() {
-        this.symbolIndex = new Map();
-        this.startSymbolIndex = new Map();
-        this.endSymbolIndex = new Map();
-
-        // this.fusionIndex = new Map();
-
-        // for (const edge of this.hyperedges) {
-        //     for (const node of edge.nodes) {
-        //         addIndex(this.symbolIndex, node.symbol, node);
-        //     }
-
-        //     addIndex(this.startSymbolIndex, edge.firstNode.symbol, edge.firstNode);
-        //     addIndex(this.endSymbolIndex, edge.lastNode.symbol, edge.lastNode);
-        // }
-
-        // if (!this.schematic.isFusion) { return }
-
-        // for (const edge of this.hyperedges) {
-        //     let nodes;
-
-        //     // start fusion
-        //     nodes = this.endSymbolIndex.get(edge.firstNode.symbol) || [];
-        //     if (nodes.length > 0) {
-        //         this.fusionIndex.set(edge.firstNode.id, nodes[0]); // should this crawl to edge and lastNode?
-        //     }
-
-        //     // end fusion
-        //     nodes = this.endSymbolIndex.get(edge.lastNode.symbol) || [];
-        //     if (nodes.length > 0) {
-        //         this.fusionIndex.set(edge.lastNode.id, nodes[0]);
-        //     }
-        // }
-    }
 
 }
 /*

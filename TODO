@@ -1,3 +1,5 @@
+- Try to stay away from indexes. If anything, switch to implicit indexing on backend, and provide helper methods. Explicit indexes suck though
+
 - MARKDOWN FORMATTING DOESNT WORK!
 
 - WYSIWYG
@@ -32,6 +34,8 @@
 
 
 - HYPERMEDIA nodes...IMAGES/VIDEOS/AUDIO dont have media tabs...make nodes the media
+
+- DOCS on setting up API keys
 
 
 

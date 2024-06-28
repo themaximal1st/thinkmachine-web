@@ -19,6 +19,7 @@ export default class Tree {
 
     static LineTypes = [EmptyLine, Header, Hyperedge, Hypertext];
 
+    // TODO: maybe we move these up to schematic? since we have Graph now...
     static INTERWINGLE = {
         ISOLATED: 0,        // only explicit connections you've added
         CONFLUENCE: 1,      // shared parents

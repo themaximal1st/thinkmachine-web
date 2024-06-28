@@ -80,10 +80,10 @@ export function stringToColor(str, colors = Colors) {
     return colors[index];
 }
 
-export function verifyGraphData(nodes, links) {
-    const nodeIDs = new Set(nodes.keys());
+export function verifyGraphData(data) {
+    const nodeIDs = new Set(data.nodes.keys());
 
-    for (const link of links.values()) {
+    for (const link of data.links.values()) {
         if (!nodeIDs.has(link.source)) {
             throw `Missing source ${link.source}`;
         } else if (!nodeIDs.has(link.target)) {
@@ -205,4 +205,15 @@ export function getInputOptions(input = "", options = {}) {
     options.colors = options.colors || Colors;
 
     return { input, options };
+}
+
+export function uniqAdd(array, value) {
+    if (!array.includes(value)) {
+        array.push(value);
+    }
+}
+
+// return a unique array in same order
+export function uniq(arr) {
+    return [...new Set(arr)];
 }
