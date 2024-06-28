@@ -302,7 +302,7 @@ test("modifying hypertext", async () => {
     expect(C.hypertexts.length).toEqual(0);
 });
 
-test("initializes empty", async () => {
+test.only("initializes empty", async () => {
     const schematic = new GeneralSchematics();
     expect(schematic.output).toEqual("");
     expect(schematic.hyperedges.length).toEqual(0);

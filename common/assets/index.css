@@ -459,7 +459,7 @@ canvas {
     }
 }
 
-.node-panel-wrapper {
+/* .node-panel-wrapper {
     @apply pointer-events-none w-full max-w-[600px];
 }
 
@@ -468,5 +468,13 @@ canvas {
 
     textarea {
         @apply resize-none w-full bg-gray-900/20 p-2 px-4 h-8 overflow-hidden rounded-xl;
+    }
+} */
+
+.active-panel {
+    @apply bg-gray-100 dark:bg-gray-1000 text-black dark:text-white;
+
+    input {
+        @apply bg-gray-100 dark:bg-gray-1000 text-black dark:text-white w-full;
     }
 }

@@ -24,6 +24,8 @@ export default class NodePanel extends Component {
     }
 
     onChange(e) {
+        return;
+
         const target = e.target;
         if (target.tagName !== "TEXTAREA") return;
 
@@ -47,8 +49,6 @@ export default class NodePanel extends Component {
     }
 
     code() {
-        console.log("NODE", this.node.uuid);
-
         return (
             <div className="node-panel-wrapper">
                 <div
@@ -62,7 +62,7 @@ export default class NodePanel extends Component {
                             id={`hypertext-${this.node.uuid}-${idx}`}
                             data-index={idx}
                             onChange={() => ""}
-                            value={h.value}
+                            value={h.hypertext}
                         />
                     ))}
                 </div>

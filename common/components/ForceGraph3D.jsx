@@ -18,85 +18,6 @@ import { useCallback } from "react";
 import ActiveNode from "./active/ActiveNode";
 // import NodePanel from "./active/NodePanel";
 
-class NodePanel extends React.Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            hypertexts: [],
-            dataHash: null,
-        };
-    }
-
-    get node() {
-        return this.props.schematic.nodeByUUID(this.props.node.uuid);
-    }
-
-    componentDidMount() {
-        this.props.schematic.addEventListener((data) => {
-            this.update();
-        });
-    }
-
-    componentDidUpdate() {
-        console.log("NODE UPDATE");
-        this.update();
-    }
-
-    update() {
-        if (!this.node) return;
-
-        if (this.state.dataHash === this.props.schematic.hash) return;
-        this.setState({
-            dataHash: this.props.schematic.hash,
-            hypertexts: this.node.hypertexts,
-        });
-    }
-
-    onChange(e, idx) {
-        const hypertexts = this.state.hypertexts;
-        hypertexts[idx].value = e.target.value;
-        this.setState({ hypertexts });
-    }
-
-    componentWillUnmount() {
-        if (!this.node) return;
-        const wrapper = document.getElementById(`node-panel-wrapper-${this.node.uuid}`);
-        console.log("WILL UNMOUNT", this.node.uuid);
-        console.log(wrapper);
-    }
-
-    get distance() {
-        return this.props.distances[this.node.uuid] || Infinity;
-    }
-
-    render() {
-        if (!this.node) return null;
-        console.log("NODE", this.node.hypertexts);
-
-        return (
-            <div
-                id={`node-panel-${this.node.uuid}`}
-                className={classNames("node-panel-wrapper", {
-                    hidden: this.distance > 150 || this.node.hypertexts.length === 0,
-                })}>
-                <div
-                    style={{ transform: `scale(${100 / this.distance})` }}
-                    className="node-panel">
-                    {this.state.hypertexts.map((h, idx) => {
-                        return (
-                            <textarea
-                                onChange={(e) => this.onChange(e, idx)}
-                                key={`hypertext-${this.node.uuid}-${idx}`}
-                                value={h.value}></textarea>
-                        );
-                    })}
-                </div>
-            </div>
-        );
-    }
-}
-
 export default class ForceGraph3D extends React.Component {
     constructor(props) {
         super(props);
@@ -108,7 +29,7 @@ export default class ForceGraph3D extends React.Component {
             chats: new Map(),
             distances: {},
             isDragging: false,
-            dataHash: null,
+            hash: null,
         };
 
         this.handleKeyDown = this.handleKeyDown.bind(this);
@@ -127,20 +48,22 @@ export default class ForceGraph3D extends React.Component {
 
         window.addEventListener("keydown", this.handleKeyDown);
 
-        this.props.graphRef.current.controls().addEventListener("start", (e) => {
-            this.updateDistances(e);
-        });
+        // this.props.graphRef.current.controls().addEventListener("start", (e) => {
+        //     this.updateDistances(e);
+        // });
 
         // // this.props.graphRef.current.controls().addEventListener("end", (a, b, c) => {
         // //     console.log("END");
         // // });
 
-        this.props.graphRef.current.controls().addEventListener("change", () => {
-            this.updateDistances();
-        });
+        // this.props.graphRef.current.controls().addEventListener("change", () => {
+        //     this.updateDistances();
+        // });
     }
 
     updateDistances(e) {
+        return;
+
         if (!this.props) return;
         if (!this.props.graphRef) return;
         if (!this.props.graphRef.current) return;
@@ -171,6 +94,21 @@ export default class ForceGraph3D extends React.Component {
 
     componentWillUnmount() {
         window.removeEventListener("keydown", this.handleKeyDown);
+    }
+
+    componentDidUpdate(prevProps) {
+        if (this.props.schematic.hash !== this.state.hash) {
+            // console.log("🥸 UPDATER", this.props.schematic.hash, this.state.hash);
+            this.setState({ hash: this.props.schematic.hash });
+            // this.props.graphRef.current.refresh();
+        }
+
+        // if (
+        //     this.props.activeNodeUUID &&
+        //     prevProps.activeNodeUUID !== this.props.activeNodeUUID
+        // ) {
+        //     this.props.graphRef.current.refresh();
+        // }
     }
 
     handleKeyDown(e) {
@@ -257,25 +195,9 @@ export default class ForceGraph3D extends React.Component {
                     controlType={Settings.controlType}
                     nodeThreeObject={this.nodeThreeObject}
                     extraRenderers={[new CSS2DRenderer()]}
-                    onEngineTick={this.updateDistances}
+                    // onEngineTick={this.updateDistances}
                     {...this.props}
                 />
-                <div id="node-panels">
-                    {this.props.graphData.nodes.map((node) => {
-                        return (
-                            <div
-                                key={`node-panel-wrapper-${node.uuid}`}
-                                id={`node-panel-wrapper-${node.uuid}`}>
-                                <NodePanel
-                                    node={node}
-                                    schematic={this.props.schematic}
-                                    distances={this.state.distances}
-                                    key={`node-panel-${node.uuid}`}
-                                />
-                            </div>
-                        );
-                    })}
-                </div>
             </div>
         );
     }
@@ -348,7 +270,6 @@ export default class ForceGraph3D extends React.Component {
     }
 
     nodeThreeObject(node) {
-        console.log("🤘 NODE THREE OBJECT");
         // if (this.activeNodeUI && this.activeNodeUI.props.node.uuid === node.uuid) {
         //     this.activeNodeUI.unload();
         //     this.activeNodeUI = null;
@@ -364,22 +285,17 @@ export default class ForceGraph3D extends React.Component {
 
         const title = this.nodeThreeTitleObject(node);
 
-        // const div = document.createElement("div");
-        // div.innerHTML = "BOOM TOWN";
-        // div.className = "bg-red-500 text-white absolute top-0 left-0 p-4";
+        // console.log("GOOOOOOOOOOOOOOOD", this.props.activeNodeUUID);
+        // console.log("GOOOOOOOOOOOOOOOD", this.props.trackedActiveNodeUUID);
 
-        const div = document.getElementById(`node-panel-${node.uuid}`);
-        console.log("DIV", div);
-        if (!div) return title;
+        if (
+            !this.props.trackedActiveNodeUUID ||
+            this.props.trackedActiveNodeUUID !== node.uuid
+        ) {
+            return title;
+        }
 
-        return this.wrap(div, title);
-
-        // if (
-        //     !this.props.trackedActiveNodeUUID ||
-        //     this.props.trackedActiveNodeUUID !== node.uuid
-        // ) {
-        //     return title;
-        // }
+        return title;
 
         /*
         // console.log("NODE DISTANCE", this.state.distances[node.uuid]);
@@ -392,23 +308,21 @@ export default class ForceGraph3D extends React.Component {
             */
 
         // leaving react here...
-        /*
-        const nodePanel = new NodePanel({
-            ...this.state,
+        const nodePanel = new ActiveNode({
+            // ...this.state,
             ...this.props,
             node,
             title,
-            distance: this.state.distances[node.uuid],
+            // distance: this.state.distances[node.uuid],
             // context: this.nodeContext,
             // setMedia: this.setMedia.bind(this),
             // setExplain: this.setExplain.bind(this),
             // setChat: this.setChat.bind(this),
         });
 
-        this.nodePanels.set(node.uuid, nodePanel);
+        // this.nodePanels.set(node.uuid, nodePanel);
 
         return nodePanel.render();
-        */
 
         /*
         // this.activeNodeUI = new ActiveNode({

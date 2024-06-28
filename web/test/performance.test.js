@@ -103,11 +103,3 @@ integers -> rational numbers -> irrational numbers
 primes -> Fermat's Little Theorem -> Euler's Totient Function
 Riemann Hypothesis -> analytic number theory -> zeta function
 modular arithmetic -> congruences -> finite fields`
-
-
-
-
-// TODO: test performance of
-// - parsing
-// - export
-// - graphData

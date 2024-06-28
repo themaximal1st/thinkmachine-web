@@ -1,5 +1,5 @@
 import React from "react";
-import Cursor from "@lib/Cursor";
+// import Cursor from "@lib/Cursor";
 
 export default class WYSIWYG extends React.Component {
     constructor(props) {
@@ -7,29 +7,42 @@ export default class WYSIWYG extends React.Component {
         this.state = {
             level: 0,
             input: "",
-            dataHash: null,
+            hash: null,
         };
-        this.cursor = new Cursor("wysiwyg");
+        // this.cursor = new Cursor("wysiwyg");
     }
 
     componentDidMount() {
-        this.props.schematic.addEventListener((data) => {
-            this.update();
-        });
+        // this.props.schematic.addEventListener((data) => {
+        //     this.update();
+        // });
+        // this.update();
 
-        this.update();
+        this.setState({
+            input: this.props.schematic.output,
+            hash: this.props.schematic.hash,
+        });
     }
 
-    update() {
+    componentDidUpdate(prevProps, prevState) {
+        if (this.props.schematic.input !== this.state.input) {
+            console.log("😇 DID UPDATE");
+            this.setState({
+                input: this.props.schematic.output,
+                // hash: this.props.schematic.hash,
+            });
+        }
+    }
+
+    _update() {
         if (this.state.dataHash === this.props.schematic.hash) return;
         if (this.state.changed) {
             console.log("SKIP UPDATE");
             this.state.changed = false;
             return;
         }
-
         this.setState({
-            input: this.props.schematic.export(),
+            input: this.props.schematic.output,
             dataHash: this.props.schematic.hash,
         });
     }
@@ -45,9 +58,10 @@ export default class WYSIWYG extends React.Component {
     // }
 
     onChange(e) {
-        this.cursor.save();
+        console.log("CHANGE");
+        // this.cursor.save();
         this.setState({ input: e.target.value });
-        this.state.changed = true;
+        // this.state.changed = true;
         this.props.schematic.parse(e.target.value);
         // this.update();
     }

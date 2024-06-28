@@ -122,6 +122,11 @@ export default class Camera {
     }
 
     async zoomToNode(nodeUUID, delay = 0, timing = 800) {
+        // if (this.zoomingToNode) return;
+        this.zoomingToNode = nodeUUID;
+
+        console.log("ZOOM TO NODE");
+
         await utils.delay(delay);
 
         const camera = this.position;
@@ -129,6 +134,11 @@ export default class Camera {
 
         if (!node) {
             console.log("node not found");
+            return;
+        }
+
+        if (node.uuid !== this.zoomingToNode) {
+            console.log("BAILING!");
             return;
         }
 
@@ -169,12 +179,27 @@ export default class Camera {
             };
         }
 
+        if (node.uuid !== this.zoomingToNode) {
+            console.log("BAILING!");
+            return;
+        }
+
         // Update camera position and target
         this.graph.cameraPosition(
             newPosition, // new camera position
             { x: node.x, y: node.y, z: node.z }, // camera looks at the node
             timing // transition duration in milliseconds
         );
+
+        setTimeout(() => {
+            // this.zoomingToNode = false;
+
+            if (node.uuid !== this.zoomingToNode) {
+                console.log("BAILING!");
+                return;
+            }
+            this.zoomingToNode = null;
+        }, timing);
     }
 
     fixNodePosition(node, reset = true) {

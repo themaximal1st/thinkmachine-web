@@ -32,15 +32,19 @@ export default class Parser {
     walkBack() { return this.tree.walkBack(...arguments) }
     add() { return this.tree.add(...arguments) }
 
-    parse(input) {
+    parse(input = "") {
         this.tree.reset();
         this.tree.input = input;
 
-        if (this.tree.input === "") return this.tree;
-
-        const lines = input.split(/\r?\n/);
-        for (const index in lines) {
-            this.tree.parseLine(lines[index], index);
+        // splitting on empty string returns an array with one empty string..which isn't what we want
+        // and we want at least one parse event here...not totally deterministic...should fix
+        if (this.tree.input === "") {
+            this.tree.onUpdate({ event: "parse", data: input });
+        } else {
+            const lines = input.split(/\r?\n/);
+            for (const index in lines) {
+                this.tree.parseLine(lines[index], index);
+            }
         }
 
         return this.tree;

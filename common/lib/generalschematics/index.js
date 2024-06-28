@@ -1,4 +1,4 @@
-import { getInputOptions, verifyGraphData, addIndex } from './utils.js';
+import { getInputOptions, trackUUID } from './utils.js';
 import Parser from './Parser.js';
 import Graph from './Graph.js';
 // How much of Tree / GeneralSchematics should be the same thing?
@@ -13,6 +13,8 @@ export default class GeneralSchematics {
     static Header = Parser.Tree.Header;
     static INTERWINGLE = Parser.Tree.INTERWINGLE;
     static DEPTH = Parser.Tree.DEPTH;
+
+    static trackUUID = trackUUID;
 
     constructor() {
         const { input, options } = getInputOptions(...arguments);

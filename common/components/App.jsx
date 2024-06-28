@@ -42,19 +42,19 @@ export default class App extends React.Component {
         window.settings = this.settings;
         this.schematic = new GeneralSchematics({
             interwingle: Settings.interwingle,
-            onUpdate: this.onDataUpdate.bind(this),
+            listener: this.onSchematicUpdate.bind(this),
         });
 
         this.state = {
             isLoading: false,
             isChatModalOpen: false,
-            dataHash: null,
+            hash: null,
             filters: [],
             activeNodeUUID: null,
             graphData: { nodes: [], links: [] },
             dirty: false,
             panes: {
-                editor: true,
+                editor: false,
                 graph: true,
             },
         };
@@ -106,15 +106,15 @@ export default class App extends React.Component {
         return this.schematic.hyperedges.length === 0;
     }
 
-    async onDataUpdate(event) {
+    async onSchematicUpdate(event) {
         if (!this.state) return;
 
         if (this.state.isLoading) {
             return;
         }
 
-        if (this.schematic.hash !== this.state.dataHash) {
-            console.log("📀 DATA UPDATE HASH CHANGED", event.event);
+        if (this.schematic.hash !== this.state.hash) {
+            console.log("📀 DATA UPDATE HASH CHANGED", this.schematic.hash);
             // await this.asyncSetState({ dirty: true });
             await this.save();
         }
@@ -125,7 +125,7 @@ export default class App extends React.Component {
         await this.reset();
 
         setTimeout(() => {
-            this.setActiveNodeUUID(this.schematic.nodes[0].uuid);
+            this.setActiveNodeUUID(this.schematic.nodes[3].uuid);
         }, 1000);
     }
 
@@ -146,14 +146,14 @@ export default class App extends React.Component {
 
         await this.asyncSetState({
             graphData,
-            dataHash: this.schematic.hash,
+            hash: this.schematic.hash,
         });
 
         document.title = this.title;
     }
 
     async save() {
-        await this.settings.hypergraph(this.schematic.export()); // save hypergraph
+        await this.settings.hypergraph(this.schematic.output); // save hypergraph
         await this.reloadData();
     }
 
@@ -181,7 +181,7 @@ export default class App extends React.Component {
     async saveFile() {
         const name = `${this.title} ${new Date().toISOString()}`;
         this.schematic.debug();
-        utils.saveFile(this.schematic.export(), `${slugify(name)}.md`);
+        utils.saveFile(this.schematic.output, `${slugify(name)}.md`);
     }
 
     render() {
@@ -277,7 +277,7 @@ export default class App extends React.Component {
                 </div>
 
                 <button
-                    className="absolute top-0 right-0 bg-blue-500 text-white hidden"
+                    className="absolute top-0 right-0 bg-blue-500 text-white"
                     onClick={this.reloadData.bind(this)}>
                     Reload
                 </button>

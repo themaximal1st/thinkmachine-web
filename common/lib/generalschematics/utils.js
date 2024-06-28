@@ -126,13 +126,15 @@ export function sha256(str) {
 export function findReferenceUUID(data, uuid) {
     // prefer bridges if they exist
     for (const node of data.nodes) {
-        if (node.bridge && node.nodeUUIDs.has(uuid)) {
+        const nuuids = node.nodes.map(n => n.uuid);
+        if (node.bridge && nuuids.includes(uuid)) {
             return node;
         }
     }
 
     for (const node of data.nodes) {
-        if (node.nodeUUIDs.has(uuid)) {
+        const nuuids = node.nodes.map(n => n.uuid);
+        if (nuuids.includes(uuid)) {
             return node;
         }
     }

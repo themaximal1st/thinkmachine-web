@@ -56,20 +56,20 @@ export default class ForceGraph extends React.Component {
     componentDidUpdate(prevProps, prevState) {
         // difference between prevProps and this.props
         // console.log("😇 ForceGraph componentDidUpdate", this.props);
-
-        let delay = 100;
-        if (prevProps.trackedActiveNodeUUID !== this.props.trackedActiveNodeUUID) {
-            this.updateCamera(true, 100, prevProps.graphData);
-            delay = 400;
-        } else if (this.props.trackedActiveNodeUUID) {
-            delay = 400;
-        }
-
-        if (prevProps.graphData !== this.props.graphData) {
-            this.updateCamera(false, delay, prevProps.graphData).then(() => {
-                this.emitLinkParticles(prevProps.graphData);
-            });
-        }
+        // if (prevProps.trackedActiveNodeUUID !== this.props.trackedActiveNodeUUID) {
+        //     this.updateCamera(true, 400, prevProps.graphData).then(() => {
+        //         this.emitLinkParticles(prevProps.graphData);
+        //     });
+        // } else if (this.props.trackedActiveNodeUUID) {
+        //     this.updateCamera(true, 400, prevProps.graphData).then(() => {
+        //         // this.emitLinkParticles(prevProps.graphData);
+        //     });
+        // }
+        // if (prevProps.graphData !== this.props.graphData) {
+        //     this.updateCamera(false, delay, prevProps.graphData).then(() => {
+        //         this.emitLinkParticles(prevProps.graphData);
+        //     });
+        // }
     }
 
     setActiveMode(activeMode) {
@@ -166,6 +166,7 @@ export default class ForceGraph extends React.Component {
         }
 
         this.props.setActiveNodeUUID(node.uuid);
+        this.setState({ dirty: true });
     }
 
     handleResize() {
@@ -226,7 +227,7 @@ export default class ForceGraph extends React.Component {
         if (this.props.trackedActiveNodeUUID) {
             await this.camera.zoomToNode(this.props.trackedActiveNodeUUID, delay);
         } else {
-            await this.camera.stableZoom(shouldZoom, delay, oldData);
+            // await this.camera.stableZoom(shouldZoom, delay, oldData);
         }
     }
 }
