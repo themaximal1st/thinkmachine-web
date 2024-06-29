@@ -200,7 +200,7 @@ export default class Tree {
             input = arguments[0];
         }
 
-        if (Array.isArray(input)) { input = input.join(" ->  ") }
+        if (Array.isArray(input)) { input = input.join("-> ") }
 
         if (typeof input === "string") {
             const lastLine = this.lines[this.lines.length - 1];

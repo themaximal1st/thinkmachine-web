@@ -3,17 +3,20 @@ import { v4 as uuidv4 } from 'uuid';
 import Base from './Base';
 
 export default class Node extends Base {
-    constructor(symbol, hyperedge) {
+    constructor(input, hyperedge) {
         super();
+        this.input = input;
         this.uuid = uuidv4();
-        this.symbol = symbol;
         this.hyperedge = hyperedge;
         this.hypertext = new Hypertext(this);
         this.isNode = true;
     }
 
+    get symbol() { return this.input.trim() }
+    set symbol(symbol) { this.input = symbol }
     get name() { return this.constructor.name.toLowerCase() }
     get index() { return this.hyperedge.nodes.indexOf(this) }
+    get only() { return this.hyperedge.length === 1 }
     get id() { return this.hyperedge.nodeId(this.index) }
     get uid() { return this.hyperedge.uniqueNodeId(this.index) }
     get tree() { return this.hyperedge.tree }
@@ -21,7 +24,21 @@ export default class Node extends Base {
     get isFirst() { return this.index === 0 }
     get isLast() { return this.index === this.hyperedge.length - 1 }
     get isMiddle() { return !this.isFirst && !this.isLast }
-    get output() { return this.symbol }
+    get output() {
+        if (this.only) {
+            if (this.input !== this.input.trim()) return this.input.trim();
+            return this.input;
+        } else if (this.isFirst) {
+            if (this.input[this.input.length - 1] === " ") return this.input;
+            return `${this.symbol} `
+        } else if (this.isLast) {
+            if (this.input[0] === " ") return this.input;
+            return ` ${this.symbol}`
+        } else if (this.isMiddle) {
+            if (this.input[0] === " " && this.input[this.input.length - 1] === " ") return this.input;
+            return ` ${this.symbol} `
+        }
+    }
 
     equal(node) { return this.id === node.id }
     equals(symbol) { return this.symbol.toLowerCase() === symbol.toLowerCase(); }

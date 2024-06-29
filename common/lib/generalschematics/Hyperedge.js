@@ -51,8 +51,12 @@ export default class Hyperedge extends Line {
     }
 
     add(symbol) {
+        if (!symbol) return null;
+
         if (Array.isArray(symbol)) {
             return symbol.map(s => this.add(s));
+        } else if (typeof symbol === "string" && symbol.trim().length === 0) {
+            return null;
         }
 
         return this.insertAt(symbol, this.nodes.length);
@@ -120,7 +124,7 @@ export default class Hyperedge extends Line {
     }
 
     get output() {
-        return this.nodes.map(node => node.output).join(" -> ");
+        return this.nodes.map(node => node.output).join("->");
     }
 
     static matches(line) {
@@ -128,7 +132,7 @@ export default class Hyperedge extends Line {
     }
 
     static parse(line) {
-        return line.split("->").map(s => s.trim());
+        return line.split("->").map(s => s);
     }
 }
 

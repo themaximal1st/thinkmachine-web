@@ -33,12 +33,12 @@ export default class WYSIWYG extends React.Component {
         // console.log("OLD", this.state.hash);
 
         if (
-            this.props.schematic.hash !== this.state.hash
-            // this.props.schematic.input !== this.state.input
+            this.props.schematic.hash !== this.state.hash ||
+            this.props.schematic.input !== this.state.input
         ) {
-            console.log("😇 DID UPDATE");
+            // console.log("😇 DID UPDATE");
             this.setState({
-                input: this.props.schematic.output,
+                input: this.props.schematic.input,
                 hash: this.props.schematic.hash,
             });
         }
@@ -55,12 +55,12 @@ export default class WYSIWYG extends React.Component {
     render() {
         return (
             <div id="wysiwyg">
+                <div id="highlight">{this.state.input}</div>
                 <textarea
                     ref={this.state.ref}
                     value={this.state.input}
                     onChange={this.onChange.bind(this)}
                 />
-                <div id="highlight">{this.state.input}</div>
             </div>
         );
     }

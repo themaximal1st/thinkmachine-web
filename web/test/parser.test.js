@@ -114,6 +114,7 @@ test("modify node", async () => {
 
     const [A, B, C] = parser.nodes;
     A.symbol = "A1";
+
     expect(parser.output).toBe("A1 -> B -> C");
 });
 
@@ -454,8 +455,19 @@ test("consistent multi symbol node uuid regression", async () => {
     expect(A2.uuid).toBe(A4.uuid);
 });
 
+test("parse a single symbol", async () => {
+    const parser = new Parser("A ->");
+    expect(parser.hyperedges.length).toBe(1);
+    expect(parser.nodes.length).toBe(1);
+});
 
-// TODO: expect A -> length to be 1
+test("save symbol whitespace", async () => {
+    const parser = new Parser("A -> B ");
+    expect(parser.output).toBe("A -> B ");
+
+    parser.parse("A   ->   B    ")
+    expect(parser.output).toBe("A   ->   B    ");
+});
 
 
 // TODO: Need html mode...that is very lightly wrapped content divs

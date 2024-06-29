@@ -203,6 +203,8 @@ export default class ForceGraph3D extends React.Component {
     onChange(e, h) {
         console.log("ON CHANGE");
         h.hypertext = e.target.value;
+        // this.props.schematic.input = this.props.schematic.output;
+        this.props.schematic.parse(this.props.schematic.output);
     }
 
     render() {
