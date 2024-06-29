@@ -221,23 +221,27 @@ export default class ForceGraph3D extends React.Component {
                     <div
                         style={{ transform: `scale(${100 / distance})` }}
                         id="active-panel">
-                        <div>{Math.random()}</div>
-                        <div>{distance}</div>
-                        {this.props.activeNodeUUID}
-                        {hypertexts.map((h, idx) => (
-                            <input
-                                key={`hypertext-${h.uuid}-${idx}`}
-                                id={`hypertext-${h.uuid}-${idx}`}
-                                data-index={idx}
-                                onChange={(e) => this.onChange(e, h)}
-                                value={h.hypertext}
-                            />
-                        ))}
-                        <button
-                            className="pointer-events-auto"
-                            onClick={() => alert(`CLICKED ${this.props.activeNodeUUID}`)}>
-                            CLICK
-                        </button>
+                        <div id="active-panel-inner">
+                            <div>{Math.random()}</div>
+                            <div>{distance}</div>
+                            {this.props.activeNodeUUID}
+                            {hypertexts.map((h, idx) => (
+                                <input
+                                    key={`hypertext-${h.uuid}-${idx}`}
+                                    id={`hypertext-${h.uuid}-${idx}`}
+                                    data-index={idx}
+                                    onChange={(e) => this.onChange(e, h)}
+                                    value={h.hypertext}
+                                />
+                            ))}
+                            <button
+                                className="pointer-events-auto"
+                                onClick={() =>
+                                    alert(`CLICKED ${this.props.activeNodeUUID}`)
+                                }>
+                                CLICK
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>

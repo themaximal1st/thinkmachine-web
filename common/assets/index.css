@@ -473,11 +473,20 @@ canvas {
 
 #active-panel-wrapper {
     /* @apply w-full max-w-[600px] pointer-events-none; */
-    @apply w-full max-w-[600px] border-2 flex justify-center;
+    @apply w-full max-w-[600px];
 }
 
 #active-panel {
-    @apply bg-gray-100 dark:bg-gray-1000 text-black dark:text-white p-2 rounded-lg shadow-xl max-w-[100%] absolute;
+    @apply max-w-[100%] flex flex-col items-center;
+
+    input {
+        @apply bg-gray-100 dark:bg-gray-1000 text-black dark:text-white w-full pointer-events-auto;
+    }
+}
+
+#active-panel-inner {
+    @apply absolute;
+    @apply bg-gray-100 dark:bg-gray-1000 text-black dark:text-white p-2 rounded-lg shadow-xl absolute;
 
     input {
         @apply bg-gray-100 dark:bg-gray-1000 text-black dark:text-white w-full pointer-events-auto;
