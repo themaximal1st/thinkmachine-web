@@ -663,11 +663,13 @@ test("restore node positions with parse and interwingle change", () => {
 
 // 
 
-test.skip("single node edge", () => { // TODO: this is a bug with new markdown parser. can't tell a single symbol from a hyperedge from a hypertext
-    const schematic = new GeneralSchematics({ interwingle: GeneralSchematics.INTERWINGLE.ISOLATED });
-    schematic.add(["A"]);
-    const data = schematic.graphData();
-    expect(data.nodes.length).toBe(1);
+test.skip("missing node in interwingle regression", () => {
+    const schematic = new GeneralSchematics(`A -> B -> C\n1 -> 2 -> 3`);
+    let lastData = schematic.graphData();
+
+    schematic.parse(`A -> B -> C\n1 -> 2 -> 3\nA ->`);
+    let data = schematic.graphData(null, lastData);
+    console.log(data);
 });
 
 

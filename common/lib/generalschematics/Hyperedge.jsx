@@ -149,12 +149,16 @@ export default class Hyperedge extends Line {
     }
 
     get output() {
+        if (this.nodes.length === 1) {
+            return `${this.nodes[0].output} ->`;
+        }
+
         return this.nodes.map((node) => node.output).join("->");
     }
 
     get dom() {
         return (
-            <div className="hyperedge">
+            <div key={this.index} className="hyperedge">
                 {this.nodes.map((node, index) => {
                     return (
                         <React.Fragment key={index}>

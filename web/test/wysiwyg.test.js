@@ -22,6 +22,8 @@ test.only("duplicate hyperedge broken html regression", async () => {
 });
 
 
+// TODO: "1->2" doesn't look right ...this is why we need to parse on input!
+
 // TODO: html should work on input..not output..keeps it consistent...hrmmmm
 // TODO: html should output current node/hyperedge colors
 

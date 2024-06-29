@@ -152,6 +152,8 @@ export default class App extends React.Component {
 
         const graphData = this.schematic.graphData(this.filters, this.state.graphData);
 
+        console.log(graphData.notes);
+
         await this.asyncSetState({
             graphData,
             hash: this.schematic.hash,

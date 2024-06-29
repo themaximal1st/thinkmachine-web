@@ -19,7 +19,7 @@ export default class Line extends Base {
     }
 
     get dom() {
-        return <div>{this.line}</div>;
+        return <div key={this.index}>{this.line}</div>;
     }
 
     get str() {

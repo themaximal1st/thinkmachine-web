@@ -469,4 +469,11 @@ test("save symbol whitespace", async () => {
     expect(parser.output).toBe("A   ->   B    ");
 });
 
+test("single node edge", () => { // TODO: can fix this by adding a check for single node edge, "A ->"
+    const parser = new Parser();
+    parser.add(["A"]);
+    expect(parser.nodes.length).toBe(1);
+    expect(parser.output).toBe("A ->");
+});
+
 // TODO: send meta information to parser...so when events bubble up we know where they initiated from

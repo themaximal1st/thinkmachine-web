@@ -284,7 +284,12 @@ export default class Tree {
         }
 
         if (Array.isArray(input)) {
-            input = input.join("-> ");
+            if (input.length === 0) return;
+            if (input.length === 1) {
+                input = `${input[0]} ->`;
+            } else {
+                input = input.join(" -> ");
+            }
         }
 
         if (typeof input === "string") {

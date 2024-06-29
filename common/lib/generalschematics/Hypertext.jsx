@@ -28,10 +28,18 @@ export default class Hypertext extends Line {
         const owners = this.owners;
 
         if (owners.length === 0) {
-            return <div className="hypertext">{this.line}</div>;
+            return (
+                <div key={this.index} className="hypertext">
+                    {this.line}
+                </div>
+            );
         }
 
-        return <div className="hypertext">{this.symbolifiedLine}</div>;
+        return (
+            <div key={this.index} className="hypertext">
+                {this.symbolifiedLine}
+            </div>
+        );
     }
 
     get symbolifiedLine() {

@@ -98,7 +98,7 @@ test("remove node", async () => {
     expect(schematic.output).toEqual("A -> C");
 
     A.remove();
-    expect(schematic.output).toEqual("C");
+    expect(schematic.output).toEqual("C ->");
 });
 
 test("node UUID", async () => {
