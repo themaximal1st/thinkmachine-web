@@ -663,13 +663,14 @@ test("restore node positions with parse and interwingle change", () => {
 
 // 
 
-test.skip("missing node in interwingle regression", () => {
+test("missing node in interwingle regression", () => {
     const schematic = new GeneralSchematics(`A -> B -> C\n1 -> 2 -> 3`);
     let lastData = schematic.graphData();
-
+    expect(lastData.nodes[0].id).toBe("0:A");
     schematic.parse(`A -> B -> C\n1 -> 2 -> 3\nA ->`);
     let data = schematic.graphData(null, lastData);
-    console.log(data);
+    expect(data.nodes[0].id).toBe("0:A");
+    expect(data.nodes[6].id).toBe("2:A");
 });
 
 

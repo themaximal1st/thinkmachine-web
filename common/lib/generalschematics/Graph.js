@@ -33,8 +33,6 @@ export default class Graph {
 
         if (lastData) {
             data = restoreData(data, lastData);
-            // nodes = data.nodes;
-            // links = data.links;
         }
 
         if (this.schematic.isFusion) {

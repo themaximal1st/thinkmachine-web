@@ -101,7 +101,7 @@ export function restoreData(data, oldData) {
     const updates = new Map();
 
     for (const node of data.nodes.values()) {
-        const oldNode = uidIndex.get(node.uid) || uuidIndex.get(node.uuid) || idIndex.get(node.id);
+        const oldNode = uidIndex.get(node.uid) || idIndex.get(node.id);
         if (!oldNode) continue;
         updates.set(node.id, oldNode);
     }
@@ -112,9 +112,17 @@ export function restoreData(data, oldData) {
             for (const key of Object.keys(shadow)) {
                 oldNode[key] = shadow[key];
             }
+
+            oldNode["id"] = id;
         }
+
         data.nodes.set(id, oldNode);
     }
+
+    // for (const node of data.nodes.values()) {
+    //     console.log("NODE", node.id, node);
+    // }
+
 
     return data;
 }

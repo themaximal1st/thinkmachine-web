@@ -1,4 +1,4 @@
-import Line from './Line';
+import Line from "./Line";
 
 export default class EmptyLine extends Line {
     constructor() {
@@ -14,7 +14,11 @@ export default class EmptyLine extends Line {
     }
 
     get dom() {
-        return <div><br /></div>
+        return (
+            <div key={this.index}>
+                <br />
+            </div>
+        );
     }
 
     static matches(line) {
