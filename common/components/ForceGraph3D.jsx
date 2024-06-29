@@ -1,6 +1,7 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { CSS2DObject } from "three/addons/renderers/CSS2DRenderer.js";
 import classNames from "classnames";
+import ControlledInput from "./ControlledInput";
 // import * as Three from "three";
 
 import { CSS2DRenderer } from "three/addons/renderers/CSS2DRenderer.js";
@@ -96,22 +97,23 @@ export default class ForceGraph3D extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
-        if (this.props.schematic.nodes.length > 0) {
-            console.log("FIRST NODE", this.props.schematic.nodes[0].uuid);
-            console.log("FIRST GNODE", this.props.graphData.nodes[0].uuid);
-        }
+        // if (this.props.schematic.nodes.length > 0) {
+        //     console.log("FIRST NODE", this.props.schematic.nodes[0].uuid);
+        //     console.log("FIRST GNODE", this.props.graphData.nodes[0].uuid);
+        // }
 
         // if (this.props.schematic.edgehash !== this.state.edgehash) {
         //     this.setState({ edgehash: this.props.schematic.edgehash });
-        if (this.props.schematic.hash !== this.state.hash) {
-            // console.log("🥸 UPDATER", this.props.schematic.hash, this.state.hash);
-            this.setState({ hash: this.props.schematic.hash });
+        if (this.state.edgehash === null) {
+            console.log("🥸 UPDATER", this.props.schematic.edgehash, this.state.edgehash);
+            this.setState({ edgehash: this.props.schematic.edgehash });
 
             // this.props.graphRef.current.refresh();
         } else if (this.props.activeNodeUUID !== prevProps.activeNodeUUID) {
             // if (this.activeNodeUI) {
             //     this.activeNodeUI.render();
             // }
+            console.log("🥸 MY UPDATER");
             this.props.graphRef.current.refresh();
         }
 
@@ -242,7 +244,7 @@ export default class ForceGraph3D extends React.Component {
                             <div>{distance}</div>
                             {this.props.activeNodeUUID}
                             {hypertexts.map((h, idx) => (
-                                <input
+                                <ControlledInput
                                     key={`hypertext-${h.uuid}-${idx}`}
                                     id={`hypertext-${h.uuid}-${idx}`}
                                     data-index={idx}
