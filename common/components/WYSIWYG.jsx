@@ -25,7 +25,7 @@ export default class WYSIWYG extends React.Component {
         // this.update();
         this.setState({
             input: this.props.schematic.output,
-            html: this.props.schematic.html,
+            dom: this.props.schematic.dom,
             hash: this.props.schematic.hash,
         });
         // this.ldt = new TextareaDecorator(this.ref.current, this.parser);
@@ -42,7 +42,7 @@ export default class WYSIWYG extends React.Component {
             // console.log("😇 DID UPDATE");
             this.setState({
                 input: this.props.schematic.input,
-                html: this.props.schematic.html,
+                dom: this.props.schematic.dom,
                 hash: this.props.schematic.hash,
             });
         }
@@ -70,7 +70,7 @@ export default class WYSIWYG extends React.Component {
                     ref={this.highlightRef}
                     // dangerouslySetInnerHTML={{ __html: this.state.html }}
                 >
-                    {this.state.html}
+                    {this.state.dom}
                 </div>
                 <textarea
                     ref={this.state.ref}

@@ -31,24 +31,39 @@ export default class Hypertext extends Line {
             return <div className="hypertext">{this.line}</div>;
         }
 
-        return <div className="hypertext">{this.line}</div>;
+        return <div className="hypertext">{this.symbolifiedLine}</div>;
     }
 
-    get _html() {
-        if (this.owners.length > 0) {
-            let line = this.line;
-            for (const symbol of this.ownerSymbols) {
-                line = line.replace(
-                    this.regex(symbol),
-                    `<a href="#${symbol}" class="symbol">${symbol}</a>`
-                );
-            }
-            return `<div class="hypertext ${
-                this.owners.length > 0 ? " symbol" : ""
-            }">${line}</div>`;
-        } else {
-            return `<div class="hypertext">${this.line}</div>`;
-        }
+    get symbolifiedLine() {
+        let line = this.line;
+        const symbols = this.ownerSymbols;
+        let parts = [line]; // Start with the whole line as a single part
+
+        symbols.forEach((symbol) => {
+            parts = parts.flatMap((part) =>
+                typeof part === "string"
+                    ? part
+                          .split(this.regex(symbol))
+                          .flatMap((subPart, index, arr) =>
+                              index < arr.length - 1 ? [subPart, symbol] : [subPart]
+                          )
+                    : [part]
+            );
+        });
+
+        return (
+            <div className="hypertext symbol">
+                {parts.map((part, index) =>
+                    symbols.includes(part) ? (
+                        <a key={index} href={`#${part}`} className="symbol">
+                            {part}
+                        </a>
+                    ) : (
+                        part
+                    )
+                )}
+            </div>
+        );
     }
 
     //     // return `<h${this.level} class="${this.owners.length > 0 ? "symbol" : ""}">${this.line}</h${this.level}>`;
