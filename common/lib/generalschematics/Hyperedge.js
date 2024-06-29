@@ -127,6 +127,10 @@ export default class Hyperedge extends Line {
         return this.nodes.map(node => node.output).join("->");
     }
 
+    get html() {
+        return `<div class="hyperedge">${this.nodes.map(node => node.html).join("->")}</div>`;
+    }
+
     static matches(line) {
         return Hyperedge.ARROW.test(line);
     }

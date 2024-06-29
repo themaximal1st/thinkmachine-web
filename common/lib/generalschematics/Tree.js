@@ -68,6 +68,7 @@ export default class Tree {
     get text() { return this.lines.filter(line => !(line instanceof Hyperedge)).map(line => line.output).join("\n") }
     get length() { return this.lines.length }
     get output() { return this.lines.map(line => line.output).join("\n") }
+    get html() { return this.lines.map(line => line.html).join("") }
     get hyperedges() { return this.lines.filter(line => line instanceof Hyperedge) }
     get nodes() { return this.hyperedges.flatMap(edge => edge.nodes) }
     get symbols() { return this.hyperedges.flatMap(edge => edge.symbols) }

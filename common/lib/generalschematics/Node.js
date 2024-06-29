@@ -40,6 +40,10 @@ export default class Node extends Base {
         }
     }
 
+    get html() {
+        return `<span class="node">${this.output}</span>`;
+    }
+
     equal(node) { return this.id === node.id }
     equals(symbol) { return this.symbol.toLowerCase() === symbol.toLowerCase(); }
 

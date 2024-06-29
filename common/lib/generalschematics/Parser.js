@@ -20,6 +20,7 @@ export default class Parser {
     get text() { return this.tree.text }
     get input() { return this.tree.input }
     get output() { return this.tree.output }
+    get html() { return this.tree.html }
     get lines() { return this.tree.lines }
     get hypertexts() { return this.tree.hypertexts }
     get hyperedges() { return this.tree.hyperedges }

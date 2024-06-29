@@ -13,6 +13,10 @@ export default class EmptyLine extends Line {
         return `${this.index}:empty`;
     }
 
+    get html() {
+        return `<div><br /></div>`;
+    }
+
     static matches(line) {
         return line.trim() === "";
     }

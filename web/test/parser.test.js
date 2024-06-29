@@ -469,5 +469,16 @@ test("save symbol whitespace", async () => {
     expect(parser.output).toBe("A   ->   B    ");
 });
 
+test("simple html", async () => {
+    const parser = new Parser("Hello World");
+    expect(parser.html).toBe("Hello World");
+});
+
+test.only("hyperlinked symbols", async () => {
+    const parser = new Parser("A -> B -> C");
+    expect(parser.html).toBe(`<div class="hyperedge"><span class="node">A </span>-><span class="node"> B </span>-><span class="node"> C</span></div>`);
+});
+
 
 // TODO: Need html mode...that is very lightly wrapped content divs
+// TODO: send meta information to parser...so when events bubble up we know where they initiated from

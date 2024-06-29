@@ -447,14 +447,18 @@ canvas {
     @apply w-full h-full;
 
     textarea {
-        @apply w-full h-full p-8 text-xl inline-block bg-gray-1000/50 outline-none resize-none text-blue-500 caret-blue-500 border-2 border-blue-500;
+        @apply w-full h-full p-8 text-xl inline-block bg-gray-1000/50 outline-none resize-none text-gray-500 caret-white;
     }
 
     #highlight {
         /* TODO BODY OVERFLOW BUG */
         /* @apply hidden; */
-        @apply text-white w-full h-full p-8 text-xl inline-block bg-transparent outline-none resize-none border-red-500 border-2;
-        @apply absolute top-0 left-0 w-full h-full pointer-events-none whitespace-pre-wrap;
+        @apply text-white w-full h-full p-8 text-xl inline-block bg-transparent outline-none resize-none;
+        @apply absolute top-0 left-0 w-full h-full pointer-events-none whitespace-pre-wrap flex flex-col;
+
+        .hyperedge {
+            @apply text-blue-500;
+        }
     }
 }
 
