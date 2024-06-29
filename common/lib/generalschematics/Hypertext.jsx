@@ -34,7 +34,7 @@ export default class Hypertext extends Line {
         return <div className="hypertext">{this.line}</div>;
     }
 
-    get html() {
+    get _html() {
         if (this.owners.length > 0) {
             let line = this.line;
             for (const symbol of this.ownerSymbols) {

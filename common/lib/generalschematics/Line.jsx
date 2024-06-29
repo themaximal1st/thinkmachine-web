@@ -22,10 +22,6 @@ export default class Line extends Base {
         return <div>{this.line}</div>;
     }
 
-    // get html() {
-    //     return `<div>${this.line}</div>`;
-    // }
-
     get str() {
         return `${this.index}:${this.name} [${this.uuid}]\n    ${this.line}`;
     }
