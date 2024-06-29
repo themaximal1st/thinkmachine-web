@@ -125,6 +125,13 @@ export default class App extends React.Component {
         Client.setup();
         await this.reset();
 
+        window.addEventListener("hashchange", () => {
+            const node = this.schematic.nodes.find(
+                (n) => n.symbol === window.location.hash.slice(1)
+            );
+            this.setActiveNodeUUID(node.uuid);
+        });
+
         // setTimeout(() => {
         //     this.setActiveNodeUUID(this.schematic.nodes[3].uuid);
         // }, 1000);
@@ -287,7 +294,7 @@ export default class App extends React.Component {
                 </div>
 
                 <button
-                    className="absolute top-0 right-0 bg-blue-500 text-white"
+                    className="absolute top-0 right-0 bg-blue-500 text-white hidden"
                     onClick={this.reloadData.bind(this)}>
                     Reload
                 </button>

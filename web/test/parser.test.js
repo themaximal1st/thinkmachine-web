@@ -476,9 +476,11 @@ test("simple html", async () => {
 
 test.only("hyperlinked symbols", async () => {
     const parser = new Parser("A -> B -> C");
-    expect(parser.html).toBe(`<div class="hyperedge"><span class="node">A </span>-><span class="node"> B </span>-><span class="node"> C</span></div>`);
+    expect(parser.html).toBe(`<div class="hyperedge"><a class="node">A </span>-><span class="node"> B </span>-><span class="node"> C</span></div>`);
 });
 
+// TODO: html should work on input..not output..keeps it consistent
+// TODO: html should output current node/hyperedge colors
 
 // TODO: Need html mode...that is very lightly wrapped content divs
 // TODO: send meta information to parser...so when events bubble up we know where they initiated from

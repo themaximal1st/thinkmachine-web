@@ -11,6 +11,12 @@ export default class Header extends Line {
     get value() { return this.header }
     get header() { return this.line.replace(/#/g, "").trim() }
     set header(value) { this.line = `${"#".repeat(this.level)} ${value}` }
+    get html() {
+        if (this.owners.length > 0) {
+            return `<h${this.level} class="symbol"><a href="#${this.header}">${this.line}</a></h${this.level}>`;
+        }
+        return `<h${this.level}>${this.line}</h${this.level}>`;
+    }
     get str() { return `${this.index}:${this.name} [${this.uuid}]\n    ${this.level}:${this.header}` }
     static matches(line) { return line.startsWith("#") }
     get children() {

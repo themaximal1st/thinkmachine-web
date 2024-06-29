@@ -128,7 +128,7 @@ export default class Hyperedge extends Line {
     }
 
     get html() {
-        return `<div class="hyperedge">${this.nodes.map(node => node.html).join("->")}</div>`;
+        return `<div class="hyperedge">${this.nodes.map(node => node.html).join("-&gt;")}</div>`;
     }
 
     static matches(line) {

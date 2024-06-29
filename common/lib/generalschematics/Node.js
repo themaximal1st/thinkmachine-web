@@ -41,7 +41,7 @@ export default class Node extends Base {
     }
 
     get html() {
-        return `<span class="node">${this.output}</span>`;
+        return `<a href="#${this.symbol}" class="node">${this.output}</a>`;
     }
 
     equal(node) { return this.id === node.id }

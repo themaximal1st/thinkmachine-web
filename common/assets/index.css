@@ -453,11 +453,31 @@ canvas {
     #highlight {
         /* TODO BODY OVERFLOW BUG */
         /* @apply hidden; */
-        @apply text-white w-full h-full p-8 text-xl inline-block bg-transparent outline-none resize-none;
-        @apply absolute top-0 left-0 w-full h-full pointer-events-none whitespace-pre-wrap flex flex-col;
+        @apply text-white w-full h-full p-8 text-xl inline-block bg-transparent outline-none resize-none overflow-hidden;
+        @apply absolute bottom-0 top-0 left-0 w-full h-full pointer-events-none whitespace-pre-wrap flex flex-col;
 
         .hyperedge {
-            @apply text-blue-500;
+            @apply text-blue-300;
+
+            .node {
+                @apply text-blue-500 pointer-events-auto;
+            }
+        }
+
+        .hypertext > a.symbol {
+            /* @apply text-white; */
+            @apply text-blue-500 pointer-events-auto;
+        }
+
+        h1.symbol,
+        h2.symbol,
+        h3.symbol,
+        h4.symbol,
+        h5.symbol,
+        h6.symbol {
+            a {
+                @apply text-blue-500 pointer-events-auto;
+            }
         }
     }
 }
@@ -483,13 +503,13 @@ canvas {
     @apply max-w-[100%] flex flex-col items-center;
 
     input {
-        @apply bg-gray-100 dark:bg-gray-1000 text-black dark:text-white w-full pointer-events-auto;
+        @apply bg-gray-100 dark:bg-gray-1000 text-black dark:text-white w-full pointer-events-auto outline-none;
     }
 }
 
 #active-panel-inner {
     @apply absolute;
-    @apply bg-gray-100 dark:bg-gray-1000 text-black dark:text-white p-2 rounded-lg shadow-xl absolute;
+    @apply bg-gray-100 dark:bg-gray-1000 text-black dark:text-white p-2 rounded-lg shadow-xl absolute w-full;
 
     input {
         @apply bg-gray-100 dark:bg-gray-1000 text-black dark:text-white w-full pointer-events-auto;

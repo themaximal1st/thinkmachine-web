@@ -6,6 +6,8 @@ export default class WYSIWYG extends React.Component {
     constructor(props) {
         super(props);
 
+        this.highlightRef = React.createRef();
+
         this.state = {
             ref: React.createRef(),
             level: 0,
@@ -54,16 +56,24 @@ export default class WYSIWYG extends React.Component {
         // this.update();
     }
 
+    onScroll(e) {
+        // console.log("ON SCROLL", e.target.scrollTop);
+        this.highlightRef.current.scrollTop = this.state.ref.current.scrollTop;
+    }
+
     render() {
+        console.log("RENDER WYSIWYG");
         return (
             <div id="wysiwyg">
                 <div
                     id="highlight"
+                    ref={this.highlightRef}
                     dangerouslySetInnerHTML={{ __html: this.state.html }}
                 />
                 <textarea
                     ref={this.state.ref}
                     value={this.state.input}
+                    onScroll={this.onScroll.bind(this)}
                     onChange={this.onChange.bind(this)}
                 />
             </div>

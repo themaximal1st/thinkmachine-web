@@ -241,10 +241,14 @@ export default class ForceGraph3D extends React.Component {
                     <div
                         style={{ transform: `scale(${100 / distance})` }}
                         id="active-panel">
-                        <div id="active-panel-inner">
-                            <div>{Math.random()}</div>
+                        <div
+                            className={classNames({
+                                hidden: hypertexts.length === 0 || distance > 500,
+                            })}
+                            id="active-panel-inner">
+                            {/* <div>{Math.random()}</div>
                             <div>{distance}</div>
-                            {this.props.activeNodeUUID}
+                            {this.props.activeNodeUUID} */}
                             {hypertexts.map((h, idx) => (
                                 <ControlledInput
                                     key={`hypertext-${h.uuid}-${idx}`}
@@ -254,13 +258,13 @@ export default class ForceGraph3D extends React.Component {
                                     value={h.hypertext}
                                 />
                             ))}
-                            <button
+                            {/* <button
                                 className="pointer-events-auto"
                                 onClick={() =>
                                     alert(`CLICKED ${this.props.activeNodeUUID}`)
                                 }>
                                 CLICK
-                            </button>
+                            </button> */}
                         </div>
                     </div>
                 </div>

@@ -12,10 +12,22 @@ export default class Hypertext extends Line {
         this.line = value;
         this.tree.onUpdate({ event: "hypertext.update", data: this });
     }
-    matches(symbol) {
-        const token = new RegExp(`\\b${symbol}\\b`, "g");
-        return token.test(this.hypertext);
+
+    regex(symbol) { return new RegExp(`\\b${symbol}\\b`, "g") }
+    matches(symbol) { return this.regex(symbol).test(this.hypertext) }
+
+    get html() {
+        let line = this.line;
+        for (const symbol of this.ownerSymbols) {
+            console.log("SYMBOL", symbol);
+            line = line.replace(this.regex(symbol), `<a href="#${symbol}" class="symbol">${symbol}</a>`);
+        }
+        return `<div class="hypertext ${this.owners.length > 0 ? " symbol" : ""}">${line}</div>`;
     }
+
+    //     // return `<h${this.level} class="${this.owners.length > 0 ? "symbol" : ""}">${this.line}</h${this.level}>`;
+    //     return `<div class="hypertext ${this.owners.length > 0 ? " symbol" : ""}>${this.line}</div>`
+    // }
 
     get header() {
         let curr = this, breaks = 0;
