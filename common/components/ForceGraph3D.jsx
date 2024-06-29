@@ -96,9 +96,16 @@ export default class ForceGraph3D extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
-        if (this.props.schematic.edgehash !== this.state.edgehash) {
+        if (this.props.schematic.nodes.length > 0) {
+            console.log("FIRST NODE", this.props.schematic.nodes[0].uuid);
+            console.log("FIRST GNODE", this.props.graphData.nodes[0].uuid);
+        }
+
+        // if (this.props.schematic.edgehash !== this.state.edgehash) {
+        //     this.setState({ edgehash: this.props.schematic.edgehash });
+        if (this.props.schematic.hash !== this.state.hash) {
             // console.log("🥸 UPDATER", this.props.schematic.hash, this.state.hash);
-            this.setState({ edgehash: this.props.schematic.edgehash });
+            this.setState({ hash: this.props.schematic.hash });
 
             // this.props.graphRef.current.refresh();
         } else if (this.props.activeNodeUUID !== prevProps.activeNodeUUID) {
@@ -197,15 +204,24 @@ export default class ForceGraph3D extends React.Component {
     }
 
     render() {
-        // console.log("🎄 FORCE GRAPH 3D RENDER");
         let hypertexts = [];
-        if (this.props.activeNodeUUID) {
-            const node = this.props.schematic.nodeByUUID(this.props.activeNodeUUID);
+        if (this.props.trackedActiveNodeUUID) {
+            // console.log("ACTIVE NODE UUID", this.props.trackedActiveNodeUUID);
+            // this.props.schematic.debug();
+
+            const node = this.props.schematic.nodeByUUID(
+                this.props.trackedActiveNodeUUID
+            );
+            // console.log("NODE", node);
+            // console.log("GRAPH DATA", this.props.graphData.nodes);
+            // this.props.schematic.debug();
+
             if (node) {
                 hypertexts = node.hypertexts || [];
             }
         }
         const distance = this.state.distances[this.props.activeNodeUUID] || Infinity;
+        console.log("🎄 FORCE GRAPH 3D RENDER", hypertexts.length);
 
         return (
             <div>

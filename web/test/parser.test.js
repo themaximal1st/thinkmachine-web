@@ -425,3 +425,37 @@ test("hashes", async () => {
     expect(parser.edgehash).toBe(edgehash);
     expect(parser.texthash).not.toBe(texthash)
 });
+
+test("consistent node uuid regression", async () => {
+    const parser = new Parser("A -> ");
+    const A1 = parser.nodes[0];
+    parser.parse("A -> B");
+    const A2 = parser.nodes[0];
+    expect(A1.uuid).toBe(A2.uuid);
+
+    parser.parse("A -> B -> C");
+    const A3 = parser.nodes[0];
+    expect(A2.uuid).toBe(A3.uuid);
+
+});
+
+test("consistent multi symbol node uuid regression", async () => {
+    const parser = new Parser("A -> B -> C\nA -> 1 -> 2");
+    const A1 = parser.nodes[0];
+    const A2 = parser.nodes[3];
+    expect(A1.uuid).not.toBe(A2.uuid);
+
+    parser.parse("A -> B -> C \nA -> 1 -> 2 ");
+    const A3 = parser.nodes[0];
+    const A4 = parser.nodes[3];
+    expect(A3.uuid).not.toBe(A4.uuid);
+
+    expect(A1.uuid).toBe(A3.uuid);
+    expect(A2.uuid).toBe(A4.uuid);
+});
+
+
+// TODO: expect A -> length to be 1
+
+
+// TODO: Need html mode...that is very lightly wrapped content divs

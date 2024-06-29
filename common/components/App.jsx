@@ -55,7 +55,7 @@ export default class App extends React.Component {
             graphData: { nodes: [], links: [] },
             dirty: false,
             panes: {
-                editor: false,
+                editor: true,
                 graph: true,
             },
         };
@@ -125,9 +125,9 @@ export default class App extends React.Component {
         Client.setup();
         await this.reset();
 
-        setTimeout(() => {
-            this.setActiveNodeUUID(this.schematic.nodes[3].uuid);
-        }, 1000);
+        // setTimeout(() => {
+        //     this.setActiveNodeUUID(this.schematic.nodes[3].uuid);
+        // }, 1000);
     }
 
     async reset() {

@@ -1,10 +1,4 @@
-import { v4 as uuidv4 } from 'uuid';
-
 export default class Base {
-
-    constructor() {
-        this.uuid = uuidv4();
-    }
 
     get name() {
         return this.constructor.name.toLowerCase();

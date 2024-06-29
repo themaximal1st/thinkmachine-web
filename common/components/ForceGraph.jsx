@@ -166,6 +166,8 @@ export default class ForceGraph extends React.Component {
             return;
         }
 
+        console.log("CLICKED NODE", node.uuid);
+
         this.props.setActiveNodeUUID(node.uuid);
         this.setState({ dirty: true });
     }

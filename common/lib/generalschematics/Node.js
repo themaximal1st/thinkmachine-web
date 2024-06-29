@@ -1,12 +1,15 @@
+import { v4 as uuidv4 } from 'uuid';
+
 import Base from './Base';
 
 export default class Node extends Base {
     constructor(symbol, hyperedge) {
-        super(...arguments);
-
+        super();
+        this.uuid = uuidv4();
         this.symbol = symbol;
         this.hyperedge = hyperedge;
         this.hypertext = new Hypertext(this);
+        this.isNode = true;
     }
 
     get name() { return this.constructor.name.toLowerCase() }

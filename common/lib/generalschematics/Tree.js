@@ -45,6 +45,7 @@ export default class Tree {
 
         this.lines = [];
         this.lastLines = [];
+        this.uuids = {};
 
         this.hypertexts = new Hypertexts(this);
         this.headers = new Headers(this);
@@ -120,6 +121,13 @@ export default class Tree {
                 const lineType = new LineType(line, this)
 
                 this.lines.splice(index, 0, lineType);
+
+                if (lineType.isHyperedge) {
+                    for (const node of lineType.nodes) {
+                        node.uuid = this.trackUUID(node);
+                    }
+                }
+
                 this.onUpdate({ event: "parse.line", name: lineType.name, data: lineType });
 
                 return lineType;
@@ -151,8 +159,34 @@ export default class Tree {
     }
 
     reset() {
+        this.uuids = { uid: new Map(), symbol: new Map(), used: new Map() };
+
+        for (const node of this.nodes) {
+            this.uuids.uid.set(node.uid, node.uuid);
+            this.uuids.symbol.set(node.symbol, node.uuid);
+        }
+
         this.lastLines = this.lines;
         this.lines = [];
+    }
+
+    trackUUID(node) {
+        let uuid = this.uuids.uid.get(node.uid);
+        if (uuid && !this.uuids.used.has(uuid)) {
+            this.uuids.used.set(uuid, node);
+            this.uuids.uid.delete(node.uid);
+            return uuid;
+        }
+
+        uuid = this.uuids.symbol.get(node.symbol);
+        if (uuid && !this.uuids.used.has(uuid)) {
+            this.uuids.used.set(uuid, node);
+            this.uuids.symbol.delete(node.symbol);
+            return uuid;
+        }
+
+
+        return node.uuid;
     }
 
     add() {

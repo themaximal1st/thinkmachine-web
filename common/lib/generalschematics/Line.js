@@ -1,8 +1,11 @@
+import { v4 as uuidv4 } from 'uuid';
+
 import Base from './Base';
 
 export default class Line extends Base {
     constructor(line, tree) {
-        super(...arguments);
+        super();
+        this.uuid = uuidv4();
         this.line = line;
         this.tree = tree;
     }

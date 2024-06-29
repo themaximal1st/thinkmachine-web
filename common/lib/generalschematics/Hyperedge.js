@@ -9,6 +9,7 @@ export default class Hyperedge extends Line {
         super(...arguments);
         this.nodes = [];
         this.add(Hyperedge.parse(this.line));
+        this.isHyperedge = true;
     }
 
     get id() {
