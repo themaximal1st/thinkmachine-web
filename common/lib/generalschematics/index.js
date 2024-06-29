@@ -35,6 +35,7 @@ export default class GeneralSchematics {
     get hash() { return this.tree.hash }
     get input() { return this.tree.input }
     get output() { return this.tree.output }
+    get dom() { return this.tree.dom }
     get html() { return this.tree.html }
     get lines() { return this.tree.lines }
     get hypertexts() { return this.tree.hypertexts }

@@ -471,15 +471,21 @@ test("save symbol whitespace", async () => {
 
 test("simple html", async () => {
     const parser = new Parser("Hello World");
-    expect(parser.html).toBe("Hello World");
+    expect(parser.html).toBe(`<div class="hypertext">Hello World</div>`);
 });
 
-test.only("hyperlinked symbols", async () => {
+test("hyperlinked symbols", async () => {
     const parser = new Parser("A -> B -> C");
-    expect(parser.html).toBe(`<div class="hyperedge"><a class="node">A </span>-><span class="node"> B </span>-><span class="node"> C</span></div>`);
+    const uuids = parser.nodes.map(node => node.uuid);
+    expect(parser.html).toBe(`<div class="hyperedge"><a href="#${uuids[0]}" class="node">A </a>-&gt;<a href="#${uuids[1]}" class="node"> B </a>-&gt;<a href="#${uuids[2]}" class="node"> C</a></div>`);
 });
 
-// TODO: html should work on input..not output..keeps it consistent
+// test.only("hyperlinked symbols", async () => {
+//     const parser = new Parser("A -> B -> C");
+//     expect(parser.html).toBe(`<div class="hyperedge"><a class="node">A </span>-><span class="node"> B </span>-><span class="node"> C</span></div>`);
+// });
+
+// TODO: html should work on input..not output..keeps it consistent...hrmmmm
 // TODO: html should output current node/hyperedge colors
 
 // TODO: Need html mode...that is very lightly wrapped content divs

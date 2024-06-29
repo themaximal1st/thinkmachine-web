@@ -1,6 +1,6 @@
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 
-import Base from './Base';
+import Base from "./Base";
 
 export default class Node extends Base {
     constructor(input, hyperedge) {
@@ -12,40 +12,77 @@ export default class Node extends Base {
         this.isNode = true;
     }
 
-    get symbol() { return this.input.trim() }
-    set symbol(symbol) { this.input = symbol }
-    get name() { return this.constructor.name.toLowerCase() }
-    get index() { return this.hyperedge.nodes.indexOf(this) }
-    get only() { return this.hyperedge.length === 1 }
-    get id() { return this.hyperedge.nodeId(this.index) }
-    get uid() { return this.hyperedge.uniqueNodeId(this.index) }
-    get tree() { return this.hyperedge.tree }
-    get hypertexts() { return this.hypertext.all }
-    get isFirst() { return this.index === 0 }
-    get isLast() { return this.index === this.hyperedge.length - 1 }
-    get isMiddle() { return !this.isFirst && !this.isLast }
+    get symbol() {
+        return this.input.trim();
+    }
+    set symbol(symbol) {
+        this.input = symbol;
+    }
+    get name() {
+        return this.constructor.name.toLowerCase();
+    }
+    get index() {
+        return this.hyperedge.nodes.indexOf(this);
+    }
+    get only() {
+        return this.hyperedge.length === 1;
+    }
+    get id() {
+        return this.hyperedge.nodeId(this.index);
+    }
+    get uid() {
+        return this.hyperedge.uniqueNodeId(this.index);
+    }
+    get tree() {
+        return this.hyperedge.tree;
+    }
+    get hypertexts() {
+        return this.hypertext.all;
+    }
+    get isFirst() {
+        return this.index === 0;
+    }
+    get isLast() {
+        return this.index === this.hyperedge.length - 1;
+    }
+    get isMiddle() {
+        return !this.isFirst && !this.isLast;
+    }
     get output() {
         if (this.only) {
             if (this.input !== this.input.trim()) return this.input.trim();
             return this.input;
         } else if (this.isFirst) {
             if (this.input[this.input.length - 1] === " ") return this.input;
-            return `${this.symbol} `
+            return `${this.symbol} `;
         } else if (this.isLast) {
             if (this.input[0] === " ") return this.input;
-            return ` ${this.symbol}`
+            return ` ${this.symbol}`;
         } else if (this.isMiddle) {
-            if (this.input[0] === " " && this.input[this.input.length - 1] === " ") return this.input;
-            return ` ${this.symbol} `
+            if (this.input[0] === " " && this.input[this.input.length - 1] === " ")
+                return this.input;
+            return ` ${this.symbol} `;
         }
     }
 
-    get html() {
-        return `<a href="#${this.symbol}" class="node">${this.output}</a>`;
+    get dom() {
+        return (
+            <a href={`#${this.uuid}`} className="node" key={`node-${this.uuid}`}>
+                {this.output}
+            </a>
+        );
     }
 
-    equal(node) { return this.id === node.id }
-    equals(symbol) { return this.symbol.toLowerCase() === symbol.toLowerCase(); }
+    // get html() {
+    //     return `<a href="#${this.symbol}" class="node">${this.output}</a>`;
+    // }
+
+    equal(node) {
+        return this.id === node.id;
+    }
+    equals(symbol) {
+        return this.symbol.toLowerCase() === symbol.toLowerCase();
+    }
 
     rename(symbol) {
         this.symbol = symbol;
@@ -53,8 +90,12 @@ export default class Node extends Base {
         return this.id;
     }
 
-    add(input) { this.hyperedge.insertAt(input, this.index + 1) }
-    insert(input) { this.hyperedge.insertAt(input, this.index) }
+    add(input) {
+        this.hyperedge.insertAt(input, this.index + 1);
+    }
+    insert(input) {
+        this.hyperedge.insertAt(input, this.index);
+    }
     remove() {
         this.hyperedge.removeAt(this.index);
 
@@ -86,7 +127,9 @@ export default class Node extends Base {
             if (source === this.id) {
                 if (link.bridge) {
                     for (const node of link.nodes) {
-                        if (node !== this) { context.next.push(node) }
+                        if (node !== this) {
+                            context.next.push(node);
+                        }
                     }
                 } else {
                     context.next.push(this.tree.nodeByID(target));
@@ -94,7 +137,9 @@ export default class Node extends Base {
             } else if (target === this.id) {
                 if (link.bridge) {
                     for (const node of link.nodes) {
-                        if (node !== this) { context.prev.push(node) }
+                        if (node !== this) {
+                            context.prev.push(node);
+                        }
                     }
                 } else {
                     context.prev.push(this.tree.nodeByID(source));
@@ -111,7 +156,6 @@ export default class Node extends Base {
 
         return context;
     }
-
 
     // updateIndexes(nodes) {
     //     const node = this.hypergraph.masqueradeNode(this);
@@ -149,7 +193,9 @@ class Hypertext {
         this.node = node;
     }
 
-    get tree() { return this.node.tree }
+    get tree() {
+        return this.node.tree;
+    }
 
     add(input) {
         return this.tree.hypertexts.add(this.node.symbol, input);
@@ -159,8 +205,6 @@ class Hypertext {
         return this.tree.hypertexts.get(this.node.symbol);
     }
 }
-
-
 
 /*
 import { v4 as uuidv4 } from 'uuid';

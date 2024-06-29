@@ -68,8 +68,10 @@ export default class WYSIWYG extends React.Component {
                 <div
                     id="highlight"
                     ref={this.highlightRef}
-                    dangerouslySetInnerHTML={{ __html: this.state.html }}
-                />
+                    // dangerouslySetInnerHTML={{ __html: this.state.html }}
+                >
+                    {this.state.html}
+                </div>
                 <textarea
                     ref={this.state.ref}
                     value={this.state.input}

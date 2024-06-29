@@ -1,28 +1,54 @@
-import Line from './Line';
+import Line from "./Line";
 
 export default class Hypertext extends Line {
     constructor() {
         super(...arguments);
     }
 
-    get isHypertext() { return true }
+    get isHypertext() {
+        return true;
+    }
 
-    get hypertext() { return this.line }
+    get hypertext() {
+        return this.line;
+    }
     set hypertext(value) {
         this.line = value;
         this.tree.onUpdate({ event: "hypertext.update", data: this });
     }
 
-    regex(symbol) { return new RegExp(`\\b${symbol}\\b`, "g") }
-    matches(symbol) { return this.regex(symbol).test(this.hypertext) }
+    regex(symbol) {
+        return new RegExp(`\\b${symbol}\\b`, "g");
+    }
+    matches(symbol) {
+        return this.regex(symbol).test(this.hypertext);
+    }
+
+    get dom() {
+        const owners = this.owners;
+
+        if (owners.length === 0) {
+            return <div className="hypertext">{this.line}</div>;
+        }
+
+        return <div className="hypertext">{this.line}</div>;
+    }
 
     get html() {
-        let line = this.line;
-        for (const symbol of this.ownerSymbols) {
-            console.log("SYMBOL", symbol);
-            line = line.replace(this.regex(symbol), `<a href="#${symbol}" class="symbol">${symbol}</a>`);
+        if (this.owners.length > 0) {
+            let line = this.line;
+            for (const symbol of this.ownerSymbols) {
+                line = line.replace(
+                    this.regex(symbol),
+                    `<a href="#${symbol}" class="symbol">${symbol}</a>`
+                );
+            }
+            return `<div class="hypertext ${
+                this.owners.length > 0 ? " symbol" : ""
+            }">${line}</div>`;
+        } else {
+            return `<div class="hypertext">${this.line}</div>`;
         }
-        return `<div class="hypertext ${this.owners.length > 0 ? " symbol" : ""}">${line}</div>`;
     }
 
     //     // return `<h${this.level} class="${this.owners.length > 0 ? "symbol" : ""}">${this.line}</h${this.level}>`;
@@ -30,8 +56,9 @@ export default class Hypertext extends Line {
     // }
 
     get header() {
-        let curr = this, breaks = 0;
-        while (curr = curr.parent) {
+        let curr = this,
+            breaks = 0;
+        while ((curr = curr.parent)) {
             if (curr.name === "emptyline") breaks++;
             else breaks = 0;
 
@@ -51,8 +78,9 @@ export default class Hypertext extends Line {
     get headerOwners() {
         const owners = [];
 
-        let curr = this, breaks = 0;
-        while (curr = curr.parent) {
+        let curr = this,
+            breaks = 0;
+        while ((curr = curr.parent)) {
             if (curr.name === "emptyline") breaks++;
             else breaks = 0;
 
@@ -61,7 +89,7 @@ export default class Hypertext extends Line {
                 if (breaks > 1) break;
             }
 
-            const nodes = this.tree.nodes.filter(node => curr.matches(node.symbol));
+            const nodes = this.tree.nodes.filter((node) => curr.matches(node.symbol));
             for (const node of nodes) {
                 if (!owners.includes(node)) owners.push(node);
             }
@@ -73,7 +101,7 @@ export default class Hypertext extends Line {
     }
 
     get hypertextOwners() {
-        return this.tree.nodes.filter(node => this.matches(node.symbol)).flat();
+        return this.tree.nodes.filter((node) => this.matches(node.symbol)).flat();
     }
 
     get owners() {
@@ -85,10 +113,12 @@ export default class Hypertext extends Line {
         return uniq;
     }
 
-    get ownerSymbols() { return this.owners.map(node => node.symbol) }
+    get ownerSymbols() {
+        return this.owners.map((node) => node.symbol);
+    }
 
     get str() {
-        return `${this.index}:hypertext [${this.uuid}]\n    ${this.line}`
+        return `${this.index}:hypertext [${this.uuid}]\n    ${this.line}`;
     }
 
     remove(removeEmptyHeader = true) {
@@ -98,7 +128,9 @@ export default class Hypertext extends Line {
         this.tree.onUpdate({ event: "hypertext.remove", data: this });
 
         if (removeEmptyHeader && header) {
-            const isEmpty = header.children.length === 0 || header.children.every(child => child.name === "emptyline");
+            const isEmpty =
+                header.children.length === 0 ||
+                header.children.every((child) => child.name === "emptyline");
             if (isEmpty) {
                 const children = header.children;
                 while (children.length > 0) {
@@ -109,7 +141,6 @@ export default class Hypertext extends Line {
         }
     }
 }
-
 
 /*
 import { visitParents } from 'unist-util-visit-parents'

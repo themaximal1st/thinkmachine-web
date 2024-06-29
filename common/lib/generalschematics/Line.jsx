@@ -1,6 +1,6 @@
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 
-import Base from './Base';
+import Base from "./Base";
 
 export default class Line extends Base {
     constructor(line, tree) {
@@ -18,9 +18,13 @@ export default class Line extends Base {
         return this.line;
     }
 
-    get html() {
-        return `<div>${this.line}</div>`;
+    get dom() {
+        return <div>{this.line}</div>;
     }
+
+    // get html() {
+    //     return `<div>${this.line}</div>`;
+    // }
 
     get str() {
         return `${this.index}:${this.name} [${this.uuid}]\n    ${this.line}`;
@@ -31,11 +35,11 @@ export default class Line extends Base {
     }
 
     get parent() {
-        return this.ancestorAt(this.index - 1)
+        return this.ancestorAt(this.index - 1);
     }
 
     get child() {
-        return this.ancestorAt(this.index + 1)
+        return this.ancestorAt(this.index + 1);
     }
 
     ancestorAt(index) {
@@ -49,7 +53,13 @@ export default class Line extends Base {
         // TODO: trigger update
     }
 
-    matches(symbol) { return this.value === symbol }
-    get owners() { return this.tree.nodes.filter(node => this.matches(node.symbol)) }
-    get ownerSymbols() { return this.owners.map(node => node.symbol) }
+    matches(symbol) {
+        return this.value === symbol;
+    }
+    get owners() {
+        return this.tree.nodes.filter((node) => this.matches(node.symbol));
+    }
+    get ownerSymbols() {
+        return this.owners.map((node) => node.symbol);
+    }
 }

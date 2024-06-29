@@ -1,6 +1,7 @@
-import Line from './Line';
-import Node from './Node';
-import { arrayContains, stringToColor } from './utils';
+import Line from "./Line";
+import Node from "./Node";
+import { arrayContains, stringToColor } from "./utils";
+import React from "react";
 
 export default class Hyperedge extends Line {
     static ARROW = /-+>|→/;
@@ -14,24 +15,48 @@ export default class Hyperedge extends Line {
 
     get id() {
         const id = this.symbols.join(".");
-        if (this.tree.isIsolated) { return `${this.index}:${id}` }
+        if (this.tree.isIsolated) {
+            return `${this.index}:${id}`;
+        }
         return id;
     }
 
-    equal(edge) { return this.id === edge.id }
-    get length() { return this.nodes.length }
-    get symbols() { return this.nodes.map(node => node.symbol) }
-    get firstNode() { return this.nodes[0] }
-    get secondNode() { return this.nodes[1] }
-    get lastNode() { return this.nodes[this.nodes.length - 1] }
-    get firstNodes() { return this.nodes.slice(0, -1) }
-    get lastNodes() { return this.nodes.slice(1) }
+    equal(edge) {
+        return this.id === edge.id;
+    }
+    get length() {
+        return this.nodes.length;
+    }
+    get symbols() {
+        return this.nodes.map((node) => node.symbol);
+    }
+    get firstNode() {
+        return this.nodes[0];
+    }
+    get secondNode() {
+        return this.nodes[1];
+    }
+    get lastNode() {
+        return this.nodes[this.nodes.length - 1];
+    }
+    get firstNodes() {
+        return this.nodes.slice(0, -1);
+    }
+    get lastNodes() {
+        return this.nodes.slice(1);
+    }
     get middleNodes() {
-        if (this.nodes.length < 3) { return [] }
+        if (this.nodes.length < 3) {
+            return [];
+        }
         return this.nodes.slice(1, this.nodes.length - 1);
     }
-    get isFusionBridge() { return this.length === 2 }
-    get nodeIds() { return this.nodes.map(node => node.id) }
+    get isFusionBridge() {
+        return this.length === 2;
+    }
+    get nodeIds() {
+        return this.nodes.map((node) => node.id);
+    }
     get color() {
         return stringToColor(this.firstNode.symbol, this.tree.colors);
     }
@@ -54,7 +79,7 @@ export default class Hyperedge extends Line {
         if (!symbol) return null;
 
         if (Array.isArray(symbol)) {
-            return symbol.map(s => this.add(s));
+            return symbol.map((s) => this.add(s));
         } else if (typeof symbol === "string" && symbol.trim().length === 0) {
             return null;
         }
@@ -101,7 +126,6 @@ export default class Hyperedge extends Line {
         this.tree.onUpdate({ event: "hyperedge.remove", data });
     }
 
-
     removeAt(index) {
         const node = this.nodes[index];
         this.nodes.splice(index, 1);
@@ -110,7 +134,7 @@ export default class Hyperedge extends Line {
     }
 
     filter(input) {
-        const matches = this.nodes.map(node => node.filter(input)).filter(l => l);
+        const matches = this.nodes.map((node) => node.filter(input)).filter((l) => l);
 
         const match = super.filter(input);
         if (match) matches.push(match);
@@ -118,25 +142,41 @@ export default class Hyperedge extends Line {
         return matches;
     }
 
-
     get str() {
-        return `${this.index}:hyperedge [${this.uuid}]\n    ${this.nodes.map(node => node.str).join("\n    ")}`;
+        return `${this.index}:hyperedge [${this.uuid}]\n    ${this.nodes
+            .map((node) => node.str)
+            .join("\n    ")}`;
     }
 
     get output() {
-        return this.nodes.map(node => node.output).join("->");
+        return this.nodes.map((node) => node.output).join("->");
     }
 
-    get html() {
-        return `<div class="hyperedge">${this.nodes.map(node => node.html).join("-&gt;")}</div>`;
+    get dom() {
+        return (
+            <div className="hyperedge">
+                {this.nodes.map((node, index) => {
+                    return (
+                        <React.Fragment key={index}>
+                            {!!index && "->"}
+                            {node.dom}
+                        </React.Fragment>
+                    );
+                })}
+            </div>
+        );
     }
+
+    // get html() {
+    //     return `<div class="hyperedge">${this.nodes.map(node => node.html).join("-&gt;")}</div>`;
+    // }
 
     static matches(line) {
         return Hyperedge.ARROW.test(line);
     }
 
     static parse(line) {
-        return line.split("->").map(s => s);
+        return line.split("->").map((s) => s);
     }
 }
 
