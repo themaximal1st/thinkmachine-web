@@ -471,8 +471,13 @@ canvas {
     }
 } */
 
+#active-panel-wrapper {
+    /* @apply w-full max-w-[600px] pointer-events-none; */
+    @apply w-full max-w-[600px] border-2 flex justify-center;
+}
+
 #active-panel {
-    @apply bg-gray-100 dark:bg-gray-1000 text-black dark:text-white w-[600px] flex flex-col;
+    @apply bg-gray-100 dark:bg-gray-1000 text-black dark:text-white p-2 rounded-lg shadow-xl max-w-[100%] absolute;
 
     input {
         @apply bg-gray-100 dark:bg-gray-1000 text-black dark:text-white w-full pointer-events-auto;

@@ -49,22 +49,20 @@ export default class ForceGraph3D extends React.Component {
 
         window.addEventListener("keydown", this.handleKeyDown);
 
-        // this.props.graphRef.current.controls().addEventListener("start", (e) => {
-        //     this.updateDistances(e);
-        // });
+        this.props.graphRef.current.controls().addEventListener("start", (e) => {
+            this.updateDistances(e);
+        });
 
         // // this.props.graphRef.current.controls().addEventListener("end", (a, b, c) => {
         // //     console.log("END");
         // // });
 
-        // this.props.graphRef.current.controls().addEventListener("change", () => {
-        //     this.updateDistances();
-        // });
+        this.props.graphRef.current.controls().addEventListener("change", () => {
+            this.updateDistances();
+        });
     }
 
     updateDistances(e) {
-        return;
-
         if (!this.props) return;
         if (!this.props.graphRef) return;
         if (!this.props.graphRef.current) return;
@@ -207,6 +205,8 @@ export default class ForceGraph3D extends React.Component {
                 hypertexts = node.hypertexts || [];
             }
         }
+        const distance = this.state.distances[this.props.activeNodeUUID] || Infinity;
+
         return (
             <div>
                 <ForceGraph3DComponent
@@ -214,13 +214,15 @@ export default class ForceGraph3D extends React.Component {
                     controlType={Settings.controlType}
                     nodeThreeObject={this.nodeThreeObject}
                     extraRenderers={[new CSS2DRenderer()]}
-                    // onEngineTick={this.updateDistances}
+                    onEngineTick={this.updateDistances}
                     {...this.props}
                 />
-                <div id="active-panel-wrapper">
-                    <div id="active-panel" ref={this.activeNodeRef}>
-                        {Math.random()}
-                        THIS IS THE ACTIVE NODE PANEL
+                <div id="active-panel-wrapper" ref={this.activeNodeRef}>
+                    <div
+                        style={{ transform: `scale(${100 / distance})` }}
+                        id="active-panel">
+                        <div>{Math.random()}</div>
+                        <div>{distance}</div>
                         {this.props.activeNodeUUID}
                         {hypertexts.map((h, idx) => (
                             <input
