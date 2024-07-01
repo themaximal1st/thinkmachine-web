@@ -1,24 +1,22 @@
 import { getInputOptions, trackUUID } from './utils.js';
-import Parser from './Parser.js';
+import Tree from './Tree';
 import Graph from './Graph.js';
-// How much of Tree / GeneralSchematics should be the same thing?
 
 export default class GeneralSchematics {
-    static Parser = Parser
-    static Tree = Parser.Tree;
-    static Hypertext = Parser.Tree.Hypertext;
-    static Hyperedge = Parser.Tree.Hyperedge;
-    static Node = Parser.Tree.Node
-    static EmptyLine = Parser.Tree.EmptyLine;
-    static Header = Parser.Tree.Header;
-    static INTERWINGLE = Parser.Tree.INTERWINGLE;
-    static DEPTH = Parser.Tree.DEPTH;
+    static Tree = Tree;
+    static Hypertext = Tree.Hypertext;
+    static Hyperedge = Tree.Hyperedge;
+    static Node = Tree.Node
+    static EmptyLine = Tree.EmptyLine;
+    static Header = Tree.Header;
+    static INTERWINGLE = Tree.INTERWINGLE;
+    static DEPTH = Tree.DEPTH;
 
     static trackUUID = trackUUID;
 
     constructor() {
         const { input, options } = getInputOptions(...arguments);
-        this.parser = new Parser(input, options);
+        this.tree = Tree.parse(input, options);
         this.graph = new Graph(this);
     }
 
@@ -31,7 +29,6 @@ export default class GeneralSchematics {
     get isFusion() { return this.tree.isFusion }
     get isBridge() { return this.tree.isBridge }
 
-    get tree() { return this.parser.tree }
     get hash() { return this.tree.hash }
     get input() { return this.tree.input }
     get output() { return this.tree.output }
@@ -51,7 +48,7 @@ export default class GeneralSchematics {
     debug() { this.tree.debug() }
 
     reset() { this.tree.reset() }
-    parse(input) { this.parser.parse(input) }
+    parse(input) { this.tree.parse(input) }
     add() { return this.tree.add(...arguments) }
 
     // TODO: candidates for indexes
@@ -84,7 +81,7 @@ export default class GeneralSchematics {
 /*
 import Hypergraph from './Hypergraph.js';
 import Hypertexts from './Hypertexts.js';
-import Parser from './Parser.js';
+import rom './Parser.js';
 import { inspect } from "unist-util-inspect"
 import { visit } from 'unist-util-visit'
 import { sha256 } from './utils.js';
