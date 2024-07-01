@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
+import { fastUUID } from "./utils";
 
 import Base from "./Base";
 
@@ -6,7 +7,7 @@ export default class Node extends Base {
     constructor(input, hyperedge) {
         super();
         this.input = input;
-        this.uuid = uuidv4();
+        this.uuid = fastUUID();
         this.hyperedge = hyperedge;
         this.hypertext = new Hypertext(this);
         this.isNode = true;

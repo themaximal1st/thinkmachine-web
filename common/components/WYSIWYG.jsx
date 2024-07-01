@@ -86,13 +86,14 @@ export default class WYSIWYG extends React.Component {
         // console.log("NEW", this.props.schematic.hash);
         // console.log("OLD", this.state.hash);
 
+        // console.log("COMPONENT DID UPDATE", this.props.schematic.hash, this.state.hash);
         if (
-            this.props.schematic.hash !== this.state.hash
-            // this.props.schematic.input !== this.state.input
+            this.props.schematic.hash !== this.state.hash ||
+            this.props.schematic.input !== this.state.input
         ) {
-            // console.log("😇 DID UPDATE");
+            console.log("😇 DID UPDATE");
             this.setState({
-                input: this.props.schematic.output,
+                input: this.props.schematic.input,
                 dom: this.props.schematic.dom,
                 hash: this.props.schematic.hash,
             });
@@ -101,8 +102,9 @@ export default class WYSIWYG extends React.Component {
 
     onChange(e) {
         // this.cursor.save();
-        this.setState({ input: e.target.value });
         // this.state.changed = true;
+        // console.log("ON CHANGE");
+        this.setState({ input: e.target.value });
         this.props.schematic.parse(e.target.value);
         // this.update();
     }

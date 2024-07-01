@@ -8,7 +8,7 @@ import EmptyLine from "./EmptyLine";
 import Header from "./Header";
 import Colors from "./colors.js";
 
-import { sha256, arrayContains } from "./utils.js";
+import { sha256, arrayContains, fastHash } from "./utils.js";
 import { renderToStaticMarkup } from "react-dom/server";
 
 export default class Tree {
@@ -85,28 +85,36 @@ export default class Tree {
     }
 
     get hash() {
-        return sha256(this.str);
+        return fastHash(this.strs);
     }
     get edgehash() {
-        return sha256(JSON.stringify(this.symbols));
+        return fastHash(this.symbols);
     }
     get texthash() {
-        return sha256(this.text);
+        return fastHash(this.texts);
     }
-    get text() {
+    get texts() {
         return this.lines
             .filter((line) => !(line instanceof Hyperedge))
-            .map((line) => line.output)
-            .join("\n");
+            .map((line) => line.output);
+    }
+    get text() {
+        return this.texts.join("\n");
     }
     get length() {
         return this.lines.length;
     }
+    get outputs() {
+        return this.lines.map((line) => line.output);
+    }
     get output() {
-        return this.lines.map((line) => line.output).join("\n");
+        return this.outputs.join("\n");
     }
     get dom() {
-        return this.lines.map((line) => line.dom);
+        if (this._dom && this.hash === this._domhash) return this._dom;
+        this._dom = this.lines.map((line) => line.dom);
+        this._domhash = this.hash;
+        return this._dom;
     }
     get html() {
         return renderToStaticMarkup(this.dom);
@@ -123,8 +131,11 @@ export default class Tree {
     get uniqueSymbols() {
         return new Set(this.symbols);
     }
+    get strs() {
+        return this.lines.map((line) => line.str);
+    }
     get str() {
-        return this.lines.map((line) => line.str).join("\n");
+        return this.strs.join("\n");
     }
     debug() {
         console.log(`\ntree [${this.hash}]`);

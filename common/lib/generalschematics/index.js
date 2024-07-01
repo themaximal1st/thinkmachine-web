@@ -30,6 +30,8 @@ export default class GeneralSchematics {
     get isBridge() { return this.tree.isBridge }
 
     get hash() { return this.tree.hash }
+    get edgehash() { return this.tree.edgehash }
+    get texthash() { return this.tree.texthash }
     get input() { return this.tree.input }
     get output() { return this.tree.output }
     get dom() { return this.tree.dom }

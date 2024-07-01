@@ -237,3 +237,24 @@ export function unfixNodePosition(uuid, graphData) {
         }
     }
 }
+
+export function fastHash(arr) {
+    let hash = 0;
+    for (let i = 0; i < arr.length; i++) {
+        const subArr = arr[i];
+        for (let j = 0; j < subArr.length; j++) {
+            const str = subArr[j];
+            for (let k = 0; k < str.length; k++) {
+                hash = ((hash << 5) - hash) + str.charCodeAt(k);
+                hash = hash & hash; // Convert to 32-bit integer
+            }
+        }
+    }
+    return hash >>> 0; // Convert to unsigned 32-bit integer
+}
+
+
+let uuid = 0;
+export function fastUUID() {
+    return "uuid-" + uuid++;
+}

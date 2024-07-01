@@ -10,7 +10,7 @@ test("parse simple doc", async () => {
 
     const schematic = new GeneralSchematics();
 
-    for (let i = 0; i < 1000; i++) {
+    for (let i = 0; i < 10000; i++) {
         schematic.parse(data);
         expect(schematic.hyperedges.length).toEqual(1);
         expect(schematic.nodes.length).toEqual(3);
@@ -27,15 +27,90 @@ test("parse complex doc", async () => {
 
     const schematic = new GeneralSchematics();
 
-    for (let i = 0; i < 1000; i++) {
+    for (let i = 0; i < 2000; i++) {
         schematic.parse(data);
         expect(schematic.hyperedges.length).toEqual(66);
         expect(schematic.nodes.length).toEqual(179);
     }
 
     const elapsed = Date.now() - start;
-    expect(elapsed).toBeLessThan(2000);
+    expect(elapsed).toBeLessThan(1000);
 });
+
+test("generate simple dom", async () => {
+    const data = "A -> B -> C\nThis is some A hypertext";
+
+    const start = Date.now();
+
+    const schematic = new GeneralSchematics();
+
+    for (let i = 0; i < 10000; i++) {
+        schematic.parse(data);
+        expect(schematic.dom.length).toBeGreaterThan(0);
+    }
+
+    const elapsed = Date.now() - start;
+
+    expect(elapsed).toBeLessThan(1000);
+});
+
+test("fast edge hash", async () => {
+    const start = Date.now();
+    const schematic = new GeneralSchematics(data);
+
+    for (let i = 0; i < 10000; i++) {
+        expect(schematic.edgehash).toBeGreaterThan(0);
+    }
+
+    const elapsed = Date.now() - start;
+
+    expect(elapsed).toBeLessThan(1000);
+});
+
+test("fast text hash", async () => {
+    const start = Date.now();
+    const schematic = new GeneralSchematics("This is some text\nWe are hashing it\nA -> B -> C\nA is connected to B and C");
+
+    for (let i = 0; i < 10000; i++) {
+        expect(schematic.texthash).toBeGreaterThan(0);
+    }
+
+    const elapsed = Date.now() - start;
+
+    expect(elapsed).toBeLessThan(1000);
+});
+
+test("fast hash", async () => {
+    const start = Date.now();
+    const schematic = new GeneralSchematics(data);
+
+    for (let i = 0; i < 10000; i++) {
+        expect(schematic.hash).toBeGreaterThan(0);
+    }
+
+    const elapsed = Date.now() - start;
+
+    expect(elapsed).toBeLessThan(1000);
+});
+
+// TODO: fast hash
+
+
+test("generate complex dom", async () => {
+    const start = Date.now();
+
+    const schematic = new GeneralSchematics();
+
+    for (let i = 0; i < 2000; i++) {
+        schematic.parse(data);
+        expect(schematic.dom.length).toBeGreaterThan(0);
+    }
+
+    const elapsed = Date.now() - start;
+
+    expect(elapsed).toBeLessThan(1000);
+});
+
 
 const data = `color -> light -> wavelength
 color -> perception -> vision
@@ -102,4 +177,10 @@ number theory -> algebraic geometry -> analytic number theory
 integers -> rational numbers -> irrational numbers
 primes -> Fermat's Little Theorem -> Euler's Totient Function
 Riemann Hypothesis -> analytic number theory -> zeta function
-modular arithmetic -> congruences -> finite fields`
+modular arithmetic -> congruences -> finite fields
+
+This is some hypertext about number theory...it's cool
+
+Prime numbers are interesting...
+`
+

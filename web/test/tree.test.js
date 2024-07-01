@@ -84,12 +84,14 @@ test("consistent node uuids", async () => {
     expect(B.symbol).toBe("B");
     expect(C.symbol).toBe("C");
 
-    expect(tree.hyperedges[0].uuid).toMatch(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/);
-    expect(A.uuid).toMatch(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/);
-    expect(B.uuid).toMatch(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/);
-    expect(C.uuid).toMatch(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/);
+    expect(tree.hyperedges[0].uuid.length).toBeGreaterThan(0);
+    expect(A.uuid.length).toBeGreaterThan(0);
+    expect(B.uuid.length).toBeGreaterThan(0);
+    expect(C.uuid.length).toBeGreaterThan(0);
 
+    expect(tree.hyperedges[0].uuid).not.toBe(A.uuid);
     expect(A.uuid).not.toBe(B.uuid);
+    expect(A.uuid).not.toBe(C.uuid);
 
     const uuids = tree.nodes.map(node => node.uuid);
     tree.parse("A -> B -> C");
@@ -406,10 +408,10 @@ test("walk until", async () => {
 test("hashes", async () => {
     const tree = Tree.parse();
     expect(tree.text).toBe("");
-    const { hash, edgehash, texthash } = tree;
-    expect(hash).toBe("e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855");
-    expect(edgehash).toBe("4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945");
-    expect(texthash).toBe("e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855");
+    let { hash, edgehash, texthash } = tree;
+    expect(hash).toBe(0);
+    expect(edgehash).toBe(0);
+    expect(texthash).toBe(0);
 
     tree.parse("A -> B -> C");
     expect(tree.text).toBe("");
@@ -417,8 +419,8 @@ test("hashes", async () => {
     expect(tree.edgehash).not.toBe(edgehash);
     expect(tree.texthash).toBe(texthash)
 
+    hash = tree.hash;
     tree.parse("Hello World");
-
     expect(tree.text).toBe("Hello World");
     expect(tree.hash).not.toBe(hash);
     expect(tree.edgehash).toBe(edgehash);
