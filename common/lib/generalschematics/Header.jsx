@@ -1,29 +1,43 @@
-
-import Line from './Line';
+import Line from "./Line";
 
 export default class Header extends Line {
-
     constructor() {
         super(...arguments);
         this.level = this.line.match(/#/g).length;
     }
 
-    get value() { return this.header }
-    get header() { return this.line.replace(/#/g, "").trim() }
-    set header(value) { this.line = `${"#".repeat(this.level)} ${value}` }
-    get html() {
-        if (this.owners.length > 0) {
-            return `<h${this.level} class="symbol"><a href="#${this.header}">${this.line}</a></h${this.level}>`;
-        }
-        return `<h${this.level}>${this.line}</h${this.level}>`;
+    get value() {
+        return this.header;
     }
-    get str() { return `${this.index}:${this.name} [${this.uuid}]\n    ${this.level}:${this.header}` }
-    static matches(line) { return line.startsWith("#") }
+    get header() {
+        return this.line.replace(/#/g, "").trim();
+    }
+    set header(value) {
+        this.line = `${"#".repeat(this.level)} ${value}`;
+    }
+    get dom() {
+        if (this.owners.length > 0) {
+            return (
+                <h1 className="symbol" key={this.index}>
+                    <a href={`#${this.header}`}>{this.line}</a>
+                </h1>
+            );
+        }
+        return <h1 key={this.index}>{this.line}</h1>;
+    }
+
+    get str() {
+        return `${this.index}:${this.name} [${this.uuid}]\n    ${this.level}:${this.header}`;
+    }
+    static matches(line) {
+        return line.startsWith("#");
+    }
     get children() {
         const children = [];
 
-        let curr = this, breaks = 0;
-        while (curr = curr.child) {
+        let curr = this,
+            breaks = 0;
+        while ((curr = curr.child)) {
             if (curr.name === "hyperedge") continue;
             if (curr.name === "emptyline") breaks++;
             else breaks = 0;
@@ -38,7 +52,9 @@ export default class Header extends Line {
         if (removeChildren) {
             const children = this.children;
             let child;
-            while (child = children.pop()) { child.remove(false) }
+            while ((child = children.pop())) {
+                child.remove(false);
+            }
         }
 
         this.tree.lines.splice(this.index, 1);

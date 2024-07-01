@@ -48,6 +48,9 @@ export default class Node extends Base {
     get isMiddle() {
         return !this.isFirst && !this.isLast;
     }
+    get color() {
+        return this.hyperedge.color;
+    }
     get output() {
         if (this.only) {
             if (this.input !== this.input.trim()) return this.input.trim();
@@ -67,7 +70,11 @@ export default class Node extends Base {
 
     get dom() {
         return (
-            <a href={`#${this.uuid}`} className="node" key={`node-${this.uuid}`}>
+            <a
+                onClick={() => window.setActiveNodeUUID(this.uuid)}
+                style={{ color: this.color }}
+                className="node"
+                key={`node-${this.uuid}`}>
                 {this.output}
             </a>
         );

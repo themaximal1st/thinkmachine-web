@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+a {
+    @apply cursor-pointer;
+}
+
 body {
     @apply w-full dark:bg-black;
 }
@@ -457,16 +461,14 @@ canvas {
         @apply absolute bottom-0 top-0 left-0 w-full h-full pointer-events-none whitespace-pre-wrap flex flex-col;
 
         .hyperedge {
-            @apply text-blue-300;
-
             .node {
-                @apply text-blue-500 pointer-events-auto;
+                @apply pointer-events-auto;
             }
         }
 
         .hypertext > a.symbol {
             /* @apply text-white; */
-            @apply text-blue-500 pointer-events-auto;
+            @apply pointer-events-auto;
         }
 
         h1.symbol,
@@ -476,7 +478,7 @@ canvas {
         h5.symbol,
         h6.symbol {
             a {
-                @apply text-blue-500 pointer-events-auto;
+                @apply pointer-events-auto;
             }
         }
     }
@@ -502,7 +504,7 @@ canvas {
 #active-panel {
     @apply max-w-[100%] flex flex-col items-center;
 
-    input {
+    textarea {
         @apply bg-gray-100 dark:bg-gray-1000 text-black dark:text-white w-full pointer-events-auto outline-none;
     }
 }
@@ -511,7 +513,7 @@ canvas {
     @apply absolute;
     @apply bg-gray-100 dark:bg-gray-1000 text-black dark:text-white p-2 rounded-lg shadow-xl absolute w-full;
 
-    input {
+    textarea {
         @apply bg-gray-100 dark:bg-gray-1000 text-black dark:text-white w-full pointer-events-auto;
     }
 }

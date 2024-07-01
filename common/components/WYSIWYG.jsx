@@ -74,6 +74,7 @@ export default class WYSIWYG extends React.Component {
                 </div>
                 <textarea
                     ref={this.state.ref}
+                    spellCheck="false"
                     value={this.state.input}
                     onScroll={this.onScroll.bind(this)}
                     onChange={this.onChange.bind(this)}

@@ -210,22 +210,16 @@ export default class ForceGraph3D extends React.Component {
     render() {
         let hypertexts = [];
         if (this.props.trackedActiveNodeUUID) {
-            // console.log("ACTIVE NODE UUID", this.props.trackedActiveNodeUUID);
-            // this.props.schematic.debug();
-
             const node = this.props.schematic.nodeByUUID(
                 this.props.trackedActiveNodeUUID
             );
-            // console.log("NODE", node);
-            // console.log("GRAPH DATA", this.props.graphData.nodes);
-            // this.props.schematic.debug();
 
             if (node) {
                 hypertexts = node.hypertexts || [];
             }
         }
         const distance = this.state.distances[this.props.activeNodeUUID] || Infinity;
-        console.log("🎄 FORCE GRAPH 3D RENDER", hypertexts.length);
+        // console.log("🎄 FORCE GRAPH 3D RENDER", hypertexts.length);
 
         return (
             <div>
@@ -246,25 +240,16 @@ export default class ForceGraph3D extends React.Component {
                                 hidden: hypertexts.length === 0 || distance > 500,
                             })}
                             id="active-panel-inner">
-                            {/* <div>{Math.random()}</div>
-                            <div>{distance}</div>
-                            {this.props.activeNodeUUID} */}
                             {hypertexts.map((h, idx) => (
                                 <ControlledInput
                                     key={`hypertext-${h.uuid}-${idx}`}
                                     id={`hypertext-${h.uuid}-${idx}`}
+                                    spellCheck={false}
                                     data-index={idx}
                                     onChange={(e) => this.onChange(e, h)}
                                     value={h.hypertext}
                                 />
                             ))}
-                            {/* <button
-                                className="pointer-events-auto"
-                                onClick={() =>
-                                    alert(`CLICKED ${this.props.activeNodeUUID}`)
-                                }>
-                                CLICK
-                            </button> */}
                         </div>
                     </div>
                 </div>

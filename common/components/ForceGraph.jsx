@@ -62,8 +62,15 @@ export default class ForceGraph extends React.Component {
             });
         } else if (this.props.trackedActiveNodeUUID) {
             // this.updateCamera(true, 400, prevProps.graphData).then(() => {
-            //     // this.emitLinkParticles(prevProps.graphData);
+            //     this.emitLinkParticles(prevProps.graphData);
             // });
+        } else {
+            console.log("UPDATE CAMERA");
+            utils.delay(400).then(() => {
+                this.updateCamera(false, 100, prevProps.graphData).then(() => {
+                    this.emitLinkParticles(prevProps.graphData);
+                });
+            });
         }
 
         // if (prevProps.graphData !== this.props.graphData) {
@@ -230,7 +237,7 @@ export default class ForceGraph extends React.Component {
         if (this.props.trackedActiveNodeUUID) {
             await this.camera.zoomToNode(this.props.trackedActiveNodeUUID, delay);
         } else {
-            // await this.camera.stableZoom(shouldZoom, delay, oldData);
+            await this.camera.stableZoom(shouldZoom, delay, oldData);
         }
     }
 }

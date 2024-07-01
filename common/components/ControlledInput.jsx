@@ -15,7 +15,7 @@ const ControlledInput = (props) => {
         onChange && onChange(e);
     };
 
-    return <input ref={ref} value={value} onChange={handleChange} {...rest} />;
+    return <textarea ref={ref} value={value} onChange={handleChange} {...rest} />;
 };
 
 export default ControlledInput;

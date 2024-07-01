@@ -44,6 +44,42 @@ export default class Hypertext extends Line {
 
     get symbolifiedLine() {
         let line = this.line;
+        const owners = this.owners;
+        let parts = [line]; // Start with the whole line as a single part
+
+        owners.forEach((owner) => {
+            parts = parts.flatMap((part) =>
+                typeof part === "string"
+                    ? part
+                          .split(this.regex(owner.symbol))
+                          .flatMap((subPart, index, arr) =>
+                              index < arr.length - 1 ? [subPart, owner] : [subPart]
+                          )
+                    : [part]
+            );
+        });
+
+        return (
+            <div className="hypertext symbol">
+                {parts.map((part, index) =>
+                    typeof part === "object" && owners.includes(part) ? (
+                        <a
+                            key={index}
+                            onClick={() => window.setActiveNodeUUID(part.uuid)}
+                            className="symbol"
+                            style={{ color: part.color }}>
+                            {part.symbol}
+                        </a>
+                    ) : (
+                        part
+                    )
+                )}
+            </div>
+        );
+    }
+
+    get _symbolifiedLine() {
+        let line = this.line;
         const symbols = this.ownerSymbols;
         let parts = [line]; // Start with the whole line as a single part
 
@@ -63,7 +99,7 @@ export default class Hypertext extends Line {
             <div className="hypertext symbol">
                 {parts.map((part, index) =>
                     symbols.includes(part) ? (
-                        <a key={index} href={`#${part}`} className="symbol">
+                        <a key={index} href={`#${part}`} className="symbol text-red-500">
                             {part}
                         </a>
                     ) : (

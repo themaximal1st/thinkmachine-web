@@ -11,6 +11,10 @@ export default class BridgeNode {
         return this.nodes[0].symbol;
     }
 
+    get color() {
+        return this.nodes[0].color;
+    }
+
     get id() {
         return `${this.symbol}#bridge`;
     }

@@ -65,6 +65,7 @@ export default class App extends React.Component {
 
     componentDidMount() {
         this.load();
+        window.setActiveNodeUUID = this.setActiveNodeUUID.bind(this);
         window.addEventListener("keydown", this.handleKeyDown);
     }
 
@@ -151,10 +152,6 @@ export default class App extends React.Component {
         console.log("✅ RELOAD DATA");
 
         const graphData = this.schematic.graphData(this.filters, this.state.graphData);
-
-        for (const node of graphData.nodes) {
-            console.log(node.id, node.name);
-        }
 
         await this.asyncSetState({
             graphData,
