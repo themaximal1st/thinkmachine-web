@@ -72,12 +72,23 @@ export default class FuzzyTextMatcher {
   }
 
   containsSymbol(paragraph, symbol) {
-    return this.findAllMatches(paragraph, symbol).length > 0;
+    const matches = this.findAllMatches(paragraph, symbol);
+    return matches.length > 0
   }
 
   findAllMatches(paragraph, symbol, wholeToken = true) {
     const matches = [];
     let i = 0;
+
+    // For single-character symbols, do exact matching only
+    if (symbol.length === 1) {
+      const regex = new RegExp(`\\b${symbol}\\b`, 'gi');
+      let match;
+      while ((match = regex.exec(paragraph)) !== null) {
+        matches.push({ start: match.index, end: match.index + 1 });
+      }
+      return matches;
+    }
 
     while (i < paragraph.length) {
       // Try to match the entire symbol first

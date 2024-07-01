@@ -1,6 +1,41 @@
 import React from "react";
 
-// import Cursor from "@lib/Cursor";
+const doc = `
+
+General Schematics is an information language.
+
+It lets you build information maps over information territories—to quickly learn, explore and connect ideas.
+
+100 years ago, Vannevar Bush imagined Thinking Machines. He predicted a memory extension device—a Memex—that amplified and augmented human intelligence.
+
+A core idea were Memex trails, high-level concepts connnected together. They work through association, like how the brain works.
+
+Vannevar Bush -> Memex
+
+These trails link together into a trail map. Not exactly mind maps, more like concept maps. Ways through a territory.
+
+These trails are actually hyperedges, and they're more powerful than you might think.
+
+Douglas Hofstadter wrote a book, Gödel, Escher, Bach, on why symbols and connections are so powerful.
+
+Douglas Hofstadter -> strangeloop -> symbols -> connections
+
+Stephen Wolfram is exploring a Universal Theory of Physics based on computation—and the datastructure he's using is the hypergraph—he calls it a "structureless structure"
+
+Stephen Wolfram -> hypergraph -> hyperedges -> symbols -> connections
+
+Ted Nelson explains information is deeply interconnected—interwingled.
+
+And these hypergraphs give a powerful way to visualize, explore and find your way through information.
+
+Ted Nelson -> invented -> Xanadu
+Ted Nelson -> invented -> hypertext
+Memex -> inspired -> hypertext
+
+General Schematics is a Markdown superset that puts hypertext on a hypergraph—enabling a new way to visualize and explore information.
+
+General Schematics -> hypertext -> hypergraph
+`.trim();
 
 export default class WYSIWYG extends React.Component {
     constructor(props) {
@@ -28,6 +63,22 @@ export default class WYSIWYG extends React.Component {
             dom: this.props.schematic.dom,
             hash: this.props.schematic.hash,
         });
+
+        // let index = 0;
+        // let interval = setInterval(() => {
+        //     console.log(doc.slice(0, index));
+
+        //     // this.setState({ input: e.target.value });
+        //     // this.state.changed = true;
+        //     this.props.schematic.parse(doc.slice(0, index));
+        //     index++;
+
+        //     if (index >= doc.length) {
+        //         clearInterval(interval);
+        //         return;
+        //     }
+        // }, 50);
+
         // this.ldt = new TextareaDecorator(this.ref.current, this.parser);
     }
 

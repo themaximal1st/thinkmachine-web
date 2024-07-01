@@ -23,6 +23,7 @@ export default class Hypertext extends Line {
     regex(symbol) {
         return new RegExp(`\\b${symbol}\\b`, "g");
     }
+
     matches(symbol) {
         return fuzzyText.containsSymbol(this.hypertext, symbol);
     }

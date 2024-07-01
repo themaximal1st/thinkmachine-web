@@ -86,3 +86,9 @@ test('findAllMatches with short symbol', () => {
         { start: 12, end: 15 }
     ]);
 });
+
+test('findAllMatches with single character', () => {
+    const paragraph = "The fox and the dog";
+    const matches = FuzzyText.findAllMatches(paragraph, "t");
+    expect(matches).toEqual([]);
+});

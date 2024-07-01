@@ -445,8 +445,10 @@ body {
         @apply absolute bottom-0 top-0 left-0 w-full h-full pointer-events-none whitespace-pre-wrap flex flex-col z-20;
 
         .hyperedge {
+            @apply text-gray-500;
+
             .node {
-                @apply pointer-events-auto;
+                @apply text-gray-500 pointer-events-auto;
             }
         }
 

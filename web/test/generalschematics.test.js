@@ -142,6 +142,7 @@ test("hypertextify global and local hypertext", async () => {
     expect(hypertexts.length).toEqual(2);
 
     const global = schematic.hypertexts.global;
+
     expect(global.length).toEqual(1);
     expect(global[0].hypertext).toEqual("This is global hypertext.");
     expect(global[0].owners).toEqual([]);
