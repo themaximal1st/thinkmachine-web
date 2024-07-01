@@ -344,7 +344,7 @@ test("remove hyperedge", async function () {
 });
 
 test("export", async function () {
-    const input = `schematic -> tagline -> "Turning C,S,V,s into Hypergraphs."\nA -> B -> C -> D -> E -> F -> G`;
+    const input = `schematic → tagline → "Turning C,S,V,s into Hypergraphs."\nA → B → C → D → E → F → G`;
     const schematic = new GeneralSchematics(input);
     expect(schematic.uniqueSymbols.size).toBe(10);
     expect(schematic.hyperedges.length).toBe(2);

@@ -80,6 +80,11 @@ export default class FuzzyTextMatcher {
     const matches = [];
     let i = 0;
 
+    if (!paragraph || !symbol) return matches;
+    if (paragraph.length === 0) return matches;
+    if (symbol.length === 0) return matches
+    if (paragraph.length < symbol.length) return matches;
+
     // For single-character symbols, do exact matching only
     if (symbol.length === 1) {
       const regex = new RegExp(`\\b${symbol}\\b`, 'gi');

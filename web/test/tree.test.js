@@ -110,12 +110,12 @@ test("modify hypertext", async () => {
 
 test("modify node", async () => {
     const tree = Tree.parse("A -> B -> C");
-    expect(tree.output).toBe("A -> B -> C");
+    expect(tree.output).toBe("A → B → C");
 
     const [A, B, C] = tree.nodes;
     A.symbol = "A1";
 
-    expect(tree.output).toBe("A1 -> B -> C");
+    expect(tree.output).toBe("A1 → B → C");
 });
 
 test("remove hyperedge", async () => {
@@ -180,8 +180,6 @@ test("assert index", async () => {
     expect(tree.hyperedges[0].index).toBe(0);
     expect(tree.headers.local[0].index).toBe(1);
     expect(tree.hypertexts.local[0].index).toBe(2);
-    // TODO
-    // expect(tree.hypertexts.local[1].index).toBe(3);
 });
 
 test("should not match on characters", async () => {
@@ -288,7 +286,7 @@ test("remove entire header without hyperedge", async () => {
     header.remove(true);
 
     expect(tree.lines.length).toBe(1);
-    expect(tree.output).toBe("A -> B -> C");
+    expect(tree.output).toBe("A → B → C");
 });
 
 test("find all", async () => {
@@ -458,22 +456,24 @@ test("consistent multi symbol node uuid regression", async () => {
 test("parse a single symbol", async () => {
     const tree = Tree.parse("A ->");
     expect(tree.hyperedges.length).toBe(1);
-    expect(tree.nodes.length).toBe(1);
+    expect(tree.nodes.length).toBe(2);
+    expect(tree.html.includes("A")).toBe(true);
+    expect(tree.html.includes("→")).toBe(true);
 });
 
 test("save symbol whitespace", async () => {
     const tree = Tree.parse("A -> B ");
-    expect(tree.output).toBe("A -> B ");
+    expect(tree.output).toBe("A → B ");
 
     tree.parse("A   ->   B    ")
-    expect(tree.output).toBe("A   ->   B    ");
+    expect(tree.output).toBe("A   →   B    ");
 });
 
-test("single node edge", () => { // TODO: can fix this by adding a check for single node edge, "A ->"
+test("single node edge", () => {
     const tree = Tree.parse();
     tree.add(["A"]);
-    expect(tree.nodes.length).toBe(1);
-    expect(tree.output).toBe("A ->");
+    expect(tree.nodes.length).toBe(2);
+    expect(tree.output).toBe("A →");
 });
 
 test("dont reuse different node uuids regression", () => {

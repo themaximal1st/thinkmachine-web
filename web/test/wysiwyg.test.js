@@ -8,6 +8,12 @@ test("simple html", async () => {
     expect(tree.html).toBe(`<div class="hypertext">Hello World</div>`);
 });
 
+test("corrupted findAllMatches regression", async () => {
+    const tree = Tree.parse("A -> B -> C\n1 -> 2 -> 3\n\n1 is cool and A is cool too\nR ->");
+    expect(tree.nodes.length).toBe(8);
+    expect(tree.html.includes("A")).toBe(true);
+});
+
 test.skip("hyperlinked symbols", async () => {
     const tree = Tree.parse("A -> B -> C");
     const uuids = tree.nodes.map(node => node.uuid);

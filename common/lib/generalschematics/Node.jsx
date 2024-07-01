@@ -52,7 +52,9 @@ export default class Node extends Base {
         return this.hyperedge.color;
     }
     get output() {
-        if (this.only) {
+        if (this.input === "") {
+            return this.input;
+        } else if (this.only) {
             if (this.input !== this.input.trim()) return this.input.trim();
             return this.input;
         } else if (this.isFirst) {

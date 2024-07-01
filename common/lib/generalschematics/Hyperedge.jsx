@@ -76,12 +76,8 @@ export default class Hyperedge extends Line {
     }
 
     add(symbol) {
-        if (!symbol) return null;
-
         if (Array.isArray(symbol)) {
             return symbol.map((s) => this.add(s));
-        } else if (typeof symbol === "string" && symbol.trim().length === 0) {
-            return null;
         }
 
         return this.insertAt(symbol, this.nodes.length);
@@ -130,7 +126,6 @@ export default class Hyperedge extends Line {
         const node = this.nodes[index];
         this.nodes.splice(index, 1);
         this.tree.onUpdate({ event: "node.remove", data: node });
-        // this.updateNodeIndexes();
     }
 
     filter(input) {
@@ -150,10 +145,10 @@ export default class Hyperedge extends Line {
 
     get output() {
         if (this.nodes.length === 1) {
-            return `${this.nodes[0].output} ->`;
+            return `${this.nodes[0].output} →`;
         }
 
-        return this.nodes.map((node) => node.output).join("->");
+        return this.nodes.map((node) => node.output).join("→");
     }
 
     get dom() {
@@ -162,7 +157,7 @@ export default class Hyperedge extends Line {
                 {this.nodes.map((node, index) => {
                     return (
                         <React.Fragment key={index}>
-                            {!!index && "->"}
+                            {!!index && "→"}
                             {node.dom}
                         </React.Fragment>
                     );
@@ -180,7 +175,7 @@ export default class Hyperedge extends Line {
     }
 
     static parse(line) {
-        return line.split("->").map((s) => s);
+        return line.split(Hyperedge.ARROW).map((s) => s);
     }
 }
 

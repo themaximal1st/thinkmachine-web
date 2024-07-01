@@ -25,7 +25,7 @@ test("parse and export hyperedge", async () => {
     expect(B.symbol).toEqual("B");
     expect(C.symbol).toEqual("C");
 
-    expect(schematic.output).toEqual("A -> B -> C");
+    expect(schematic.output).toEqual("A → B → C");
     expect(schematic.hyperedges.length).toEqual(1);
     expect(schematic.nodes.length).toEqual(3);
     expect(schematic.symbols).toEqual(["A", "B", "C"]);
@@ -45,7 +45,7 @@ test("multiple hyperedges", async () => {
     expect(hyperedges[1].nodes[1].symbol).toEqual("2");
     expect(hyperedges[1].nodes[2].symbol).toEqual("3");
 
-    expect(schematic.output).toEqual("A -> B -> C\n1 -> 2 -> 3");
+    expect(schematic.output).toEqual("A → B → C\n1 → 2 → 3");
 });
 
 test("soft breaks", async () => {
@@ -64,7 +64,7 @@ test("custom node object", async () => {
     B.rename("B1");
     C.rename("C1");
 
-    expect(schematic.output).toEqual("A1 -> B1 -> C1");
+    expect(schematic.output).toEqual("A1 → B1 → C1");
     expect(schematic.hyperedges[0].nodes[0].symbol).toEqual("A1");
 });
 
@@ -73,10 +73,10 @@ test("add node", async () => {
     const [A, B, C] = schematic.hyperedges[0].nodes;
 
     C.add("D");
-    expect(schematic.output).toEqual("A -> B -> C -> D");
+    expect(schematic.output).toEqual("A → B → C → D");
 
     A.add("A1");
-    expect(schematic.output).toEqual("A -> A1 -> B -> C -> D");
+    expect(schematic.output).toEqual("A → A1 → B → C → D");
 });
 
 test("insert node", async () => {
@@ -84,10 +84,10 @@ test("insert node", async () => {
     const [A, B, C] = schematic.hyperedges[0].nodes;
 
     C.insert("D");
-    expect(schematic.output).toEqual("A -> B -> D -> C");
+    expect(schematic.output).toEqual("A → B → D → C");
 
     A.insert("A1");
-    expect(schematic.output).toEqual("A1 -> A -> B -> D -> C");
+    expect(schematic.output).toEqual("A1 → A → B → D → C");
 });
 
 test("remove node", async () => {
@@ -95,10 +95,10 @@ test("remove node", async () => {
     const [A, B, C] = schematic.hyperedges[0].nodes;
 
     B.remove();
-    expect(schematic.output).toEqual("A -> C");
+    expect(schematic.output).toEqual("A → C");
 
     A.remove();
-    expect(schematic.output).toEqual("C ->");
+    expect(schematic.output).toEqual("C →");
 });
 
 test("node UUID", async () => {
@@ -117,7 +117,7 @@ test("add hyperedge", async () => {
     expect(D.symbol).toEqual("D");
     expect(E.symbol).toEqual("E");
     expect(F.symbol).toEqual("F");
-    expect(schematic.output).toEqual("A -> B -> C\nD -> E -> F");
+    expect(schematic.output).toEqual("A → B → C\nD → E → F");
     expect(schematic.hyperedges.length).toEqual(2);
 });
 
@@ -128,7 +128,7 @@ test("remove hyperedge", async () => {
     expect(DEF.index).toEqual(1);
     ABC.remove();
     expect(schematic.hyperedges.length).toEqual(1);
-    expect(schematic.output).toEqual("D -> E -> F");
+    expect(schematic.output).toEqual("D → E → F");
 
     DEF.remove();
     expect(schematic.hyperedges.length).toEqual(0);
@@ -219,7 +219,7 @@ test("simple hypertext attaches to two symbols", async () => {
     B.hypertexts[0].hypertext = "This is attached to B";
     expect(B.hypertexts.length).toEqual(1);
     expect(A.hypertexts.length).toEqual(0);
-    expect(schematic.output).toEqual("A -> B -> C\nThis is attached to B");
+    expect(schematic.output).toEqual("A → B → C\nThis is attached to B");
 });
 
 test("complex hypertext attaches to two symbols", async () => {
@@ -233,7 +233,7 @@ test("complex hypertext attaches to two symbols", async () => {
     hypertext.remove();
     expect(B.hypertexts.length).toEqual(0);
     expect(A.hypertexts.length).toEqual(0);
-    expect(schematic.output).toEqual("A -> B -> C\n");
+    expect(schematic.output).toEqual("A → B → C\n");
 });
 
 test("add global symbol hypertext", async () => {
@@ -247,7 +247,7 @@ test("add global symbol hypertext", async () => {
     expect(schematic.lines.length).toEqual(4);
     expect(schematic.hypertexts.global.length).toEqual(0);
     expect(schematic.hypertexts.local.length).toEqual(2);
-    expect(schematic.output).toEqual("A -> B -> C\n# C\nThis is some hypertext\nHere is some more");
+    expect(schematic.output).toEqual("A → B → C\n# C\nThis is some hypertext\nHere is some more");
 });
 
 test("add symbol hypertext", async () => {
@@ -262,7 +262,7 @@ test("add symbol hypertext", async () => {
 
     expect(A.hypertexts.length).toEqual(1);
     expect(B.hypertexts.length).toEqual(1);
-    expect(schematic.output).toEqual("A -> B -> C\n# A\nNew hypertext for B");
+    expect(schematic.output).toEqual("A → B → C\n# A\nNew hypertext for B");
 });
 
 test("modifying hypertext", async () => {
@@ -364,7 +364,7 @@ test("hyperedges before hypertext", async () => {
     hypertext.remove();
     expect(B.hypertexts.length).toEqual(0);
     expect(A.hypertexts.length).toEqual(0);
-    expect(schematic.output).toEqual("A -> B -> C");
+    expect(schematic.output).toEqual("A → B → C");
 });
 
 test("leaves hypertext header if multiple", async () => {
@@ -378,7 +378,7 @@ test("leaves hypertext header if multiple", async () => {
     hypertext.remove();
     expect(B.hypertexts.length).toEqual(0);
     expect(A.hypertexts.length).toEqual(1);
-    expect(schematic.output).toEqual("A -> B -> C\n## A\nAnd some more");
+    expect(schematic.output).toEqual("A → B → C\n## A\nAnd some more");
 });
 
 test("hyperedges after hypertext", async () => {
@@ -414,7 +414,7 @@ test("hypertext import modify export import", async () => {
     expect(schematic.hypertexts.get("C").length).toEqual(1);
 
     const exported = schematic.output;
-    expect(exported).toEqual("## A\nModified with B\nModified with C\n\nA -> B -> C");
+    expect(exported).toEqual("## A\nModified with B\nModified with C\n\nA → B → C");
 
     const schematic2 = new GeneralSchematics(exported);
     expect(schematic2.hypertexts.get("A").length).toEqual(2);
@@ -459,7 +459,7 @@ test("symbols with spaces", async () => {
     expect(schematic.nodes[0].symbol).toEqual("This is A");
     expect(schematic.nodes[1].symbol).toEqual("This is B");
     expect(schematic.nodes[2].symbol).toEqual("This is C");
-    expect(schematic.output).toEqual("This is A -> This is B -> This is C");
+    expect(schematic.output).toEqual("This is A → This is B → This is C");
 });
 
 // TODO: Add hypertext in different contexts
