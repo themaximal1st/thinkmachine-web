@@ -1,5 +1,9 @@
+const THRESHOLD = 0.99;
+const NGRAM_SIZE = 4;
+
 export default class FuzzyTextMatcher {
-  constructor(threshold = 0.99, ngramSize = 4) {
+
+  constructor(threshold = THRESHOLD, ngramSize = NGRAM_SIZE) {
     this.threshold = threshold;
     this.ngramSize = ngramSize;
     this.cache = new Map();
@@ -67,8 +71,69 @@ export default class FuzzyTextMatcher {
     this.cache.clear();
   }
 
-  static matches(term1, term2, threshold = 0.99, ngramSize = 4) {
+  containsSymbol(paragraph, symbol) {
+    return this.findAllMatches(paragraph, symbol).length > 0;
+  }
+
+  findAllMatches(paragraph, symbol, wholeToken = true) {
+    const matches = [];
+    let i = 0;
+
+    while (i < paragraph.length) {
+      // Try to match the entire symbol first
+      if (this.matches(paragraph.slice(i, i + symbol.length), symbol)) {
+        matches.push({ start: i, end: i + symbol.length });
+        i += symbol.length;
+        continue;
+      }
+
+      // If no match, find the next word boundary
+      const nextSpace = paragraph.indexOf(' ', i);
+      const wordEnd = nextSpace === -1 ? paragraph.length : nextSpace;
+      const word = paragraph.slice(i, wordEnd);
+
+      // Check if the word matches the symbol
+      if (this.matches(word, symbol)) {
+        if (wholeToken) {
+          matches.push({ start: i, end: wordEnd });
+        } else {
+          // Find the exact match within the word
+          const matchStart = this.findMatchStart(word, symbol);
+          matches.push({ start: i + matchStart, end: i + matchStart + symbol.length });
+        }
+        i = wordEnd;
+      } else {
+        // Move to the next character if no match
+        i++;
+      }
+    }
+
+    return matches;
+  }
+
+  findMatchStart(word, symbol) {
+    for (let i = 0; i <= word.length - symbol.length; i++) {
+      if (this.matches(word.slice(i, i + symbol.length), symbol)) {
+        return i;
+      }
+    }
+    return 0; // Fallback, should not happen if match was found
+  }
+
+  static matches(term1, term2, threshold = THRESHOLD, ngramSize = NGRAM_SIZE) {
     const matcher = new FuzzyTextMatcher(threshold, ngramSize);
     return matcher.matches(term1, term2);
+  }
+
+
+  static containsSymbol(paragraph, symbol, threshold = THRESHOLD, ngramSize = NGRAM_SIZE) {
+    const matcher = new FuzzyTextMatcher(threshold, ngramSize);
+    return matcher.containsSymbol(paragraph, symbol);
+  }
+
+
+  static findAllMatches(paragraph, symbol, threshold = THRESHOLD, ngramSize = NGRAM_SIZE) {
+    const matcher = new FuzzyTextMatcher(threshold, ngramSize);
+    return matcher.findAllMatches(paragraph, symbol);
   }
 }

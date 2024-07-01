@@ -1,4 +1,7 @@
 import Line from "./Line";
+import FuzzyText from "./FuzzyText";
+
+const fuzzyText = new FuzzyText();
 
 export default class Hypertext extends Line {
     constructor() {
@@ -21,7 +24,7 @@ export default class Hypertext extends Line {
         return new RegExp(`\\b${symbol}\\b`, "g");
     }
     matches(symbol) {
-        return this.regex(symbol).test(this.hypertext);
+        return fuzzyText.containsSymbol(this.hypertext, symbol);
     }
 
     get dom() {
@@ -43,76 +46,60 @@ export default class Hypertext extends Line {
     }
 
     get symbolifiedLine() {
-        let line = this.line;
+        const line = this.line;
         const owners = this.owners;
-        let parts = [line]; // Start with the whole line as a single part
+        // Find all matches for all owners
+        const allMatches = owners.flatMap((owner) =>
+            fuzzyText
+                .findAllMatches(line, owner.symbol)
+                .map((match) => ({ ...match, owner }))
+        );
+        // Sort matches by start position
+        allMatches.sort((a, b) => a.start - b.start);
 
-        owners.forEach((owner) => {
-            parts = parts.flatMap((part) =>
-                typeof part === "string"
-                    ? part
-                          .split(this.regex(owner.symbol))
-                          .flatMap((subPart, index, arr) =>
-                              index < arr.length - 1 ? [subPart, owner] : [subPart]
-                          )
-                    : [part]
-            );
+        // Filter out overlapping matches
+        const filteredMatches = allMatches.reduce((acc, match) => {
+            if (acc.length === 0 || match.start >= acc[acc.length - 1].end) {
+                acc.push(match);
+            }
+            return acc;
+        }, []);
+
+        // Create parts array
+        const parts = [];
+        let lastIndex = 0;
+        filteredMatches.forEach((match) => {
+            if (match.start > lastIndex) {
+                parts.push(line.substring(lastIndex, match.start));
+            }
+            parts.push({
+                text: line.substring(match.start, match.end),
+                owner: match.owner,
+            });
+            lastIndex = match.end;
         });
+        if (lastIndex < line.length) {
+            parts.push(line.substring(lastIndex));
+        }
 
         return (
             <div className="hypertext symbol">
                 {parts.map((part, index) =>
-                    typeof part === "object" && owners.includes(part) ? (
+                    typeof part === "string" ? (
+                        part
+                    ) : (
                         <a
                             key={index}
-                            onClick={() => window.setActiveNodeUUID(part.uuid)}
+                            onClick={() => window.setActiveNodeUUID(part.owner.uuid)}
                             className="symbol"
-                            style={{ color: part.color }}>
-                            {part.symbol}
+                            style={{ color: part.owner.color }}>
+                            {part.text}
                         </a>
-                    ) : (
-                        part
                     )
                 )}
             </div>
         );
     }
-
-    get _symbolifiedLine() {
-        let line = this.line;
-        const symbols = this.ownerSymbols;
-        let parts = [line]; // Start with the whole line as a single part
-
-        symbols.forEach((symbol) => {
-            parts = parts.flatMap((part) =>
-                typeof part === "string"
-                    ? part
-                          .split(this.regex(symbol))
-                          .flatMap((subPart, index, arr) =>
-                              index < arr.length - 1 ? [subPart, symbol] : [subPart]
-                          )
-                    : [part]
-            );
-        });
-
-        return (
-            <div className="hypertext symbol">
-                {parts.map((part, index) =>
-                    symbols.includes(part) ? (
-                        <a key={index} href={`#${part}`} className="symbol text-red-500">
-                            {part}
-                        </a>
-                    ) : (
-                        part
-                    )
-                )}
-            </div>
-        );
-    }
-
-    //     // return `<h${this.level} class="${this.owners.length > 0 ? "symbol" : ""}">${this.line}</h${this.level}>`;
-    //     return `<div class="hypertext ${this.owners.length > 0 ? " symbol" : ""}>${this.line}</div>`
-    // }
 
     get header() {
         let curr = this,

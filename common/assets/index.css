@@ -91,7 +91,7 @@ body {
 
 #interwingle {
     /* @apply absolute left-0 top-0 z-20 bottom-0 flex items-center justify-center gap-5 pr-8 flex-col-reverse pointer-events-none; */
-    @apply absolute bottom-0 left-0 right-0 z-20 flex gap-10 items-center justify-center pb-4;
+    @apply absolute bottom-0 left-0 right-0 z-20 flex gap-10 items-center justify-center pb-4 pointer-events-none;
 }
 
 #interwingle button {
@@ -425,42 +425,24 @@ body {
         @apply w-full h-full flex items-center justify-center;
     }
 
-    /* textarea {
-        @apply min-w-[600px] h-full max-w-3xl text-2xl p-4 rounded-xl outline-none bg-transparent text-black dark:text-white bg-gray-100/50 dark:bg-gray-1000/50 resize-none;
-    } */
-}
-
-#force-graph {
-    /* @apply border-2 w-full max-w-max min-w-max w-full; */
-    /* @apply border-2 border-blue-500 w-full; */
-}
-
-canvas {
-    /* @apply max-h-[50%] max-w-[50%] border-2 aspect-square; */
-}
-
-.node-panel {
-    @apply text-white bg-gray-1000 flex flex-col gap-1;
-
-    textarea {
-        @apply bg-gray-1000/50 outline-none resize-none w-full h-full pointer-events-auto;
-    }
+    /* debug */
 }
 
 #wysiwyg {
     @apply w-full h-full overflow-hidden;
 
     textarea {
-        @apply w-full h-full p-8 text-xl inline-block bg-gray-1000/50 outline-none resize-none text-gray-500 caret-white;
-        content-visibility: visible;
+        @apply w-full h-full p-8 text-xl inline-block bg-gray-1000/50 outline-none resize-none text-transparent caret-white;
+
+        /* debug */
+        @apply absolute right-0;
     }
 
     #highlight {
         /* TODO BODY OVERFLOW BUG */
         /* @apply hidden; */
-        @apply text-white w-full h-full p-8 text-xl inline-block bg-transparent outline-none resize-none overflow-hidden;
-        @apply absolute bottom-0 top-0 left-0 w-full h-full pointer-events-none whitespace-pre-wrap flex flex-col;
-        content-visibility: visible;
+        @apply text-white w-full h-full p-8 text-xl inline-block bg-transparent outline-none resize-none overflow-y-scroll;
+        @apply absolute bottom-0 top-0 left-0 w-full h-full pointer-events-none whitespace-pre-wrap flex flex-col z-20;
 
         .hyperedge {
             .node {

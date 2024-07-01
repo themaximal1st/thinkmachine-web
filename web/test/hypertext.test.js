@@ -96,5 +96,12 @@ test("ignore formatting", async () => {
     expect(schematic.output).toBe("A -> B -> C\n\nThis is *some* A **hypertext**");
 });
 
+test.only("fuzzy owner matching", async () => {
+    const schematic = new GeneralSchematics("Hypergraph -> Hyperedge -> Hypernode\n\nThis is hypertext about hypergraph's");
+    expect(schematic.hypertexts.global.length).toEqual(0);
+    const hypergraph = schematic.nodes[0];
+    expect(hypergraph.hypertexts.length).toEqual(1);
+});
+
 
 // TODO: Convert hypertext to sectionized hypertext if no symbol
