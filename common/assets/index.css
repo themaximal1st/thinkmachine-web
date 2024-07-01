@@ -452,6 +452,7 @@ canvas {
 
     textarea {
         @apply w-full h-full p-8 text-xl inline-block bg-gray-1000/50 outline-none resize-none text-gray-500 caret-white;
+        content-visibility: visible;
     }
 
     #highlight {
@@ -459,6 +460,7 @@ canvas {
         /* @apply hidden; */
         @apply text-white w-full h-full p-8 text-xl inline-block bg-transparent outline-none resize-none overflow-hidden;
         @apply absolute bottom-0 top-0 left-0 w-full h-full pointer-events-none whitespace-pre-wrap flex flex-col;
+        content-visibility: visible;
 
         .hyperedge {
             .node {

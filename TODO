@@ -1,6 +1,9 @@
+- wysiwyg on active node? ughhh
+- wysiwyg loses styling on overflow
 - A->B->C doesn't parse well...because we're parsing output and not input
 - Use embeddings to map connections (hypergraph/HyperGraph/Hypergraph's) are all the same thing.
 - Bridge nodes aren't restoring properly...they're jumping around when updating
+- allow elements to be scrolled through
 
 - WYSIWYG
     - SYMBOL AUTO COMPLETE
