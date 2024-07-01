@@ -84,14 +84,14 @@ export default class Camera {
             shouldZoom = true;
         }
 
-        if (!this.lastPosition || shouldZoom) {
-            await utils.delay(delay);
-            this.zoom(oldData);
+        // if (!this.lastPosition || shouldZoom) {
+        await utils.delay(delay);
+        this.zoom(oldData);
 
-            await this.waitForStablePosition();
-        } else {
-            console.log("skip zoom");
-        }
+        await this.waitForStablePosition();
+        // } else {
+        //     console.log("skip zoom");
+        // }
     }
 
     async waitForStablePosition(delay = 50, max = 50) {
@@ -99,7 +99,7 @@ export default class Camera {
         return new Promise((resolve, reject) => {
             let interval = setInterval(() => {
                 if (this.isStable) {
-                    console.log("stable camera");
+                    // console.log("stable camera");
                     clearInterval(interval);
                     resolve(this.position);
                 }

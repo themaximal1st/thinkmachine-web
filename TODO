@@ -1,12 +1,5 @@
-- Colors should be consistent
 - Use embeddings to map connections (hypergraph/HyperGraph/Hypergraph's) are all the same thing.
 - Bridge nodes aren't restoring properly...they're jumping around when updating
-
-- Try to stay away from indexes. If anything, switch to implicit indexing on backend, and provide helper methods. Explicit indexes suck though
-
-- MARKDOWN FORMATTING DOESNT WORK!
-
-- WYSIWYG
 
 - LEFT HAND TOOLBAR
 - MODES

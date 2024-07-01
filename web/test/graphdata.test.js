@@ -674,7 +674,6 @@ test("missing node in interwingle regression", () => {
 });
 
 
-
 // Interwingle change should not affect graphData
 
 

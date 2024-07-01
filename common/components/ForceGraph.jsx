@@ -65,7 +65,6 @@ export default class ForceGraph extends React.Component {
             //     this.emitLinkParticles(prevProps.graphData);
             // });
         } else {
-            console.log("UPDATE CAMERA");
             utils.delay(400).then(() => {
                 this.updateCamera(false, 100, prevProps.graphData).then(() => {
                     this.emitLinkParticles(prevProps.graphData);

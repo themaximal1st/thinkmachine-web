@@ -476,4 +476,13 @@ test("single node edge", () => { // TODO: can fix this by adding a check for sin
     expect(parser.output).toBe("A ->");
 });
 
+test("dont reuse different node uuids regression", () => {
+    const parser = new Parser();
+    parser.parse(`A -> B -> C\nA -`);
+    parser.parse(`A -> B -> C\nA ->`);
+    expect(parser.nodes[0].uuid).not.toBe(parser.nodes[3].uuid);
+});
+
+
+
 // TODO: send meta information to parser...so when events bubble up we know where they initiated from

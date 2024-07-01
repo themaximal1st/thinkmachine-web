@@ -193,6 +193,11 @@ export default class Tree {
         const match = this.matches(line, index);
         if (match) {
             this.lines.splice(index, 0, match);
+            if (match.isHyperedge) {
+                for (const node of match.nodes) {
+                    node.uuid = this.trackUUID(node);
+                }
+            }
             return match;
         }
 
@@ -268,6 +273,8 @@ export default class Tree {
             this.uuids.symbol.delete(node.symbol);
             return uuid;
         }
+
+        this.uuids.used.set(node.uuid, node);
 
         return node.uuid;
     }

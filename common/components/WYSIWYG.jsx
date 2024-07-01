@@ -62,7 +62,7 @@ export default class WYSIWYG extends React.Component {
     }
 
     render() {
-        console.log("RENDER WYSIWYG");
+        // console.log("RENDER WYSIWYG");
         return (
             <div id="wysiwyg">
                 <div

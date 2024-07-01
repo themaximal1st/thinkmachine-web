@@ -151,7 +151,10 @@ export default class App extends React.Component {
     async reloadData() {
         console.log("✅ RELOAD DATA");
 
+        this.schematic.debug();
+
         const graphData = this.schematic.graphData(this.filters, this.state.graphData);
+        console.log(graphData);
 
         await this.asyncSetState({
             graphData,

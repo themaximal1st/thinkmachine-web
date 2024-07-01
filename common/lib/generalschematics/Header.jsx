@@ -16,10 +16,16 @@ export default class Header extends Line {
         this.line = `${"#".repeat(this.level)} ${value}`;
     }
     get dom() {
-        if (this.owners.length > 0) {
+        const owners = this.owners;
+        if (owners.length > 0) {
             return (
-                <h1 className="symbol" key={this.index}>
-                    <a href={`#${this.header}`}>{this.line}</a>
+                <h1
+                    className="symbol"
+                    key={this.index}
+                    style={{ color: owners[0].color }}>
+                    <a onClick={() => window.setActiveNodeUUID(owners[0].uuid)}>
+                        {this.line}
+                    </a>
                 </h1>
             );
         }
