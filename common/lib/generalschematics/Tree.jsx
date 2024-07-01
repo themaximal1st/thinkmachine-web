@@ -187,6 +187,22 @@ export default class Tree {
         this.listeners = this.listeners.filter((l) => l !== listener);
     }
 
+    parse(input = "") {
+        this.reset();
+        this.input = input;
+
+        // splitting on empty string returns an array with one empty string..which isn't what we want
+        // and we want at least one parse event here...not totally deterministic...should fix
+        if (this.input === "") {
+            this.onUpdate({ event: "parse", data: input });
+        } else {
+            const lines = input.split(/\r?\n/);
+            for (const index in lines) {
+                this.parseLine(lines[index], index);
+            }
+        }
+    }
+
     parseLine(line, index = null) {
         if (index === null) index = this.lines.length;
 
@@ -359,5 +375,11 @@ export default class Tree {
             results.push(line);
         }
         return results;
+    }
+
+    static parse(input = "", options = {}) {
+        const tree = new Tree(options);
+        tree.parse(input);
+        return tree;
     }
 }
