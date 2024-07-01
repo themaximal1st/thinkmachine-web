@@ -1,9 +1,9 @@
-import { v4 as uuidv4 } from 'uuid';
+import { fastUUID } from './utils';
 
 export default class BridgeNode {
     constructor(nodes) {
         this.nodes = nodes;
-        this.uuid = uuidv4();
+        this.uuid = fastUUID();
         this.bridge = true;
     }
 
@@ -15,9 +15,9 @@ export default class BridgeNode {
         return this.nodes[0].color;
     }
 
-    // get uid() {
-    //     return this.uuid;
-    // }
+    get uid() {
+        return this.uuid;
+    }
 
     get id() {
         return `${this.symbol}#bridge`;

@@ -55,6 +55,7 @@ export default class Hypertext extends Line {
                 .findAllMatches(line, owner.symbol)
                 .map((match) => ({ ...match, owner }))
         );
+
         // Sort matches by start position
         allMatches.sort((a, b) => a.start - b.start);
 

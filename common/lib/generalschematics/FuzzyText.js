@@ -7,6 +7,7 @@ export default class FuzzyTextMatcher {
     this.threshold = threshold;
     this.ngramSize = ngramSize;
     this.cache = new Map();
+    this.matchesCache = new Map();
   }
 
   setSimilarityThreshold(threshold) {
@@ -77,6 +78,10 @@ export default class FuzzyTextMatcher {
   }
 
   findAllMatches(paragraph, symbol, wholeToken = true) {
+    if (this.matchesCache.has(paragraph + symbol)) {
+      return this.matchesCache.get(paragraph + symbol);
+    }
+
     const matches = [];
     let i = 0;
 
@@ -92,6 +97,7 @@ export default class FuzzyTextMatcher {
       while ((match = regex.exec(paragraph)) !== null) {
         matches.push({ start: match.index, end: match.index + 1 });
       }
+      this.matchesCache.set(paragraph + symbol, matches);
       return matches;
     }
 
@@ -124,6 +130,7 @@ export default class FuzzyTextMatcher {
       }
     }
 
+    this.matchesCache.set(paragraph + symbol, matches);
     return matches;
   }
 

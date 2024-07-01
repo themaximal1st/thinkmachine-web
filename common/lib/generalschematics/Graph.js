@@ -290,6 +290,7 @@ export default class Graph {
     updateBridgeNodeData(bridgeNode, data) {
         data.nodes.set(bridgeNode.id, {
             id: bridgeNode.id,
+            uid: bridgeNode.uid,
             uuid: bridgeNode.uuid,
             name: bridgeNode.symbol,
             bridge: true,

@@ -111,7 +111,9 @@ export default class Tree {
         return this.outputs.join("\n");
     }
     get dom() {
-        if (this._dom && this.hash === this._domhash) return this._dom;
+        if (this._dom && this.hash === this._domhash) {
+            return this._dom;
+        }
         this._dom = this.lines.map((line) => line.dom);
         this._domhash = this.hash;
         return this._dom;

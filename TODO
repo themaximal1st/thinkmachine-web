@@ -1,4 +1,5 @@
 - confluence and bridge have refresh issues
+- fuzzy symbol matching (gets very complex)...almost need another concept of a Node...like a Symbol
 
 - SIDEBAR
 - PAGES (just one)

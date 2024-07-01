@@ -93,22 +93,35 @@ test("fast hash", async () => {
     expect(elapsed).toBeLessThan(1000);
 });
 
-// TODO: fast hash
-
-
 test("generate complex dom", async () => {
     const start = Date.now();
 
     const schematic = new GeneralSchematics();
+    schematic.parse(data);
 
     for (let i = 0; i < 2000; i++) {
-        schematic.parse(data);
         expect(schematic.dom.length).toBeGreaterThan(0);
     }
 
     const elapsed = Date.now() - start;
 
     expect(elapsed).toBeLessThan(1000);
+});
+
+test.only("sub-cache complex dom with iterative updates", async () => {
+    const start = Date.now();
+
+    // sub-cache is getting blown out by iterative update....why?
+    const schematic = new GeneralSchematics();
+
+    for (let i = 0; i < data.length; i++) {
+        schematic.parse(data.slice(0, i));
+        // const dom = schematic.dom;
+    }
+
+    const elapsed = Date.now() - start;
+
+    expect(elapsed).toBeLessThan(1250);
 });
 
 
@@ -179,8 +192,34 @@ primes -> Fermat's Little Theorem -> Euler's Totient Function
 Riemann Hypothesis -> analytic number theory -> zeta function
 modular arithmetic -> congruences -> finite fields
 
-This is some hypertext about number theory...it's cool
+This is some hypertext about number theory...it's cool.
 
-Prime numbers are interesting...
+Prime numbers are interesting because they are the building blocks of integers and have unique properties that form the basis of many mathematical theories.
+
+For example, Fermat's Little Theorem and Euler's Totient Function are essential in understanding the behavior of primes within number theory.
+
+The Riemann Hypothesis, one of the most famous unsolved problems in mathematics, is deeply connected to prime numbers and their distribution along the number line.
+
+In mathematics, modular arithmetic and congruences play a crucial role in solving problems related to finite fields and cyclic groups.
+
+These concepts are vital in areas such as cryptography and computer science. Furthermore, the study of integers, rational numbers, and irrational numbers reveals a rich structure of real numbers that has profound implications in various fields of mathematics and science.
+
+Red is a cool color and so is blue and green.
+
+Red, with its wavelength of 620-750 nm, brings energy and passion.
+
+Blue, with a wavelength of 450-495 nm, provides a sense of calm and stability.
+
+Green, falling between 495-570 nm, symbolizes growth and renewal.
+
+These primary colors form the basis of various color schemes, including complementary, analogous, and triadic colors, which are essential in art and design.
+
+Understanding the visible spectrum and the properties of light wavelengths helps us appreciate the beauty of a rainbow, where red, orange, yellow, green, blue, indigo, and violet come together in a harmonious display.
+
+The phenomenon of refraction and dispersion in water droplets or a prism creates the vivid colors we see in a rainbow, demonstrating the principles of additive and subtractive color mixing.
+
+In summary, the connections between number theory, mathematics, color theory, and the natural world reveal a fascinating interplay of patterns and properties.
+Whether through the abstract beauty of prime numbers or the vibrant spectrum of a rainbow, these concepts enrich our understanding of the universe.
+
 `
 
