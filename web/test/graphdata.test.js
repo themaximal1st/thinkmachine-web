@@ -673,6 +673,38 @@ test("missing node in interwingle regression", () => {
     expect(data.nodes[6].id).toBe("2:A");
 });
 
+test("restore bridge node position", () => {
+    const schematic = new GeneralSchematics("A -> vs -> B\n1 -> vs -> 2", {
+        interwingle: GeneralSchematics.INTERWINGLE.BRIDGE
+    });
+
+    let data, oldData = { nodes: [], links: [] };
+    data = schematic.graphData(null, oldData);
+    expect(data.nodes[6].id).toBe("vs#bridge");
+    expect(data.nodes[6].x).toBe(undefined);
+
+    for (const node of data.nodes) {
+        node.x = 100;
+        node.y = 100;
+        node.z = 100;
+        node.vx = 100;
+        node.vy = 100;
+        node.vz = 100;
+    }
+
+    oldData = data;
+    data = schematic.graphData(null, oldData);
+
+    expect(data.nodes.length).toBe(7);
+    for (const node of data.nodes) {
+        expect(node.x).toBe(100);
+        expect(node.y).toBe(100);
+        expect(node.z).toBe(100);
+        expect(node.vx).toBe(100);
+        expect(node.vy).toBe(100);
+        expect(node.vz).toBe(100);
+    }
+});
 
 // Interwingle change should not affect graphData
 

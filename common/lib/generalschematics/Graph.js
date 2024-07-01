@@ -31,10 +31,6 @@ export default class Graph {
             }
         }
 
-        if (lastData) {
-            data = restoreData(data, lastData);
-        }
-
         if (this.schematic.isFusion) {
             this.updateFusionData(data);
         }
@@ -42,6 +38,11 @@ export default class Graph {
         if (this.schematic.isBridge) {
             this.updateBridgeData(data);
         }
+
+        if (lastData) {
+            data = restoreData(data, lastData);
+        }
+
 
         verifyGraphData(data);
 

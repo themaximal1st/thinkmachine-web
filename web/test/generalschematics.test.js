@@ -462,6 +462,22 @@ test("symbols with spaces", async () => {
     expect(schematic.output).toEqual("This is A → This is B → This is C");
 });
 
+test("restore bridge node uuid", () => {
+    const schematic = new GeneralSchematics("A -> vs -> B\n1 -> vs -> 2", {
+        interwingle: GeneralSchematics.INTERWINGLE.BRIDGE
+    });
+
+    const uuids = schematic.nodes.map(node => node.uuid);
+    expect(new Set(uuids).size).toBe(uuids.length);
+
+    schematic.parse("A -> vs -> B\n1 -> vs -> 2");
+    const nuuids = schematic.nodes.map(node => node.uuid);
+    expect(new Set(nuuids).size).toBe(nuuids.length);
+
+    expect(uuids).toEqual(nuuids);
+});
+
+
 // TODO: Add hypertext in different contexts
 //     1 -> B
 //     A -> B

@@ -94,34 +94,25 @@ export function verifyGraphData(data) {
 // Force Graph expects the same exact object or it re-triggers a full update.... :(
 export function restoreData(data, oldData) {
     const nodeUUIDIndex = createUUIDIndex(data.nodes.values());
-
-    const uuidIndex = createUUIDIndex(oldData.nodes.values());
-    const idIndex = createIndex(oldData.nodes.values());
-    const uidIndex = createUIDIndex(oldData.nodes.values());
+    const idIndex = createIndex(oldData.nodes);
+    const uidIndex = createUIDIndex(oldData.nodes);
     const updates = new Map();
 
     for (const node of data.nodes.values()) {
         const oldNode = uidIndex.get(node.uid) || idIndex.get(node.id);
-        if (!oldNode) continue;
+        if (!oldNode) { continue }
         updates.set(node.id, oldNode);
     }
 
     for (const [id, oldNode] of updates) {
         const shadow = nodeUUIDIndex.get(oldNode.uuid);
         if (shadow) {
-            for (const key of Object.keys(shadow)) {
-                oldNode[key] = shadow[key];
-            }
-
+            for (const key of Object.keys(shadow)) { oldNode[key] = shadow[key] }
             oldNode["id"] = id;
         }
 
         data.nodes.set(id, oldNode);
     }
-
-    // for (const node of data.nodes.values()) {
-    //     console.log("NODE", node.id, node);
-    // }
 
 
     return data;
